@@ -1,0 +1,5 @@
+{
+    "python.defaultInterpreterPath": "/Users/kamalbhatt/Library/CloudStorage/OneDrive-STORDISGmbH/orca_ui/venv/bin/python",
+    "python.formatting.provider": "autopep8",
+    "python.analysis.extraPaths": ["/Users/kamalbhatt/Library/CloudStorage/OneDrive-STORDISGmbH/netbox/netbox-3.4.4/venv/lib/python3.10/site-packages"]
+}
