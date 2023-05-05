@@ -15,9 +15,13 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+
+from device import views
 
 urlpatterns = [
     path("device/", include("device.urls")),
     path("admin/", admin.site.urls),
+    re_path(r'^api/device/$', views.device_list),
+    re_path(r'^api/device/([0-9])$', views.device_detail),
 ]

@@ -37,6 +37,10 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    ##Added
+    'rest_framework',
+    'corsheaders',
+    'device',
 ]
 
 MIDDLEWARE = [
@@ -47,7 +51,14 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    ##Added
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+#Added
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 ROOT_URLCONF = "orca_ui.urls"
 

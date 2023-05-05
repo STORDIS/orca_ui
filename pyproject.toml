@@ -7,6 +7,8 @@ authors = ["kamal bhatt <kamal.bhatt@stordis.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 Django = "^4.2.1"
+djangorestframework = "^3.14.0"
+django-cors-headers = "^3.14.0"
 
 [tool.poetry.dev-dependencies]
 
