@@ -1,12 +1,14 @@
+import json
 from django.shortcuts import render
 
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 
 from .models import Device
 from .serializers import *
+from orca_backend.device import getDeviceDetailsFromGraph
 
 def index(request):
     return HttpResponse("Hello, world. You're at the polls index.")
@@ -14,9 +16,11 @@ def index(request):
 @api_view(['GET', 'POST'])
 def device_list(request):
     if request.method == 'GET':
-        data = Device.objects.all()
-        serializer = DeviceSerializer(data, context={'request': request}, many=True)
-        return Response(serializer.data)
+        #data = Device.objects.all()
+        #serializer = DeviceSerializer(data, context={'request': request}, many=True)
+        #return Response(serializer.data)
+        data=getDeviceDetailsFromGraph()
+        return JsonResponse(data, safe=False)
 
     elif request.method == 'POST':
         serializer = DeviceSerializer(data=request.data)
