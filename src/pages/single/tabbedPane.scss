@@ -1,0 +1,28 @@
+.tabbedPane{
+    display: flex;
+    width: 100%;
+
+    .tabbedPaneContainer{
+        flex: 6;
+
+        .top{
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+
+            .left{
+                flex: 1;
+
+                .item{
+
+                    display: flex;
+                    gap: 20px;
+
+
+                }
+
+            }
+        }
+    }
+    
+}
