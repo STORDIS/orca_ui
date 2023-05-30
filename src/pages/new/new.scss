@@ -1,6 +1,63 @@
 .new{
-    background-color: rebeccapurple;
-    .title {
-        color: white;
+    display:flex;
+    width: 100%;
+
+    .newContainer{
+        flex: 6;
+
+        .top, .bottom{
+            -webkit-box-shadow: 2px 4px 10px 1px black; 
+            box-shadow: 2px 4px 10px 1px gray;
+            padding: 10px;
+            margin: 20px;
+
+            h1{
+                color: gray;
+            }
+            .center{
+                align-items: center;
+
+                form{
+                   display: flex;
+                   flex-wrap: wrap;
+                   gap: 20px;
+                   
+                   
+                   .formInput{
+                    width: 40%;
+
+                        label{
+                            display: flex;
+                            align-items: center;
+                            gap: 10px;
+                        }
+
+                        input{
+                            width: 100%;
+                            padding: 5px;
+                            border: none;
+                            border-bottom: solid gray;
+                        }
+                    }    
+                
+                button{
+                    width: 150px;
+                    padding: 10px;
+                    border: none;
+                    background: teal;
+                    color: white;
+                    font-weight: bold;
+                    cursor: pointer;
+                    margin-top: 10px;
+
+
+                }        
+                   
+                }
+            }
+
+        }
     }
+
+    
 }

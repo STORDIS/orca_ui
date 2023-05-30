@@ -1,5 +1,46 @@
-const List = () => {
+    import { Link } from "react-router-dom";
+    
+    export const userColumns = [{ field: 'id', headerName: 'ID', width: 70 },
+    { field: 'name', headerName: 'Device Name', width: 130 },
+    { field: 'company', headerName: 'Company name', width: 130 },
+    {
+      field: 'ports',
+      headerName: 'Ports',
+      type: 'number',
+      width: 90,
+    },
+    
 
+    {
+      field: 'status',
+      headerName: 'Device Status',
+      description: 'This column has a value getter and is not sortable.',
+      sortable: false,
+      width: 160,
+      renderCell:(params)=>{
+        return <div className={`cellWithStatus ${params.row.status}`}> 
+        {params.row.status}</div>;
+    
+      }
+    },
+
+    {field: "action", headerName: "Action", width:200, renderCell:()=>{
+        return(
+          <div className="cellAction">
+            <Link to="/devices/1" style={{textDecoration: "none"}}>
+            <div className="viewButton">View</div>
+            </Link>
+
+            <Link to="/devices/1" style={{textDecoration: "none"}}>
+            <div className="editButton">Edit</div>
+            </Link>
+          </div>
+        )
+      }},
+
+];
+    
+    
     export const userRows = [
         {
             id: 1,

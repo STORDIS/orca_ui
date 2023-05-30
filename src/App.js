@@ -1,13 +1,16 @@
 import Home from "./pages/home/Home";
-import Login from "./pages/login/Login";
 import List from "./pages/list/List";
-import Single from "./pages/single/Single";
+import TabbedPane from "./pages/single/TabbedPane";
 import New from "./pages/new/New";
+import Interface from "./pages/interface/Interface";
+
 import {
   BrowserRouter,
   Routes,
   Route,
 } from "react-router-dom";
+//import InterfaceTable from "./pages/interface/InterfaceTable";
+//import Interface from "./pages/interface/Interface";
 
 function App() {
   return (
@@ -16,17 +19,20 @@ function App() {
         <Routes>
           <Route path="/">
             <Route index element={<Home/>} />
-            <Route path="login" element={<Login/>}/>
-            <Route path="users">
+            {/* <Route path="login" element={<Login/>}/> */}
+            <Route path="devices">
+            {/* <Route path="interfaces" element={<InterfaceTable/>}/>  */}
+            <Route path="interfaces" element={<Interface/>}/> 
               <Route index element ={<List/>}/>
-              <Route path=":userId" element={<Single/>}/>
+              <Route path=":deviceId" element={<TabbedPane/>}/>
               <Route path="new" element={<New/>}/>
             </Route>
             <Route path="products">
               <Route index element ={<List/>}/>
-              <Route path=":productId" element={<Single/>}/>
+              <Route path=":productId" element={<TabbedPane/>}/>
               <Route path="new" element={<New/>}/>
-            </Route>    
+            </Route>   
+             
           </Route>
         </Routes>
       </BrowserRouter>

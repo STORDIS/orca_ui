@@ -6,12 +6,16 @@ import CorporateFareIcon from '@mui/icons-material/CorporateFare';
 import PeopleIcon from '@mui/icons-material/People';
 import BookIcon from '@mui/icons-material/Book';
 import SettingsIcon from '@mui/icons-material/Settings';
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
     return (
         <div className="sidebar">
             <div className="top">
+                <Link to="/" style={{textDecoration: "none"}}>
                 <span className="logo">Stordis Network Configuration Manager</span>
+                </Link>
+
             </div>
             <hr/>
             <div className="center">
@@ -24,7 +28,9 @@ const Sidebar = () => {
                     <p className="part-1">PART-2</p>
                     <li>
                         <StorageIcon className="icon"/>
+                        <Link to="/devices" style={{textDecoration: "none"}}>
                         <span>Devices</span>
+                        </Link>
                     </li>
                     <li>
                         <SchemaIcon className="icon"/>
