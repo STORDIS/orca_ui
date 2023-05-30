@@ -1,6 +1,6 @@
 import Home from "./pages/home/Home";
 import List from "./pages/list/List";
-import TabbedPane from "./pages/single/TabbedPane";
+import TabbedPane from "./pages/tabbedpane/TabbedPane";
 import New from "./pages/new/New";
 import Interface from "./pages/interface/Interface";
 
