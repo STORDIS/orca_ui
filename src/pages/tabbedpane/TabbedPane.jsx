@@ -9,7 +9,11 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Datatable from "../../components/datatable/Datatable"
+import Datatable from "../../components/datatable/Datatable";
+import { userRows, userColumns, deviceUserColumns} from "../../datatablesourse";
+import InterfaceDataTable from "../../components/interfaceDataTable/interfaceDataTable";
+import PortChDataTable from "../../components/portChDataTable/portChDataTable";
+import McLagDataTable from "../../components/mclagDataTable/mclagDataTable";
 
 const TabbedPane = () => {
 
@@ -38,16 +42,16 @@ const TabbedPane = () => {
                                 </Tabs>
                             </Box>
                             <TabPanel tabValue={tabValue} index={0}>
-                                <Datatable/>
+                                <Datatable rows={1} columns={2} />
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={1}>
-                                Interface Table
+                                <InterfaceDataTable />
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={2}>
-                                Port Channel Table
+                                <PortChDataTable />
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={3}>
-                                MC LAG
+                                <McLagDataTable />
                             </TabPanel>
                         </Box>
 

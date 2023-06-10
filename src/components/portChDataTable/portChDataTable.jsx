@@ -1,30 +1,30 @@
-import "./datatable.scss"
+import "./PortChDataTable.scss"
 import { DataGrid } from '@mui/x-data-grid';
-import { userRows, userColumns, deviceUserColumns} from "../../datatablesourse";
+import { userRows, userColumns, portChannelColumns} from "../../datatablesourse";
 import { useEffect, useState } from "react"
 import axios from 'axios'
 
 
 
-const Datatable = (props) => {
+const PortChDataTable = (props) => {
     const {rows, columns} = props;
     console.log( rows,columns)
 
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
-        axios('http://localhost:8000/deviceDetails.json')
+        axios('http://localhost:8000/portchannel.json')
         //axios('http://localhost:8000/api/interfaces')
         .then(res => setDataTable(res.data))
-        // .then(res => console.log(res.data))
+        .then(res => console.log(res.data))
         .catch(err => console.log(err))
     }, []); 
 
     return (
-        <div className="datatable">
+        <div className="portchdatatable">
             <DataGrid
                 rows={dataTable}
-                columns={deviceUserColumns}
+                columns={portChannelColumns}
                 pageSize= {5}
                 rowsPerPageOptions= {[5]}
                 checkboxSelection
@@ -34,4 +34,4 @@ const Datatable = (props) => {
     )
 }
 
-export default Datatable
+export default PortChDataTable

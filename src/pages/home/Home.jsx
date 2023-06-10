@@ -1,3 +1,4 @@
+import Datatable from "../../components/datatable/Datatable";
 import Navbar from "../../components/navbar/Navbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import List from "../../components/table/Table";
@@ -13,15 +14,11 @@ function Home() {
             <div className="homeContainer">
                 <Navbar/>
                 <div className="widgets">
-                    <Widget/>
-                    <Widget/>
-                    <Widget/>
-                    <Widget/>
 
                 </div>
                 <div className="listContainer">
                     <div className="listTitle">devices</div>
-                    <List/>
+                    <Datatable/>
                 </div>
             </div>    
         </div>
