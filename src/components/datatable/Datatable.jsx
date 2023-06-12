@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { userRows, userColumns, deviceUserColumns} from "../../datatablesourse";
 import { useEffect, useState } from "react"
 import axios from 'axios'
+import {ALL_DEVICE_URL} from "../../constants";
 
 
 
@@ -13,7 +14,7 @@ const Datatable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
-        axios('http://localhost:8000/deviceDetails.json')
+        axios(ALL_DEVICE_URL)
         //axios('http://localhost:8000/api/interfaces')
         .then(res => setDataTable(res.data))
         // .then(res => console.log(res.data))

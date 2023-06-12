@@ -18,21 +18,21 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/">
-            <Route index element={<Home/>} />
+            <Route index element={<Home />} />
             {/* <Route path="login" element={<Login/>}/> */}
-            <Route path="devices">
-            {/* <Route path="interfaces" element={<InterfaceTable/>}/>  */}
-            <Route path="interfaces" element={<Interface/>}/> 
-              <Route index element ={<List/>}/>
-              <Route path=":deviceId" element={<TabbedPane/>}/>
-              <Route path="new" element={<New/>}/>
+            <Route path="devices" >
+              {/* <Route path="interfaces" element={<InterfaceTable/>}/>  */}
+              <Route path="interfaces" element={<Interface />} />
+              <Route index element={<List />} />
+              <Route path=":deviceId" element={<TabbedPane />} />
+              <Route path="new" element={<New />} />
             </Route>
             <Route path="products">
-              <Route index element ={<List/>}/>
-              <Route path=":productId" element={<TabbedPane/>}/>
-              <Route path="new" element={<New/>}/>
-            </Route>   
-             
+              <Route index element={<List />} />
+              <Route path=":productId" element={<TabbedPane />} />
+              <Route path="new" element={<New />} />
+            </Route>
+
           </Route>
         </Routes>
       </BrowserRouter>
