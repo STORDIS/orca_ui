@@ -6,42 +6,57 @@ import FullscreenExitIcon from '@mui/icons-material/FullscreenExit';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import ChatBubbleIcon from '@mui/icons-material/ChatBubble';
 import ViewListIcon from '@mui/icons-material/ViewList';
+import AccountTreeIcon from '@mui/icons-material/AccountTree';
+import { Link } from "react-router-dom";
+import { Button } from "@mui/base";
+import { useNavigate } from "react-router-dom";
+
+
 
 const Navbar = () => {
     return (
         <div className="navbar">
             <div className="wrapper">
-                <div className="search">  
-                  <input type="text" placeholder="Search..." />  
-                  <SearchIcon/>
+                <div className="search">
+                    <input type="text" placeholder="Search..." />
+                    <SearchIcon />
                 </div>
+
                 <div className="items">
+
                     <div className="item">
-                        <LanguageIcon className="icon"/>
+                        <Link to="/discover" style={{ textDecoration: "none" }}>
+                            <AccountTreeIcon className="icon" />
+                            Discover Network
+                        </Link>
+
+                    </div>
+                    <div className="item">
+                        <LanguageIcon className="icon" />
                         English
                         Deutsch
 
                     </div>
                     <div className="item">
-                        <DarkModeIcon className="icon"/>
+                        <DarkModeIcon className="icon" />
 
                     </div>
                     <div className="item">
-                        <FullscreenExitIcon className="icon"/>
+                        <FullscreenExitIcon className="icon" />
 
                     </div>
                     <div className="item">
-                        <NotificationsIcon className="icon"/>
+                        <NotificationsIcon className="icon" />
                         <div className="counter">1</div>
 
                     </div>
                     <div className="item">
-                        <ChatBubbleIcon className="icon"/>
+                        <ChatBubbleIcon className="icon" />
                         <div className="counter">2</div>
 
                     </div>
                     <div className="item">
-                        <ViewListIcon className="icon"/>
+                        <ViewListIcon className="icon" />
 
                     </div>
                 </div>

@@ -12,45 +12,51 @@ const Sidebar = () => {
     return (
         <div className="sidebar">
             <div className="top">
-                <Link to="/" style={{textDecoration: "none"}}>
-                <span className="logo">Stordis Network Configuration Manager</span>
+                <Link to="/" style={{ textDecoration: "none" }}>
+                        <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBSglQwvsds3Oc30LqBjru9Un9f8V4mKoJ6A&usqp=CAU"
+                            width="100"
+                            className="img-thumbnail"
+                            style={{ marginTop: "40px" }}
+                        /> 
+                    <span className="logo">ORCA - SONiC Management System</span>
                 </Link>
 
             </div>
-            <hr/>
+            <hr />
             <div className="center">
                 <ul>
                     <p className="part-1">PART-1</p>
                     <li>
-                        <DashboardIcon className="icon"/>
+                        <DashboardIcon className="icon" />
                         <span>Dashboard</span>
                     </li>
                     <p className="part-1">PART-2</p>
                     <li>
-                        <StorageIcon className="icon"/>
-                        <Link to="/devices" style={{textDecoration: "none"}}>
-                        <span>Devices</span>
+                        <StorageIcon className="icon" />
+                        <Link to="/devices" style={{ textDecoration: "none" }}>
+                            <span>Devices</span>
                         </Link>
                     </li>
                     <li>
-                        <SchemaIcon className="icon"/>
+                        <SchemaIcon className="icon" />
                         <span>Visualization</span>
                     </li>
                     <li>
-                        <CorporateFareIcon className="icon"/>
+                        <CorporateFareIcon className="icon" />
                         <span>Organization</span>
                     </li>
                     <p className="part-1">PART-3</p>
                     <li>
-                        <PeopleIcon className="icon"/>
+                        <PeopleIcon className="icon" />
                         <span>Users</span>
                     </li>
                     <li>
-                        <BookIcon className="icon"/>
+                        <BookIcon className="icon" />
                         <span>Logs</span>
                     </li>
                     <li>
-                        <SettingsIcon className="icon"/>
+                        <SettingsIcon className="icon" />
                         <span>Settings</span>
                     </li>
                 </ul>
@@ -58,7 +64,7 @@ const Sidebar = () => {
             <div className="bottom">
                 <div className="colorOptions"></div>
                 <div className="colorOptions"></div>
-                
+
             </div>
         </div>
 

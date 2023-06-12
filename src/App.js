@@ -3,6 +3,7 @@ import List from "./pages/list/List";
 import TabbedPane from "./pages/tabbedpane/TabbedPane";
 import New from "./pages/new/New";
 import Interface from "./pages/interface/Interface";
+import Discover from "./pages/discover/discover";
 
 import {
   BrowserRouter,
@@ -32,7 +33,7 @@ function App() {
               <Route path=":productId" element={<TabbedPane />} />
               <Route path="new" element={<New />} />
             </Route>
-
+            <Route path="discover" element={<Discover />} />
           </Route>
         </Routes>
       </BrowserRouter>
