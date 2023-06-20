@@ -7,8 +7,23 @@ import PeopleIcon from '@mui/icons-material/People';
 import BookIcon from '@mui/icons-material/Book';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Link } from "react-router-dom";
+import Nav from 'react-bootstrap/Nav';
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
+    const navigate = useNavigate();
+        
+      
+        const handleRefresh = () => {
+          const currentPath = window.location.pathname;
+          const targetPath = '/devices';
+      
+          if (currentPath === targetPath) {
+            window.location.reload(false); // Refresh the page
+          } else {
+            navigate(targetPath); // Redirect to the target path
+          }
+        }
     return (
         <div className="sidebar">
             <div className="top">
@@ -26,45 +41,19 @@ const Sidebar = () => {
             <hr />
             <div className="center">
                 <ul>
-                    <p className="part-1">PART-1</p>
-                    <li>
-                        <DashboardIcon className="icon" />
-                        <span>Dashboard</span>
-                    </li>
-                    <p className="part-1">PART-2</p>
+                    <br />
+                    <br />
+                    <br />
+                    <br />
                     <li>
                         <StorageIcon className="icon" />
-                        <Link to="/devices" style={{ textDecoration: "none" }}>
+                        <Nav.Link href="/devices" onClick={handleRefresh} style={{ textDecoration: "none" }}>
                             <span>Devices</span>
-                        </Link>
-                    </li>
-                    <li>
-                        <SchemaIcon className="icon" />
-                        <span>Visualization</span>
-                    </li>
-                    <li>
-                        <CorporateFareIcon className="icon" />
-                        <span>Organization</span>
-                    </li>
-                    <p className="part-1">PART-3</p>
-                    <li>
-                        <PeopleIcon className="icon" />
-                        <span>Users</span>
-                    </li>
-                    <li>
-                        <BookIcon className="icon" />
-                        <span>Logs</span>
-                    </li>
-                    <li>
-                        <SettingsIcon className="icon" />
-                        <span>Settings</span>
-                    </li>
-                </ul>
-            </div>
-            <div className="bottom">
-                <div className="colorOptions"></div>
-                <div className="colorOptions"></div>
 
+                        </Nav.Link>
+                    </li>
+
+                </ul>
             </div>
         </div>
 

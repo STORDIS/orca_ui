@@ -10,10 +10,30 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import { Link } from "react-router-dom";
 import { Button } from "@mui/base";
 import { useNavigate } from "react-router-dom";
-
+import Nav from 'react-bootstrap/Nav';
+import axios from "axios";
+import { DISCOVERY_URL } from "../../constants";
 
 
 const Navbar = () => {
+    const navigate = useNavigate();
+    function handleDiscover() {
+        axios(DISCOVERY_URL)
+        .catch(err => console.log(err))
+        
+
+        //const handleRefresh = () => {
+            const currentPath = window.location.pathname;
+            const targetPath = '/discover';
+
+            if (currentPath === targetPath) {
+                window.location.reload(false); // Refresh the page
+            } else {
+                navigate(targetPath); // Redirect to the target path
+            }
+        //}
+    }
+
     return (
         <div className="navbar">
             <div className="wrapper">
@@ -25,40 +45,13 @@ const Navbar = () => {
                 <div className="items">
 
                     <div className="item">
-                        <Link to="/discover" style={{ textDecoration: "none" }}>
+                        <Link to="/discover" onClick={handleDiscover} style={{ textDecoration: "none" }}>
                             <AccountTreeIcon className="icon" />
                             Discover Network
                         </Link>
 
                     </div>
-                    <div className="item">
-                        <LanguageIcon className="icon" />
-                        English
-                        Deutsch
 
-                    </div>
-                    <div className="item">
-                        <DarkModeIcon className="icon" />
-
-                    </div>
-                    <div className="item">
-                        <FullscreenExitIcon className="icon" />
-
-                    </div>
-                    <div className="item">
-                        <NotificationsIcon className="icon" />
-                        <div className="counter">1</div>
-
-                    </div>
-                    <div className="item">
-                        <ChatBubbleIcon className="icon" />
-                        <div className="counter">2</div>
-
-                    </div>
-                    <div className="item">
-                        <ViewListIcon className="icon" />
-
-                    </div>
                 </div>
             </div>
         </div>

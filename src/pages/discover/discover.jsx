@@ -6,10 +6,10 @@ import Sidebar from "../../components/sidebar/Sidebar";
 
 
 function Discover() {
-    useEffect(() => {
-        axios(DISCOVERY_URL)
-        .catch(err => console.log(err))
-    }, []);
+    // useEffect(() => {
+    //     axios(DISCOVERY_URL)
+    //     .catch(err => console.log(err))
+    // }, []);
 
     return (
         <div className='home'>
