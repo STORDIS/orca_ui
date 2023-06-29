@@ -72,7 +72,6 @@ import TabbedPane from "./pages/tabbedpane/TabbedPane";
 
     { field: 'platform', headerName: 'PLATFORM', width: 70 },
     { field: 'type', headerName: 'TYPE', width: 70 },
-    { field: 'id', headerName: 'ID', width: 70 },
 
     {field: "action", headerName: "Action", width:200, renderCell:(params)=>{
         return(
@@ -80,49 +79,10 @@ import TabbedPane from "./pages/tabbedpane/TabbedPane";
             { <Link to={`/devices/${params.row.mgt_ip}`} style={{textDecoration: "none"}}>
             <div className="viewButton">View1</div>
             </Link> }
-            {/* <button className="viewButton" onClick={()=> <TabbedPane />}>View</button> */}
-            
           </div>
         )
       }},
-
 ];
-    
-    export const userColumns = [{ field: 'id', headerName: 'ID', width: 70 },
-    { field: 'name', headerName: 'Device Name', width: 130 },
-    { field: 'company', headerName: 'Company name', width: 130 },
-    {
-      field: 'ports',
-      headerName: 'Ports',
-      type: 'number',
-      width: 90,
-    },
-    
 
-    {
-      field: 'status',
-      headerName: 'Device Status',
-      description: 'This column has a value getter and is not sortable.',
-      sortable: false,
-      width: 160,
-      renderCell:(params)=>{
-        return <div className={`cellWithStatus ${params.row.status}`}> 
-        {params.row.status}</div>;
-    
-      }
-    },
-
-    {field: "action", headerName: "Action", width:200, renderCell:()=>{
-        return(
-          <div className="cellAction">
-
-            <Link to="/devices/1" style={{textDecoration: "none"}}>
-            <div className="viewButton">View2</div>
-            </Link>
-          </div>
-        )
-      }},
-
-];
 
     

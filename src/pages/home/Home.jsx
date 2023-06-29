@@ -17,7 +17,7 @@ function Home() {
 
                 </div>
                 <div className="listContainer">
-                    <div className="listTitle">devices</div>
+                    <div className="listTitle">Devices</div>
                     <Datatable/>
                 </div>
             </div>    

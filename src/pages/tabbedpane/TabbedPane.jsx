@@ -2,26 +2,22 @@ import React from "react";
 import Navbar from "../../components/navbar/Navbar"
 import Sidebar from "../../components/sidebar/Sidebar"
 import "./tabbedPane.scss"
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import { Link } from "react-router-dom";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Datatable from "../../components/datatable/Datatable";
-import { userRows, userColumns, deviceUserColumns} from "../../datatablesourse";
 import InterfaceDataTable from "../../components/interfaceDataTable/interfaceDataTable";
 import PortChDataTable from "../../components/portChDataTable/portChDataTable";
 import McLagDataTable from "../../components/mclagDataTable/mclagDataTable";
+import { useParams } from 'react-router-dom';
 
-const TabbedPane = () => {
-let selectedID = window.location.pathname.split('/')[2]
+
+const TabbedPane = (props) => {
+    const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(0);
     const handleTabs = (event, val) => {
         setTabValue(val);
     };
-
 
     return(
         <div className='tabbedPane'>
@@ -42,16 +38,16 @@ let selectedID = window.location.pathname.split('/')[2]
                                 </Tabs>
                             </Box>
                             <TabPanel tabValue={tabValue} index={0}>
-                                <Datatable rows={1} columns={2} isTabbedPane={true} selectedItemId={selectedID}/>
+                                <Datatable rows={1} columns={2} isTabbedPane={true} selectedItemId={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={1}>
-                                <InterfaceDataTable selectedItemId={selectedID} />
+                                <InterfaceDataTable selectedItemId={deviceIP} />
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={2}>
-                                <PortChDataTable selectedItemId={selectedID}/>
+                                <PortChDataTable selectedItemId={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={3}>
-                                <McLagDataTable selectedItemId={selectedID}/>
+                                <McLagDataTable selectedItemId={deviceIP}/>
                             </TabPanel>
                         </Box>
 
