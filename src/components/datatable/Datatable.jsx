@@ -3,7 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { deviceUserColumns} from "../../datatablesourse";
 import { useEffect, useState } from "react"
 import axios from 'axios'
-import {ALL_DEVICE_URL} from "../../constants";
+import {getAllDevicesURL} from "../../backend_rest_urls.js"
 
 
 
@@ -14,7 +14,7 @@ const Datatable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
-        axios(ALL_DEVICE_URL)
+        axios(getAllDevicesURL())
         .then(res =>{console.log ("response", res.data) 
         if(isTabbedPane){
             let data= res.data.filter(item=>item.mgt_ip == selectedItemId)

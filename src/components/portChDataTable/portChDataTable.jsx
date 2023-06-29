@@ -1,8 +1,9 @@
 import "./PortChDataTable.scss"
 import { DataGrid } from '@mui/x-data-grid';
-import { userRows, userColumns, portChannelColumns} from "../../datatablesourse";
+import { portChannelColumns} from "../../datatablesourse";
 import { useEffect, useState } from "react"
 import axios from 'axios'
+import {getAllPortChnlsOfDeviceURL} from '../../backend_rest_urls'
 
 
 
@@ -13,7 +14,7 @@ const PortChDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
-        const apiPUrl = `http://localhost:8000/api/port_chnls?mgt_ip=${selectedItemId}`; 
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedItemId)  ; 
         axios .get (apiPUrl)
         .then(res => setDataTable(res.data))
         .then(res => console.log(res.data))

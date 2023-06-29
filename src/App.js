@@ -3,7 +3,6 @@ import List from "./pages/list/List";
 import TabbedPane from "./pages/tabbedpane/TabbedPane";
 import Discover from "./pages/discover/discover";
 
-
 import {
   BrowserRouter,
   Routes,

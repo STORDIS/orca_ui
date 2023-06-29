@@ -1,8 +1,9 @@
 import "./InterfaceDataTable.scss"
 import { DataGrid } from '@mui/x-data-grid';
-import { userRows, userColumns, interfaceColumns } from "../../datatablesourse";
+import { interfaceColumns } from "../../datatablesourse";
 import { useEffect, useState } from "react"
 import axios from 'axios'
+import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
 
 
 
@@ -13,7 +14,7 @@ const InterfaceDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
-        const apiUrl = `http://localhost:8000/api/interfaces?mgt_ip=${selectedItemId}`;
+        const apiUrl = getAllInterfacesOfDeviceURL(selectedItemId);
         axios.get(apiUrl)
             .then(res => setDataTable(res.data))
             .then(res => console.log(res.data))

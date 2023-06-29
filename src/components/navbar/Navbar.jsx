@@ -12,13 +12,13 @@ import { Button } from "@mui/base";
 import { useNavigate } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import axios from "axios";
-import { DISCOVERY_URL } from "../../constants";
+import {getDiscoveryUrl} from "../../backend_rest_urls"
 
 
 const Navbar = () => {
     const navigate = useNavigate();
     function handleDiscover() {
-        axios(DISCOVERY_URL)
+        axios(getDiscoveryUrl)
         .catch(err => console.log(err))
         
 
