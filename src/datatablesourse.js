@@ -1,6 +1,8 @@
     import { Link } from "react-router-dom";
+import TabbedPane from "./pages/tabbedpane/TabbedPane";
 
     export const interfaceColumns = [{ field: 'name', headerName: 'Name', width: 70 },
+    
          { field: 'enabled', headerName: 'Enabled', width: 130 },
          { field: 'mtu', headerName: 'MTU', type: 'number', width: 130 },
          { field: 'fec', headerName: 'FEC', type: 'boolean', width: 130 },
@@ -10,7 +12,6 @@
          { field: 'description', headerName: 'Description', width: 130 },
          { field: 'last_chng', headerName: 'Last Change',  width: 130 },
          { field: 'mac_addr', headerName: 'MAC ADDR',  width: 130 },
-        
     
      ];
 
@@ -73,13 +74,13 @@
     { field: 'type', headerName: 'TYPE', width: 70 },
     { field: 'id', headerName: 'ID', width: 70 },
 
-    {field: "action", headerName: "Action", width:200, renderCell:()=>{
+    {field: "action", headerName: "Action", width:200, renderCell:(params)=>{
         return(
           <div className="cellAction">
-            <Link to="/devices/1" style={{textDecoration: "none"}}>
-            <div className="viewButton">View</div>
-            </Link>
-
+            { <Link to={`/devices/${params.row.mgt_ip}`} style={{textDecoration: "none"}}>
+            <div className="viewButton">View1</div>
+            </Link> }
+            {/* <button className="viewButton" onClick={()=> <TabbedPane />}>View</button> */}
             
           </div>
         )
@@ -114,14 +115,14 @@
     {field: "action", headerName: "Action", width:200, renderCell:()=>{
         return(
           <div className="cellAction">
+
             <Link to="/devices/1" style={{textDecoration: "none"}}>
-            <div className="viewButton">View</div>
+            <div className="viewButton">View2</div>
             </Link>
           </div>
         )
       }},
 
 ];
-    
-    
+
     

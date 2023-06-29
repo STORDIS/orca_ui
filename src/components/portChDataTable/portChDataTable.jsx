@@ -7,14 +7,16 @@ import axios from 'axios'
 
 
 const PortChDataTable = (props) => {
-    const {rows, columns} = props;
+    const {rows, columns, selectedItemId=''} = props;
     console.log( rows,columns)
 
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
-        axios('http://localhost:8000/portchannel.json')
+        //axios('http://localhost:8000/portchannel.json')
         //axios('http://localhost:8000/api/interfaces')
+        const apiPUrl = `http://localhost:8000/api/interfaces?mgt_ip=${selectedItemId}`; 
+        axios .get (apiPUrl)
         .then(res => setDataTable(res.data))
         .then(res => console.log(res.data))
         .catch(err => console.log(err))

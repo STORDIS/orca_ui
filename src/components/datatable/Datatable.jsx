@@ -8,18 +8,25 @@ import {ALL_DEVICE_URL} from "../../constants";
 
 
 const Datatable = (props) => {
-    const {rows, columns} = props;
-    console.log( rows,columns)
+    const {rows, columns, isTabbedPane=false,selectedItemId=''} = props;
+    console.log( rows,columns,selectedItemId)
 
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
         axios(ALL_DEVICE_URL)
         //axios('http://localhost:8000/api/interfaces')
-        .then(res => setDataTable(res.data))
+        .then(res =>{console.log ("response", res.data) 
+        if(isTabbedPane){
+            let data= res.data.filter(item=>item.mgt_ip == selectedItemId)
+            setDataTable(data)
+        }else{
+            setDataTable(res.data)
+        }
+        })
         // .then(res => console.log(res.data))
         .catch(err => console.log(err))
-    }, []); 
+    }, [isTabbedPane]); 
 
     return (
         <div className="datatable">
