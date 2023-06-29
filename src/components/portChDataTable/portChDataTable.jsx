@@ -13,7 +13,7 @@ const PortChDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
     useEffect(() => {
-        const apiPUrl = `http://localhost:8000/api/interfaces?mgt_ip=${selectedItemId}`; 
+        const apiPUrl = `http://localhost:8000/api/port_chnls?mgt_ip=${selectedItemId}`; 
         axios .get (apiPUrl)
         .then(res => setDataTable(res.data))
         .then(res => console.log(res.data))
