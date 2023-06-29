@@ -77,7 +77,7 @@ export const deviceUserColumns = [{ field: 'img_name', headerName: 'Image Name',
     return (
       <div className="cellAction">
         {<Link to={`/devices/${params.row.mgt_ip}`} style={{ textDecoration: "none" }}>
-          <div className="viewButton">View1</div>
+          <div className="viewButton">Details</div>
         </Link>}
       </div>
     )
