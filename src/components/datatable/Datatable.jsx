@@ -15,7 +15,6 @@ const Datatable = (props) => {
     console.log(dataTable)
     useEffect(() => {
         axios(ALL_DEVICE_URL)
-        //axios('http://localhost:8000/api/interfaces')
         .then(res =>{console.log ("response", res.data) 
         if(isTabbedPane){
             let data= res.data.filter(item=>item.mgt_ip == selectedItemId)

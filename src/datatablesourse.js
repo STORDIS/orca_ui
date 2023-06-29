@@ -33,15 +33,15 @@ import TabbedPane from "./pages/tabbedpane/TabbedPane";
 
 
      export const mclagColumns = [{ field: 'domain_id', headerName: 'Domain_ID', type: 'number', width: 70 },
-         { field: 'keepalive_interval', headerName: 'Enabled', type: 'number', width: 130 },
-         { field: 'mclag_sys_mac', headerName: 'mclag Delay Restore', width: 130 },
-         { field: 'peer_addr', headerName: 'peer address', width: 130 },
-         { field: 'peer_link', headerName: 'peer link',  width: 130 },
-         { field: 'session_timeout', headerName: 'session timeout', type: 'number', width: 130 },
+         { field: 'keepalive_interval', headerName: 'Keepalive Interval', type: 'number', width: 130 },
+         { field: 'mclag_sys_mac', headerName: 'MCLAG Sys MAC', width: 130 },
+         { field: 'peer_addr', headerName: 'Peer Address', width: 130 },
+         { field: 'peer_link', headerName: 'Peer Link',  width: 130 },
+         { field: 'session_timeout', headerName: 'Session Timeout', type: 'number', width: 130 },
          { field: 'source_address', headerName: 'Source Address',  width: 130 },
          { field: 'oper_status', headerName: 'Operation Status', width: 130 },
          { field: 'role', headerName: 'Role',  width: 130 },
-         { field: 'system_mac', headerName: 'System MAC',  width: 130 },
+         { field: 'gateway_macs', headerName: 'Gateway MAC',  width: 130 },
          { field: 'delay_restore', headerName: 'Delay Restore', type:'number',  width: 130 },
 
         
