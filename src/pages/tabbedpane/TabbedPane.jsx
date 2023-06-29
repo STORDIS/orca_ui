@@ -16,7 +16,7 @@ import PortChDataTable from "../../components/portChDataTable/portChDataTable";
 import McLagDataTable from "../../components/mclagDataTable/mclagDataTable";
 
 const TabbedPane = () => {
-
+let selectedID = window.location.pathname.split('/')[2]
     const [tabValue, setTabValue] = React.useState(0);
     const handleTabs = (event, val) => {
         setTabValue(val);
@@ -42,16 +42,16 @@ const TabbedPane = () => {
                                 </Tabs>
                             </Box>
                             <TabPanel tabValue={tabValue} index={0}>
-                                <Datatable rows={1} columns={2} />
+                                <Datatable rows={1} columns={2} isTabbedPane={true} selectedItemId={selectedID}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={1}>
-                                <InterfaceDataTable />
+                                <InterfaceDataTable selectedItemId={selectedID} />
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={2}>
-                                <PortChDataTable />
+                                <PortChDataTable selectedItemId={selectedID}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={3}>
-                                <McLagDataTable />
+                                <McLagDataTable selectedItemId={selectedID}/>
                             </TabPanel>
                         </Box>
 
