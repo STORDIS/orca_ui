@@ -1,6 +1,6 @@
 import "./McLagDataTable.scss"
 import { DataGrid } from '@mui/x-data-grid';
-import { userRows, userColumns, mclagColumns } from "../../datatablesourse";
+import { mclagColumns } from "../../datatablesourse";
 import { useEffect, useState } from "react"
 import axios from 'axios'
 

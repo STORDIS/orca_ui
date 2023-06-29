@@ -1,6 +1,6 @@
 import "./datatable.scss"
 import { DataGrid } from '@mui/x-data-grid';
-import { userRows, userColumns, deviceUserColumns} from "../../datatablesourse";
+import { deviceUserColumns} from "../../datatablesourse";
 import { useEffect, useState } from "react"
 import axios from 'axios'
 import {ALL_DEVICE_URL} from "../../constants";
@@ -33,9 +33,7 @@ const Datatable = (props) => {
                 rows={dataTable}
                 columns={deviceUserColumns}
                 pageSize= {5}
-                rowsPerPageOptions= {[5]}
-                checkboxSelection
-        
+                rowsPerPageOptions= {[5]}        
             />
         </div>
     )
