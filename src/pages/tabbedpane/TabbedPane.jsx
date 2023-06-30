@@ -26,7 +26,7 @@ const TabbedPane = (props) => {
                 <Navbar />
                 <div className="top">
                     <div className="left">
-                    <h1 className="title">Select an option for that device</h1>
+                    <h1 className="title">Device details : {deviceIP}</h1>
                         <div className="item">
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
