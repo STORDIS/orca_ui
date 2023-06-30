@@ -18,7 +18,7 @@ import {getDiscoveryUrl} from "../../backend_rest_urls"
 const Navbar = () => {
     const navigate = useNavigate();
     function handleDiscover() {
-        axios(getDiscoveryUrl)
+        axios(getDiscoveryUrl())
         .catch(err => console.log(err))
         
 

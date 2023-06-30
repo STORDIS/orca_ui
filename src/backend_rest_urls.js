@@ -16,6 +16,6 @@ export function getAllPortChnlsOfDeviceURL(device_ip) {
 }
 
 export function getDiscoveryUrl() {
-    return host_addr + '/discover'
+    return host_addr + 'discover'
 }
 
