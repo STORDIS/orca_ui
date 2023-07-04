@@ -11,6 +11,10 @@ export function getAllMclagsOfDeviceURL(device_ip) {
     return host_addr + '/mclags/?mgt_ip=' + device_ip
 }
 
+export function getAllBGPOfDeviceURL(device_ip) {
+    return host_addr + '/bgp/?mgt_ip=' + device_ip
+}
+
 export function getAllPortChnlsOfDeviceURL(device_ip) {
     return host_addr + '/port_chnls/?mgt_ip=' + device_ip
 }
