@@ -9,6 +9,7 @@ import Datatable from "../../components/datatable/Datatable";
 import InterfaceDataTable from "../../components/interfaceDataTable/interfaceDataTable";
 import PortChDataTable from "../../components/portChDataTable/portChDataTable";
 import McLagDataTable from "../../components/mclagDataTable/mclagDataTable";
+import BGPTable from "../../components/bgpTable/bgpTable";
 import { useParams } from 'react-router-dom';
 
 
@@ -32,9 +33,10 @@ const TabbedPane = (props) => {
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tabValue} onChange={handleTabs}>
                                     <Tab label="Device Info"/>
-                                    <Tab label="Interface Table" />
-                                    <Tab label="Port Channel Table" />
-                                    <Tab label="MC LAG" />
+                                    <Tab label="Interfaces" />
+                                    <Tab label="PortChannels" />
+                                    <Tab label="MCLAGs" />
+                                    <Tab label="BGP" />
                                 </Tabs>
                             </Box>
                             <TabPanel tabValue={tabValue} index={0}>
@@ -48,6 +50,9 @@ const TabbedPane = (props) => {
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={3}>
                                 <McLagDataTable selectedItemId={deviceIP}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={4}>
+                                <BGPTable selectedItemId={deviceIP}/>
                             </TabPanel>
                         </Box>
 
