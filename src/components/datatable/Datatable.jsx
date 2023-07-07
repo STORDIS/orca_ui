@@ -31,7 +31,7 @@ const Datatable = (props) => {
         <div className="datatable">
             <DataGrid
                 rows={dataTable}
-                columns={deviceUserColumns}
+                columns={deviceUserColumns(isTabbedPane)}
                 pageSize= {5}
                 rowsPerPageOptions= {[5]}        
             />

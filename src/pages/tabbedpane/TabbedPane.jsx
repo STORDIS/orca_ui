@@ -10,12 +10,32 @@ import InterfaceDataTable from "../../components/interfaceDataTable/interfaceDat
 import PortChDataTable from "../../components/portChDataTable/portChDataTable";
 import McLagDataTable from "../../components/mclagDataTable/mclagDataTable";
 import BGPTable from "../../components/bgpTable/bgpTable";
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { getAllDevicesURL } from "../../backend_rest_urls";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 
 const TabbedPane = (props) => {
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(0);
+    const [dropdownOptions, setDropdownOptions] = useState([]);
+    const [dataTable, setDataTable] = useState([]);
+
+    useEffect(() => {
+        axios(getAllDevicesURL())
+          .then((res) => {
+            console.log("response", res.data);
+            let data = res.data.map((element) => {
+              return { value: element.mgt_ip, label: element.mgt_ip };
+            });
+            console.log("Data",data);
+            setDropdownOptions(data);
+            setDataTable(res.data);
+          })
+          .catch((err) => console.log(err));
+      }, []);
+
     const handleTabs = (event, val) => {
         setTabValue(val);
     };
@@ -27,8 +47,16 @@ const TabbedPane = (props) => {
                 <Navbar />
                 <div className="top">
                     <div className="left">
-                    <h1 className="title">Device details : {deviceIP}</h1>
-                        <div className="item">
+                    <div className="item">
+                    Device details : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
+                                {dropdownOptions.map((option)=> (
+                                    <option key={option.value} value={option.value}>
+                                        {option.value}
+                                    </option>
+                                ))}
+                            </select>
+                           
+                            </div>
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <Tabs value={tabValue} onChange={handleTabs}>
@@ -56,7 +84,7 @@ const TabbedPane = (props) => {
                             </TabPanel>
                         </Box>
 
-                        </div>
+                        
                     </div>
                     <div className="right"></div>
                     <div className="bottom"></div>   
