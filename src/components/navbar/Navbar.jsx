@@ -12,16 +12,18 @@ import { Button } from "@mui/base";
 import { useNavigate } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import axios from "axios";
-import {getDiscoveryUrl} from "../../backend_rest_urls"
+import {getDiscoveryUrl} from "../../backend_rest_urls";
+import LoadingButton from '@mui/lab/LoadingButton'
+import Discovery_btn from "../discovery_btn/Discovery_btn";
 
 
 const Navbar = () => {
     const navigate = useNavigate();
     function handleDiscover() {
+        
         axios(getDiscoveryUrl())
         .catch(err => console.log(err))
         
-
         //const handleRefresh = () => {
             const currentPath = window.location.pathname;
             const targetPath = '/discover';
@@ -30,9 +32,14 @@ const Navbar = () => {
                 window.location.reload(false); // Refresh the page
             } else {
                 navigate(targetPath); // Redirect to the target path
+                
             }
         //}
     }
+
+    // const discovery_button = () => {
+        
+    // }
 
     return (
         <div className="navbar">
@@ -45,10 +52,11 @@ const Navbar = () => {
                 <div className="items">
 
                     <div className="item">
-                        <Link to="/discover" onClick={handleDiscover} style={{ textDecoration: "none" }}>
+                        <Discovery_btn />
+                        {/* <Link to="/discover" onClick={handleDiscover} style={{ textDecoration: "none" }}>
                             <AccountTreeIcon className="icon" />
-                            Discover Network
-                        </Link>
+                            <button onClick={discovery_button}>Discover Network</button>
+                        </Link> */}
 
                     </div>
 
