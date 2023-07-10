@@ -10,7 +10,7 @@ const Sidebar = () => {
       
         const handleRefresh = () => {
           const currentPath = window.location.pathname;
-          const targetPath = '/devices';
+          const targetPath = '/';
       
           if (currentPath === targetPath) {
             window.location.reload(false); // Refresh the page
@@ -41,7 +41,7 @@ const Sidebar = () => {
                     <br />
                     <li>
                         <StorageIcon className="icon" />
-                        <Nav.Link href="/devices" onClick={handleRefresh} style={{ textDecoration: "none" }}>
+                        <Nav.Link href="/" onClick={handleRefresh} style={{ textDecoration: "none" }}>
                             <span>Devices</span>
 
                         </Nav.Link>
