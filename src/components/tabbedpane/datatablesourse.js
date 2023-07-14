@@ -79,8 +79,10 @@ export const deviceUserColumns = (isTabbedPane = false) => {
 
     { field: 'platform', headerName: 'PLATFORM', width: 130 },
     { field: 'type', headerName: 'TYPE', width: 130 },
+  ];
 
-    !isTabbedPane && ({
+  if (!isTabbedPane) {
+    dataColumn.push({
       field: "action", headerName: "Action", width: 200, cellRenderer: (params) => {
         return (
           <div className="cellAction">
@@ -90,8 +92,8 @@ export const deviceUserColumns = (isTabbedPane = false) => {
           </div>
         )
       }
-    }),
-  ]
+    });
+  }
   return dataColumn
 };
 

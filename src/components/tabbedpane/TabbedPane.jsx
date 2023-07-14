@@ -9,7 +9,7 @@ import Datatable from "../../components/tabbedpane/Datatable";
 import InterfaceDataTable from "../../components/tabbedpane/interfaceDataTable";
 import PortChDataTable from "../../components/tabbedpane/portChDataTable";
 import McLagDataTable from "../../components/tabbedpane/mclagDataTable";
-import BGPTable from "./bgpTable";
+import BGPTable from "../../components/tabbedpane/bgpTable";
 import { useParams } from 'react-router-dom';
 import { getAllDevicesURL } from "../../backend_rest_urls";
 import axios from "axios";
@@ -34,8 +34,14 @@ const TabbedPane = () => {
         .catch((err) => console.log(err));
     }, []);
 
+    useEffect(() => {
+        const selectedTab = parseInt(localStorage.getItem('selectedTab') || '0');
+        setTabValue(selectedTab);
+    }, [deviceIP]);
+
     const handleTabs = (event, val) => {
         setTabValue(val);
+        localStorage.setItem('selectedTab', val.toString());
     };
 
     return(
