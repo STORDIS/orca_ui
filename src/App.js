@@ -1,6 +1,6 @@
 import Home from "./pages/home/Home";
 import List from "./pages/list/List";
-import TabbedPane from "./pages/tabbedpane/TabbedPane";
+import TabbedPane from "./components/tabbedpane/TabbedPane";
 import Discover from "./pages/discover/discover";
 
 import {

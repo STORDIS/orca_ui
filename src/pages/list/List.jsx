@@ -1,4 +1,4 @@
-import Datatable from "../../components/datatable/Datatable"
+import Datatable from "../../components/tabbedpane/Datatable"
 import Navbar from "../../components/navbar/Navbar"
 import Sidebar from "../../components/sidebar/Sidebar"
 import "./list.scss"

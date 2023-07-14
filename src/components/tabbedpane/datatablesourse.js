@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
-import React, {useMemo} from "react";
-import { valueCache } from 'ag-grid-community';
-import TabbedPane from "./pages/tabbedpane/TabbedPane";
+import React from "react";
 
 export const interfaceColumns = [
   { field: 'name', headerName: 'Name', width: 130 },
@@ -60,41 +58,41 @@ export const bgpColumns = [
 
 ];
 
-export const deviceUserColumns = (isTabbedPane=false) => {
+export const deviceUserColumns = (isTabbedPane = false) => {
   let dataColumn = [
-  { field: 'img_name', headerName: 'Image Name', width: 130 },
-  { field: 'mgt_intf', headerName: 'Management Int', width: 130 },
-  { field: 'mgt_ip', headerName: 'Management IP', width: 130 },
-  {
-  field: 'hwsku',
-  headerName: 'HWSKU',
-  type: 'number',
-  width: 130,
-},
+    { field: 'img_name', headerName: 'Image Name', width: 130 },
+    { field: 'mgt_intf', headerName: 'Management Int', width: 130 },
+    { field: 'mgt_ip', headerName: 'Management IP', width: 130 },
+    {
+      field: 'hwsku',
+      headerName: 'HWSKU',
+      type: 'number',
+      width: 130,
+    },
 
 
-{
-  field: 'mac',
-  headerName: 'MAC',
-  width: 130,
-},
+    {
+      field: 'mac',
+      headerName: 'MAC',
+      width: 130,
+    },
 
-{ field: 'platform', headerName: 'PLATFORM', width: 130 },
-{ field: 'type', headerName: 'TYPE', width: 130 },
+    { field: 'platform', headerName: 'PLATFORM', width: 130 },
+    { field: 'type', headerName: 'TYPE', width: 130 },
 
-!isTabbedPane && ({
-  field: "action", headerName: "Action", width: 200, cellRenderer: (params) => {
-    return (
-      <div className="cellAction">
-        {<Link to={`/devices/${params.data.mgt_ip}`} style={{ textDecoration: "none" }}>
-          <div className="viewButton">Details</div>
-        </Link>}
-      </div>
-    )
-  }
-}),
+    !isTabbedPane && ({
+      field: "action", headerName: "Action", width: 200, cellRenderer: (params) => {
+        return (
+          <div className="cellAction">
+            {<Link to={`/devices/${params.data.mgt_ip}`} style={{ textDecoration: "none" }}>
+              <div className="viewButton">Details</div>
+            </Link>}
+          </div>
+        )
+      }
+    }),
   ]
-return dataColumn
-  };
+  return dataColumn
+};
 
 

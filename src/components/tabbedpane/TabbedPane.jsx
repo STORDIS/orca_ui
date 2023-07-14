@@ -1,22 +1,22 @@
 import React from "react";
-import Navbar from "../../components/navbar/Navbar"
-import Sidebar from "../../components/sidebar/Sidebar"
+import Navbar from "../navbar/Navbar"
+import Sidebar from "../sidebar/Sidebar"
 import "./tabbedPane.scss"
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
-import Datatable from "../../components/datatable/Datatable";
-import InterfaceDataTable from "../../components/interfaceDataTable/interfaceDataTable";
-import PortChDataTable from "../../components/portChDataTable/portChDataTable";
-import McLagDataTable from "../../components/mclagDataTable/mclagDataTable";
-import BGPTable from "../../components/bgpTable/bgpTable";
-import { useParams, Link } from 'react-router-dom';
+import Datatable from "../../components/tabbedpane/Datatable";
+import InterfaceDataTable from "../../components/tabbedpane/interfaceDataTable";
+import PortChDataTable from "../../components/tabbedpane/portChDataTable";
+import McLagDataTable from "../../components/tabbedpane/mclagDataTable";
+import BGPTable from "./bgpTable";
+import { useParams } from 'react-router-dom';
 import { getAllDevicesURL } from "../../backend_rest_urls";
 import axios from "axios";
 import { useState, useEffect } from "react";
 
 
-const TabbedPane = (props) => {
+const TabbedPane = () => {
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(0);
     const [dropdownOptions, setDropdownOptions] = useState([]);
@@ -65,19 +65,19 @@ const TabbedPane = (props) => {
                                 </Tabs>
                             </Box>
                             <TabPanel tabValue={tabValue} index={0}>
-                                <Datatable rows={1} columns={2} isTabbedPane={true} selectedItemId={deviceIP}/>
+                                <Datatable rows={1} columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={1}>
-                                <InterfaceDataTable selectedItemId={deviceIP} />
+                                <InterfaceDataTable selectedDeviceIp={deviceIP} />
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={2}>
-                                <PortChDataTable selectedItemId={deviceIP}/>
+                                <PortChDataTable selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={3}>
-                                <McLagDataTable selectedItemId={deviceIP}/>
+                                <McLagDataTable selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={4}>
-                                <BGPTable selectedItemId={deviceIP}/>
+                                <BGPTable selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                         </Box>
 
