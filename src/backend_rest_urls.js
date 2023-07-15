@@ -1,4 +1,4 @@
-const host_addr='http://localhost:8000/'
+const host_addr = 'http://localhost:8000/'
 
 export function getAllDevicesURL() {
     return host_addr + '/devices';
@@ -23,3 +23,6 @@ export function getDiscoveryUrl() {
     return host_addr + 'discover'
 }
 
+export function getPortGroupsURL(device_ip) {
+    return host_addr + '/port_groups/?mgt_ip=' + device_ip
+}

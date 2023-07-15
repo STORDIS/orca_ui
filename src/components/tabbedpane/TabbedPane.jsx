@@ -14,6 +14,8 @@ import { useParams } from 'react-router-dom';
 import { getAllDevicesURL } from "../../backend_rest_urls";
 import axios from "axios";
 import { useState, useEffect } from "react";
+import PortGroupTable from "../../components/tabbedpane/portGroupTable";
+
 
 
 const TabbedPane = () => {
@@ -68,6 +70,7 @@ const TabbedPane = () => {
                                     <Tab label="PortChannels" />
                                     <Tab label="MCLAGs" />
                                     <Tab label="BGP" />
+                                    <Tab label="Port Groups" />
                                 </Tabs>
                             </Box>
                             <TabPanel tabValue={tabValue} index={0}>
@@ -84,6 +87,9 @@ const TabbedPane = () => {
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={4}>
                                 <BGPTable selectedDeviceIp={deviceIP}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={5}>
+                                <PortGroupTable selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                         </Box>
 
