@@ -20,7 +20,7 @@ export const portGroupColumns = [
   { field: 'speed', headerName: 'Speed', width: 130 },
   { field: 'valid_speeds', headerName: 'Valid Speeds', type: 'number', width: 130 },
   { field: 'default_speed', headerName: 'Default Speed', type: 'boolean', width: 130 },
-  { field: 'mem_if', headerName: 'Member IFs', width: 130 },
+  { field: 'mem_intfs', headerName: 'Member IFs', width: 130 },
 ];
 
 
