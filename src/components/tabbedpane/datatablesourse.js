@@ -25,6 +25,15 @@ export const portGroupColumns = [
 
 
 
+export const vlanColumns = [
+  { field: 'vlanid', headerName: 'VLAN_ID',type: 'number', width: 130 },
+  { field: 'name', headerName: 'Name', width: 130 },
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130 },
+  { field: 'admin_status', headerName: 'Admin Status', type: 'boolean', width: 130 },
+  { field: 'oper_status', headerName: 'Oper_STS',type: 'boolean', width: 130 },
+  { field: 'members', headerName: 'Member IFs', width: 130 },
+];
+
 export const portChannelColumns = [
   { field: 'lag_name', headerName: 'Lag Name', width: 130 },
   { field: 'active', headerName: 'Active', type: 'boolean', width: 130 },

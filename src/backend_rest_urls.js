@@ -26,3 +26,7 @@ export function getDiscoveryUrl() {
 export function getPortGroupsURL(device_ip) {
     return host_addr + '/port_groups/?mgt_ip=' + device_ip
 }
+
+export function getVlansURL(device_ip) {
+    return host_addr + '/vlans/?mgt_ip=' + device_ip
+}

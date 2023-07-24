@@ -15,6 +15,7 @@ import { getAllDevicesURL } from "../../backend_rest_urls";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import PortGroupTable from "../../components/tabbedpane/portGroupTable";
+import VlanTable from "../../components/tabbedpane/vlanTable";
 
 
 
@@ -71,6 +72,7 @@ const TabbedPane = () => {
                                     <Tab label="MCLAGs" />
                                     <Tab label="BGP" />
                                     <Tab label="Port Groups" />
+                                    <Tab label="VLANs" />
                                 </Tabs>
                             </Box>
                             <TabPanel tabValue={tabValue} index={0}>
@@ -90,6 +92,9 @@ const TabbedPane = () => {
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={5}>
                                 <PortGroupTable selectedDeviceIp={deviceIP}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={6}>
+                                <VlanTable selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                         </Box>
 
