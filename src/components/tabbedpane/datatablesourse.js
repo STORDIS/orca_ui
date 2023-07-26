@@ -74,7 +74,7 @@ export const bgpColumns = [
 
 ];
 
-export const deviceUserColumns = (isTabbedPane = false) => {
+export const deviceUserColumns = (isTabbedPane = true) => {
   let dataColumn = [
     { field: 'img_name', headerName: 'Image Name', width: 130 },
     { field: 'mgt_intf', headerName: 'Management Int', width: 130 },

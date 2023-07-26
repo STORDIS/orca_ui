@@ -43,6 +43,7 @@ const PortGroupTable = (props) => {
                     defaultColDef={defaultColDef}
                     onColumnResized={onColumnResized}
                     checkboxSelection
+                    enableCellTextSelection='true'
                 ></AgGridReact>
             </div>
         </div>
