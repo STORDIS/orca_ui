@@ -47,6 +47,7 @@ const Datatable = (props) => {
           columnDefs={deviceUserColumns(isTabbedPane)}
           defaultColDef={defaultColDef}
           onColumnResized={onColumnResized}
+          enableCellTextSelection='true'
         ></AgGridReact>
       </div>
     </div>

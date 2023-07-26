@@ -6,6 +6,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 import Datatable from "../../components/tabbedpane/Datatable";
+import Deviceinfo from "../../components/tabbedpane/Deviceinfo";
 import InterfaceDataTable from "../../components/tabbedpane/interfaceDataTable";
 import PortChDataTable from "../../components/tabbedpane/portChDataTable";
 import McLagDataTable from "../../components/tabbedpane/mclagDataTable";
@@ -75,8 +76,11 @@ const TabbedPane = () => {
                                     <Tab label="VLANs" />
                                 </Tabs>
                             </Box>
-                            <TabPanel tabValue={tabValue} index={0}>
+                            {/* <TabPanel tabValue={tabValue} index={0}>
                                 <Datatable rows={1} columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP}/>
+                            </TabPanel> */}
+                            <TabPanel tabValue={tabValue} index={0}>
+                                <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={1}>
                                 <InterfaceDataTable selectedDeviceIp={deviceIP} />
@@ -113,7 +117,7 @@ const TabPanel = (props) => {
     return(
         <div>
         {
-            tabValue === index &&  (<h1>{children}</h1>)
+            tabValue === index &&  (<h5>{children}</h5>)
             
         }
         </div>
