@@ -22,7 +22,7 @@ import VlanTable from "../../components/tabbedpane/vlanTable";
 
 const TabbedPane = () => {
     const { deviceIP } = useParams();
-    const [tabValue, setTabValue] = React.useState(0);
+    const [tabValue, setTabValue] = React.useState(parseInt(localStorage.getItem('selectedTab')) !==null  ? parseInt(localStorage.getItem('selectedTab')) : 0);
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [dataTable, setDataTable] = useState([]);
 
@@ -37,11 +37,6 @@ const TabbedPane = () => {
         })
         .catch((err) => console.log(err));
     }, []);
-
-    useEffect(() => {
-        const selectedTab = parseInt(localStorage.getItem('selectedTab') || '0');
-        setTabValue(selectedTab);
-    }, [deviceIP]);
 
     const handleTabs = (event, val) => {
         setTabValue(val);
