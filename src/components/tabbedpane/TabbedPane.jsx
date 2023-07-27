@@ -38,11 +38,6 @@ const TabbedPane = () => {
         .catch((err) => console.log(err));
     }, []);
 
-    // useEffect(() => {
-    //     const selectedTab = parseInt(localStorage.getItem('selectedTab') || '0');
-    //     setTabValue(selectedTab);
-    // }, [deviceIP]);
-
     const handleTabs = (event, val) => {
         setTabValue(val);
         localStorage.setItem('selectedTab', val.toString());
