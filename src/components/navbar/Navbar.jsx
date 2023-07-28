@@ -1,6 +1,6 @@
 import "./navbar.scss"
 import SearchIcon from '@mui/icons-material/Search';
-import Discovery from "./Discovery_btn";
+import DiscoverButton from "./Discovery_btn";
 
 
 const Navbar = () => {
@@ -13,7 +13,7 @@ const Navbar = () => {
                 </div>
                 <div className="items">
                     <div className="item">
-                        <Discovery />
+                        <DiscoverButton />
                     </div>
                 </div>
             </div>

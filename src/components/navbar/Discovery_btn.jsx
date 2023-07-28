@@ -1,46 +1,71 @@
-import { Stack } from '@mui/material'
-import axios from 'axios'
-import {getDiscoveryUrl} from '../../backend_rest_urls'
+import React, { useState, useEffect } from "react";
+import Axios from "axios";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
+import { getDiscoveryUrl } from "../../backend_rest_urls";
 
+const DiscoverButton = () => {
+  function wait(time) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, time);
+    });
+  }
+  let [isDisabled, setIsDisabled] = useState(false);
+  const [btnText, setBtnText] = useState("Discover Network");
 
-
-const Discovery = () => {
-    const btn_click = () => {
-        var btn_value = document.getElementById('btn')
-        var new_value = btn_value.disabled = true
-        console.log(new_value)
-        if (new_value == true) {
-            axios(getDiscoveryUrl())
-                .catch(err => console.log(err))
-                .then((response) => {
-                    const value = (response.data)
-                    const res = value.result
-                    console.log(res)
-                    if (res == "Success") {
-                        alert("Network Discovery was successful")
-                        document.getElementById('btn').disabled = false
-                    }
-                    else {
-                        alert("Network Discovery failed")
-                    }
-                }
-
-                );
-
-        }
+  useEffect(() => {
+    const disabledUntil = localStorage.getItem('disabledUntil');
+    if (disabledUntil && new Date().getTime() < disabledUntil) {
+      setIsDisabled(true);
+      setTimeout(() => {
+        setIsDisabled(false);
+        localStorage.removeItem('disabledUntil');
+      }, disabledUntil - new Date().getTime());
     }
+  }, []);
 
+ 
+  async function btnHandler() {
+    setBtnText("Discovering");
+    setIsDisabled(true);
+    const disabledUntil = new Date().getTime() + 20000;
+    localStorage.setItem('disabledUntil', disabledUntil);
+    
+    await wait(1);
+    Axios({
+      url: getDiscoveryUrl()
+    })
+      .then((response) => {
+          console.log(response.data);
+          setIsDisabled(false);
+          setBtnText("Discover Network");
+          localStorage.clear();
+      })
+      .catch((error) => {
+        console.log(error);
+          setIsDisabled(false);
+          setBtnText("Discover Network");
+          localStorage.clear();
+      });
+  }
 
-    //document.getElementById('btn').disabled= true;
-    //<LoadingButton loading variant='outlined'>Discover Network</LoadingButton>
+  return (
+    <>
+      <Link to="/discover">
+        <Button
+          style={{
+            backgroundColor: "#21b6ae"
+          }}
+          id="btn"
+          onClick={btnHandler}
+          disabled={isDisabled}
+          variant="contained"
+        >
+          {btnText}
+        </Button>
+      </Link>
+    </>
+  );
+};
 
-    return (
-        <Stack spacing={2} direction='row'>
-
-            {/* <LoadingButton id='btn' loading variant='outlined'>Discover Network</LoadingButton> */}
-            <button id='btn' onClick={btn_click}>Discover Network</button>
-        </Stack>
-    )
-}
-
-export default Discovery
+export default DiscoverButton;
