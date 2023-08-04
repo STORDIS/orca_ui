@@ -17,6 +17,7 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
+import LogViewer from "../logpane/logpane";
 
 
 
@@ -109,6 +110,7 @@ const TabbedPane = () => {
                     <div className="right"></div>
                     <div className="bottom"></div>   
                     </div>
+                <LogViewer/>
             </div>
         </div>
     )
