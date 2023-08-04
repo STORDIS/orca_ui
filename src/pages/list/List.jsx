@@ -1,6 +1,7 @@
 import Datatable from "../../components/tabbedpane/Datatable"
 import Navbar from "../../components/navbar/Navbar"
 import Sidebar from "../../components/sidebar/Sidebar"
+import LogViewer from "../../components/logpane/logpane"
 import "./list.scss"
 
 const List1 = () => {
@@ -11,6 +12,7 @@ const List1 = () => {
                 <Navbar/>
                 <Datatable/>
             </div>
+        
         </div>
     )
 }
