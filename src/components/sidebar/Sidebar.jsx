@@ -43,7 +43,6 @@ const Sidebar = () => {
                         <StorageIcon className="icon" />
                         <Nav.Link href="/" onClick={handleRefresh} style={{ textDecoration: "none" }}>
                             <span>Devices</span>
-
                         </Nav.Link>
                     </li>
 

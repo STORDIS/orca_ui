@@ -42,6 +42,7 @@ const TabbedPane = () => {
         setTabValue(val);
         localStorage.setItem('selectedTab', val.toString());
     };
+    
 
     return(
         <div className='tabbedPane'>
@@ -57,7 +58,9 @@ const TabbedPane = () => {
                                 {option.value}
                             </option>
                         ))}
-                    </select>
+                    </select>   
+                    <button>Apply Changes </button> 
+                    <button>Undo Changes</button>
                     </div>
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -69,8 +72,8 @@ const TabbedPane = () => {
                                     <Tab label="BGP" />
                                     <Tab label="Port Groups" />
                                     <Tab label="VLANs" />
-                                </Tabs>
-                            </Box>
+                                </Tabs>    
+                            </Box>  
                             {/* <TabPanel tabValue={tabValue} index={0}>
                                 <Datatable rows={1} columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP}/>
                             </TabPanel> */}
