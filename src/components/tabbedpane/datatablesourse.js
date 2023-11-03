@@ -14,12 +14,18 @@ export const interfaceColumns = [
   { field: 'fec', headerName: 'FEC', width: 130, editable: true,
   cellEditor: 'agSelectCellEditor',
   cellEditorParams: {
-    values: ['true', 'false'],}
+    values: ['FEC_RS', 'FEC_FC', 'FEC_DISABLED', 'FEC_AUTO'],}
   },
   { field: 'oper_sts', headerName: 'Oper_STS', width: 130 },
-  { field: 'speed', headerName: 'Speed', width: 130 },
+  {
+    field: 'speed', headerName: 'Speed', width: 130, editable: true,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: {
+      values: ['SPEED_1GB', 'SPEED_5GB', 'SPEED_10GB', 'SPEED_25GB', 'SPEED_40GB', 'SPEED_50GB', 'SPEED_100GB'],
+    }
+  },
   { field: 'admin_sts', headerName: 'Admin Status', width: 130 },
-  { field: 'description', headerName: 'Description', width: 130 },
+  { field: 'description', headerName: 'Description', width: 130, editable: true },
   { field: 'last_chng', headerName: 'Last Change', width: 130 },
   { field: 'mac_addr', headerName: 'MAC ADDR', width: 130 },
 
