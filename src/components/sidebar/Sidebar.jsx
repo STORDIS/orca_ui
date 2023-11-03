@@ -13,9 +13,9 @@ const Sidebar = () => {
           const targetPath = '/';
       
           if (currentPath === targetPath) {
-            window.location.reload(false); // Refresh the page
+            window.location.reload(false); 
           } else {
-            navigate(targetPath); // Redirect to the target path
+            navigate(targetPath);
           }
         }
     return (

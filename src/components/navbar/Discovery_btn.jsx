@@ -1,46 +1,144 @@
-import { Stack } from '@mui/material'
-import axios from 'axios'
-import {getDiscoveryUrl} from '../../backend_rest_urls'
+// import React, { useState, useEffect } from "react";
+// import axios from "axios";
+// import { Link } from "react-router-dom";
+// import Button from "@mui/material/Button";
+// import { getDiscoveryUrl } from "../../backend_rest_urls"
+
+// const DISCOVERY_TIMEOUT = 20000;
+
+// const DiscoverButton = () => {
+//   const initialBtnText = localStorage.getItem('btnText') || "Discover Network";
+//   const [isDisabled, setIsDisabled] = useState(false);
+//   const [btnText, setBtnText] = useState(initialBtnText);
+
+//   useEffect(() => {
+//     const disabledUntil = localStorage.getItem('disabledUntil');
+//     if (disabledUntil && new Date().getTime() < disabledUntil) {
+//       setIsDisabled(true);
+      
+//       setTimeout(() => {
+//         setIsDisabled(false);
+//         localStorage.removeItem('disabledUntil');
+//         localStorage.removeItem('btnText');
+//         setBtnText("Discover Network");
+//       }, disabledUntil - new Date().getTime());
+//     }
+//   }, []);
+
+//   const btnHandler = async (event) => {
+//     event.preventDefault();
+//     setBtnText("Discovery In Progress");
+//     localStorage.setItem('btnText', "Discovery In Progress");
+
+//     setIsDisabled(true);
+//     const disabledUntil = new Date().getTime() + DISCOVERY_TIMEOUT;
+//     localStorage.setItem('disabledUntil', disabledUntil);
+
+//     try {
+//       const response = await axios.get(getDiscoveryUrl());
+//       console.log(response.data);
+//       setBtnText("Discover Network");
+//       setIsDisabled(false);
+
+//       localStorage.removeItem('disabledUntil');
+//       localStorage.removeItem('btnText');
+//     } catch (error) {
+//       console.log(error);
+//       setBtnText("Discover Network");
+//       setIsDisabled(false);
+  
+//       localStorage.removeItem('disabledUntil');
+//       localStorage.removeItem('btnText');
+//     }
+//   }
+
+//   const buttonStyle = btnText === "Discovery In Progress" 
+//     ? { backgroundColor: "grey", color: "black" }
+//     : { backgroundColor: "#002F58", color: "white" };
+
+//     return (
+//         <Stack spacing={2} direction='row'>
+
+//             {/* <LoadingButton id='btn' loading variant='outlined'>Discover Network</LoadingButton> */}
+//             <button id='btn' onClick={btn_click}>Discover Network</button>
+//         </Stack>
+//     )
+// }
+
+// export default Discovery_btn;
 
 
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
+import Button from "@mui/material/Button";
+import { getDiscoveryUrl } from "../../backend_rest_urls"
 
-const Discovery = () => {
-    const btn_click = () => {
-        var btn_value = document.getElementById('btn')
-        var new_value = btn_value.disabled = true
-        console.log(new_value)
-        if (new_value == true) {
-            axios(getDiscoveryUrl())
-                .catch(err => console.log(err))
-                .then((response) => {
-                    const value = (response.data)
-                    const res = value.result
-                    console.log(res)
-                    if (res == "Success") {
-                        alert("Network Discovery was successful")
-                        document.getElementById('btn').disabled = false
-                    }
-                    else {
-                        alert("Network Discovery failed")
-                    }
-                }
+const DISCOVERY_TIMEOUT = 20000;
 
-                );
+const DiscoverButton = () => {
+  const initialBtnText = localStorage.getItem('btnText') || "Discover Network";
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [btnText, setBtnText] = useState(initialBtnText);
 
-        }
+  useEffect(() => {
+    const disabledUntil = localStorage.getItem('disabledUntil');
+    if (disabledUntil && new Date().getTime() < disabledUntil) {
+      setIsDisabled(true);
+
+      setTimeout(() => {
+        setIsDisabled(false);
+        localStorage.removeItem('disabledUntil');
+        localStorage.removeItem('btnText');
+        setBtnText("Discover Network");
+      }, disabledUntil - new Date().getTime());
     }
+  }, []);
 
+  const btnHandler = async (event) => {
+    event.preventDefault();
+    setBtnText("Discovery In Progress");
+    localStorage.setItem('btnText', "Discovery In Progress");
 
-    //document.getElementById('btn').disabled= true;
-    //<LoadingButton loading variant='outlined'>Discover Network</LoadingButton>
+    setIsDisabled(true);
+    const disabledUntil = new Date().getTime() + DISCOVERY_TIMEOUT;
+    localStorage.setItem('disabledUntil', disabledUntil);
 
-    return (
-        <Stack spacing={2} direction='row'>
+    try {
+      const response = await axios.get(getDiscoveryUrl());
+      console.log(response.data);
+      setBtnText("Discover Network");
+      setIsDisabled(false);
 
-            {/* <LoadingButton id='btn' loading variant='outlined'>Discover Network</LoadingButton> */}
-            <button id='btn' onClick={btn_click}>Discover Network</button>
-        </Stack>
-    )
-}
+      localStorage.removeItem('disabledUntil');
+      localStorage.removeItem('btnText');
+    } catch (error) {
+      console.log(error);
+      setBtnText("Discover Network");
+      setIsDisabled(false);
 
-export default Discovery
+      localStorage.removeItem('disabledUntil');
+      localStorage.removeItem('btnText');
+    }
+  }
+
+  const buttonStyle = btnText === "Discovery In Progress" 
+    ? { backgroundColor: "grey", color: "black" }
+    : { backgroundColor: "#002F58", color: "white" };
+
+  return (
+    <Link to="/">
+      <Button 
+        style={buttonStyle} 
+        id="btn" 
+        onClick={btnHandler} 
+        disabled={isDisabled} 
+        variant="contained"
+        size="small">
+        {btnText}
+      </Button>
+    </Link>
+  );
+};
+
+export default DiscoverButton;

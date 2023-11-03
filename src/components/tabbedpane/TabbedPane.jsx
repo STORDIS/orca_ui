@@ -57,7 +57,9 @@ const TabbedPane = () => {
                                 {option.value}
                             </option>
                         ))}
-                    </select>
+                    </select>   
+                    <button>Apply Changes </button> 
+                    <button>Undo Changes</button>
                     </div>
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
