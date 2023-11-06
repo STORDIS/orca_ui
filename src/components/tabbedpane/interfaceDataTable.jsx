@@ -61,7 +61,14 @@ const InterfaceDataTable = (props) => {
     }, [dataTable]);
     
     
-    
+    useEffect(()=> {
+        if (props.refresh) {
+            console.log('interface', props.refresh);
+            props.setRefresh(!props.refresh);
+            setDataTable(JSON.parse(JSON.stringify(originalData)));
+            setChanges([]);
+        }
+    }, [props.refresh]);
 
     const createJsonOutput = useCallback(() => {
         console.log("changes",changes)
@@ -80,11 +87,6 @@ const InterfaceDataTable = (props) => {
         }
     }, [changes, createJsonOutput]);
 
-    const clearChanges = () => {
-        setDataTable(JSON.parse(JSON.stringify(originalData)));
-        setChanges([]);
-    };
-
     const sendUpdates = useCallback(() => {
         const output = createJsonOutput();
         console.log("output",output);
@@ -102,8 +104,7 @@ const InterfaceDataTable = (props) => {
     
     return (
         <div className="datatable">
-             <button onClick={clearChanges}>Clear Changes</button>
-             <button onClick={sendUpdates}>Send Updates</button>
+             <button onClick={sendUpdates}>Apply Changes</button>
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
