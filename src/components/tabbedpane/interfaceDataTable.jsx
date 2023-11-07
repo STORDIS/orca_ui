@@ -30,40 +30,35 @@ const InterfaceDataTable = (props) => {
         tooltipValueGetter: (params) => { return params.value },
         resizable: true,
     };
-    
+
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
-           
+
             setChanges(prev => {
                 if (!Array.isArray(prev)) {
                     console.error("Expected array but got:", prev);
-                    return []; 
+                    return [];
                 }
                 const index = prev.findIndex(change => change.name === params.data.name);
-    
-                                  let latestChanges ;
-                    console.log("changes iffff-->",prev,params.data.name)
-                    let isNameExsits = prev.filter(val=>val.name === params.data.name)
-                    console.log("isNameExsits",isNameExsits);
-                    if(isNameExsits.length > 0){
-                        let existedIndex = prev.findIndex(val=>val.name === params.data.name);
-                        console.log('existedIndex',existedIndex)
-                        prev[existedIndex][params.colDef.field]=params.newValue
-                        latestChanges = [...prev]
-                    }else{  
-                        console.log("Else---->",{ name: params.data.name, [params.colDef.field]: params.newValue })
-                        latestChanges= [...prev, { name: params.data.name, [params.colDef.field]: params.newValue }];
-                    }
+
+                let latestChanges;
+                let isNameExsits = prev.filter(val => val.name === params.data.name)
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(val => val.name === params.data.name);
+                    prev[existedIndex][params.colDef.field] = params.newValue
+                    latestChanges = [...prev]
+                } else {
+                    latestChanges = [...prev, { name: params.data.name, [params.colDef.field]: params.newValue }];
+                }
                 return latestChanges
             });
         }
     }, [dataTable]);
-    
-    
-    useEffect(()=> {
+
+
+    useEffect(() => {
         if (props.refresh) {
-            console.log('interface', props.refresh);
             props.setRefresh(!props.refresh);
             setDataTable(JSON.parse(JSON.stringify(originalData)));
             setChanges([]);
@@ -71,14 +66,13 @@ const InterfaceDataTable = (props) => {
     }, [props.refresh]);
 
     const createJsonOutput = useCallback(() => {
-        console.log("changes",changes)
         return changes.map(change => ({
             mgt_ip: selectedDeviceIp,
             name: change.name,
             ...change
         }));
-    }, [selectedDeviceIp, changes]);     
-    
+    }, [selectedDeviceIp, changes]);
+
 
     useEffect(() => {
         if (changes.length) {
@@ -89,22 +83,21 @@ const InterfaceDataTable = (props) => {
 
     const sendUpdates = useCallback(() => {
         const output = createJsonOutput();
-        console.log("output",output);
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        axios.put(apiUrl, {changes: output, mgt_ip: selectedDeviceIp})
-        .then(res => {
-            console.log("Update successful", res.data);
-        })
-        .catch (err=> {
-            console.error("Error updating data", err);
-        });
-    }, [createJsonOutput,selectedDeviceIp]);
-    
-    
-    
+        axios.put(apiUrl, output)
+            .then(res => {
+                console.log("Update successful", res.data);
+            })
+            .catch(err => {
+                console.error("Error updating data", err);
+            });
+    }, [createJsonOutput, selectedDeviceIp]);
+
+
+
     return (
         <div className="datatable">
-             <button onClick={sendUpdates}>Apply Changes</button>
+            <button onClick={sendUpdates}>Apply Changes</button>
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
