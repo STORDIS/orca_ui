@@ -3,6 +3,27 @@
     padding: 20px;
     flex: 10;
 
+    button {
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        background-color: #002F58;
+        color: #fff;
+        cursor: pointer;
+        transition: backgroung-color 0.15s ease-in-out;
+
+        &:disabled {
+            background-color: #ccc; 
+            color: #666; 
+            cursor: not-allowed;
+        }
+
+        &.button-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: #002F58;
+        }
+    }
     .cellAction {
 
         display: flex;
@@ -15,7 +36,16 @@
             color: darkblue;
             border: 1px dotted rgba(0, 0, 139, 0.479);
             cursor: pointer;
+
+            &:hover {
+                background-color: #f0f0f0;
+            }
         }
     }
-
+    
+    .config-in-progress {
+        margin-left: 10px;
+        font-style: italic;
+        color: #999;
+    }
 }
