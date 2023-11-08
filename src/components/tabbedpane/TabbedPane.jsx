@@ -25,6 +25,7 @@ const TabbedPane = () => {
     const [tabValue, setTabValue] = React.useState(parseInt(localStorage.getItem('selectedTab')) !==null  ? parseInt(localStorage.getItem('selectedTab')) : 0);
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [dataTable, setDataTable] = useState([]);
+    const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
         axios(getAllDevicesURL())
@@ -43,6 +44,11 @@ const TabbedPane = () => {
         localStorage.setItem('selectedTab', val.toString());
     };
 
+    const onUndo = (event) => {
+        console.log('onundo', tabValue);
+        setRefresh(true);
+    }
+
     return(
         <div className='tabbedPane'>
             <Sidebar />
@@ -57,7 +63,8 @@ const TabbedPane = () => {
                                 {option.value}
                             </option>
                         ))}
-                    </select>
+                    </select>   
+                    <button onClick={onUndo}>Undo Changes</button>
                     </div>
                         <Box sx={{ width: '100%' }}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -78,13 +85,13 @@ const TabbedPane = () => {
                                 <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={1}>
-                                <InterfaceDataTable selectedDeviceIp={deviceIP} />
+                                <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={2}>
-                                <PortChDataTable selectedDeviceIp={deviceIP}/>
+                                <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={3}>
-                                <McLagDataTable selectedDeviceIp={deviceIP}/>
+                                <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={4}>
                                 <BGPTable selectedDeviceIp={deviceIP}/>

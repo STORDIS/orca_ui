@@ -7,6 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axios from "axios";
 import { getAllDevicesURL } from "../../backend_rest_urls.js";
 
+
 const Deviceinfo = (props) => {
   const gridRef = useRef();
   const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
@@ -44,13 +45,13 @@ const Deviceinfo = (props) => {
   const onColumnResized = useCallback((params) => {}, []);
 
   return (
-    <table>
-      <tbody>
-        {deviceUserColumns().map((column, index) => (
+      <table style={{ borderCollapse: 'collapse', border: '1px solid #ddd' }}>
+        <tbody>
+          {deviceUserColumns().map((column, index) => (
           <tr key={index}>
-            <td>{column.headerName}:</td>
+          <td style={{ border: '1px solid #ddd', padding: '8px' }}>{column.headerName}:</td>
             {dataTable.map((dataRow, rowIndex) => (
-              <td key={rowIndex}>{dataRow[column.field]}</td>
+              <td key={rowIndex} style={{ border: '1px solid #ddd', padding: '8px' }}>{dataRow[column.field]}</td>
             ))}
           </tr>
         ))}

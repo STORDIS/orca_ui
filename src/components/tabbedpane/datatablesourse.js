@@ -1,15 +1,31 @@
 import { Link } from "react-router-dom";
 import React from "react";
 
+
 export const interfaceColumns = [
   { field: 'name', headerName: 'Name', width: 130 },
-  { field: 'enabled', headerName: 'Enabled', width: 130 },
-  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130 },
-  { field: 'fec', headerName: 'FEC', type: 'boolean', width: 130 },
+  {
+    field: 'enabled', headerName: 'Enabled', width: 130, cellRenderer: 'agCheckboxCellRenderer',
+    cellEditor: 'agCheckboxCellEditor',
+    editable: true,
+    suppressKeyboardEvent: (params) => params.event.key === ' ',
+  },
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true },
+  { field: 'fec', headerName: 'FEC', width: 130, editable: true,
+  cellEditor: 'agSelectCellEditor',
+  cellEditorParams: {
+    values: ['FEC_RS', 'FEC_FC', 'FEC_DISABLED', 'FEC_AUTO'],}
+  },
   { field: 'oper_sts', headerName: 'Oper_STS', width: 130 },
-  { field: 'speed', headerName: 'Speed', width: 130 },
+  {
+    field: 'speed', headerName: 'Speed', width: 130, editable: true,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: {
+      values: ['SPEED_1GB', 'SPEED_5GB', 'SPEED_10GB', 'SPEED_25GB', 'SPEED_40GB', 'SPEED_50GB', 'SPEED_100GB'],
+    }
+  },
   { field: 'admin_sts', headerName: 'Admin Status', width: 130 },
-  { field: 'description', headerName: 'Description', width: 130 },
+  { field: 'description', headerName: 'Description', width: 130, editable: true },
   { field: 'last_chng', headerName: 'Last Change', width: 130 },
   { field: 'mac_addr', headerName: 'MAC ADDR', width: 130 },
 
@@ -37,8 +53,12 @@ export const vlanColumns = [
 export const portChannelColumns = [
   { field: 'lag_name', headerName: 'Lag Name', width: 130 },
   { field: 'active', headerName: 'Active', type: 'boolean', width: 130 },
-  { field: 'admin_sts', headerName: 'Admin Status', width: 130 },
-  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130 },
+  { field: 'admin_sts', headerName: 'Admin Status', width: 130, editable: true,
+  cellEditor: 'agSelectCellEditor',
+  cellEditorParams: {
+    values: ['up', 'down'],}
+  },
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true },
   { field: 'name', headerName: 'Name', width: 130 },
   { field: 'fallback_operational', headerName: 'Fallback Operation', type: 'boolean', width: 130 },
   { field: 'oper_sts', headerName: 'Operation Status', width: 130 },
