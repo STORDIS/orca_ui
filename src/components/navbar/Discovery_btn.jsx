@@ -15,7 +15,7 @@ const DiscoverButton = () => {
     const disabledUntil = localStorage.getItem('disabledUntil');
     if (disabledUntil && new Date().getTime() < disabledUntil) {
       setIsDisabled(true);
-
+      
       setTimeout(() => {
         setIsDisabled(false);
         localStorage.removeItem('disabledUntil');
@@ -46,7 +46,7 @@ const DiscoverButton = () => {
       console.log(error);
       setBtnText("Discover Network");
       setIsDisabled(false);
-
+  
       localStorage.removeItem('disabledUntil');
       localStorage.removeItem('btnText');
     }
@@ -70,5 +70,6 @@ const DiscoverButton = () => {
     </Link>
   );
 };
+
 
 export default DiscoverButton;
