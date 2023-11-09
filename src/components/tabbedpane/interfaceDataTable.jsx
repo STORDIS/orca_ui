@@ -84,7 +84,7 @@ const InterfaceDataTable = (props) => {
     }, [changes, createJsonOutput]);
 
     const sendUpdates = useCallback(() => {
-        if(changes.length === 0) {
+        if (changes.length === 0) {
             return;
         }
         setIsConfigInProgress(true);
@@ -92,15 +92,17 @@ const InterfaceDataTable = (props) => {
 
         const output = createJsonOutput();
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        axios.put(apiUrl,output)
+        axios.put(apiUrl, output)
             .then(res => {
                 setConfigStatus('Config Successful');
             })
-            .catch(err =>{
+            .catch(err => {
                 setConfigStatus('Config Failed');
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                setChanges([]);
+
             });
     }, [createJsonOutput, selectedDeviceIp, changes]);
 
@@ -108,7 +110,7 @@ const InterfaceDataTable = (props) => {
 
     return (
         <div className="datatable">
-            <button onClick={sendUpdates} disabled={isConfigInProgress  || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
+            <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
             <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
