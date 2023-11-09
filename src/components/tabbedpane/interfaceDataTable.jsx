@@ -15,6 +15,7 @@ const InterfaceDataTable = (props) => {
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
+    const [configStatus, setConfigStatus] = useState('');
 
 
     useEffect(() => {
@@ -84,30 +85,31 @@ const InterfaceDataTable = (props) => {
 
     const sendUpdates = useCallback(() => {
         if(changes.length === 0) {
-            console.log("No Changes to apply");
             return;
         }
         setIsConfigInProgress(true);
+        setConfigStatus('Config In Progress....');
+
         const output = createJsonOutput();
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.put(apiUrl,output)
             .then(res => {
-                console.log("Update Successful", res.data);
+                setConfigStatus('Config Successful');
             })
             .catch(err =>{
-                console.error("Error while Updating data", err);
+                setConfigStatus('Config Failed');
             })
             .finally(() => {
                 setIsConfigInProgress(false);
             });
-    }, [createJsonOutput,selectedDeviceIp,changes]);
+    }, [createJsonOutput, selectedDeviceIp, changes]);
 
 
 
     return (
         <div className="datatable">
-            <button onClick={sendUpdates} disabled={isConfigInProgress} className={isConfigInProgress ? 'button-disabled' : ''}>Apply Config</button>
-            {isConfigInProgress && <span className="config-in-progress">Config In Progress....</span>}
+            <button onClick={sendUpdates} disabled={isConfigInProgress  || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
+            <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
