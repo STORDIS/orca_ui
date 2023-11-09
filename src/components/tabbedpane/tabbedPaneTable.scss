@@ -24,6 +24,24 @@
             background-color: #002F58;
         }
     }
+
+    .config-status {
+      margin-left: 10px;
+      font-weight: bold;
+
+      &.config-successful {
+        color: green;
+      }
+
+      &.config-failed {
+        color: red;
+      }
+
+      &.config-in-progress {
+        font-style: italic;
+        color: #999;
+      }
+    }
     .cellAction {
 
         display: flex;
@@ -42,10 +60,4 @@
             }
         }
     }
-    
-    .config-in-progress {
-        margin-left: 10px;
-        font-style: italic;
-        color: #999;
-    }
-}
+  }
