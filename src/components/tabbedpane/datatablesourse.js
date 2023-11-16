@@ -11,10 +11,12 @@ export const interfaceColumns = [
     suppressKeyboardEvent: (params) => params.event.key === ' ',
   },
   { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true },
-  { field: 'fec', headerName: 'FEC', width: 130, editable: true,
-  cellEditor: 'agSelectCellEditor',
-  cellEditorParams: {
-    values: ['FEC_RS', 'FEC_FC', 'FEC_DISABLED', 'FEC_AUTO'],}
+  {
+    field: 'fec', headerName: 'FEC', width: 130, editable: true,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: {
+      values: ['FEC_RS', 'FEC_FC', 'FEC_DISABLED', 'FEC_AUTO'],
+    }
   },
   { field: 'oper_sts', headerName: 'Oper_STS', width: 130 },
   {
@@ -33,30 +35,42 @@ export const interfaceColumns = [
 
 export const portGroupColumns = [
   { field: 'port_group_id', headerName: 'ID', width: 130 },
-  { field: 'speed', headerName: 'Speed', width: 130 },
-  { field: 'valid_speeds', headerName: 'Valid Speeds', type: 'number', width: 130 },
-  { field: 'default_speed', headerName: 'Default Speed', type: 'boolean', width: 130 },
-  { field: 'mem_intfs', headerName: 'Member IFs', width: 130 },
+  {
+    field: 'speed', headerName: 'Speed', width: 130, editable: true,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: {
+      values: ['SPEED_1GB', 'SPEED_5GB', 'SPEED_10GB', 'SPEED_25GB', 'SPEED_40GB', 'SPEED_50GB', 'SPEED_100GB'],
+    },
+    icons: {
+      sortAscending: 'U',
+        sortDescending: 'D',
+    }
+  },
+  { field: 'valid_speeds', headerName: 'Valid Speeds', cellDataType: 'text', width: 130 },
+  { field: 'default_speed', headerName: 'Default Speed', cellDataType: 'text', width: 130 },
+  { field: 'mem_intfs', headerName: 'Member IFs', cellDataType: 'text', width: 130 },
 ];
 
 
 
 export const vlanColumns = [
-  { field: 'vlanid', headerName: 'VLAN_ID',type: 'number', width: 130 },
+  { field: 'vlanid', headerName: 'VLAN_ID', type: 'number', width: 130 },
   { field: 'name', headerName: 'Name', width: 130 },
   { field: 'mtu', headerName: 'MTU', type: 'number', width: 130 },
   { field: 'admin_status', headerName: 'Admin Status', type: 'boolean', width: 130 },
-  { field: 'oper_status', headerName: 'Oper_STS',type: 'boolean', width: 130 },
+  { field: 'oper_status', headerName: 'Oper_STS', type: 'boolean', width: 130 },
   { field: 'members', headerName: 'Member IFs', width: 130 },
 ];
 
 export const portChannelColumns = [
   { field: 'lag_name', headerName: 'Lag Name', width: 130 },
   { field: 'active', headerName: 'Active', type: 'boolean', width: 130 },
-  { field: 'admin_sts', headerName: 'Admin Status', width: 130, editable: true,
-  cellEditor: 'agSelectCellEditor',
-  cellEditorParams: {
-    values: ['up', 'down'],}
+  {
+    field: 'admin_sts', headerName: 'Admin Status', width: 130, editable: true,
+    cellEditor: 'agSelectCellEditor',
+    cellEditorParams: {
+      values: ['up', 'down'],
+    }
   },
   { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true },
   { field: 'name', headerName: 'Name', width: 130 },

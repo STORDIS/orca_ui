@@ -10,7 +10,7 @@ import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
-    const { rows, columns, selectedDeviceIp = '' } = props;
+    const { selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
@@ -42,8 +42,6 @@ const InterfaceDataTable = (props) => {
                     console.error("Expected array but got:", prev);
                     return [];
                 }
-                const index = prev.findIndex(change => change.name === params.data.name);
-
                 let latestChanges;
                 let isNameExsits = prev.filter(val => val.name === params.data.name)
                 if (isNameExsits.length > 0) {

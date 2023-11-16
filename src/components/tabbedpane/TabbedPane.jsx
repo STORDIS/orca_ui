@@ -97,7 +97,7 @@ const TabbedPane = () => {
                                 <BGPTable selectedDeviceIp={deviceIP}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={5}>
-                                <PortGroupTable selectedDeviceIp={deviceIP}/>
+                                <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh}/>
                             </TabPanel>
                             <TabPanel tabValue={tabValue} index={6}>
                                 <VlanTable selectedDeviceIp={deviceIP}/>
