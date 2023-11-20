@@ -2,6 +2,7 @@ import Datatable from "../../components/tabbedpane/Datatable";
 import Navbar from "../../components/navbar/Navbar";
 import Sidebar from "../../components/sidebar/Sidebar";
 import LogViewer from "../../components/logpane/logpane";
+import LogViewer from "../../components/logpane/logpane";
 
 import "./home.scss";
 

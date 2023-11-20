@@ -1,5 +1,6 @@
 import Home from "./pages/home/Home";
 import TabbedPane from "./components/tabbedpane/TabbedPane";
+import LogViewer from "./components/logpane/logpane";
 import Discover from "./pages/discover/discover";
 
 import {
