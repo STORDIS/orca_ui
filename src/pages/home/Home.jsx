@@ -7,30 +7,22 @@ import "./home.scss";
 
 
 function Home() {
-    
+
     return (
         <div className='home'>
             <Sidebar />
             <div className="homeContainer">
-                <Navbar/>
-                <div className="widgets">
-
-                </div>
+                    <Navbar />
                 <div className="listContainer">
                     <div className="listTitle">Devices</div>
-                    <Datatable/>
+                    <Datatable />
                 </div>
                 <div className="listContainer">
                     <div className="listTitle">Logs</div>
                     <LogViewer />
                 </div>
-
-                <div>
-        </div>
-
-            </div>    
+            </div>
         </div>
     );
 }
-
 export default Home
