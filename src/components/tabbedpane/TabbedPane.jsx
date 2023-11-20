@@ -16,7 +16,6 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
-import LogViewer from "../logpane/logpane";
 import "../../pages/home/home.scss";
 
 
@@ -103,10 +102,10 @@ const TabbedPane = () => {
                         </TabPanel>
                     </Box>
                 </div>
-                <div className="listContainer">
+                {/* <div className="listContainer">
                     <div className="listTitle">Logs</div>
                     <LogViewer />
-                </div>
+                </div> */}
             </div>
         </div>
     )

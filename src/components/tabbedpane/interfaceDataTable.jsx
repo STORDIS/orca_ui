@@ -6,6 +6,9 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios';
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
+import LogViewer from "../logpane/logpane";
+import "../../pages/home/home.scss";
+
 
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
@@ -16,7 +19,7 @@ const InterfaceDataTable = (props) => {
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
-
+    const [log, setLog] = useState([]);
 
     useEffect(() => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
@@ -36,7 +39,6 @@ const InterfaceDataTable = (props) => {
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
-
             setChanges(prev => {
                 if (!Array.isArray(prev)) {
                     console.error("Expected array but got:", prev);
@@ -81,20 +83,22 @@ const InterfaceDataTable = (props) => {
         }
     }, [changes, createJsonOutput]);
 
+
     const sendUpdates = useCallback(() => {
         if (changes.length === 0) {
             return;
         }
         setIsConfigInProgress(true);
         setConfigStatus('Config In Progress....');
-
         const output = createJsonOutput();
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.put(apiUrl, output)
             .then(res => {
+                setLog(res.data.result)
                 setConfigStatus('Config Successful');
             })
             .catch(err => {
+                setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
             })
             .finally(() => {
@@ -103,7 +107,6 @@ const InterfaceDataTable = (props) => {
 
             });
     }, [createJsonOutput, selectedDeviceIp, changes]);
-
 
 
     return (
@@ -121,7 +124,12 @@ const InterfaceDataTable = (props) => {
                     enableCellTextSelection='true'
                 ></AgGridReact>
             </div>
+            <div className="listContainer">
+                <div className="listTitle">Logs</div>
+                <LogViewer log={log} />
+            </div>
         </div>
+
     )
 }
 

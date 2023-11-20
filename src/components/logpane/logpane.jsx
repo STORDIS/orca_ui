@@ -1,48 +1,36 @@
-import { ConstructionSharp } from '@mui/icons-material';
-import React, { useState,useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-
-
-const LogViewer = ({}) => {
-  const [lines, setLines] = useState(5); // Default number of lines
+const LogViewer = (props) => {
   const [text, setText] = useState('');
+  //one each render add to the log message the log coming in props
+  useEffect(() => {
+    console.log(props);
+    addLogMessage(props.log);
+  }, [props, props.log]);
 
   const addLogMessage = (message) => {
-    setText((prevLogs) => [...prevLogs, message]);
+    setText((prevLogs) => [...prevLogs, message + "\n"]);
   };
 
   const handleTextChange = (event) => {
     setText(event.target.value);
   };
 
-  const handleLinesChange = (event) => {
-    setLines(parseInt(event.target.value, 10));
-  };
-
-  const rotateLines = () => {
-    const textArray = text.split('\n');
-    const additionalLines = textArray.slice(lines);
-    const rotatedText = [...additionalLines, ...textArray.slice(0, lines)].join('\n');
-    setText(rotatedText);
+  const clearLog = () => {
+    setText('');
   };
 
   return (
     <div>
       <textarea
-        rows={lines}
-        cols={50}
+        rows={5}
+        cols={200}
         value={text}
         onChange={handleTextChange}
         readOnly
       />
       <br />
-      <select value={lines} onChange={handleLinesChange}>
-        <option value={5}>5 lines</option>
-        <option value={10}>10 lines</option>
-        <option value={15}>15 lines</option>
-        {/* Add more options as needed */}
-      </select>
-      <button onClick={rotateLines}>Rotate</button>
+      <button onClick={clearLog}>clearLog</button>
     </div>
   );
 };
