@@ -126,7 +126,7 @@ const InterfaceDataTable = (props) => {
             </div>
             <div className="listContainer">
                 <div className="listTitle">Logs</div>
-                <LogViewer log={log} />
+                <LogViewer log={log} setLog={setLog}/>
             </div>
         </div>
 

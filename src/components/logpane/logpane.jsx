@@ -2,11 +2,10 @@ import { useState, useEffect } from 'react';
 
 const LogViewer = (props) => {
   const [text, setText] = useState('');
-  //one each render add to the log message the log coming in props
+  const log_txt=props.log
   useEffect(() => {
-    console.log(props);
-    addLogMessage(props.log);
-  }, [props, props.log]);
+    addLogMessage(log_txt);
+  }, [log_txt]);
 
   const addLogMessage = (message) => {
     setText((prevLogs) => [message + "\n" + prevLogs]);
@@ -18,6 +17,7 @@ const LogViewer = (props) => {
 
   const clearLog = () => {
     setText('');
+    props.setLog([]);
   };
 
   return (
