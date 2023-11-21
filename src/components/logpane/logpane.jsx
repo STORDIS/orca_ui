@@ -9,7 +9,7 @@ const LogViewer = (props) => {
   }, [props, props.log]);
 
   const addLogMessage = (message) => {
-    setText((prevLogs) => [message + "\n",...prevLogs]);
+    setText((prevLogs) => [message + "\n" + prevLogs]);
   };
 
   const handleTextChange = (event) => {

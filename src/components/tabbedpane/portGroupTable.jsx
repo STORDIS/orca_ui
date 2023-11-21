@@ -6,6 +6,8 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios'
 import { getPortGroupsURL } from "../../backend_rest_urls";
+import LogViewer from "../logpane/logpane";
+import "../../pages/home/home.scss";
 
 
 
@@ -19,6 +21,8 @@ const PortGroupTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
+    const [log, setLog] = useState([]);
+
 
 
     useEffect(() => {
@@ -92,11 +96,11 @@ const PortGroupTable = (props) => {
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         axios.put(apiUrl, req_json)
             .then(res => {
+                setLog(res.data.result)
                 setConfigStatus('Config Successful');
-                console.log(res.data.result)
             }).catch(err => {
+                setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
-                console.log(err.response.data.result)
             }).finally(() => {
                 setIsConfigInProgress(false);
                 setChanges([]);
@@ -119,6 +123,10 @@ const PortGroupTable = (props) => {
                     checkboxSelection
                     enableCellTextSelection='true'
                 ></AgGridReact>
+            </div>
+            <div className="listContainer">
+                <div className="listTitle">Logs</div>
+                <LogViewer log={log} />
             </div>
         </div>
     )
