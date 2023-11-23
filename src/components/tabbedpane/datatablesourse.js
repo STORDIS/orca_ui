@@ -38,13 +38,11 @@ export const portGroupColumns = [
   {
     field: 'speed', headerName: 'Speed', width: 130, editable: true,
     cellEditor: 'agSelectCellEditor',
-    cellEditorParams: {
-      values: ['SPEED_1GB', 'SPEED_5GB', 'SPEED_10GB', 'SPEED_25GB', 'SPEED_40GB', 'SPEED_50GB', 'SPEED_100GB'],
+    cellEditorParams: function splitValidSpeeds(params) {
+      return {
+        values: params.data.valid_speeds
+      };
     },
-    icons: {
-      sortAscending: 'U',
-        sortDescending: 'D',
-    }
   },
   { field: 'valid_speeds', headerName: 'Valid Speeds', cellDataType: 'text', width: 130 },
   { field: 'default_speed', headerName: 'Default Speed', cellDataType: 'text', width: 130 },
