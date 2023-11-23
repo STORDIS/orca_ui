@@ -51,7 +51,7 @@ export const portGroupColumns = [
   {
     field: 'speed', headerName: 'Speed', width: 130, editable: true,
     cellEditor: 'agSelectCellEditor',
-    cellEditorParams: function splitValidSpeeds(params) {
+    cellEditorParams: (params) =>{
       return {
         values: params.data.valid_speeds,
       };
