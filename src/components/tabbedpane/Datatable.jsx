@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./tabbedPaneTable.scss"
-import { deviceUserColumns } from "./datatablesourse";
+import { deviceUserColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -29,11 +29,6 @@ const Datatable = (props) => {
       // .then(res => console.log(res.data))
       .catch(err => console.log(err))
   }, [isTabbedPane]);
-
-  const defaultColDef = {
-    tooltipValueGetter: (params) => { return params.value },
-    resizable: true,
-  }
 
   const onColumnResized = useCallback((params) => {
   }, []);

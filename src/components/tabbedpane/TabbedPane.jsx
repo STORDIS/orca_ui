@@ -19,8 +19,6 @@ import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
 
 
-
-
 const TabbedPane = () => {
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(parseInt(localStorage.getItem('selectedTab')) !== null ? parseInt(localStorage.getItem('selectedTab')) : 0);

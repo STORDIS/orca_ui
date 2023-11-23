@@ -3,7 +3,7 @@ import "./tabbedPaneTable.scss"
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { mclagColumns } from "./datatablesourse";
+import { mclagColumns, defaultColDef } from "./datatablesourse";
 import axios from 'axios'
 import { getAllMclagsOfDeviceURL } from "../../backend_rest_urls";
 
@@ -24,11 +24,6 @@ const McLagDataTable = (props) => {
             .then(res => console.log(res.data))
             .catch(err => console.log(err))
     }, []);
-
-    const defaultColDef = {
-        tooltipValueGetter: (params) => { return params.value },
-        resizable: true,
-    }
 
     const onColumnResized = useCallback((params) => {
     }, []);

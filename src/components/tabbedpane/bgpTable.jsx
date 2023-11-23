@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./tabbedPaneTable.scss"
-import { bgpColumns } from "./datatablesourse";
+import { bgpColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -24,11 +24,6 @@ const BGPTable = (props) => {
             .then(res => console.log(res.data))
             .catch(err => console.log(err))
     }, []);
-
-    const defaultColDef = {
-        tooltipValueGetter: (params) => { return params.value },
-        resizable: true,
-    }
 
     const onColumnResized = useCallback((params) => {
     }, []);

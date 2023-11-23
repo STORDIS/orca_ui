@@ -2,6 +2,15 @@ import { Link } from "react-router-dom";
 import React from "react";
 
 
+export const defaultColDef = {
+  tooltipValueGetter: (params) => { return params.value },
+  resizable: true,
+  rowSelection:"multiple",
+  enableCellTextSelection:'true',
+  singleClickEdit:'true',
+  stopEditingWhenCellsLoseFocus:'true',
+}
+
 export const interfaceColumns = [
   { field: 'name', headerName: 'Name', width: 130 },
   {
@@ -14,6 +23,8 @@ export const interfaceColumns = [
   {
     field: 'fec', headerName: 'FEC', width: 130, editable: true,
     cellEditor: 'agSelectCellEditor',
+    singleClickEdit: true,
+    stopEditingWhenCellsLoseFocus: true,
     cellEditorParams: {
       values: ['FEC_RS', 'FEC_FC', 'FEC_DISABLED', 'FEC_AUTO'],
     }
@@ -27,10 +38,12 @@ export const interfaceColumns = [
     }
   },
   { field: 'admin_sts', headerName: 'Admin Status', width: 130 },
-  { field: 'description', headerName: 'Description', width: 130, editable: true },
+  {
+    field: 'description', headerName: 'Description', width: 130, editable: true, 
+  },
   { field: 'last_chng', headerName: 'Last Change', width: 130 },
   { field: 'mac_addr', headerName: 'MAC ADDR', width: 130 },
-
+  
 ];
 
 export const portGroupColumns = [
@@ -40,7 +53,7 @@ export const portGroupColumns = [
     cellEditor: 'agSelectCellEditor',
     cellEditorParams: function splitValidSpeeds(params) {
       return {
-        values: params.data.valid_speeds
+        values: params.data.valid_speeds,
       };
     },
   },

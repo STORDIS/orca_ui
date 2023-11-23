@@ -1,36 +1,29 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./tabbedPaneTable.scss"
-import { vlanColumns } from "./datatablesourse";
+import { vlanColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios'
 import { getVlansURL } from "../../backend_rest_urls";
 
-
-
 const VlanTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
-    const { rows, columns, selectedDeviceIp = '' } = props;
-    console.log(rows, columns)
-
+    const { selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
-    console.log(dataTable)
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios.get(apiMUrl)
-            .then(res => setDataTable(res.data))
-            .then(res => console.log(res.data))
+            .then((res) => {
+                //iterate the json array res.data and convert the value of key "members" in each element to string
+                res.data.forEach(element => {
+                    element.members = JSON.stringify(element.members);
+                });
+                setDataTable(res.data);
+                console.log(res.data);
+            })
             .catch(err => console.log(err))
-    }, []);
-
-    const defaultColDef = {
-        tooltipValueGetter: (params) => { return params.value },
-        resizable: true,
-    }
-
-    const onColumnResized = useCallback((params) => {
     }, []);
 
     return (
@@ -41,9 +34,6 @@ const VlanTable = (props) => {
                     rowData={dataTable}
                     columnDefs={vlanColumns}
                     defaultColDef={defaultColDef}
-                    onColumnResized={onColumnResized}
-                    checkboxSelection
-                    enableCellTextSelection='true'
                 ></AgGridReact>
             </div>
         </div>

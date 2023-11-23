@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./tabbedPaneTable.scss"
-import { portGroupColumns } from "./datatablesourse";
+import { portGroupColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
@@ -35,15 +35,8 @@ const PortGroupTable = (props) => {
             .catch(err => console.log(err))
     }, [selectedDeviceIp]);
 
-    const defaultColDef = {
-        tooltipValueGetter: (params) => { return params.value },
-        resizable: true,
-    }
-
     const onColumnResized = useCallback((params) => {
     }, []);
-
-
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
@@ -126,7 +119,7 @@ const PortGroupTable = (props) => {
             </div>
             <div className="listContainer">
                 <div className="listTitle">Logs</div>
-                <LogViewer log={log} setLog={setLog}/>
+                <LogViewer log={log} setLog={setLog} />
             </div>
         </div>
     )
