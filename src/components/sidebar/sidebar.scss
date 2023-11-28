@@ -1,6 +1,6 @@
 .sidebar {
     flex: 1;
-    border-right: 0.5px solid lightcoral;
+    border-right: 0.5px solid #002F58;
     min-height: 100vh;
     // background-color: lightcoral;
 
@@ -50,7 +50,7 @@
 
                 .icon {
                     font-size: 18px;
-                    color: #7451f8;
+                    color: #002F58;
                 }
 
                 span {
@@ -69,7 +69,7 @@
 
     hr {
         height: 0;
-        border: 0.5px solid lightcoral;
+        border: 0.5px solid #002F58;
     }
 
     .bottom {

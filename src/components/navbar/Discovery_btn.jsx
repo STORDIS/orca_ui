@@ -52,9 +52,14 @@ const DiscoverButton = () => {
     }
   }
 
+  // const buttonStyle = btnText === "Discovery In Progress" 
+  //   ? { backgroundColor: "grey", color: "black" }
+  //   : { backgroundColor: "#002F58", color: "white" };
+
   const buttonStyle = btnText === "Discovery In Progress" 
-    ? { backgroundColor: "grey", color: "black" }
-    : { backgroundColor: "#002F58", color: "white" };
+  ? { backgroundColor: "grey", color: "black" }
+  : { backgroundColor: "grey"}; // Removed specific color styling to use default
+
 
   return (
     <Link to="/">

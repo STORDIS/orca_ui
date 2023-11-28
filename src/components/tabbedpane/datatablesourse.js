@@ -74,7 +74,8 @@ export const vlanColumns = [
 ];
 
 export const portChannelColumns = [
-  { field: 'lag_name', headerName: 'Lag Name', width: 130 },
+  { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
+  { field: 'lag_name', headerName: 'Channel Name', width: 130,editable:true },
   { field: 'active', headerName: 'Active', type: 'boolean', width: 130 },
   {
     field: 'admin_sts', headerName: 'Admin Status', width: 130, editable: true,
@@ -89,6 +90,7 @@ export const portChannelColumns = [
   { field: 'oper_sts', headerName: 'Operation Status', width: 130 },
   { field: 'speed', headerName: 'Speed', width: 130 },
   { field: 'oper_sts_reason', headerName: 'OperReason', width: 130 },
+  { field: 'members', headerName: 'Members', width: 130, editable: true },
 
 
 ];
@@ -157,5 +159,3 @@ export const deviceUserColumns = (isTabbedPane = true) => {
   }
   return dataColumn
 };
-
-

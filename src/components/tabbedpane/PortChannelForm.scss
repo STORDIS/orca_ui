@@ -1,0 +1,83 @@
+// .port-channel-form .form-field {
+//     display: flex;
+//     align-items: c;
+//     margin-bottom: 15px; /* Adjust the gap between fields */
+// }
+
+// .port-channel-form .form-field label {
+//     display: block;
+//     margin-bottom: 5px; /* Space between label and input */
+// }
+
+// /* Add more styles as needed */
+
+// .port-channel-form .form-field {
+//     display: flex;
+//     align-items: center;
+//     margin-bottom: 15px;
+// }
+
+// .port-channel-form .form-field label {
+//     margin-right: 10px;
+//     white-space: nowrap; /* Prevents label from wrapping */
+// }
+
+// .port-channel-form .form-field input[type="text"],
+// .port-channel-form .form-field select {
+//     flex-grow: 1;
+//     margin-left: 10px;
+// }
+
+// .port-channel-form .form-actions {
+//     display: flex;
+//     justify-content: space-between;
+// }
+.port-channel-form .form-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.port-channel-form .form-field label {
+    margin-right: 10px;
+    white-space: nowrap; /* Prevents label from wrapping */
+}
+
+/* Adjusting width for text input fields */
+.port-channel-form .form-field input[type="text"] {
+    flex-grow: 1; /* Allows input to fill available space */
+    margin-left: 10px;
+    padding: 8px; /* Adjust padding for better text alignment */
+    width: 150px; /* Reduced width */
+}
+
+/* Adjusting width for number input fields */
+.port-channel-form .form-field input[type="number"] {
+    width: 150px; /* Reduced width */
+    padding: 8px;
+    height: 10px; /* Height set to 10px */
+    margin-left: 10px;
+}
+
+.port-channel-form .form-actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.port-channel-form .form-field button,
+.port-channel-form .form-field input[type="submit"] {
+    width: 150px; /* Set a fixed width */
+    background-color: lightgray; /* Example color */
+    color: black; /* Text color */
+    padding: 10px 15px; /* Padding for better appearance */
+    border: none; /* Remove border */
+    // border: 1px dotted black(0, 0, 139, 0.479);
+    cursor: pointer; /* Cursor to pointer */
+    margin-right: 10px; /* Space between buttons */
+}
+
+/* Remove margin-right from the last button */
+.port-channel-form .form-field button:last-child,
+.port-channel-form .form-field input[type="submit"]:last-child {
+    margin-right: 0;
+}
