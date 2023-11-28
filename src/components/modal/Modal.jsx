@@ -1,5 +1,5 @@
 import React from 'react';
-import './Modal.css'; 
+import './Modal.css';
 
 const Modal = ({ show, onClose, children }) => {
     if (!show) {
@@ -16,9 +16,6 @@ const Modal = ({ show, onClose, children }) => {
                     {children}
                 </div>
                 <div className="modal-footer">
-                    {/* <button onClick={onClose} className="button">
-                        Close
-                    </button> */}
                 </div>
             </div>
         </div>

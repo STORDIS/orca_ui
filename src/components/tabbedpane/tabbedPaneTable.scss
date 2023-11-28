@@ -1,207 +1,84 @@
-// .datatable {
-//     height: 500px;
-//     padding: 20px;
-//     flex: 10;
-
-//     button {
-//         padding: 6px 12px;
-//         border-radius: 4px;
-//         border: 1px solid #ccc;
-//         background-color: #002F58;
-//         color: #fff;
-//         cursor: pointer;
-//         transition: backgroung-color 0.15s ease-in-out;
-
-//         &:disabled {
-//             background-color: #ccc; 
-//             color: #666; 
-//             cursor: not-allowed;
-//         }
-
-//         &.button-disabled {
-//             opacity: 0.5;
-//             cursor: not-allowed;
-//             background-color: #002F58;
-//         }
-//     }
-
-//     .config-status {
-//       margin-left: 10px;
-//       font-weight: bold;
-
-//       &.config-successful {
-//         color: green;
-//       }
-
-//       &.config-failed {
-//         color: red;
-//       }
-
-//       &.config-in-progress {
-//         font-style: italic;
-//         color: #999;
-//       }
-//     }
-//     .cellAction {
-
-//         display: flex;
-//         align-items: center;
-//         gap: 15px;
-
-//         .viewButton {
-//             padding: 2px 5px;
-//             border-radius: 5px;
-//             color: darkblue;
-//             border: 1px dotted rgba(0, 0, 139, 0.479);
-//             cursor: pointer;
-
-//             &:hover {
-//                 background-color: #f0f0f0;
-//             }
-//         }
-//     }
-//   }
-// .datatable {
-//     height: 500px;
-//     padding: 20px;
-//     flex: 10;
-
-//     button {
-//         padding: 6px 12px;
-//         border-radius: 4px;
-//         border: 1px solid #ccc;
-//         background-color: #002F58;
-//         color: #fff;
-//         cursor: pointer;
-//         transition: backgroung-color 0.15s ease-in-out;
-
-//         &:disabled {
-//             background-color: #ccc; 
-//             color: #666; 
-//             cursor: not-allowed;
-//         }
-
-//         &.button-disabled {
-//             opacity: 0.5;
-//             cursor: not-allowed;
-//             background-color: #002F58;
-//         }
-//     }
-
-//     .config-status {
-//       margin-left: 10px;
-//       font-weight: bold;
-
-//       &.config-successful {
-//         color: green;
-//       }
-
-//       &.config-failed {
-//         color: red;
-//       }
-
-//       &.config-in-progress {
-//         font-style: italic;
-//         color: #999;
-//       }
-//     }
-//     .cellAction {
-
-//         display: flex;
-//         align-items: center;
-//         gap: 15px;
-
-//         .viewButton {
-//             padding: 2px 5px;
-//             border-radius: 5px;
-//             color: darkblue;
-//             border: 1px dotted rgba(0, 0, 139, 0.479);
-//             cursor: pointer;
-
-//             &:hover {
-//                 background-color: #f0f0f0;
-//             }
-//         }
-//     }
-//   }
 .datatable {
-  height: 500px;
-  padding: 20px;
-  flex: 10;
+    height: 500px;
+    padding: 20px;
+    flex: 10;
 
 
-  .button-group {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    //margin-bottom: 10px;
-  }
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        //margin-bottom: 10px;
+    }
 
-  .button-column {
-    display: flex;
-    justify-content: flex-start;
-    //gap: 10px;
-  }
+    .button-column {
+        display: flex;
+        justify-content: flex-start;
+        //gap: 10px;
+    }
 
 
-  button {
-      padding: 6px 12px;
-      border-radius: 4px;
-      border: 1px solid black;
-      background-color: lightgray; /* Changed to normal grey */
-      color: black; /* Changed text color to black */
-      cursor: pointer;
-      transition: background-color 0.15s ease-in-out;
+    button {
+        padding: 6px 12px;
+        border-radius: 4px;
+        border: 1px solid black;
+        background-color: lightgray;
+        /* Changed to normal grey */
+        color: black;
+        /* Changed text color to black */
+        cursor: pointer;
+        transition: background-color 0.15s ease-in-out;
 
-      &:disabled {
-          background-color: #ccc; 
-          color: #666; 
-          cursor: not-allowed;
-      }
+        &:disabled {
+            background-color: #ccc;
+            color: #666;
+            cursor: not-allowed;
+        }
 
-      &.button-disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-          background-color: gray; /* Kept the same as your original code */
-      }
-  }
+        &.button-disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background-color: gray;
+            /* Kept the same as your original code */
+        }
+    }
 
-  .config-status {
-      margin-left: 10px;
-      font-weight: bold;
+    .config-status {
+        margin-left: 10px;
+        font-weight: bold;
 
-      &.config-successful {
-          color: green;
-      }
+        &.config-successful {
+            color: green;
+        }
 
-      &.config-failed {
-          color: red;
-      }
+        &.config-failed {
+            color: red;
+        }
 
-      &.config-in-progress {
-          font-style: italic;
-          color: #999;
-      }
-  }
+        &.config-in-progress {
+            font-style: italic;
+            color: #999;
+        }
+    }
 
-  .cellAction {
-      display: flex;
-      align-items: center;
-      gap: 15px;
+    .cellAction {
+        display: flex;
+        align-items: center;
+        gap: 15px;
 
-      .viewButton {
-          padding: 2px 5px;
-          border-radius: 5px;
-          color: lightgray;
-          border: 1px dotted black(0, 0, 139, 0.479);
-          cursor: pointer;
+        .viewButton {
+            padding: 2px 5px;
+            border-radius: 5px;
+            color: lightgray;
+            border: 1px dotted black(0, 0, 139, 0.479);
+            cursor: pointer;
 
-        &:hover {
+            &:hover {
                 background-color: #f0f0f0;
             }
         }
     }
-    
+
     .config-in-progress {
         margin-left: 10px;
         font-style: italic;

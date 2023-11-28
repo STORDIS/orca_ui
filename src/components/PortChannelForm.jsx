@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import './tabbedpane/PortChannelForm.scss';
 
 const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
@@ -56,7 +56,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         }} className="port-channel-form">
             <div className="form-field">
                 <label>Device IP:</label>
-                <span>{selectedDeviceIp}</span> 
+                <span>{selectedDeviceIp}</span>
             </div>
             <div className="form-field">
                 <label htmlFor="lag-name">Channel Name:</label>
@@ -88,7 +88,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     onChange={handleChange}
                 />
             </div>
-        
+
             <div className="form-field">
                 <label>Members:</label>
                 <input
@@ -98,18 +98,10 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     onChange={handleChange}
                 />
             </div>
-             {/* <div className="form-field">
-                <label>Members:</label>
-                <select multiple value={selectedInterfaces} onChange={handleInterfaceSelect}>
-                    {interfaceNames.map((name, index) => (
-                        <option key={index} value={name}>{name}</option>
-                    ))}
-                </select>
-            </div> */}
             <div className="form-field">
                 <input type="submit" value="Submit" />
                 <button type='button' onClick={onCancel}>Cancel</button>
-                
+
             </div>
         </form>
     );

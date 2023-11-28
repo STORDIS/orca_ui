@@ -1,40 +1,3 @@
-/* .modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-}
-
-.modal-header, .modal-footer {
-    padding: 10px;
-}
-
-.modal-body {
-    padding: 20px;
-}
-
-.button {
-}
-
-@media (max-width: 600px) {
-    .modal-content {
-        width: 90%; /* Broader on smaller screens */
-    /*}
-/*} */
-
 .modal {
     position: fixed;
     top: 0;
@@ -53,11 +16,12 @@
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    width: 70%; /* Increased width */
-    max-width: 800px; /* Adjust max-width as needed */
+    width: 70%;
+    max-width: 800px;
 }
 
-.modal-header, .modal-footer {
+.modal-header,
+.modal-footer {
     padding: 10px;
 }
 
@@ -65,9 +29,9 @@
     padding: 20px;
 }
 
-/* Responsive adjustments for smaller screens */
+
 @media (max-width: 768px) {
     .modal-content {
-        width: 90%; /* Broader on smaller screens */
+        width: 90%;
     }
 }
