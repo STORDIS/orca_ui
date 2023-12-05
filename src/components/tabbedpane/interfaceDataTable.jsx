@@ -21,7 +21,8 @@ const InterfaceDataTable = (props) => {
     const [configStatus, setConfigStatus] = useState('');
     const [log, setLog] = useState([]);
 
-    useEffect(() => {
+
+    const setInterfaceData = () => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.get(apiUrl)
             .then(res => {
@@ -29,6 +30,11 @@ const InterfaceDataTable = (props) => {
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
             .catch(err => console.log(err));
+    }
+    useEffect(() => {
+        if (selectedDeviceIp) {
+            setInterfaceData();
+        }
     }, [selectedDeviceIp]);
 
     const handleCellValueChanged = useCallback((params) => {
@@ -88,12 +94,13 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.put(apiUrl, output)
             .then(res => {
-                setLog(res.data.result)
+                setLog(res.data.result);
                 setConfigStatus('Config Successful');
             })
             .catch(err => {
-                setLog(err.response.data.result)
+                setLog(err.response.data.result);
                 setConfigStatus('Config Failed');
+                setInterfaceData();
             })
             .finally(() => {
                 setIsConfigInProgress(false);
