@@ -6,13 +6,18 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         mgt_ip: selectedDeviceIp || '',
         lag_name: '',
         admin_sts: '',
-        mtu: 0,
+        mtu: 9100,
         members: '',
     });
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+
+        if (name === 'mtu' && parseInt(value) < 0) {
+            return;
+        }
+        
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: value
@@ -36,18 +41,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             return;
         }
     }
-
-    const handleInterfaceSelect = (event) => {
-        const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
-        setSelectedInterfaces(selectedOptions);
-    };
-
-    useEffect(() => {
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            members: selectedInterfaces.join(', ')
-        }));
-    }, [selectedInterfaces]);
 
     return (
         <form onSubmit={(e) => {

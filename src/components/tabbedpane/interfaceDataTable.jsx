@@ -8,6 +8,7 @@ import axios from 'axios';
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
 import LogViewer from "../logpane/logpane";
 import "../../pages/home/home.scss";
+import CustomHeader from "./EditableHeaderComponent";
 
 
 const InterfaceDataTable = (props) => {
@@ -31,7 +32,14 @@ const InterfaceDataTable = (props) => {
             .catch(err => console.log(err));
     }, [selectedDeviceIp]);
 
+    const resetConfigStatus = () => {
+        setConfigStatus('');
+        setChanges([]);
+    };
+
     const handleCellValueChanged = useCallback((params) => {
+        console.log('new value handle--->',params,params.newValue)
+        console.log('old value handle--->',params.oldValue)
         if (params.newValue !== params.oldValue) {
             setChanges(prev => {
                 if (!Array.isArray(prev)) {
@@ -90,10 +98,12 @@ const InterfaceDataTable = (props) => {
             .then(res => {
                 setLog(res.data.result)
                 setConfigStatus('Config Successful');
+                setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
                 setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
+                setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
@@ -102,27 +112,26 @@ const InterfaceDataTable = (props) => {
             });
     }, [createJsonOutput, selectedDeviceIp, changes]);
 
-
-    return (
-        <div className="datatable">
-            <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
-            <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
-            <div style={gridStyle} className="ag-theme-alpine">
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={dataTable}
-                    columnDefs={interfaceColumns}
-                    defaultColDef={defaultColDef}
-                    onCellValueChanged={handleCellValueChanged}
-                ></AgGridReact>
-            </div>
-            <div className="listContainer">
-                <div className="listTitle">Logs</div>
-                <LogViewer log={log} setLog={setLog} />
-            </div>
+return (
+    <div className="datatable">
+        <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
+        <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
+        <div style={gridStyle} className="ag-theme-alpine">
+            <AgGridReact
+                ref={gridRef}
+                rowData={dataTable}
+                columnDefs={interfaceColumns}
+                defaultColDef={defaultColDef}
+                onCellValueChanged={handleCellValueChanged}
+            ></AgGridReact>
         </div>
+        <div className="listContainer">
+            <div className="listTitle">Logs</div>
+            <LogViewer log={log} setLog={setLog} />
+        </div>
+    </div>
 
-    )
+)
 }
 
 export default InterfaceDataTable

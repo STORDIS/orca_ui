@@ -53,15 +53,15 @@ const DiscoverButton = () => {
   }
 
   const buttonStyle = btnText === "Discovery In Progress"
-    ? { backgroundColor: "grey", color: "black" }
-    : { backgroundColor: "grey" };
+    ? { backgroundColor: "#ccc", color: "#666", border:'1px solid black', borderRadius:'4px',padding:'6px 12px',fontFamily:'Nunito, sans-serif', disabled: true}
+    : { backgroundColor: "lightgray", color: "black" , border:'1px solid black', borderRadius:'4px',padding:'6px 12px', fontFamily:'Nunito, sans-serif'};
 
 
   return (
     <Link to="/">
       <Button
         style={buttonStyle}
-        id="btn"
+        id="btnDiscovery"
         onClick={btnHandler}
         disabled={isDisabled}
         variant="contained"

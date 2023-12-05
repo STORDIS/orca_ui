@@ -14,7 +14,7 @@ import "../../pages/home/home.scss";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
+    const gridStyle = useMemo(() => ({ height: '100%', width: '100%', maxWidth: '100%' }), []);
     const { rows, columns, selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
@@ -30,14 +30,20 @@ const PortChDataTable = (props) => {
     const [modalType, setModalType] = useState('success');
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] = useState(false);
     const [log, setLog] = useState([]);
+    const [modalTitle, setModalTitle] = useState('');
+    const [isDeletionConfirmed, setIsDeletionConfirmed] = useState(false);
+    const [memberNames, setMemberNames] = useState([]);
+
 
     useEffect(() => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         axios.get(apiPUrl)
             .then(res => {
-                setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
-                console.log("data", res.data);
+                let data = res.data;
+                console.log("data", data);
+                data && data.map(val => val['members'] = val['members'].toString())
+                setDataTable(data);
+                setOriginalData(JSON.parse(JSON.stringify(data)));
             })
             .catch(err => console.log(err));
     }, [selectedDeviceIp]);
@@ -92,33 +98,55 @@ const PortChDataTable = (props) => {
             .then(response => {
                 console.log("Port Channel added successfully", response.data);
                 setShowForm(false);
+                const successMessage = `PUT request successful: ${JSON.stringify(formData)}`;
                 setMessageModalContent('Port Channel added Successfully');
                 setIsMessageModalOpen(true);
+                setLog(prevLog => [...prevLog, successMessage]);
+                refreshData();
             })
             .catch(error => {
                 console.error("Error adding port channel", error);
+                let errorMessage = 'Error adding Port Channel';
+                if (error.response && error.response.data) {
+                    const errorDetail = error.response.data.error || error.response.data.message || JSON.stringify(error.response.data);
+                    errorMessage += `: ${errorDetail}`;
+                } else {
+                    errorMessage += `: ${error.message || 'Unknown error'}`;
+                }
                 setMessageModalContent('Error adding port channel');
                 setIsMessageModalOpen(true);
+                setLog(prevLog => [...prevLog, `${errorMessage}`]);
             });
     };
+
 
     const handleDelete = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const deleteData = selectedRows.map(rowData => ({
             mgt_ip: selectedDeviceIp, lag_name: rowData.lag_name
         }));
-
+        console.log('DeleteData', deleteData)
         axios.delete(apiPUrl, { data: deleteData })
             .then(response => {
-                console.log("delete", response.data);
-                refreshData();
-                setSelectedRows([]);
-                setMessageModalContent("Rows deleted successfully");
-                setIsMessageModalOpen(true);
+                console.log('response', response);
 
-                setTimeout(() => {
-                    setSelectedRows([]);
-                }, 3000);
+                if (response.data && Array.isArray(response.data.result)) {
+                    const deletedLags = new Set();
+                    response.data.result.forEach(item => {
+                        setLog(prevLog => [...prevLog, item]);
+
+                    });
+
+
+                    const updatedDataTable = dataTable.filter(row =>
+                        !selectedRows.some(selectedRow => selectedRow.lag_name === row.lag_name)
+                    );
+                    setDataTable(updatedDataTable)
+                }
+                setSelectedRows([]);
+
+                setMessageModalContent("Port Channel Deleted Successfully.");
+                setIsMessageModalOpen(true);
             })
             .catch(error => {
                 console.error("Error", error);
@@ -126,6 +154,17 @@ const PortChDataTable = (props) => {
             .finally(() => {
             });
     };
+
+
+
+    const handleModalClose = () => {
+        setIsMessageModalOpen(false);
+        if (isDeletionConfirmed) {
+            refreshData();
+            setIsDeletionConfirmed(false);
+        }
+    };
+
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
@@ -150,7 +189,32 @@ const PortChDataTable = (props) => {
         }
     };
 
+    const resetConfigStatus = () => {
+        setConfigStatus('');
+        setChanges([]);
+
+        gridRef.current.api.deselectAll();
+        setSelectedRows([]);
+    };
+
+    const handleLogUpdate = (newLogData) => {
+        setLog(newLogData);
+        localStorage.setItem('portChannelLog', newLogData.join('\n'));
+    };
+
+    const openAddModal = () => {
+        setModalTitle("Add Port Channel");
+        setShowForm(true);
+    };
+
+    const openDeleteModal = () => {
+        setModalTitle("Delete Port Channel");
+        promptDeleteConfirmation();
+    };
+
     const handleCellValueChanged = useCallback((params) => {
+        console.log('new value handle--->', params, params.newValue)
+        console.log('old value handle--->', params.oldValue)
         if (params.newValue !== params.oldValue) {
 
             if (params.colDef.field === 'lag_name') {
@@ -161,6 +225,7 @@ const PortChDataTable = (props) => {
                 }
             }
             setChanges(prev => {
+                console.log('prev-->', prev)
                 if (!Array.isArray(prev)) {
                     console.error("Expected array but got:", prev);
                     return [];
@@ -170,12 +235,15 @@ const PortChDataTable = (props) => {
                 let latestChanges;
                 let isNameExsits = prev.filter(val => val.lag_name === params.data.lag_name)
                 if (isNameExsits.length > 0) {
+                    console.log('ifff')
                     let existedIndex = prev.findIndex(val => val.lag_name === params.data.lag_name);
                     prev[existedIndex][params.colDef.field] = params.newValue
                     latestChanges = [...prev]
                 } else {
+                    console.log('else', params.newValue, params)
                     latestChanges = [...prev, { lag_name: params.data.lag_name, [params.colDef.field]: params.newValue }];
                 }
+                console.log('value Change--->', latestChanges)
                 return latestChanges
             });
         }
@@ -192,20 +260,22 @@ const PortChDataTable = (props) => {
 
 
     const createJsonOutput = useCallback(() => {
-        return changes.map(change => ({
+
+        let isMembers = changes.flatMap(Object.keys).includes('members');
+        if (isMembers) {
+            setChanges(changes.filter(val => val.members = [val.members]))
+        }
+        let aa = changes.map(change => ({
             mgt_ip: selectedDeviceIp,
             lag_name: change.lag_name,
             ...change
         }));
+
+        return aa
     }, [selectedDeviceIp, changes]);
 
 
-    useEffect(() => {
-        if (changes.length) {
-            const output = createJsonOutput();
-            console.log(JSON.stringify(output));
-        }
-    }, [changes, createJsonOutput]);
+
 
     const sendUpdates = useCallback(() => {
         if (changes.length === 0) {
@@ -214,16 +284,20 @@ const PortChDataTable = (props) => {
         setIsConfigInProgress(true);
         setConfigStatus('Config In Progress....');
 
+
         const output = createJsonOutput();
+        console.log('output sendUpdate', output)
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         axios.put(apiPUrl, output)
             .then(res => {
                 setLog(res.data.result)
                 setConfigStatus('Config Successful');
+                setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
                 setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
+                setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
@@ -231,68 +305,71 @@ const PortChDataTable = (props) => {
     }, [createJsonOutput, selectedDeviceIp, changes]);
 
 
-
     return (
-        <div className="datatable">
-            <div className="button-group">
-                <button onClick={() => setShowForm(true)}>Add Port Channel</button>
-                <button onClick={promptDeleteConfirmation} disabled={selectedRows.length === 0}>Delete Selected Port Channel</button>
-            </div>
-            <div className="button-column">
-                <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
-            </div>
-            <Modal show={showForm} onClose={() => setShowForm(false)}>
-                <PortChannelForm
-                    onSubmit={handleFormSubmit}
-                    selectedDeviceIp={selectedDeviceIp}
-                    onCancel={handleCancel} />
-            </Modal>
-
-            <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
-            <div style={gridStyle} className="ag-theme-alpine">
-                <AgGridReact
-                    ref={gridRef}
-                    rowData={dataTable}
-                    columnDefs={portChannelColumns}
-                    defaultColDef={defaultColDef}
-                    onCellValueChanged={handleCellValueChanged}
-                    rowSelection="multiple"
-                    checkboxSelection
-                    enableCellTextSelection='true'
-                    onSelectionChanged={onSelectionChanged}
-                ></AgGridReact>
-            </div>
-            {isDeleteConfirmationModalOpen && (
-                <Modal show={isDeleteConfirmationModalOpen} onClose={handleDeleteCancellation}>
-                    <div>
-                        <p>{messageModalContent}</p>
-                        <button onClick={handleDeleteConfirmation}>Yes</button>
-                        <button onClick={handleDeleteCancellation}>No</button>
-                    </div>
+        <div className="datatable-container">
+            <div className="datatable">
+                <div className="button-group">
+                    <button onClick={openAddModal}>Add Port Channel</button>
+                    <button onClick={openDeleteModal} disabled={selectedRows.length === 0}>Delete Selected Port Channel</button>
+                </div>
+                <div className="button-column">
+                    <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
+                    <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
+                </div>
+                <Modal show={showForm} onClose={() => setShowForm(false)} title={modalTitle}>
+                    <PortChannelForm
+                        onSubmit={handleFormSubmit}
+                        selectedDeviceIp={selectedDeviceIp}
+                        onCancel={handleCancel}
+                    />
                 </Modal>
-            )}
 
-            {isMessageModalOpen && (
-                <Modal show={isMessageModalOpen} onClose={() => setIsMessageModalOpen(false)}>
-                    <div>
-                        {messageModalContent}
-                        <button onClick={() => setIsMessageModalOpen(false)}>OK</button>
-                    </div>
-                </Modal>
-            )}
-            {isMessageModalOpen &&
-                <Modal show={isMessageModalOpen} >
-                    <div>
-                        {messageModalContent}
-                        <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                            {modalType === 'success' ? (
-                                <button onClick={handleOkClick}>OK</button>
-                            ) : (
-                                <button onClick={() => setIsMessageModalOpen(false)}>Close</button>
-                            )}
+
+                <div style={gridStyle} className="ag-theme-alpine">
+                    <AgGridReact
+                        ref={gridRef}
+                        rowData={dataTable}
+                        columnDefs={portChannelColumns}
+                        defaultColDef={defaultColDef}
+                        onCellValueChanged={handleCellValueChanged}
+                        rowSelection="multiple"
+                        checkboxSelection
+                        enableCellTextSelection='true'
+                        onSelectionChanged={onSelectionChanged}
+                    ></AgGridReact>
+                </div>
+                {isDeleteConfirmationModalOpen && (
+                    <Modal show={isDeleteConfirmationModalOpen} onClose={handleDeleteCancellation}>
+                        <div>
+                            <p>{messageModalContent}</p>
+                            <button onClick={handleDeleteConfirmation}>Yes</button>
+                            <button onClick={handleDeleteCancellation}>No</button>
                         </div>
-                    </div>
-                </Modal>}
+                    </Modal>
+                )}
+
+                {isMessageModalOpen && (
+                    <Modal show={isMessageModalOpen} onClose={() => setIsMessageModalOpen(false)}>
+                        <div>
+                            {messageModalContent}
+                            <button onClick={() => setIsMessageModalOpen(false)}>OK</button>
+                        </div>
+                    </Modal>
+                )}
+                {isMessageModalOpen &&
+                    <Modal show={isMessageModalOpen} >
+                        <div>
+                            {messageModalContent}
+                            <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                                {modalType === 'success' ? (
+                                    <button onClick={handleOkClick}>OK</button>
+                                ) : (
+                                    <button onClick={() => setIsMessageModalOpen(false)}>Close</button>
+                                )}
+                            </div>
+                        </div>
+                    </Modal>}
+            </div>
             <div className="listContainer">
                 <div className="listTitle">Logs</div>
                 <LogViewer log={log} setLog={setLog} />
