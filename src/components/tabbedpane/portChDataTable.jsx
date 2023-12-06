@@ -3,7 +3,7 @@ import "./tabbedPaneTable.scss";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { portChannelColumns, defaultColDef } from "./datatablesourse";
+import { portChannelColumns} from "./datatablesourse";
 import axios from 'axios'
 import { getAllPortChnlsOfDeviceURL } from '../../backend_rest_urls'
 import PortChannelForm from "../PortChannelForm";
@@ -89,7 +89,6 @@ const PortChDataTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-
         axios.put(apiPUrl, formData)
             .then(response => {
                 setShowForm(false);
@@ -132,17 +131,6 @@ const PortChDataTable = (props) => {
             });
     };
 
-
-
-    const handleModalClose = () => {
-        setIsMessageModalOpen(false);
-        if (isDeletionConfirmed) {
-            refreshData();
-            setIsDeletionConfirmed(false);
-        }
-    };
-
-
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map(node => node.data);
@@ -172,11 +160,6 @@ const PortChDataTable = (props) => {
 
         gridRef.current.api.deselectAll();
         setSelectedRows([]);
-    };
-
-    const handleLogUpdate = (newLogData) => {
-        props.setLog(newLogData);
-        localStorage.setItem('portChannelLog', newLogData.join('\n'));
     };
 
     const openAddModal = () => {

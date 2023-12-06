@@ -19,7 +19,6 @@ function App() {
             <Route path="devices" >
               <Route path=":deviceIP" element={<TabbedPane />} />
             </Route>
-            <Route path="discover" element={<Discover />} />
           </Route>
         </Routes>
       </BrowserRouter>

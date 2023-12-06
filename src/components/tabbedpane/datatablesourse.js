@@ -2,26 +2,24 @@ import { Link } from "react-router-dom";
 import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
 
-
-
 export const defaultColDef = {
   tooltipValueGetter: (params) => { return params.value },
   resizable: true,
-  rowSelection:"multiple",
-  enableCellTextSelection:'true',
-  singleClickEdit:'true',
-  stopEditingWhenCellsLoseFocus:'true',
+  rowSelection: "multiple",
+  enableCellTextSelection: 'true',
+  singleClickEdit: 'true',
+  stopEditingWhenCellsLoseFocus: 'true',
 }
 
 export const interfaceColumns = [
-  { field: 'name', headerName: 'Name', width: 130, filter:'agTextColumnFilter', sortable: true  },
+  { field: 'name', headerName: 'Name', width: 130, filter: 'agTextColumnFilter', sortable: true },
   {
     field: 'enabled', headerName: 'Enabled', width: 130, cellRenderer: 'agCheckboxCellRenderer',
     cellEditor: 'agCheckboxCellEditor',
     editable: true,
-    suppressKeyboardEvent: (params) => params.event.key === ' ',headerComponent: EditableHeaderComponent
-    },
-  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true, headerComponent: EditableHeaderComponent  },
+    suppressKeyboardEvent: (params) => params.event.key === ' ', headerComponent: EditableHeaderComponent
+  },
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true, headerComponent: EditableHeaderComponent },
   {
     field: 'fec', headerName: 'FEC', width: 130, editable: true,
     cellEditor: 'agSelectCellEditor',
@@ -37,7 +35,7 @@ export const interfaceColumns = [
     cellEditor: 'agSelectCellEditor',
     cellEditorParams: {
       values: ['SPEED_1GB', 'SPEED_5GB', 'SPEED_10GB', 'SPEED_25GB', 'SPEED_40GB', 'SPEED_50GB', 'SPEED_100GB'],
-    },headerComponent: EditableHeaderComponent
+    }, headerComponent: EditableHeaderComponent
   },
   { field: 'admin_sts', headerName: 'Admin Status', width: 130 },
   {
@@ -45,7 +43,7 @@ export const interfaceColumns = [
   },
   { field: 'last_chng', headerName: 'Last Change', width: 130 },
   { field: 'mac_addr', headerName: 'MAC ADDR', width: 130 },
-  
+
 ];
 
 export const portGroupColumns = [
@@ -53,11 +51,11 @@ export const portGroupColumns = [
   {
     field: 'speed', headerName: 'Speed', width: 130, editable: true,
     cellEditor: 'agSelectCellEditor',
-    cellEditorParams: (params) =>{
+    cellEditorParams: (params) => {
       return {
         values: params.data.valid_speeds,
       };
-    },headerComponent: EditableHeaderComponent
+    }, headerComponent: EditableHeaderComponent
   },
   { field: 'valid_speeds', headerName: 'Valid Speeds', cellDataType: 'text', width: 130 },
   { field: 'default_speed', headerName: 'Default Speed', cellDataType: 'text', width: 130 },
@@ -77,7 +75,7 @@ export const vlanColumns = [
 
 export const portChannelColumns = [
   { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
-  { field: 'lag_name', headerName: 'Channel Name', width: 130},
+  { field: 'lag_name', headerName: 'Channel Name', width: 130 },
   { field: 'active', headerName: 'Active', type: 'boolean', width: 130 },
   {
     field: 'admin_sts', headerName: 'Admin Status', width: 150, editable: true,
@@ -86,17 +84,14 @@ export const portChannelColumns = [
       values: ['up', 'down'],
     }, headerComponent: EditableHeaderComponent
   },
-  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true,headerComponent: EditableHeaderComponent},
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true, headerComponent: EditableHeaderComponent },
   { field: 'name', headerName: 'Name', width: 130 },
   { field: 'fallback_operational', headerName: 'Fallback Operation', type: 'boolean', width: 130 },
   { field: 'oper_sts', headerName: 'Operation Status', width: 130 },
   { field: 'speed', headerName: 'Speed', width: 130 },
   { field: 'oper_sts_reason', headerName: 'OperReason', width: 130 },
-  { field: 'members', headerName: 'Members', width: 130},
-
-
+  { field: 'members', headerName: 'Members', width: 130 },
 ];
-
 
 export const mclagColumns = [
   { field: 'domain_id', headerName: 'Domain_ID', type: 'number', width: 130 },
@@ -150,11 +145,9 @@ export const deviceUserColumns = (isTabbedPane = true) => {
     dataColumn.push({
       field: "action", headerName: "Action", width: 200, cellRenderer: (params) => {
         return (
-          <div className="cellAction">
-            {<Link to={`/devices/${params.data.mgt_ip}`} style={{ textDecoration: "none" }}>
-              <div className="viewButton">Details</div>
-            </Link>}
-          </div>
+          <Link to={`/devices/${params.data.mgt_ip}`} ><button>Details
+          </button>
+          </Link>
         )
       }
     });
