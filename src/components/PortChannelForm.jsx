@@ -25,8 +25,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     const handleSubmit = (e) => {
-        const membersArray = formData.members.split(',').map(member => member.trim());
-        console.log('123', membersArray, formData.members.split(','))
+        const membersArray = formData.members.split(',').map(member => member.trim()).filter(part => part);
         const dataToSubmit = {
             ...formData,
             members: membersArray,

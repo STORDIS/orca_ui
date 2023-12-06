@@ -96,14 +96,12 @@ const PortChDataTable = (props) => {
                 props.setLog(response.data.result);
                 setMessageModalContent('Port Channel added Successfully');
                 setIsMessageModalOpen(true);
-
                 refreshData();
             })
             .catch(error => {
                 setMessageModalContent('Error adding port channel');
                 setIsMessageModalOpen(true);
                 props.setLog(error.response.data.result);
-
             });
     };
 
