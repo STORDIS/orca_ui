@@ -17,6 +17,9 @@ import { useState, useEffect } from "react";
 import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
+import LogViewer from "../logpane/logpane";
+
+
 
 
 const TabbedPane = () => {
@@ -25,6 +28,8 @@ const TabbedPane = () => {
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [dataTable, setDataTable] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const [log, setLog] = useState([]);
+
 
     useEffect(() => {
         axios(getAllDevicesURL())
@@ -81,29 +86,29 @@ const TabbedPane = () => {
                             <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={1}>
-                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={setLog}/>
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={2}>
-                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={setLog}/>
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={3}>
-                            <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={setLog}/>
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={4}>
-                            <BGPTable selectedDeviceIp={deviceIP} />
+                            <BGPTable selectedDeviceIp={deviceIP} setLog={setLog}/>
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={5}>
-                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={setLog}/>
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
-                            <VlanTable selectedDeviceIp={deviceIP} />
+                            <VlanTable selectedDeviceIp={deviceIP} setLog={setLog}/>
                         </TabPanel>
                     </Box>
                 </div>
-                {/* <div className="listContainer">
+                <div className="listContainer">
                     <div className="listTitle">Logs</div>
-                    <LogViewer />
-                </div> */}
+                    <LogViewer log={log} setLog={setLog}/>
+                </div>
             </div>
         </div>
     )

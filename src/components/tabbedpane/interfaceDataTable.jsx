@@ -6,9 +6,6 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios';
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
-import LogViewer from "../logpane/logpane";
-import "../../pages/home/home.scss";
-
 
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
@@ -19,7 +16,6 @@ const InterfaceDataTable = (props) => {
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
-    const [log, setLog] = useState([]);
 
 
     const setInterfaceData = () => {
@@ -36,6 +32,11 @@ const InterfaceDataTable = (props) => {
             setInterfaceData();
         }
     }, [selectedDeviceIp]);
+
+    const resetConfigStatus = () => {
+                setConfigStatus('');
+                setChanges([]);
+            };
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
@@ -94,13 +95,16 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.put(apiUrl, output)
             .then(res => {
-                setLog(res.data.result);
+                props.setLog(res.data.result);
                 setConfigStatus('Config Successful');
+                setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
-                setLog(err.response.data.result);
+                props.setLog(err.response.data.result);
                 setConfigStatus('Config Failed');
                 setInterfaceData();
+
+                setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
@@ -122,10 +126,6 @@ const InterfaceDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     onCellValueChanged={handleCellValueChanged}
                 ></AgGridReact>
-            </div>
-            <div className="listContainer">
-                <div className="listTitle">Logs</div>
-                <LogViewer log={log} setLog={setLog} />
             </div>
         </div>
 

@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
+import EditableHeaderComponent from "./EditableHeaderComponent";
+
 
 
 export const defaultColDef = {
@@ -12,14 +14,14 @@ export const defaultColDef = {
 }
 
 export const interfaceColumns = [
-  { field: 'name', headerName: 'Name', width: 130 },
+  { field: 'name', headerName: 'Name', width: 130, filter:'agTextColumnFilter', sortable: true  },
   {
     field: 'enabled', headerName: 'Enabled', width: 130, cellRenderer: 'agCheckboxCellRenderer',
     cellEditor: 'agCheckboxCellEditor',
     editable: true,
-    suppressKeyboardEvent: (params) => params.event.key === ' ',
-  },
-  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true },
+    suppressKeyboardEvent: (params) => params.event.key === ' ',headerComponent: EditableHeaderComponent
+    },
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true, headerComponent: EditableHeaderComponent  },
   {
     field: 'fec', headerName: 'FEC', width: 130, editable: true,
     cellEditor: 'agSelectCellEditor',
@@ -27,7 +29,7 @@ export const interfaceColumns = [
     stopEditingWhenCellsLoseFocus: true,
     cellEditorParams: {
       values: ['FEC_RS', 'FEC_FC', 'FEC_DISABLED', 'FEC_AUTO'],
-    }
+    }, headerComponent: EditableHeaderComponent
   },
   { field: 'oper_sts', headerName: 'Oper_STS', width: 130 },
   {
@@ -35,11 +37,11 @@ export const interfaceColumns = [
     cellEditor: 'agSelectCellEditor',
     cellEditorParams: {
       values: ['SPEED_1GB', 'SPEED_5GB', 'SPEED_10GB', 'SPEED_25GB', 'SPEED_40GB', 'SPEED_50GB', 'SPEED_100GB'],
-    }
+    },headerComponent: EditableHeaderComponent
   },
   { field: 'admin_sts', headerName: 'Admin Status', width: 130 },
   {
-    field: 'description', headerName: 'Description', width: 130, editable: true, 
+    field: 'description', headerName: 'Description', width: 130, editable: true, headerComponent: EditableHeaderComponent
   },
   { field: 'last_chng', headerName: 'Last Change', width: 130 },
   { field: 'mac_addr', headerName: 'MAC ADDR', width: 130 },
@@ -55,7 +57,7 @@ export const portGroupColumns = [
       return {
         values: params.data.valid_speeds,
       };
-    },
+    },headerComponent: EditableHeaderComponent
   },
   { field: 'valid_speeds', headerName: 'Valid Speeds', cellDataType: 'text', width: 130 },
   { field: 'default_speed', headerName: 'Default Speed', cellDataType: 'text', width: 130 },
@@ -74,21 +76,23 @@ export const vlanColumns = [
 ];
 
 export const portChannelColumns = [
-  { field: 'lag_name', headerName: 'Lag Name', width: 130 },
+  { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
+  { field: 'lag_name', headerName: 'Channel Name', width: 130},
   { field: 'active', headerName: 'Active', type: 'boolean', width: 130 },
   {
-    field: 'admin_sts', headerName: 'Admin Status', width: 130, editable: true,
+    field: 'admin_sts', headerName: 'Admin Status', width: 150, editable: true,
     cellEditor: 'agSelectCellEditor',
     cellEditorParams: {
       values: ['up', 'down'],
-    }
+    }, headerComponent: EditableHeaderComponent
   },
-  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true },
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true,headerComponent: EditableHeaderComponent},
   { field: 'name', headerName: 'Name', width: 130 },
   { field: 'fallback_operational', headerName: 'Fallback Operation', type: 'boolean', width: 130 },
   { field: 'oper_sts', headerName: 'Operation Status', width: 130 },
   { field: 'speed', headerName: 'Speed', width: 130 },
   { field: 'oper_sts_reason', headerName: 'OperReason', width: 130 },
+  { field: 'members', headerName: 'Members', width: 130},
 
 
 ];
@@ -157,5 +161,3 @@ export const deviceUserColumns = (isTabbedPane = true) => {
   }
   return dataColumn
 };
-
-

@@ -3,7 +3,7 @@ import StorageIcon from '@mui/icons-material/Storage';
 import { Link } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import { useNavigate } from "react-router-dom";
-
+import logo from '../../assets/orca.png'
 const Sidebar = () => {
     const navigate = useNavigate();
         
@@ -23,12 +23,11 @@ const Sidebar = () => {
             <div className="top">
                 <Link to="/" style={{ textDecoration: "none" }}>
                         <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBSglQwvsds3Oc30LqBjru9Un9f8V4mKoJ6A&usqp=CAU"
-                            width="100"
+                            src={logo}
+                            width="200"
                             className="img-thumbnail"
                             style={{ marginTop: "40px" }}
                         /> 
-                    <span className="logo">ORCA - SONiC Management System</span>
                 </Link>
 
             </div>

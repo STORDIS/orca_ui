@@ -15,7 +15,7 @@ const DiscoverButton = () => {
     const disabledUntil = localStorage.getItem('disabledUntil');
     if (disabledUntil && new Date().getTime() < disabledUntil) {
       setIsDisabled(true);
-      
+
       setTimeout(() => {
         setIsDisabled(false);
         localStorage.removeItem('disabledUntil');
@@ -46,23 +46,24 @@ const DiscoverButton = () => {
       console.log(error);
       setBtnText("Discover Network");
       setIsDisabled(false);
-  
+
       localStorage.removeItem('disabledUntil');
       localStorage.removeItem('btnText');
     }
   }
 
-  const buttonStyle = btnText === "Discovery In Progress" 
-    ? { backgroundColor: "grey", color: "black" }
-    : { backgroundColor: "#002F58", color: "white" };
+  const buttonStyle = btnText === "Discovery In Progress"
+    ? { backgroundColor: "#ccc", color: "#666", border:'1px solid black', borderRadius:'4px',padding:'6px 12px',fontFamily:'Nunito, sans-serif', disabled: true}
+    : { backgroundColor: "lightgray", color: "black" , border:'1px solid black', borderRadius:'4px',padding:'6px 12px', fontFamily:'Nunito, sans-serif'};
+
 
   return (
     <Link to="/">
-      <Button 
-        style={buttonStyle} 
-        id="btn" 
-        onClick={btnHandler} 
-        disabled={isDisabled} 
+      <Button
+        style={buttonStyle}
+        id="btnDiscovery"
+        onClick={btnHandler}
+        disabled={isDisabled}
         variant="contained"
         size="small">
         {btnText}
