@@ -6,7 +6,6 @@ import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios'
 import { getPortGroupsURL } from "../../backend_rest_urls";
-import LogViewer from "../logpane/logpane";
 import "../../pages/home/home.scss";
 
 
@@ -16,14 +15,10 @@ const PortGroupTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const { selectedDeviceIp = '' } = props;
     const [changes, setChanges] = useState([]);
-
     const [originalData, setOriginalData] = useState([]);
     const [dataTable, setDataTable] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
-    const [log, setLog] = useState([]);
-
-
 
     useEffect(() => {
         const apiMUrl = getPortGroupsURL(selectedDeviceIp);
@@ -89,10 +84,10 @@ const PortGroupTable = (props) => {
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         axios.put(apiUrl, req_json)
             .then(res => {
-                setLog(res.data.result)
+                props.setLog(res.data.result)
                 setConfigStatus('Config Successful');
             }).catch(err => {
-                setLog(err.response.data.result)
+                props.setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
             }).finally(() => {
                 setIsConfigInProgress(false);
@@ -116,10 +111,6 @@ const PortGroupTable = (props) => {
                     checkboxSelection
                     enableCellTextSelection='true'
                 ></AgGridReact>
-            </div>
-            <div className="listContainer">
-                <div className="listTitle">Logs</div>
-                <LogViewer log={log} setLog={setLog} />
             </div>
         </div>
     )

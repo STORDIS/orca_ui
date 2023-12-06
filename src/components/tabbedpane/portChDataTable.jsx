@@ -8,9 +8,6 @@ import axios from 'axios'
 import { getAllPortChnlsOfDeviceURL } from '../../backend_rest_urls'
 import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
-import LogViewer from "../logpane/logpane";
-import "../../pages/home/home.scss";
-
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -29,7 +26,6 @@ const PortChDataTable = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [modalType, setModalType] = useState('success');
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] = useState(false);
-    const [log, setLog] = useState([]);
     const [modalTitle, setModalTitle] = useState('');
     const [isDeletionConfirmed, setIsDeletionConfirmed] = useState(false);
     const [memberNames, setMemberNames] = useState([]);
@@ -96,26 +92,18 @@ const PortChDataTable = (props) => {
 
         axios.put(apiPUrl, formData)
             .then(response => {
-                console.log("Port Channel added successfully", response.data);
                 setShowForm(false);
-                const successMessage = `PUT request successful: ${JSON.stringify(formData)}`;
+                props.setLog(response.data.result);
                 setMessageModalContent('Port Channel added Successfully');
                 setIsMessageModalOpen(true);
-                setLog(prevLog => [...prevLog, successMessage]);
+
                 refreshData();
             })
             .catch(error => {
-                console.error("Error adding port channel", error);
-                let errorMessage = 'Error adding Port Channel';
-                if (error.response && error.response.data) {
-                    const errorDetail = error.response.data.error || error.response.data.message || JSON.stringify(error.response.data);
-                    errorMessage += `: ${errorDetail}`;
-                } else {
-                    errorMessage += `: ${error.message || 'Unknown error'}`;
-                }
                 setMessageModalContent('Error adding port channel');
                 setIsMessageModalOpen(true);
-                setLog(prevLog => [...prevLog, `${errorMessage}`]);
+                props.setLog(error.response.data.result);
+
             });
     };
 
@@ -129,14 +117,10 @@ const PortChDataTable = (props) => {
         axios.delete(apiPUrl, { data: deleteData })
             .then(response => {
                 console.log('response', response);
-
                 if (response.data && Array.isArray(response.data.result)) {
-                    const deletedLags = new Set();
                     response.data.result.forEach(item => {
-                        setLog(prevLog => [...prevLog, item]);
-
+                        props.setLog(response.data.result);
                     });
-
 
                     const updatedDataTable = dataTable.filter(row =>
                         !selectedRows.some(selectedRow => selectedRow.lag_name === row.lag_name)
@@ -144,7 +128,6 @@ const PortChDataTable = (props) => {
                     setDataTable(updatedDataTable)
                 }
                 setSelectedRows([]);
-
                 setMessageModalContent("Port Channel Deleted Successfully.");
                 setIsMessageModalOpen(true);
             })
@@ -198,7 +181,7 @@ const PortChDataTable = (props) => {
     };
 
     const handleLogUpdate = (newLogData) => {
-        setLog(newLogData);
+        props.setLog(newLogData);
         localStorage.setItem('portChannelLog', newLogData.join('\n'));
     };
 
@@ -290,12 +273,12 @@ const PortChDataTable = (props) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         axios.put(apiPUrl, output)
             .then(res => {
-                setLog(res.data.result)
+                props.setLog(res.data.result)
                 setConfigStatus('Config Successful');
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
-                setLog(err.response.data.result)
+                props.setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
                 setTimeout(resetConfigStatus, 5000);
             })
@@ -369,10 +352,6 @@ const PortChDataTable = (props) => {
                             </div>
                         </div>
                     </Modal>}
-            </div>
-            <div className="listContainer">
-                <div className="listTitle">Logs</div>
-                <LogViewer log={log} setLog={setLog} />
             </div>
         </div>
     )
