@@ -114,12 +114,8 @@ const PortChDataTable = (props) => {
         console.log('DeleteData', deleteData)
         axios.delete(apiPUrl, { data: deleteData })
             .then(response => {
-                console.log('response', response);
+                props.setLog(response.data.result);
                 if (response.data && Array.isArray(response.data.result)) {
-                    response.data.result.forEach(item => {
-                        props.setLog(response.data.result);
-                    });
-
                     const updatedDataTable = dataTable.filter(row =>
                         !selectedRows.some(selectedRow => selectedRow.lag_name === row.lag_name)
                     );
@@ -130,7 +126,7 @@ const PortChDataTable = (props) => {
                 setIsMessageModalOpen(true);
             })
             .catch(error => {
-                console.error("Error", error);
+                props.setLog(error.response.data.result);
             })
             .finally(() => {
             });

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './tabbedpane/PortChannelForm.scss';
 
 const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
@@ -9,7 +9,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         mtu: 9100,
         members: '',
     });
-    const [selectedInterfaces, setSelectedInterfaces] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
