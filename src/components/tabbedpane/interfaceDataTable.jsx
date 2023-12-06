@@ -107,6 +107,7 @@ const InterfaceDataTable = (props) => {
                 setLog(err.response.data.result);
                 setConfigStatus('Config Failed');
                 setInterfaceData();
+
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
