@@ -1,74 +1,51 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import Button from "@mui/material/Button";
 import { getDiscoveryUrl } from "../../backend_rest_urls"
-
-const DISCOVERY_TIMEOUT = 20000;
+import DiscoveryForm from "./DiscoveryForm";
+import Modal from "../modal/Modal";
 
 const DiscoverButton = () => {
-  const initialBtnText = localStorage.getItem('btnText') || "Discover Network";
-  const [isDisabled, setIsDisabled] = useState(false);
-  const [btnText, setBtnText] = useState(initialBtnText);
+  const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(false);
+  const [discBtnText, setDiscBtnText] = useState('Discover Network');
+  const buttonStyle = discBtnText === "Discovery In Progress"
+    ? { backgroundColor: "#ccc", color: "#666", border: '1px solid black', borderRadius: '4px', padding: '6px 12px', fontFamily: 'Nunito, sans-serif', disabled: true }
+    : { backgroundColor: "lightgray", color: "black", border: '1px solid black', borderRadius: '4px', padding: '6px 12px', fontFamily: 'Nunito, sans-serif' };
 
-  useEffect(() => {
-    const disabledUntil = localStorage.getItem('disabledUntil');
-    if (disabledUntil && new Date().getTime() < disabledUntil) {
-      setIsDisabled(true);
+  const [showForm, setShowForm] = useState(false);
 
-      setTimeout(() => {
-        setIsDisabled(false);
-        localStorage.removeItem('disabledUntil');
-        localStorage.removeItem('btnText');
-        setBtnText("Discover Network");
-      }, disabledUntil - new Date().getTime());
-    }
-  }, []);
-
-  const btnHandler = async (event) => {
-    event.preventDefault();
-    setBtnText("Discovery In Progress");
-    localStorage.setItem('btnText', "Discovery In Progress");
-
-    setIsDisabled(true);
-    const disabledUntil = new Date().getTime() + DISCOVERY_TIMEOUT;
-    localStorage.setItem('disabledUntil', disabledUntil);
-
+  const start_discovery = async (formData) => {
+    setDiscBtnText("Discovery In Progress");
+    disableDiscBtn(true);
     try {
-      const response = await axios.get(getDiscoveryUrl());
+      setShowForm(false)
+      const response = await axios.put(getDiscoveryUrl(),formData);
       console.log(response.data);
-      setBtnText("Discover Network");
-      setIsDisabled(false);
+      
+      setDiscBtnText("Discover Network");
+      disableDiscBtn(false);
 
-      localStorage.removeItem('disabledUntil');
-      localStorage.removeItem('btnText');
     } catch (error) {
       console.log(error);
-      setBtnText("Discover Network");
-      setIsDisabled(false);
-
-      localStorage.removeItem('disabledUntil');
-      localStorage.removeItem('btnText');
+      setDiscBtnText("Discover Network");
+      disableDiscBtn(false);
     }
   }
-
-  const buttonStyle = btnText === "Discovery In Progress"
-    ? { backgroundColor: "#ccc", color: "#666", border:'1px solid black', borderRadius:'4px',padding:'6px 12px',fontFamily:'Nunito, sans-serif', disabled: true}
-    : { backgroundColor: "lightgray", color: "black" , border:'1px solid black', borderRadius:'4px',padding:'6px 12px', fontFamily:'Nunito, sans-serif'};
-
-
   return (
-    <Link to="/">
-      <Button
+    <>
+      <button
         style={buttonStyle}
         id="btnDiscovery"
-        onClick={btnHandler}
-        disabled={isDisabled}
+        // onClick={btnHandler}
+        onClick={() => setShowForm(true)}
+        disabled={isDiscoveryBtnDisabled}
         variant="contained"
         size="small">
-        {btnText}
-      </Button>
-    </Link>
+        {discBtnText}
+      </button>
+      <Modal show={showForm} onClose={() => setShowForm(false)} title="Discover">
+        <DiscoveryForm handleSubmit={start_discovery} onCancel={() => setShowForm(false)} />
+      </Modal>
+    </>
   );
 };
 

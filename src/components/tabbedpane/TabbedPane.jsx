@@ -60,13 +60,14 @@ const TabbedPane = () => {
                 <Navbar />
 
                 <div className="listContainer">
-                    Device details : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
+                    Device : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
                         {dropdownOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.value}
                             </option>
                         ))}
                     </select>
+                    &nbsp; &nbsp;
                     <button onClick={onUndo}>Undo Changes</button>
                 </div>
                 <div className="listContainer">

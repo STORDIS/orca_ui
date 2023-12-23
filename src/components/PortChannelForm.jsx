@@ -16,7 +16,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         if (name === 'mtu' && parseInt(value) < 0) {
             return;
         }
-        
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: value
@@ -99,5 +98,3 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 };
 
 export default PortChannelForm;
-
-

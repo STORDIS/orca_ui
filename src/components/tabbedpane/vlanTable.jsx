@@ -21,7 +21,6 @@ const VlanTable = (props) => {
                     element.members = JSON.stringify(element.members);
                 });
                 setDataTable(res.data);
-                console.log(res.data);
             })
             .catch(err => console.log(err))
     }, []);

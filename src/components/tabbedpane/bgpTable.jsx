@@ -20,7 +20,12 @@ const BGPTable = (props) => {
     useEffect(() => {
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         axios.get(apiMUrl)
-            .then(res => setDataTable(res.data))
+            .then((res) => {
+                // get neighbor_prop property from json and convert to string
+                res.data.forEach(element => {
+                    element.neighbor_prop = JSON.stringify(element.neighbor_prop);
+                })
+                setDataTable(res.data);})
             .then(res => console.log(res.data))
             .catch(err => console.log(err))
     }, []);

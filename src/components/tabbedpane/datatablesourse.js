@@ -113,8 +113,7 @@ export const bgpColumns = [
   { field: 'local_asn', headerName: 'ASN', width: 130 },
   { field: 'vrf_name', headerName: 'VRF', width: 130 },
   { field: 'router_id', headerName: 'Router ID', width: 130 },
-  { field: 'remote_asn', headerName: 'Remote ASN', width: 130 },
-  { field: 'nbr_ips', headerName: 'Neighbors', width: 130 },
+  { field: 'neighbor_prop', headerName: 'Neighbors', width: 130 },
 
 ];
 
