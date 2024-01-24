@@ -5,7 +5,7 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import "./home.scss";
 
 
-function Home() {
+function Home(props) {
 
     return (
         <div className='home'>
@@ -16,6 +16,8 @@ function Home() {
                     <div className="listTitle">Devices</div>
                     <Datatable />
                 </div>
+                {props.logViewer}
+
             </div>
         </div>
     );
