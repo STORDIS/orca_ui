@@ -1,4 +1,4 @@
-const host_addr = process.env.REACT_APP_HOST_ADDR_BACKEND || 'http://localhost:8000/';
+const host_addr = process.env.REACT_APP_HOST_ADDR_BACKEND || 'http://localhost:8000';
 
 export function getAllDevicesURL() {
     return host_addr + '/devices';
@@ -20,7 +20,7 @@ export function getAllPortChnlsOfDeviceURL(device_ip) {
 }
 
 export function getDiscoveryUrl() {
-    return host_addr + 'discover'
+    return host_addr + '/discover'
 }
 
 export function getPortGroupsURL(device_ip) {
