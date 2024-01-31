@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 const LogViewer = (props) => {
-  const [text, setText] = useState('');
-  const log_txt=props.log
+  const [text, setText] = useState("");
+  const log_txt = props.log;
   useEffect(() => {
     addLogMessage(log_txt);
   }, [log_txt]);
@@ -16,7 +16,7 @@ const LogViewer = (props) => {
   };
 
   const clearLog = () => {
-    setText('');
+    setText("");
     props.setLog([]);
   };
 
@@ -24,7 +24,7 @@ const LogViewer = (props) => {
     <div>
       <textarea
         rows={5}
-        cols={200}
+        style={{ width: "100%" }}
         value={text}
         onChange={handleTextChange}
         readOnly

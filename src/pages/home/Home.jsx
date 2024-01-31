@@ -4,22 +4,27 @@ import Sidebar from "../../components/sidebar/Sidebar";
 
 import "./home.scss";
 
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 function Home(props) {
-
-    return (
-        <div className='home'>
-            <Sidebar />
-            <div className="homeContainer">
-                    <Navbar />
-                <div className="listContainer">
-                    <div className="listTitle">Devices</div>
-                    <Datatable />
-                </div>
-                {props.logViewer}
-
-            </div>
-        </div>
-    );
+  return (
+    <Container fluid>
+      <Row>
+        <Col lg="2">
+          <Sidebar />
+        </Col>
+        <Col lg="10">
+          <Navbar />
+          <div className="px-3">
+            <div className="">Devices</div>
+            <Datatable />
+          </div>
+          <div className="px-3">{props.logViewer}</div>
+        </Col>
+      </Row>
+    </Container>
+  );
 }
-export default Home
+export default Home;

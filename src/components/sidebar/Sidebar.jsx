@@ -1,56 +1,42 @@
-import "./sidebar.scss"
-import StorageIcon from '@mui/icons-material/Storage';
+/* eslint-disable jsx-a11y/alt-text */
+import "./sidebar.scss";
+import StorageIcon from "@mui/icons-material/Storage";
 import { Link } from "react-router-dom";
-import Nav from 'react-bootstrap/Nav';
+import Nav from "react-bootstrap/Nav";
 import { useNavigate } from "react-router-dom";
-import logo from '../../assets/orca.png'
+import logo from "../../assets/orca.png";
+import { Padding } from "@mui/icons-material";
 const Sidebar = () => {
-    const navigate = useNavigate();
-        
-      
-        const handleRefresh = () => {
-          const currentPath = window.location.pathname;
-          const targetPath = '/';
-      
-          if (currentPath === targetPath) {
-            window.location.reload(false); 
-          } else {
-            navigate(targetPath);
-          }
-        }
-    return (
-        <div className="sidebar">
-            <div className="top">
-                <Link to="/" style={{ textDecoration: "none" }}>
-                        <img
-                            src={logo}
-                            width="200"
-                            className="img-thumbnail"
-                            style={{ marginTop: "40px" }}
-                        /> 
-                </Link>
+  const navigate = useNavigate();
 
-            </div>
-            <hr />
-            <div className="center">
-                <ul>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <li>
-                        <StorageIcon className="icon" />
-                        <Nav.Link href="/" onClick={handleRefresh} style={{ textDecoration: "none" }}>
-                            <span>Devices</span>
+  const handleRefresh = () => {
+    const currentPath = window.location.pathname;
+    const targetPath = "/";
 
-                        </Nav.Link>
-                    </li>
+    if (currentPath === targetPath) {
+      window.location.reload(false);
+    } else {
+      navigate(targetPath);
+    }
+  };
+  return (
+    <div className="sidebar">
+      <Link to="/" style={{ textDecoration: "none" }}>
+        <img src={logo} className="logo" />
+      </Link>
 
-                </ul>
-            </div>
-        </div>
+      <div className="navLink d-flex ">
+        <StorageIcon className="icon" />
+        <Nav.Link
+          href="/"
+          onClick={handleRefresh}
+          style={{ textDecoration: "none", marginLeft: '10px' }}
+        >
+          <span>Devices</span>
+        </Nav.Link>
+      </div>
+    </div>
+  );
+};
 
-    )
-}
-
-export default Sidebar
+export default Sidebar;
