@@ -1,4 +1,4 @@
-const host_addr = "http://127.0.0.1:8000/";
+const host_addr = process.env.REACT_APP_HOST_ADDR_BACKEND || 'http://localhost:8000';
 
 export function getAllDevicesURL() {
   return host_addr + "/devices";
