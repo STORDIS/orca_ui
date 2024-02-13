@@ -16,6 +16,7 @@ const InterfaceDataTable = (props) => {
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
+    const [interfaceNames, setInterfaceNames] = useState([]);
 
 
     const setInterfaceData = () => {
@@ -24,6 +25,8 @@ const InterfaceDataTable = (props) => {
             .then(res => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
+                const names = res.data.map(item => item.name);
+                setInterfaceNames(names);
             })
             .catch(err => console.log(err));
     }
@@ -119,6 +122,7 @@ const InterfaceDataTable = (props) => {
             <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
             <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
             <p>&nbsp;</p>
+
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}

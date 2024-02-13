@@ -1,4 +1,4 @@
-import '../tabbedpane/PortChannelForm.scss';
+//import '../tabbedpane/PortChannelForm.scss';
 import { useState } from 'react';
 
 

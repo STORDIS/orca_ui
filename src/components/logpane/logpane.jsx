@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 
 const LogViewer = (props) => {
   const [text, setText] = useState('');
-  const log_txt=props.log
+  const log_txt= props.log;
+
   useEffect(() => {
     addLogMessage(log_txt);
   }, [log_txt]);
@@ -19,6 +20,7 @@ const LogViewer = (props) => {
     setText('');
     props.setLog([]);
   };
+
 
   return (
     <div>

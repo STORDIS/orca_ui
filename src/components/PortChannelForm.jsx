@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './tabbedpane/PortChannelForm.scss';
+import './tabbedpane/Form.scss'
 
 const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const [formData, setFormData] = useState({
@@ -40,6 +40,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     }
 
     return (
+        <div className="form-wrapper">
         <form onSubmit={(e) => {
             e.preventDefault();
             handleSubmit(formData);
@@ -94,6 +95,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
             </div>
         </form>
+        </div>
     );
 };
 

@@ -12,7 +12,7 @@ import Modal from "../modal/Modal";
 const PortChDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%', maxWidth: '100%' }), []);
-    const { rows, columns, selectedDeviceIp = '' } = props;
+    const { rows, columns, selectedDeviceIp = ''} = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
@@ -276,6 +276,7 @@ const PortChDataTable = (props) => {
                     <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
                     <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
                 </div>
+                <p>&nbsp;</p>
                 <Modal show={showForm} onClose={() => setShowForm(false)} title={modalTitle}>
                     <PortChannelForm
                         onSubmit={handleFormSubmit}

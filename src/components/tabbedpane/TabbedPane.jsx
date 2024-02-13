@@ -99,7 +99,7 @@ const TabbedPane = (props) => {
                             <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
-                            <VlanTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+                            <VlanTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
                         </TabPanel>
                     </Box>
                 </div>
