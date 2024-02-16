@@ -4,20 +4,9 @@ import { Link } from "react-router-dom";
 import Nav from 'react-bootstrap/Nav';
 import { useNavigate } from "react-router-dom";
 import logo from '../../assets/orca.png'
-const Sidebar = () => {
+const Sidebar = ({handelRefreshFromSidebar}) => {
     const navigate = useNavigate();
-        
-      
-        const handleRefresh = () => {
-          const currentPath = window.location.pathname;
-          const targetPath = '/';
-      
-          if (currentPath === targetPath) {
-            window.location.reload(false); 
-          } else {
-            navigate(targetPath);
-          }
-        }
+
     return (
         <div className="sidebar">
             <div className="top">
@@ -40,7 +29,7 @@ const Sidebar = () => {
                     <br />
                     <li>
                         <StorageIcon className="icon" />
-                        <Nav.Link href="/" onClick={handleRefresh} style={{ textDecoration: "none" }}>
+                        <Nav.Link onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
                             <span>Devices</span>
 
                         </Nav.Link>

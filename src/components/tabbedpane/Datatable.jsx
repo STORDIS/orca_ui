@@ -15,6 +15,7 @@ const Datatable = (props) => {
 
   const [dataTable, setDataTable] = useState([]);
   console.log(dataTable)
+  
   useEffect(() => {
     axios(getAllDevicesURL())
       .then(res => {
