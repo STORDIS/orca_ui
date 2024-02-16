@@ -18,8 +18,9 @@ import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
 
-
-
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 
 const TabbedPane = (props) => {
     const { deviceIP } = useParams();
@@ -51,61 +52,128 @@ const TabbedPane = (props) => {
     }
 
     return (
-        <div className='home'>
-            <Sidebar />
-            <div className="homeContainer">
-                <Navbar />
+        // <div className='home'>
+        //     <Sidebar />
+        //     <div className="homeContainer">
+        //         <Navbar />
 
-                <div className="listContainer">
-                    Device : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
-                        {dropdownOptions.map((option) => (
-                            <option key={option.value} value={option.value}>
-                                {option.value}
-                            </option>
-                        ))}
-                    </select>
-                    &nbsp; &nbsp;
-                    <button onClick={onUndo}>Undo Changes</button>
-                </div>
-                <div className="listContainer">
-                    <Box sx={{ width: '100%' }}>
-                        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                            <Tabs value={tabValue} onChange={handleTabs}>
-                                <Tab label="Device Info" />
-                                <Tab label="Interfaces" />
-                                <Tab label="PortChannels" />
-                                <Tab label="MCLAGs" />
-                                <Tab label="BGP" />
-                                <Tab label="Port Groups" />
-                                <Tab label="VLANs" />
-                            </Tabs>
+        //         <div className="listContainer">
+        //             Device : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
+        //                 {dropdownOptions.map((option) => (
+        //                     <option key={option.value} value={option.value}>
+        //                         {option.value}
+        //                     </option>
+        //                 ))}
+        //             </select>
+        //             &nbsp; &nbsp;
+        //             <button onClick={onUndo}>Undo Changes</button>
+        //         </div>
+        //         <div className="listContainer">
+        //             <Box sx={{ width: '100%' }}>
+        //                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        //                     <Tabs value={tabValue} onChange={handleTabs}>
+        //                         <Tab label="Device Info" />
+        //                         <Tab label="Interfaces" />
+        //                         <Tab label="PortChannels" />
+        //                         <Tab label="MCLAGs" />
+        //                         <Tab label="BGP" />
+        //                         <Tab label="Port Groups" />
+        //                         <Tab label="VLANs" />
+        //                     </Tabs>
+        //                 </Box>
+        //                 <TabPanel tabValue={tabValue} index={0}>
+        //                     <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
+        //                 </TabPanel>
+        //                 <TabPanel tabValue={tabValue} index={1}>
+        //                     <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+        //                 </TabPanel>
+        //                 <TabPanel tabValue={tabValue} index={2}>
+        //                     <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+        //                 </TabPanel>
+        //                 <TabPanel tabValue={tabValue} index={3}>
+        //                     <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+        //                 </TabPanel>
+        //                 <TabPanel tabValue={tabValue} index={4}>
+        //                     <BGPTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+        //                 </TabPanel>
+        //                 <TabPanel tabValue={tabValue} index={5}>
+        //                     <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+        //                 </TabPanel>
+        //                 <TabPanel tabValue={tabValue} index={6}>
+        //                     <VlanTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+        //                 </TabPanel>
+        //             </Box>
+        //         </div>
+        //         {props.logViewer}
+        //     </div>
+        // </div>
+        <Container fluid>
+            <Row>
+                <Col lg="2" md="2" >
+                    <Sidebar />
+                </Col>
+                <Col lg="10" md="10" >
+                    <Navbar />
+
+                    <Row className="upperPane" >
+
+                        <Col lg="1" md="1" >
+                            Device : 
+                        </Col>
+                        <Col lg="6" md="6"  >
+                            <select className="form-control" value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
+                                {dropdownOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.value}
+                                </option>
+                                ))}
+                            </select>
+                        </Col>
+                        <Col lg="5" md="5" className="text-end"  >
+                            <button onClick={onUndo}>Undo Changes</button>
+                        </Col>
+                    </Row>
+                    <div >
+                        <Box >
+                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                                <Tabs value={tabValue} onChange={handleTabs}>
+                                    <Tab label="Device Info" />
+                                    <Tab label="Interfaces" />
+                                    <Tab label="PortChannels" />
+                                    <Tab label="MCLAGs" />
+                                    <Tab label="BGP" />
+                                    <Tab label="Port Groups" />
+                                    <Tab label="VLANs" />
+                                </Tabs>
+                            </Box>
+                            <TabPanel tabValue={tabValue} index={0}>
+                                <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={1}>
+                                <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={2}>
+                                <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={3}>
+                                <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={4}>
+                                <BGPTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={5}>
+                                <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            </TabPanel>
+                            <TabPanel tabValue={tabValue} index={6}>
+                                <VlanTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+                            </TabPanel>
                         </Box>
-                        <TabPanel tabValue={tabValue} index={0}>
-                            <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
-                        </TabPanel>
-                        <TabPanel tabValue={tabValue} index={1}>
-                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
-                        </TabPanel>
-                        <TabPanel tabValue={tabValue} index={2}>
-                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
-                        </TabPanel>
-                        <TabPanel tabValue={tabValue} index={3}>
-                            <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
-                        </TabPanel>
-                        <TabPanel tabValue={tabValue} index={4}>
-                            <BGPTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
-                        </TabPanel>
-                        <TabPanel tabValue={tabValue} index={5}>
-                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
-                        </TabPanel>
-                        <TabPanel tabValue={tabValue} index={6}>
-                            <VlanTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
-                        </TabPanel>
-                    </Box>
-                </div>
-                {props.logViewer}
-            </div>
-        </div>
+                    </div>
+
+                    <div className="px-3">{props.logViewer}</div>
+                </Col>
+            </Row>
+        </Container>
     )
 }
 

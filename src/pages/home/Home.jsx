@@ -13,10 +13,10 @@ function Home(props) {
     return (
         <Container fluid>
         <Row>
-          <Col lg="2">
+          <Col lg="2" md="2" >
             <Sidebar />
           </Col>
-          <Col lg="10">
+          <Col lg="10" md="10" >
             <Navbar />
             <div className="px-3">
               <div className="">Devices</div>

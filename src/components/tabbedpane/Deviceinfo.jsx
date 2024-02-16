@@ -33,7 +33,7 @@ const Deviceinfo = (props) => {
   }, [isTabbedPane]);
 
   return (
-    <table style={{ borderCollapse: 'collapse', border: '1px solid #ddd' }}>
+    <table className="mx-3" style={{ borderCollapse: 'collapse', border: '1px solid #ddd' }}>
       <tbody>
         {deviceUserColumns().map((column, index) => (
           <tr key={index}>
