@@ -144,7 +144,7 @@ export const deviceUserColumns = (isTabbedPane = true) => {
     dataColumn.push({
       field: "action", headerName: "Action", width: 200, cellRenderer: (params) => {
         return (
-          <Link to={`/devices/${params.data.mgt_ip}`} ><button>Details
+          <Link to={`/devices/${params.data.mgt_ip}`} ><button className="btn btn-sm" >Details
           </button>
           </Link>
         )
