@@ -24,7 +24,7 @@ const LogViewer = (props) => {
     <div>
       <textarea
         rows={5}
-        cols={200}
+        style={{ width: "100%" }}
         value={text}
         onChange={handleTextChange}
         readOnly
