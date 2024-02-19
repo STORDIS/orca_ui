@@ -8,16 +8,13 @@ import "./home.scss";
 function Home(props) {
   const [reloadDataTable, setReloadDataTable] = useState(false);
 
-  // Callback function to handle button click in NavBar
-  const handleReloadButtonClick = () => {
-    // Set the state to trigger a re-render of the Home component
+  const handleReloadDeviceTable = () => {
     setReloadDataTable((prevState) => !prevState);
-    console.log("here");
   };
 
   return (
     <div className="home">
-      <Sidebar handelRefreshFromSidebar={handleReloadButtonClick} />
+      <Sidebar handelRefreshFromSidebar={handleReloadDeviceTable} />
       <div className="homeContainer">
         <Navbar />
         <div className="listContainer">

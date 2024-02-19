@@ -1,12 +1,8 @@
-/* eslint-disable jsx-a11y/alt-text */
 import "./sidebar.scss"
 import StorageIcon from '@mui/icons-material/Storage';
 import { Link } from "react-router-dom";
-import Nav from 'react-bootstrap/Nav';
-import { useNavigate } from "react-router-dom";
 import logo from '../../assets/orca.png'
 const Sidebar = ({handelRefreshFromSidebar}) => {
-    const navigate = useNavigate();
 
     return (
         <div className="sidebar">
@@ -27,9 +23,6 @@ const Sidebar = ({handelRefreshFromSidebar}) => {
                     
                     <li className="" >
                         <StorageIcon className="icon" />
-                        {/* <Nav.Link onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
-                            <span>Devices</span>
-                        </Nav.Link> */}
                         <Link to="/" onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
                             <span>Devices</span>
                         </Link>
