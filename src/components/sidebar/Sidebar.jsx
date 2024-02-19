@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/alt-text */
 import "./sidebar.scss"
 import StorageIcon from '@mui/icons-material/Storage';
 import { Link } from "react-router-dom";
@@ -23,16 +24,15 @@ const Sidebar = ({handelRefreshFromSidebar}) => {
             <hr />
             <div className="center">
                 <ul>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <li>
+                    
+                    <li className="" >
                         <StorageIcon className="icon" />
-                        <Nav.Link onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
+                        {/* <Nav.Link onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
                             <span>Devices</span>
-
-                        </Nav.Link>
+                        </Nav.Link> */}
+                        <Link to="/" onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
+                            <span>Devices</span>
+                        </Link>
                     </li>
 
                 </ul>
