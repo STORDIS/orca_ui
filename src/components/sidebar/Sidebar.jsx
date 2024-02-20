@@ -1,23 +1,9 @@
 import "./sidebar.scss"
 import StorageIcon from '@mui/icons-material/Storage';
 import { Link } from "react-router-dom";
-import Nav from 'react-bootstrap/Nav';
-import { useNavigate } from "react-router-dom";
 import logo from '../../assets/orca.png'
-const Sidebar = () => {
-    const navigate = useNavigate();
-        
-      
-        const handleRefresh = () => {
-          const currentPath = window.location.pathname;
-          const targetPath = '/';
-      
-          if (currentPath === targetPath) {
-            window.location.reload(false); 
-          } else {
-            navigate(targetPath);
-          }
-        }
+const Sidebar = ({handelRefreshFromSidebar}) => {
+
     return (
         <div className="sidebar">
             <div className="top">
@@ -34,16 +20,12 @@ const Sidebar = () => {
             <hr />
             <div className="center">
                 <ul>
-                    <br />
-                    <br />
-                    <br />
-                    <br />
-                    <li>
+                    
+                    <li className="" >
                         <StorageIcon className="icon" />
-                        <Nav.Link href="/" onClick={handleRefresh} style={{ textDecoration: "none" }}>
+                        <Link to="/" onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
                             <span>Devices</span>
-
-                        </Nav.Link>
+                        </Link>
                     </li>
 
                 </ul>
