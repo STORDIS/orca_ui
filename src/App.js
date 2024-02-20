@@ -2,36 +2,46 @@ import Home from "./pages/home/Home";
 import TabbedPane from "./components/tabbedpane/TabbedPane";
 import LogViewer from "./components/logpane/logpane";
 import { useState } from "react";
-import "./pages/home/home.scss";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Navbar from "./components/navbar/Navbar";
+import Sidebar from "./components/sidebar/Sidebar";
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import "./App.scss";
 
 const App = () => {
-  const [log, setLog] = useState([]);
+  // const [log, setLog] = useState([]);
 
-  const getLogViewer = () => {
-    return (
-      <div className="listContainer">
-        <div className="listTitle">Logs</div>
-        <LogViewer log={log} setLog={setLog} />
-      </div>
-    );
-  };
+  // const getLogViewer = () => {
+  //   return (
+  //     <div className="listContainer">
+  //       <div className="listTitle">Logs</div>
+  //       <LogViewer log={log} setLog={setLog} />
+  //     </div>
+  //   );
+  // };
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/">
-            <Route index element={<Home logViewer={getLogViewer()} setLog={setLog} />} />
-            <Route path="devices">
-              <Route
-                path=":deviceIP"
-                element={<TabbedPane logViewer={getLogViewer()} setLog={setLog} />}
-              />
-            </Route>
-          </Route>
-        </Routes>
-      </BrowserRouter>
+    <div className="mainContainer">
+      <Router>
+          <Sidebar />
+          <div className="container">
+            <Navbar />
+            <Routes>
+              <Route path="/home" element={<Home />} />
+              <Route path="/" element={<Navigate replace to="/home" />} />
+              <Route path="devices/:deviceIP" element={<TabbedPane />} />
+            </Routes>
+
+            {/* <div className="listContainer">
+              <LogViewer />
+            </div> */}
+          </div>
+      </Router>
     </div>
   );
 };

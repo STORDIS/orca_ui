@@ -51,11 +51,7 @@ const TabbedPane = (props) => {
     }
 
     return (
-        <div className='home'>
-            <Sidebar />
-            <div className="homeContainer">
-                <Navbar />
-
+        <div >
                 <div className="listContainer">
                     Device : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
                         {dropdownOptions.map((option) => (
@@ -105,7 +101,7 @@ const TabbedPane = (props) => {
                 </div>
                 {props.logViewer}
             </div>
-        </div>
+       
     )
 }
 
