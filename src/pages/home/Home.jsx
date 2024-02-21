@@ -6,19 +6,19 @@ import "./home.scss";
 // import { useLog } from "../../LogContext";
 
 function Home() {
-  // const { setLog } = useLog();
+    // const { setLog } = useLog();
 
-  // useEffect(() => {
-  //   setLog("test");
-  // }, [setLog]);
+    // useEffect(() => {
+    //   setLog("test");
+    // }, [setLog]);
 
-  return (
-    <div>
-      <div className="listContainer">
-        <div className="listTitle">Devices</div>
-        <Datatable />
-      </div>
-    </div>
-  );
+    return (
+        <div>
+            <div className="listContainer">
+                <div className="listTitle">Devices</div>
+                <Datatable />
+            </div>
+        </div>
+    );
 }
 export default Home;
