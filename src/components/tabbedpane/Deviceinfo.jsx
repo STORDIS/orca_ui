@@ -18,7 +18,11 @@ const Deviceinfo = (props) => {
 
   const [dataTable, setDataTable] = useState([]);
   console.log(dataTable);
+
   useEffect(() => {
+
+    console.log('props.refresh', props.refresh)
+    
     axios(getAllDevicesURL())
       .then((res) => {
         console.log("response", res.data);
@@ -30,7 +34,7 @@ const Deviceinfo = (props) => {
         }
       })
       .catch((err) => console.log(err));
-  }, [isTabbedPane]);
+  }, [selectedDeviceIp]);
 
   return (
     <table style={{ borderCollapse: 'collapse', border: '1px solid #ddd' }}>

@@ -16,16 +16,6 @@ import { DataProvider } from "./LogContext";
 import "./App.scss";
 
 const App = () => {
-    // const [log, setLog] = useState([]);
-
-    // const getLogViewer = () => {
-    //   return (
-    //     <div className="listContainer">
-    //       <div className="listTitle">Logs</div>
-    //       <LogViewer log={log} setLog={setLog} />
-    //     </div>
-    //   );
-    // };
 
     return (
         <div className="mainContainer">

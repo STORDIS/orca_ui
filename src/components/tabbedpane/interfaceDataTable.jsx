@@ -21,7 +21,6 @@ const InterfaceDataTable = (props) => {
 
     const { setLog } = useLog();
 
-
     const setInterfaceData = () => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.get(apiUrl)
@@ -65,6 +64,8 @@ const InterfaceDataTable = (props) => {
 
 
     useEffect(() => {
+        console.log('props.refresh', props.refresh)
+
         if (props.refresh) {
             props.setRefresh(!props.refresh);
             setDataTable(JSON.parse(JSON.stringify(originalData)));
@@ -99,14 +100,11 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.put(apiUrl, output)
             .then(res => {
-                // props.setLog(res.data.result);
                 setLog(res.data.result);
-
                 setConfigStatus('Config Successful');
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
-                // props.setLog(err.response.data.result);
                 setLog(err.response.data.result);
 
                 setConfigStatus('Config Failed');

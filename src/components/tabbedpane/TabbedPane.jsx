@@ -17,9 +17,7 @@ import { useState, useEffect } from "react";
 import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
-
-
-
+import { useNavigate } from 'react-router-dom';
 
 const TabbedPane = () => {
     const { deviceIP } = useParams();
@@ -50,10 +48,17 @@ const TabbedPane = () => {
         setRefresh(true);
     }
 
+    const navigate = useNavigate();
+
+    const handleDeviceChange = (event) => {
+        navigate('/devices/'+event.target.value);
+        setRefresh(true);
+    };
+
     return (
         <div >
                 <div className="listContainer">
-                    Device : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
+                    Device : <select value={deviceIP} onChange={handleDeviceChange}>
                         {dropdownOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.value}
@@ -77,22 +82,22 @@ const TabbedPane = () => {
                             </Tabs>
                         </Box>
                         <TabPanel tabValue={tabValue} index={0}>
-                            <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
+                            <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={1}>
-                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <InterfaceDataTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={2}>
-                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <PortChDataTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={3}>
-                            <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <McLagDataTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={4}>
                             <BGPTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={5}>
-                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
+                            <PortGroupTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
                             <VlanTable selectedDeviceIp={deviceIP} />
