@@ -82,22 +82,22 @@ const TabbedPane = () => {
                             </Tabs>
                         </Box>
                         <TabPanel tabValue={tabValue} index={0}>
-                            <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP}  />
+                            <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={1}>
-                            <InterfaceDataTable selectedDeviceIp={deviceIP}  />
+                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={2}>
-                            <PortChDataTable selectedDeviceIp={deviceIP}  />
+                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={3}>
-                            <McLagDataTable selectedDeviceIp={deviceIP}  />
+                            <McLagDataTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={4}>
                             <BGPTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={5}>
-                            <PortGroupTable selectedDeviceIp={deviceIP}  />
+                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
                             <VlanTable selectedDeviceIp={deviceIP} />

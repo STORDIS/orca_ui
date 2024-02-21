@@ -32,6 +32,14 @@ const PortGroupTable = (props) => {
             .catch(err => console.log(err))
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh) {
+            props.setRefresh(!props.refresh);
+            setDataTable(JSON.parse(JSON.stringify(originalData)));
+            setChanges([]);
+        }
+    }, [props.refresh]);
+    
     const onColumnResized = useCallback((params) => {
     }, []);
 

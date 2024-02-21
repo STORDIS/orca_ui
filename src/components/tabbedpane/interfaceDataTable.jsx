@@ -36,6 +36,14 @@ const InterfaceDataTable = (props) => {
         }
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh) {
+            props.setRefresh(!props.refresh);
+            setDataTable(JSON.parse(JSON.stringify(originalData)));
+            setChanges([]);
+        }
+    }, [props.refresh]);
+    
     const resetConfigStatus = () => {
                 setConfigStatus('');
                 setChanges([]);

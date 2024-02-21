@@ -47,6 +47,14 @@ const PortChDataTable = (props) => {
             .catch(err => console.log(err));
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh) {
+            props.setRefresh(!props.refresh);
+            setDataTable(JSON.parse(JSON.stringify(originalData)));
+            setChanges([]);
+        }
+    }, [props.refresh]);
+    
     const defaultColDef = {
         tooltipValueGetter: (params) => { return params.value },
         resizable: true,
