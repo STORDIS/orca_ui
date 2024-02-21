@@ -7,6 +7,8 @@ import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios';
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
 
+import { useLog } from "../../LogContext";
+
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
@@ -16,6 +18,8 @@ const InterfaceDataTable = (props) => {
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
+
+    const { setLog } = useLog();
 
 
     const setInterfaceData = () => {
@@ -95,12 +99,16 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         axios.put(apiUrl, output)
             .then(res => {
-                props.setLog(res.data.result);
+                // props.setLog(res.data.result);
+                setLog(res.data.result);
+
                 setConfigStatus('Config Successful');
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
-                props.setLog(err.response.data.result);
+                // props.setLog(err.response.data.result);
+                setLog(err.response.data.result);
+
                 setConfigStatus('Config Failed');
                 setInterfaceData();
 

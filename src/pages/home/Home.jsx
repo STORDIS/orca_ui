@@ -3,14 +3,21 @@ import Datatable from "../../components/tabbedpane/Datatable";
 
 import "./home.scss";
 
-function Home(props) {
+// import { useLog } from "../../LogContext";
+
+function Home() {
+  // const { setLog } = useLog();
+
+  // useEffect(() => {
+  //   setLog("test");
+  // }, [setLog]);
+
   return (
     <div>
       <div className="listContainer">
         <div className="listTitle">Devices</div>
         <Datatable />
       </div>
-      <div className="listContainer">{props.logViewer}</div>
     </div>
   );
 }

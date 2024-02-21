@@ -21,7 +21,7 @@ import "../../pages/home/home.scss";
 
 
 
-const TabbedPane = (props) => {
+const TabbedPane = () => {
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(parseInt(localStorage.getItem('selectedTab')) !== null ? parseInt(localStorage.getItem('selectedTab')) : 0);
     const [dropdownOptions, setDropdownOptions] = useState([]);
@@ -80,26 +80,26 @@ const TabbedPane = (props) => {
                             <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={1}>
-                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={2}>
-                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={3}>
-                            <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={4}>
-                            <BGPTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+                            <BGPTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={5}>
-                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
-                            <VlanTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+                            <VlanTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                     </Box>
                 </div>
-                {props.logViewer}
+                {/* {props.logViewer} */}
             </div>
        
     )

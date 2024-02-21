@@ -11,6 +11,8 @@ import {
 import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 
+import { DataProvider } from "./LogContext";
+
 import "./App.scss";
 
 const App = () => {
@@ -28,7 +30,9 @@ const App = () => {
   return (
     <div className="mainContainer">
       <Router>
-          <Sidebar />
+        <Sidebar />
+
+        <DataProvider>
           <div className="container">
             <Navbar />
             <Routes>
@@ -37,10 +41,11 @@ const App = () => {
               <Route path="devices/:deviceIP" element={<TabbedPane />} />
             </Routes>
 
-            {/* <div className="listContainer">
+            <div className="listContainer">
               <LogViewer />
-            </div> */}
+            </div>
           </div>
+        </DataProvider>
       </Router>
     </div>
   );
