@@ -213,13 +213,6 @@ const PortChDataTable = (props) => {
     }, [dataTable]);
 
 
-    useEffect(() => {
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            setDataTable(JSON.parse(JSON.stringify(originalData)));
-            setChanges([]);
-        }
-    }, [props.refresh]);
 
 
     const createJsonOutput = useCallback(() => {

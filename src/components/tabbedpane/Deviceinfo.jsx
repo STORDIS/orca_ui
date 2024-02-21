@@ -19,10 +19,7 @@ const Deviceinfo = (props) => {
   const [dataTable, setDataTable] = useState([]);
   console.log(dataTable);
 
-  useEffect(() => {
-
-    console.log('props.refresh', props.refresh)
-    
+  useEffect(() => {    
     axios(getAllDevicesURL())
       .then((res) => {
         console.log("response", res.data);

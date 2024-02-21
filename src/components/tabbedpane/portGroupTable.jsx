@@ -57,14 +57,6 @@ const PortGroupTable = (props) => {
 
     }, [dataTable]);
 
-    //Handling of undo chages done in UI.
-    useEffect(() => {
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            setDataTable(JSON.parse(JSON.stringify(originalData)));
-            setChanges([]);
-        }
-    }, [props.refresh]);
 
     const createReqJson = useCallback(() => {
         return changes.map(change => ({

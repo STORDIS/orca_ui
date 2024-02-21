@@ -82,29 +82,28 @@ const TabbedPane = () => {
                             </Tabs>
                         </Box>
                         <TabPanel tabValue={tabValue} index={0}>
-                            <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
+                            <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP}  />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={1}>
-                            <InterfaceDataTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
+                            <InterfaceDataTable selectedDeviceIp={deviceIP}  />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={2}>
-                            <PortChDataTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
+                            <PortChDataTable selectedDeviceIp={deviceIP}  />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={3}>
-                            <McLagDataTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
+                            <McLagDataTable selectedDeviceIp={deviceIP}  />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={4}>
                             <BGPTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={5}>
-                            <PortGroupTable selectedDeviceIp={deviceIP} setRefresh={setRefresh} />
+                            <PortGroupTable selectedDeviceIp={deviceIP}  />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
                             <VlanTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                     </Box>
                 </div>
-                {/* {props.logViewer} */}
             </div>
        
     )
@@ -116,7 +115,6 @@ const TabPanel = (props) => {
         <div>
             {
                 tabValue === index && (<h5>{children}</h5>)
-
             }
         </div>
     )

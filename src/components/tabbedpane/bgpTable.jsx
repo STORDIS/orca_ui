@@ -17,6 +17,7 @@ const BGPTable = (props) => {
 
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
+    
     useEffect(() => {
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         axios.get(apiMUrl)

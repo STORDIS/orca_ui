@@ -64,14 +64,9 @@ const InterfaceDataTable = (props) => {
 
 
     useEffect(() => {
-        console.log('props.refresh', props.refresh)
-
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            setDataTable(JSON.parse(JSON.stringify(originalData)));
-            setChanges([]);
-        }
-    }, [props.refresh]);
+        setDataTable(JSON.parse(JSON.stringify(originalData)));
+        setChanges([]);
+    }, [selectedDeviceIp]);
 
     const createJsonOutput = useCallback(() => {
         return changes.map(change => ({

@@ -17,6 +17,7 @@ const McLagDataTable = (props) => {
 
     const [dataTable, setDataTable] = useState([]);
     console.log(dataTable)
+    
     useEffect(() => {
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         axios.get(apiMUrl)
