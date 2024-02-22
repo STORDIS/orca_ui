@@ -86,11 +86,29 @@ const PortGroupTable = (props) => {
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         axios.put(apiUrl, req_json)
             .then(res => {
-                setLog(res.data.result)
-                setConfigStatus('Config Successful');
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "Success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });                setConfigStatus('Config Successful');
             }).catch(err => {
-                setLog(err.response.data.result)
-                setConfigStatus('Config Failed');
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });                setConfigStatus('Config Failed');
             }).finally(() => {
                 setIsConfigInProgress(false);
                 setChanges([]);

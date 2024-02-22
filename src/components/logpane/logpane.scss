@@ -1,0 +1,66 @@
+.logPanel {
+    height: 200px;
+    overflow-y: auto;
+    border: 0.5px solid black;
+
+    .grid-header-container {
+        display: grid;
+        grid-template-columns: 5% 20% 60% 15%;
+        width: inherit;
+        font-weight: 700;
+        background-color: #a5a5a5;
+    }
+
+    .grid-item {
+        padding: 10px 15px 10px 15px;
+    }
+
+    .grid-body {
+        min-height: 200px;
+        overflow-y: auto;
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 5% 20% 60% 15%;
+            width: inherit;
+            background-color: #f0f0f0;
+            margin: 5px 0px 5px 0px;
+        }
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th,
+    td {
+        border: 1px solid black;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    th:nth-child(1),
+    td:nth-child(1) {
+        width: 25%;
+    }
+    th:nth-child(2),
+    td:nth-child(2) {
+        width: 50%;
+    }
+    th:nth-child(3),
+    td:nth-child(3) {
+        width: 25%;
+    }
+
+    .nullRow {
+        text-align: center !important;
+    }
+}
+.clearLogBtn {
+    margin-top: 15px;
+}
