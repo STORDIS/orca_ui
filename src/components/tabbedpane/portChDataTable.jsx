@@ -9,6 +9,8 @@ import { getAllPortChnlsOfDeviceURL } from '../../backend_rest_urls'
 import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
 
+import { useLog } from "../../LogContext";
+
 const PortChDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%', maxWidth: '100%' }), []);
@@ -30,6 +32,7 @@ const PortChDataTable = (props) => {
     const [isDeletionConfirmed, setIsDeletionConfirmed] = useState(false);
     const [memberNames, setMemberNames] = useState([]);
 
+    const { setLog } = useLog();
 
     useEffect(() => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
@@ -44,6 +47,14 @@ const PortChDataTable = (props) => {
             .catch(err => console.log(err));
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh) {
+            props.setRefresh(!props.refresh);
+            setDataTable(JSON.parse(JSON.stringify(originalData)));
+            setChanges([]);
+        }
+    }, [props.refresh]);
+    
     const defaultColDef = {
         tooltipValueGetter: (params) => { return params.value },
         resizable: true,
@@ -92,7 +103,7 @@ const PortChDataTable = (props) => {
         axios.put(apiPUrl, formData)
             .then(response => {
                 setShowForm(false);
-                props.setLog(response.data.result);
+                setLog(response.data.result);
                 setMessageModalContent('Port Channel added Successfully');
                 setIsMessageModalOpen(true);
                 refreshData();
@@ -100,7 +111,7 @@ const PortChDataTable = (props) => {
             .catch(error => {
                 setMessageModalContent('Error adding port channel');
                 setIsMessageModalOpen(true);
-                props.setLog(error.response.data.result);
+                setLog(error.response.data.result);
             });
     };
 
@@ -113,7 +124,7 @@ const PortChDataTable = (props) => {
         console.log('DeleteData', deleteData)
         axios.delete(apiPUrl, { data: deleteData })
             .then(response => {
-                props.setLog(response.data.result);
+                setLog(response.data.result);
                 if (response.data && Array.isArray(response.data.result)) {
                     const updatedDataTable = dataTable.filter(row =>
                         !selectedRows.some(selectedRow => selectedRow.lag_name === row.lag_name)
@@ -125,7 +136,7 @@ const PortChDataTable = (props) => {
                 setIsMessageModalOpen(true);
             })
             .catch(error => {
-                props.setLog(error.response.data.result);
+                setLog(error.response.data.result);
             })
             .finally(() => {
             });
@@ -210,13 +221,6 @@ const PortChDataTable = (props) => {
     }, [dataTable]);
 
 
-    useEffect(() => {
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            setDataTable(JSON.parse(JSON.stringify(originalData)));
-            setChanges([]);
-        }
-    }, [props.refresh]);
 
 
     const createJsonOutput = useCallback(() => {
@@ -250,12 +254,12 @@ const PortChDataTable = (props) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         axios.put(apiPUrl, output)
             .then(res => {
-                props.setLog(res.data.result)
+                setLog(res.data.result)
                 setConfigStatus('Config Successful');
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
-                props.setLog(err.response.data.result)
+                setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
                 setTimeout(resetConfigStatus, 5000);
             })

@@ -12,6 +12,7 @@ const VlanTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const { selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
+    
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios.get(apiMUrl)

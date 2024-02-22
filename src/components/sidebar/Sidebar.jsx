@@ -2,12 +2,20 @@ import "./sidebar.scss"
 import StorageIcon from '@mui/icons-material/Storage';
 import { Link } from "react-router-dom";
 import logo from '../../assets/orca.png'
-const Sidebar = ({handelRefreshFromSidebar}) => {
+import { useNavigate } from 'react-router-dom';
 
+const Sidebar = () => {
+
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate('/home');
+    };
+      
     return (
         <div className="sidebar">
             <div className="top">
-                <Link to="/" style={{ textDecoration: "none" }}>
+                <Link to="/home" style={{ textDecoration: "none" }}>
                         <img
                             src={logo}
                             width="200"
@@ -20,14 +28,10 @@ const Sidebar = ({handelRefreshFromSidebar}) => {
             <hr />
             <div className="center">
                 <ul>
-                    
-                    <li className="" >
+                    <li className="" onClick={handleClick} style={{ textDecoration: "none" }} >
                         <StorageIcon className="icon" />
-                        <Link to="/" onClick={handelRefreshFromSidebar} style={{ textDecoration: "none" }}>
-                            <span>Devices</span>
-                        </Link>
+                        <span>Devices</span>
                     </li>
-
                 </ul>
             </div>
         </div>

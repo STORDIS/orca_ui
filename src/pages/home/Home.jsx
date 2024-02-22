@@ -1,29 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import Datatable from "../../components/tabbedpane/Datatable";
-import Navbar from "../../components/navbar/Navbar";
-import Sidebar from "../../components/sidebar/Sidebar";
 
 import "./home.scss";
 
-function Home(props) {
-  const [reloadDataTable, setReloadDataTable] = useState(false);
+// import { useLog } from "../../LogContext";
 
-  const handleReloadDeviceTable = () => {
-    setReloadDataTable((prevState) => !prevState);
-  };
+function Home() {
+    // const { setLog } = useLog();
 
-  return (
-    <div className="home">
-      <Sidebar handelRefreshFromSidebar={handleReloadDeviceTable} />
-      <div className="homeContainer">
-        <Navbar />
-        <div className="listContainer">
-          <div className="listTitle">Devices</div>
-          <Datatable key={reloadDataTable} />
+    // useEffect(() => {
+    //   setLog("test");
+    // }, [setLog]);
+
+    return (
+        <div>
+            <div className="listContainer">
+                <div className="listTitle">Devices</div>
+                <Datatable />
+            </div>
         </div>
-        {props.logViewer}
-      </div>
-    </div>
-  );
+    );
 }
 export default Home;
