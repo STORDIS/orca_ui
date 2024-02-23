@@ -8,7 +8,7 @@ import axios from 'axios'
 import { getPortGroupsURL } from "../../backend_rest_urls";
 import "../../pages/home/home.scss";
 
-
+import { useLog } from "../../LogContext";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
@@ -20,6 +20,8 @@ const PortGroupTable = (props) => {
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
 
+    const { setLog } = useLog();
+
     useEffect(() => {
         const apiMUrl = getPortGroupsURL(selectedDeviceIp);
         axios.get(apiMUrl)
@@ -30,6 +32,14 @@ const PortGroupTable = (props) => {
             .catch(err => console.log(err))
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh) {
+            props.setRefresh(!props.refresh);
+            setDataTable(JSON.parse(JSON.stringify(originalData)));
+            setChanges([]);
+        }
+    }, [props.refresh]);
+    
     const onColumnResized = useCallback((params) => {
     }, []);
 
@@ -55,14 +65,6 @@ const PortGroupTable = (props) => {
 
     }, [dataTable]);
 
-    //Handling of undo chages done in UI.
-    useEffect(() => {
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            setDataTable(JSON.parse(JSON.stringify(originalData)));
-            setChanges([]);
-        }
-    }, [props.refresh]);
 
     const createReqJson = useCallback(() => {
         return changes.map(change => ({
@@ -84,10 +86,10 @@ const PortGroupTable = (props) => {
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         axios.put(apiUrl, req_json)
             .then(res => {
-                props.setLog(res.data.result)
+                setLog(res.data.result)
                 setConfigStatus('Config Successful');
             }).catch(err => {
-                props.setLog(err.response.data.result)
+                setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
             }).finally(() => {
                 setIsConfigInProgress(false);
