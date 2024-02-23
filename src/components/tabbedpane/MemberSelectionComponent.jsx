@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const MemberSelectionComponent = ({ interfaceNames, onMemberChange }) => {
+const MemberSelectionComponent = ({ interfaceNames, onMemberChange, assignedInterfaces }) => {
   const [member, setMember] = useState("");
   const [showCheckbox, setCheckboxVisible] = useState(false);
   const [isCheckboxChecked, setCheckboxChecked] = useState(false);
@@ -39,7 +39,7 @@ const MemberSelectionComponent = ({ interfaceNames, onMemberChange }) => {
       <select id="memberDropdown" onChange={handleDropdownChange} value={member}>
         <option value="">Select one...</option>
         {interfaceNames.map((name, i) => (
-          <option key={i} value={name}>
+          <option key={i} value={name} disabled={assignedInterfaces.includes(name)}>
             {name}
           </option>
         ))}

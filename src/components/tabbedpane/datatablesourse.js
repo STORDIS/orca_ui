@@ -77,7 +77,8 @@ export const vlanColumns = (interfaceNames) => [
     values: ['up', 'down'],
   }, headerComponent: EditableHeaderComponent },
   { field: 'oper_status', headerName: 'Oper_STS', type: 'boolean', width: 130 },
-  { field: 'members', headerName: 'Member IFs', width: 130, editable: true,  cellEditorParams: {values: interfaceNames}, headerComponent: EditableHeaderComponent},
+  { field: 'members', headerName: 'Member IFs', width: 130, editable: true,  
+  cellEditorParams: {values: interfaceNames}, headerComponent: EditableHeaderComponent},
 ];
 
 
@@ -98,7 +99,7 @@ export const portChannelColumns = [
   { field: 'oper_sts', headerName: 'Operation Status', width: 130 },
   { field: 'speed', headerName: 'Speed', width: 130 },
   { field: 'oper_sts_reason', headerName: 'OperReason', width: 130 },
-  { field: 'members', headerName: 'Members', width: 130, },
+  { field: 'members', headerName: 'Members', width: 130, editable: true, headerComponent: EditableHeaderComponent },
 ];
 
 export const mclagColumns = [

@@ -5,7 +5,7 @@ import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import axios from 'axios'
-import { getAllBGPOfDeviceURL, getVlansURL, getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
+import { getAllBGPOfDeviceURL, getVlansURL, getAllInterfacesOfDeviceURL, deleteVlanMembersURL } from "../../backend_rest_urls";
 import LogViewer from "../logpane/logpane";
 import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
@@ -40,20 +40,21 @@ const VlanTable = (props) => {
     const [showCheckbox, setCheckboxVisible] = useState(false);
     const [isCheckboxChecked, setCheckboxChecked] = useState(false);
     const [memberFinalObj, setMemberFinalObj] = useState({});
+    const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState([]);
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios.get(apiMUrl)
             .then((res) => {
                 //iterate the json array res.data and convert the value of key "members" in each element to string
-                res.data.forEach(element => {
+                res?.data?.forEach(element => {
                     element.members = JSON.stringify(element.members);
                 });
-                setDataTable(res.data);
+                setDataTable(res?.data);
             })
             .catch(err => console.log(err))
     }, [selectedDeviceIp]);
-
+    
     useEffect(() => {
         axios.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then(response => {
@@ -64,7 +65,7 @@ const VlanTable = (props) => {
                 console.error("Error fetching interface names", error);
             });
     }, []);
-
+    
     const defaultColDef = {
         tooltipValueGetter: (params) => { return params.value },
         resizable: true
@@ -74,9 +75,14 @@ const VlanTable = (props) => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios.get(apiMUrl)
             .then(res => {
+                console.log('refresh', res)
+                if (res.data !== "") {
+                res.data.forEach(element => {
+                    element.members = JSON.stringify(element.members);
+                });
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
-            })
+    }})
             .catch(err => {
                 console.error("Error fetching data:", err);
                 setMessageModalContent("Error fetching data: " + err.message);
@@ -90,7 +96,6 @@ const VlanTable = (props) => {
     const resetConfigStatus = () => {
         setConfigStatus('');
         setChanges([]);
-
         gridRef.current.api.deselectAll();
         setSelectedRows([]);
     };
@@ -98,7 +103,7 @@ const VlanTable = (props) => {
     const handleOkClick = () => {
         setIsMessageModalOpen(false);
         refreshData();
-    }
+    };
 
     const promptDeleteConfirmation = () => {
         setMessageModalContent(getDeleteConfirmationMessage());
@@ -287,19 +292,19 @@ const VlanTable = (props) => {
 
     };
 
-    const openMembersSelectionModal = (vlanData) => {
-        setCurrentEditingVlan(vlanData);
-        setIsMemberSelectionModalOpen(true);
-    };
     const openMemberSelectionModal = (vlanData) => {
         setCurrentEditingVlan(vlanData);
-        setSelectedMembers(vlanData.members ? vlanData.members.replace(/[{}]/g, '').split(',') : []); // Pre-populate selectedMembers if any, assuming members are stored in the desired format
+        const existingMembers = vlanData.members ? JSON.parse(vlanData.members) : {};
+        setMemberFinalObj(existingMembers);
         setIsMemberSelectionModalOpen(true);
     };
 
     const onCellClicked = useCallback((params) => {
         if (params.colDef.field === 'members') {
+            const members = JSON.parse(params.data.members);
             openMemberSelectionModal(params.data);
+            setSelectedMembers(members);
+            setIsMemberSelectionModalOpen(true);
         }
     }, []);
 
@@ -346,11 +351,20 @@ const VlanTable = (props) => {
 
     const handleBtnClicked = (e) => {
         e.preventDefault();
-        const newStatus = isCheckboxChecked ? "tagged" : "untagged";
-        setMemberFinalObj({
-            ...memberFinalObj,
-            [member]: newStatus,
-        });
+        if (member) {
+            const newStatus = isCheckboxChecked ? "tagged" : "untagged";
+            setMemberFinalObj(prev => ({
+                ...prev,
+                [member]: newStatus,
+            }));
+
+            setMember("");
+            setCheckboxVisible(false);
+            setCheckboxChecked(false);
+        } else {
+
+            alert("Please select a member interface before adding.");
+        }
     };
 
 
@@ -389,7 +403,61 @@ const VlanTable = (props) => {
     const handleModalClose = () => {
         resetMemberSelectionModal();
         setIsMemberSelectionModalOpen(false);
-    }
+    };
+
+    const removeSelectedMembers = async () => {
+        if (!currentEditingVlan || membersSelectedForRemoval.length === 0) return;
+
+        const updatedMembersObj = { ...memberFinalObj };
+        membersSelectedForRemoval.forEach(member => {
+            delete updatedMembersObj[member];
+        });
+
+        const payload = {
+            mgt_ip: selectedDeviceIp,
+            name: currentEditingVlan.name,
+            members: updatedMembersObj,
+        };
+
+        try {
+            await axios.delete(deleteVlanMembersURL(selectedDeviceIp), payload);
+            console.log('VLAN members updated successfully');
+
+            setMemberFinalObj(updatedMembersObj);
+            setMembersSelectedForRemoval([]);
+            refreshData();
+        } catch (error) {
+            console.error('Failed to update VLAN members', error);
+        }
+    };
+
+    const deleteVlanMembers = async () => {
+        if (!currentEditingVlan || membersSelectedForRemoval.length === 0) return;
+
+        const updatedMembersObj = { ...memberFinalObj };
+        membersSelectedForRemoval.forEach(member => {
+            delete updatedMembersObj[member];
+        });
+
+
+        const payload = {
+            mgt_ip: selectedDeviceIp,
+            name: currentEditingVlan.name,
+            members: updatedMembersObj,
+        };
+
+        try {
+            const response = await axios.delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload });
+            console.log('VLAN members updated successfully', response.data);
+
+
+            setMemberFinalObj(updatedMembersObj);
+            setMembersSelectedForRemoval([]);
+            refreshData();
+        } catch (error) {
+            console.error('Failed to update VLAN members', error);
+        }
+    };
 
     return (
         <div className="datatable-container">
@@ -397,6 +465,7 @@ const VlanTable = (props) => {
                 <div className="button-group">
                     <button onClick={openAddModal}>Add Vlan</button>
                     <button onClick={openDeleteModal} disabled={!isDeleteButtonEnabled}>Delete selected Vlan</button>
+
                 </div>
                 <div className="button-column">
                     <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
@@ -429,9 +498,9 @@ const VlanTable = (props) => {
                 {isDeleteConfirmationModalOpen && (
                     <Modal show={isDeleteConfirmationModalOpen} onClose={handleDeleteCancellation}>
                         <div>
-                            <p>{messageModalContent}</p>
-                            <button onClick={handleDeleteConfirmation}>Yes</button>
-                            <button onClick={handleDeleteConfirmation}>No</button>
+                            <p>{messageModalContent}</p> &nbsp;
+                            <button onClick={handleDeleteConfirmation}>Yes</button> &ensp;
+                            <button onClick={handleDeleteCancellation}>No</button>
                         </div>
                     </Modal>
                 )}
@@ -457,12 +526,13 @@ const VlanTable = (props) => {
                             </div>
                         </div>
                     </Modal>}
+
                 {isMemberSelectionModalOpen && (
-                    <Modal show={isMemberSelectionModalOpen} onClose={handleModalClose} title="Select Interface Members">
+                    <Modal show={isMemberSelectionModalOpen} onClose={handleModalClose} title="Select Member Interfaces">
                         <div>
                             <div className="selection-container">
                                 <select id="memberDropdown" onChange={handleDropdownChange} value={member}>
-                                    <option value="" disabled>Select one...</option>
+                                    <option value="" disabled>Select Member Interface</option>
                                     {interfaceNames.map((val, index) => (
                                         <option key={index} value={val}>{val}</option>
                                     ))}
@@ -473,15 +543,31 @@ const VlanTable = (props) => {
                                         Tagged
                                     </label>
                                 )}
+                                <button onClick={handleBtnClicked}>Add Member Interface</button>
                             </div>
-                            <div className="button-container">
-                                <button onClick={handleBtnClicked}>+</button> &ensp;
-                                <button onClick={handleSaveMemberSelection}>Save</button>
+                            <div className="remove-selection-container" style={{ marginTop: '20px' }}>
+                                <label>Select Members to Remove:</label>
+                                <select multiple value={membersSelectedForRemoval} onChange={(e) => setMembersSelectedForRemoval(Array.from(e.target.selectedOptions, option => option.value))} size="5" style={{ width: '100%' }}>
+                                    {Object.keys(memberFinalObj).map((member) => (
+                                        <option key={member} value={member}>{member}</option>
+                                    ))}
+                                </select>
                             </div>
-                            <p>{JSON.stringify(memberFinalObj)}</p>
+                            <div style={{ marginTop: '10px' }}>
+
+                            </div>
+                            <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                                <button onClick={handleSaveMemberSelection}>Ok</button>
+                                &nbsp;
+                                <button onClick={handleModalClose}>Cancel</button>
+                                <button onClick={deleteVlanMembers} disabled={membersSelectedForRemoval.length === 0}>
+                                    Delete Selected Members
+                                </button>
+                            </div>
                         </div>
                     </Modal>
                 )}
+
             </div>
         </div>
     )
