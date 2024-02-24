@@ -17,11 +17,9 @@ import { useState, useEffect } from "react";
 import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
+import { useNavigate } from 'react-router-dom';
 
-
-
-
-const TabbedPane = (props) => {
+const TabbedPane = () => {
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(parseInt(localStorage.getItem('selectedTab')) !== null ? parseInt(localStorage.getItem('selectedTab')) : 0);
     const [dropdownOptions, setDropdownOptions] = useState([]);
@@ -50,14 +48,17 @@ const TabbedPane = (props) => {
         setRefresh(true);
     }
 
-    return (
-        <div className='home'>
-            <Sidebar />
-            <div className="homeContainer">
-                <Navbar />
+    const navigate = useNavigate();
 
+    const handleDeviceChange = (event) => {
+        navigate('/devices/'+event.target.value);
+        setRefresh(true);
+    };
+
+    return (
+        <div >
                 <div className="listContainer">
-                    Device : <select value={deviceIP} onChange={(e) => window.location.pathname = `/devices/${e.target.value}`}>
+                    Device : <select value={deviceIP} onChange={handleDeviceChange}>
                         {dropdownOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                                 {option.value}
@@ -84,28 +85,29 @@ const TabbedPane = (props) => {
                             <Deviceinfo columns={2} isTabbedPane={true} selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={1}>
-                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <InterfaceDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={2}>
-                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <PortChDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={3}>
-                            <McLagDataTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <McLagDataTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={4}>
-                            <BGPTable selectedDeviceIp={deviceIP} setLog={props.setLog}/>
+                            <BGPTable selectedDeviceIp={deviceIP} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={5}>
-                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+                            <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
-                            <VlanTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} setLog={props.setLog}/>
+
+                            <VlanTable selectedDeviceIp={deviceIP} />
+
                         </TabPanel>
                     </Box>
                 </div>
-                {props.logViewer}
             </div>
-        </div>
+       
     )
 }
 
@@ -115,7 +117,6 @@ const TabPanel = (props) => {
         <div>
             {
                 tabValue === index && (<h5>{children}</h5>)
-
             }
         </div>
     )

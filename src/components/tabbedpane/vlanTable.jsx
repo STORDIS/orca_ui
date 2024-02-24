@@ -40,7 +40,6 @@ const VlanTable = (props) => {
     const [showCheckbox, setCheckboxVisible] = useState(false);
     const [isCheckboxChecked, setCheckboxChecked] = useState(false);
     const [memberFinalObj, setMemberFinalObj] = useState({});
-    const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState([]);
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
