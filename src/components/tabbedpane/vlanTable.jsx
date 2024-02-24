@@ -17,29 +17,8 @@ const VlanTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const { selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
-    const [changes, setChanges] = useState([]);
-    const [originalData, setOriginalData] = useState([]);
-    const [isConfigInProgress, setIsConfigInProgress] = useState(false);
-    const [configStatus, setConfigStatus] = useState('');
-    const [selectedRows, setSelectedRows] = useState([]);
-    const [log, setLog] = useState([]);
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-    const [messageModalContent, setMessageModalContent] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] = useState(false);
-    const [showForm, setShowForm] = useState(false);
-    const [modalType, setModalType] = useState('success');
-    const [modalTitle, setModalTitle] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isDeleteButtonEnabled, setIsDeleteButtonEnabled] = useState(false);
-    const [interfaceNames, setInterfaceNames] = useState([]);
-    const [selectedMembers, setSelectedMembers] = useState([]);
-    const [isMemberSelectionModalOpen, setIsMemberSelectionModalOpen] = useState(false);
-    const [currentEditingVlan, setCurrentEditingVlan] = useState(null);
-    const [member, setMember] = useState("");
-    const [showCheckbox, setCheckboxVisible] = useState(false);
-    const [isCheckboxChecked, setCheckboxChecked] = useState(false);
-    const [memberFinalObj, setMemberFinalObj] = useState({});
+
+    
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
