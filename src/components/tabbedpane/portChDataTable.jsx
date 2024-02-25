@@ -112,7 +112,7 @@ const PortChDataTable = (props) => {
                 );
 
                 setLog({
-                    status: "Success",
+                    status: "success",
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
                 });
@@ -156,7 +156,7 @@ const PortChDataTable = (props) => {
                 );
 
                 setLog({
-                    status: "Success",
+                    status: "success",
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
                 });
@@ -307,7 +307,7 @@ const PortChDataTable = (props) => {
                     endIndex
                 );
                 setLog({
-                    status: "Success",
+                    status: "success",
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
                 });                setConfigStatus('Config Successful');
