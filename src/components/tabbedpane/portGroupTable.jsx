@@ -118,7 +118,7 @@ const PortGroupTable = (props) => {
 
     return (
         <div className="datatable">
-            <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
+            <button type="button" style={{ marginBottom : '15px' }} onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
             <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact

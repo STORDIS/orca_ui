@@ -66,7 +66,7 @@ const TabbedPane = () => {
                         ))}
                     </select>
                     &nbsp; &nbsp;
-                    <button onClick={onUndo}>Undo Changes</button>
+                    <button type="button" onClick={onUndo}>Undo Changes</button>
                 </div>
                 <div className="listContainer">
                     <Box sx={{ width: '100%' }}>

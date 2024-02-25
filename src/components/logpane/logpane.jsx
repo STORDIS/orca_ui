@@ -31,7 +31,20 @@ function LogViewer() {
             width: 50,
             resizable: true,
         },
-        { field: "timestamp", headerName: "Time", width: 150, resizable: true },
+        {
+            field: "timestamp",
+            headerName: "Time",
+            width: 150,
+            resizable: true,
+            cellRenderer: (params) => {
+                return (
+                    <Time
+                        value={params.value}
+                        format="hh:mm:ss DD-MM-YYYY"
+                    />
+                );
+            },
+        },
         { field: "result", headerName: "Task", width: 400, resizable: true },
         {
             field: "status",
@@ -70,7 +83,7 @@ function LogViewer() {
 
     const gridRef = useRef();
 
-    const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+    const gridStyle = useMemo(() => ({ height: "270px", width: "100%" }), []);
 
     return (
         <div style={{ width: "100%", height: "300px" }}>
@@ -82,11 +95,11 @@ function LogViewer() {
                     paginationPageSize={5}
                     paginationPageSizeSelector={[5, 10, 15]}
                 />
-            </div>
 
-            <button className="clearLogBtn" onClick={handelClearLog}>
-                Clear Log{" "}
-            </button>
+                <button className="clearLogBtn" onClick={handelClearLog}>
+                    Clear Log
+                </button>
+            </div>
         </div>
     );
 }
