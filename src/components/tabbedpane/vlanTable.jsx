@@ -11,14 +11,38 @@ import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
 import MemberSelectionComponent from "./MemberSelectionComponent";
+import { useLog } from "../../LogContext";
+
 
 const VlanTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const { selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
-
-    
+    const [changes, setChanges] = useState([]);
+    const [originalData, setOriginalData] = useState([]);
+    const [isConfigInProgress, setIsConfigInProgress] = useState(false);
+    const [configStatus, setConfigStatus] = useState('');
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+    const [messageModalContent, setMessageModalContent] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] = useState(false);
+    const [showForm, setShowForm] = useState(false);
+    const [modalType, setModalType] = useState('success');
+    const [modalTitle, setModalTitle] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isDeleteButtonEnabled, setIsDeleteButtonEnabled] = useState(false);
+    const [interfaceNames, setInterfaceNames] = useState([]);
+    const [selectedMembers, setSelectedMembers] = useState([]);
+    const [isMemberSelectionModalOpen, setIsMemberSelectionModalOpen] = useState(false);
+    const [currentEditingVlan, setCurrentEditingVlan] = useState(null);
+    const [member, setMember] = useState("");
+    const [showCheckbox, setCheckboxVisible] = useState(false);
+    const [isCheckboxChecked, setCheckboxChecked] = useState(false);
+    const [memberFinalObj, setMemberFinalObj] = useState({});
+    const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState([]);
+    const {setLog}= useLog();
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -105,7 +129,7 @@ const VlanTable = (props) => {
         console.log('DeleteData', deleteData);
         axios.delete(apiMUrl, { data: deleteData })
             .then(response => {
-                props.setLog(response.data.result);
+                setLog(response.data.result);
                 if (response.data && Array.isArray(response.data.result)) {
                     const updatedDataTable = dataTable.filter(row =>
                         !selectedRows.some(selectedRow => selectedRow.name === row.name)
@@ -117,7 +141,7 @@ const VlanTable = (props) => {
                 setIsMessageModalOpen(true);
             })
             .catch(error => {
-                props.setLog(error.response.data.result);
+                setLog(error.response.data.result);
             })
             .finally(() => {
             });
@@ -153,7 +177,7 @@ const VlanTable = (props) => {
         axios.put(apiMUrl, formData)
             .then(response => {
                 setShowForm(false);
-                props.setLog(response.data.result);
+                setLog(response.data.result);
                 setMessageModalContent('Vlan added successfully');
                 setIsMessageModalOpen(true);
                 refreshData();
@@ -161,7 +185,7 @@ const VlanTable = (props) => {
             .catch(error => {
                 setMessageModalContent('Error in adding Vlan');
                 setIsMessageModalOpen(true);
-                props.setLog(error.response.data.result);
+                setLog(error.response.data.result);
             });
     };
 
@@ -240,12 +264,12 @@ const VlanTable = (props) => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios.put(apiMUrl, output)
             .then(res => {
-                props.setLog(res.data.result)
+              setLog(res.data.result)
                 setConfigStatus('Config Successful');
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
-                props.setLog(err.response.data.result)
+                setLog(err.response.data.result)
                 setConfigStatus('Config Failed');
                 setTimeout(resetConfigStatus, 5000);
             })
