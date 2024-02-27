@@ -1,9 +1,19 @@
-import "./navbar.scss"
-import SearchIcon from '@mui/icons-material/Search';
+import "./navbar.scss";
+import SearchIcon from "@mui/icons-material/Search";
 import Discovery from "./Discovery_btn";
 
+import { useAuth } from "../../utils/auth";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+    const auth = useAuth();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        auth.logout();
+        window.location.href = "/login";
+    };
+
     return (
         <div className="navbar">
             <div className="wrapper">
@@ -15,10 +25,14 @@ const Navbar = () => {
                     <div className="item">
                         <Discovery />
                     </div>
+
+                    <div className="items" onClick={handleLogout}>
+                        <button>Logout</button>
+                    </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

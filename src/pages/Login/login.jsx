@@ -3,10 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../utils/auth";
 import secureLocalStorage from "react-secure-storage";
 import "./login.scss";
+import logo from "../../assets/orca.png";
 
 export const Login = () => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
+
+    const [showPassword, setShowPassword] = useState(false);
+
     const navigate = useNavigate();
     const location = useLocation();
     const auth = useAuth();
@@ -19,7 +23,7 @@ export const Login = () => {
             password: password,
         };
         auth.login(credentials);
-        window.location.href = '/home';
+        window.location.href = "/home";
         // navigate(redirectPath, { replace: true });
     };
 
@@ -33,7 +37,9 @@ export const Login = () => {
 
     return (
         <div className="main-card">
+            <img src={logo} className="logo" style={{ marginBottom: "10px" }} />
             <form action="#">
+                <h1>Login</h1>
                 <div className="mb-3">
                     <label className="">User Name </label>
                     <input
@@ -45,10 +51,26 @@ export const Login = () => {
                 <div className="mb-5">
                     <label className="">Password</label>
                     <input
-                        type="password"
-                        className=""
+                        type={showPassword ? "text" : "password"}
+                        className="password"
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
+                    <button
+                        type="button"
+                        className="showBtn"
+                        onClick={() => setShowPassword(!showPassword)}
+                    >
+                        {showPassword ? (
+                            <span class="material-symbols-outlined">
+                                visibility
+                            </span>
+                        ) : (
+                            <span class="material-symbols-outlined">
+                                visibility_off
+                            </span>
+                        )}
+                    </button>
                 </div>
 
                 <div className="">

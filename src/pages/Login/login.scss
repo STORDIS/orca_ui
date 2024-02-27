@@ -1,15 +1,21 @@
 .main-card {
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     background-color: #fff;
     padding: 30px;
-    margin: 30px;
+    margin: 20vh auto;
     border-radius: 5px;
     -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
     box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-    width: 300px;
+    width: 700px;
+
+    .logo {
+        width: 40%;
+        object-fit: scale-down;
+        padding-right: 50px;
+    }
 
     h1 {
         text-align: center;
@@ -34,7 +40,14 @@
         border: 1px solid #ccc;
         border-radius: 3px;
         margin-bottom: 15px;
-        width: 100%;
+        width: -webkit-fill-available;
+    }
+
+    .password{
+        width: 80% !important;
+    }
+    .showBtn{
+        padding: 7.5px;
     }
 
     .btnDiscovery {
