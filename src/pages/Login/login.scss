@@ -43,11 +43,14 @@
         width: -webkit-fill-available;
     }
 
-    .password{
-        width: 80% !important;
-    }
-    .showBtn{
-        padding: 7.5px;
+    .password {
+        width: 100% !important;
+        display: inline-flex;
+        .showBtn {
+            padding: 5px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
     }
 
     .btnDiscovery {

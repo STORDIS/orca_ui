@@ -40,37 +40,43 @@ export const Login = () => {
             <img src={logo} className="logo" style={{ marginBottom: "10px" }} />
             <form action="#">
                 <h1>Login</h1>
-                <div className="mb-3">
+                <div className="">
                     <label className="">User Name </label>
                     <input
                         type="text"
                         className=""
+                        placeholder="user name"
                         onChange={(e) => setUserName(e.target.value)}
                     />
                 </div>
-                <div className="mb-5">
+                <div className="">
                     <label className="">Password</label>
-                    <input
-                        type={showPassword ? "text" : "password"}
-                        className="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                    <button
-                        type="button"
-                        className="showBtn"
-                        onClick={() => setShowPassword(!showPassword)}
-                    >
-                        {showPassword ? (
-                            <span class="material-symbols-outlined">
-                                visibility
-                            </span>
-                        ) : (
-                            <span class="material-symbols-outlined">
-                                visibility_off
-                            </span>
-                        )}
-                    </button>
+                    <div className="password">
+                        <input
+                            type={showPassword ? "text" : "password"}
+                            className=""
+                            value={password}
+                            placeholder="password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <button
+                            type="button"
+                            className="showBtn"
+                            onClick={() => setShowPassword(!showPassword)}
+                        >
+                            <div style={{ display: "flex" }}>
+                                {showPassword ? (
+                                    <span class="material-symbols-outlined">
+                                        visibility
+                                    </span>
+                                ) : (
+                                    <span class="material-symbols-outlined">
+                                        visibility_off
+                                    </span>
+                                )}
+                            </div>
+                        </button>
+                    </div>
                 </div>
 
                 <div className="">
