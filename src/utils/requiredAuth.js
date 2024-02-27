@@ -6,7 +6,7 @@ export const RequireAuth = ({ children }) => {
     const location = useLocation();
     const auth = useAuth();
     if (!secureLocalStorage.getItem("access_token")) {
-        // return <Navigate to="/login" state={{ from: location }} />;
+        return <Navigate to="/login" state={{ from: location }} />;
     }
     return children;
 };

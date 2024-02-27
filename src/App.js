@@ -31,14 +31,14 @@ const App = () => {
     }, [credential]);
 
     return (
-        <div className="mainContainer">
-            <Router>
-                {credential ? <Sidebar /> : null}
+        <AuthProvider>
+            <div className="mainContainer">
+                <Router>
+                    {credential ? <Sidebar /> : null}
 
-                <DataProvider>
-                    <div className="container">
-                        {credential ? <Navbar /> : null}
-                        <AuthProvider>
+                    <DataProvider>
+                        <div className="container">
+                            {credential ? <Navbar /> : null}
                             <Routes>
                                 <Route path="/login" element={<Login />} />
                                 <Route
@@ -62,30 +62,19 @@ const App = () => {
                                     path="/"
                                     element={<Navigate replace to="/login" />}
                                 />
-                                <Route path="/" element={<Redirect />} />
                             </Routes>
-                        </AuthProvider>
 
-                        {credential ? (
-                            <div className="listContainer">
-                                <LogViewer />
-                            </div>
-                        ) : null}
-                    </div>
-                </DataProvider>
-            </Router>
-        </div>
+                            {credential ? (
+                                <div className="listContainer">
+                                    <LogViewer />
+                                </div>
+                            ) : null}
+                        </div>
+                    </DataProvider>
+                </Router>
+            </div>
+        </AuthProvider>
     );
 };
-
-function Redirect() {
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        navigate("/login?#"); // Add '/#/' before the route
-    }, [navigate]);
-
-    return null;
-}
 
 export default App;

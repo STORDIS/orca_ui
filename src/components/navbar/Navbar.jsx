@@ -1,17 +1,14 @@
 import "./navbar.scss";
 import SearchIcon from "@mui/icons-material/Search";
 import Discovery from "./Discovery_btn";
-
 import { useAuth } from "../../utils/auth";
-import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+
     const auth = useAuth();
-    const navigate = useNavigate();
 
     const handleLogout = () => {
         auth.logout();
-        window.location.href = "/login";
     };
 
     return (
