@@ -22,25 +22,23 @@ import { Login } from "./pages/Login/login.jsx";
 
 import secureLocalStorage from "react-secure-storage";
 
-import { useAuth } from "./utils/auth";
-
 const App = () => {
     const [credential, setCredentials] = useState("");
 
     useEffect(() => {
-        setCredentials(secureLocalStorage.getItem("credential"));
+        setCredentials(secureLocalStorage.getItem("access_token"));
         console.log(credential);
     }, [credential]);
 
     return (
-        <AuthProvider>
-            <div className="mainContainer">
-                <Router>
-                    {credential ? <Sidebar /> : null}
+        <div className="mainContainer">
+            <Router>
+                {credential ? <Sidebar /> : null}
 
-                    <DataProvider>
-                        <div className="container">
-                            {credential ? <Navbar /> : null}
+                <DataProvider>
+                    <div className="container">
+                        {credential ? <Navbar /> : null}
+                        <AuthProvider>
                             <Routes>
                                 <Route path="/login" element={<Login />} />
                                 <Route
@@ -62,21 +60,32 @@ const App = () => {
                                 />
                                 <Route
                                     path="/"
-                                    element={<Navigate replace to="/home" />}
+                                    element={<Navigate replace to="/login" />}
                                 />
+                                <Route path="/" element={<Redirect />} />
                             </Routes>
+                        </AuthProvider>
 
-                            {credential ? (
-                                <div className="listContainer">
-                                    <LogViewer />
-                                </div>
-                            ) : null}
-                        </div>
-                    </DataProvider>
-                </Router>
-            </div>
-        </AuthProvider>
+                        {credential ? (
+                            <div className="listContainer">
+                                <LogViewer />
+                            </div>
+                        ) : null}
+                    </div>
+                </DataProvider>
+            </Router>
+        </div>
     );
 };
+
+function Redirect() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        navigate("/login?#"); // Add '/#/' before the route
+    }, [navigate]);
+
+    return null;
+}
 
 export default App;
