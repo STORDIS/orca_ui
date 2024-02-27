@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../utils/auth";
-import secureLocalStorage from "react-secure-storage";
 import "./login.scss";
 import logo from "../../assets/orca.png";
 
@@ -11,11 +9,7 @@ export const Login = () => {
 
     const [showPassword, setShowPassword] = useState(false);
 
-    const navigate = useNavigate();
-    const location = useLocation();
     const auth = useAuth();
-
-    const redirectPath = location.state?.path || "/";
 
     const handleLogin = () => {
         const credentials = {
@@ -35,7 +29,7 @@ export const Login = () => {
 
     return (
         <div className="main-card">
-            <img src={logo} className="logo" style={{ marginBottom: "10px" }} />
+            <img src={logo} className="logo" style={{ marginBottom: "10px" }} alt="logo" />
             <div>
                 <h1>Login</h1>
                 <div className="">

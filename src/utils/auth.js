@@ -5,8 +5,6 @@ import interceptor from "../interceptor";
 
 import { postLogin } from "../backend_rest_urls";
 
-import axios from "axios";
-
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
