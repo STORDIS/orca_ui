@@ -8,7 +8,7 @@ function LogViewer() {
     useEffect(() => {
         const newLog = log && displayedLog ? `\n${log}` : log;
         setDisplayedLog((prevLog) => prevLog + newLog);
-    }, [log]);
+    }, [displayedLog, log]);
 
     const handelClearLog = () => {
         clearLog();

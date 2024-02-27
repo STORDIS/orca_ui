@@ -1,6 +1,4 @@
 import React from "react";
-import Navbar from "../navbar/Navbar"
-import Sidebar from "../sidebar/Sidebar"
 import "./tabbedPane.scss"
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -23,7 +21,6 @@ const TabbedPane = () => {
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(parseInt(localStorage.getItem('selectedTab')) !== null ? parseInt(localStorage.getItem('selectedTab')) : 0);
     const [dropdownOptions, setDropdownOptions] = useState([]);
-    const [dataTable, setDataTable] = useState([]);
     const [refresh, setRefresh] = useState(false);
 
     useEffect(() => {
@@ -33,7 +30,6 @@ const TabbedPane = () => {
                     return { value: element.mgt_ip, label: element.mgt_ip };
                 });
                 setDropdownOptions(data);
-                setDataTable(res.data);
             })
             .catch((err) => console.log(err));
     }, []);
