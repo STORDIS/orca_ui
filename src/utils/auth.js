@@ -8,38 +8,55 @@ import { postLogin } from "../backend_rest_urls";
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-    const [credential, setCredential] = useState(null);
+    const [accessToken, setAccessToken] = useState(null);
     const instance = interceptor();
 
     const login = async (credential) => {
-        console.log("login");
+        /* 
+            this is hard coded values when apis are ready we can remove this 
+            And un comment the below cemented api call 
+        */
+        if (
+            credential.username === "orca" &&
+            credential.password === "test@123"
+        ) {
+            setAccessToken(credential);
+            secureLocalStorage.setItem("access_token", credential.password);
+            window.location.href = "/home";
+        } else {
+            alert("Invalid credential");
+            secureLocalStorage.clear();
+        }
 
-        await instance
-            .post(postLogin(), credential)
-            .then((response) => {
-                secureLocalStorage.setItem(
-                    "access_token",
-                    response.data.access_token
-                );
-                secureLocalStorage.setItem("credential", credential);
-                setCredential(credential);
-                console.log("here");
-                window.location.href = "/home";
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                alert("Invalid credential");
-            });
+        // api call to get credentials
+        
+        // await instance
+        //     .post(postLogin(), credential)
+        //     .then((response) => {
+        //         secureLocalStorage.setItem(
+        //             "access_token",
+        //             response.data.access_token
+        //         );
+        //         secureLocalStorage.setItem("access_token", credential);
+        //         setAccessToken(credential);
+        //         console.log("here");
+        //         window.location.href = "/home";
+        //     })
+        //     .catch((error) => {
+        //         console.error("Error:", error);
+        //         secureLocalStorage.clear();
+        //         alert("Invalid credential");
+        //     });
     };
 
     const logout = () => {
-        setCredential(null);
+        setAccessToken(null);
         secureLocalStorage.clear();
         window.location.href = "/login";
     };
 
     return (
-        <AuthContext.Provider value={{ credential, login, logout }}>
+        <AuthContext.Provider value={{ accessToken, login, logout }}>
             {children}
         </AuthContext.Provider>
     );
