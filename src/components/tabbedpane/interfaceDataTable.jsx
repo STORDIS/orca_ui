@@ -134,6 +134,7 @@ const InterfaceDataTable = (props) => {
                     rowData={dataTable}
                     columnDefs={interfaceColumns}
                     defaultColDef={defaultColDef}
+                    stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
                 ></AgGridReact>
             </div>

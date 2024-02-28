@@ -112,6 +112,7 @@ const PortGroupTable = (props) => {
                     onColumnResized={onColumnResized}
                     checkboxSelection
                     enableCellTextSelection='true'
+                    stopEditingWhenCellsLoseFocus={true}
                 ></AgGridReact>
             </div>
         </div>
