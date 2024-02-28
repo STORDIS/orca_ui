@@ -1,4 +1,6 @@
 import Home from "./pages/home/Home";
+import ErrorPage from "./pages/error/errorPage.jsx";
+
 import TabbedPane from "./components/tabbedpane/TabbedPane";
 import LogViewer from "./components/logpane/logpane";
 import React, { useEffect, useState } from "react";
@@ -61,6 +63,8 @@ const App = () => {
                                     path="/"
                                     element={<Navigate replace to="/login" />}
                                 />
+
+                                <Route path="*" element={<ErrorPage  />} />
                             </Routes>
 
                             {token ? (
