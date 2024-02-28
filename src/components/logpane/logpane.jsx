@@ -55,7 +55,7 @@ function LogViewer() {
                 if (params.value === "success") {
                     return (
                         <div className="icon">
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                                 check_circle_outline
                             </span>
                         </div>
@@ -63,7 +63,7 @@ function LogViewer() {
                 } else {
                     return (
                         <div className="icon">
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                                 cancel
                             </span>{" "}
                             &nbsp; {params.value}
