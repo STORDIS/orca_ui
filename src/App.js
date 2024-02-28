@@ -22,22 +22,22 @@ import { Login } from "./pages/Login/login.jsx";
 import secureLocalStorage from "react-secure-storage";
 
 const App = () => {
-    const [credential, setCredentials] = useState("");
+    const [token, setToken] = useState("");
 
     useEffect(() => {
-        setCredentials(secureLocalStorage.getItem("access_token"));
-        console.log(credential);
-    }, [credential]);
+        setToken(secureLocalStorage.getItem("access_token"));
+        console.log(token);
+    }, [token]);
 
     return (
         <AuthProvider>
             <div className="mainContainer">
                 <Router>
-                    {credential ? <Sidebar /> : null}
+                    {token ? <Sidebar /> : null}
 
                     <DataProvider>
                         <div className="container">
-                            {credential ? <Navbar /> : null}
+                            {token ? <Navbar /> : null}
                             <Routes>
                                 <Route path="/login" element={<Login />} />
                                 <Route
@@ -63,7 +63,7 @@ const App = () => {
                                 />
                             </Routes>
 
-                            {credential ? (
+                            {token ? (
                                 <div className="listContainer">
                                     <LogViewer />
                                 </div>

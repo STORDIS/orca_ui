@@ -3,6 +3,8 @@ import { useAuth } from "../../utils/auth";
 import "./login.scss";
 import logo from "../../assets/orca.png";
 
+import secureLocalStorage from "react-secure-storage";
+
 export const Login = () => {
     const [userName, setUserName] = useState("");
     const [password, setPassword] = useState("");
@@ -22,9 +24,9 @@ export const Login = () => {
 
     useEffect(() => {
         // auto login
-        // if (secureLocalStorage.getItem("credential")) {
-        //     auth.login(secureLocalStorage.getItem("credential"));
-        // }
+        if (secureLocalStorage.getItem("access_token")) {
+            window.location.href = "/home";
+        }
     }, []);
 
     return (
