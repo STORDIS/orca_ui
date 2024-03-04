@@ -13,18 +13,34 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        if (name === 'vlanid') {
+            const vlanName = `Vlan${value}`;
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            vlanid: value,
+            name: vlanName
+        }));
+    } else {
         setFormData(prevFormData => ({
             ...prevFormData,
             [name]: value
         }));
+    }
     };
 
     const handleSubmit = (e) => {
+        e.preventDefault();
 
         const vlanid = parseFloat(formData.vlanid);
+        if (vlanid < 0) {
+            alert("VLAN ID cannot be Negative.");
+            return;
+        }
+
         const dataToSubmit = {
             ...formData,
             vlanid,
+            members: selectedInterfaces.join(', ')
         };
         onSubmit(dataToSubmit);
     };
@@ -43,10 +59,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     return (
         <div className="form-wrapper">
-            <form onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit(formData);
-            }} className="vlan-form">
+            <form onSubmit={handleSubmit} className="vlan-form"> 
                 <div className="form-field">
                     <label>Device IP:</label>
                     <span>{selectedDeviceIp}</span>
@@ -59,6 +72,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                         name="vlanid"
                         value={formData.vlanid}
                         onChange={handleChange}
+                        min="1"
                     />
                 </div>
 
@@ -69,6 +83,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
+                        disabled
                     />
                 </div>
 

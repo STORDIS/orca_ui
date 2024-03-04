@@ -42,7 +42,7 @@ const VlanTable = (props) => {
     const [isCheckboxChecked, setCheckboxChecked] = useState(false);
     const [memberFinalObj, setMemberFinalObj] = useState({});
     const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState([]);
-    const {setLog}= useLog();
+    const { setLog } = useLog();
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -56,7 +56,7 @@ const VlanTable = (props) => {
             })
             .catch(err => console.log(err))
     }, [selectedDeviceIp]);
-    
+
     useEffect(() => {
         axios.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then(response => {
@@ -67,7 +67,7 @@ const VlanTable = (props) => {
                 console.error("Error fetching interface names", error);
             });
     }, []);
-    
+
     const defaultColDef = {
         tooltipValueGetter: (params) => { return params.value },
         resizable: true
@@ -79,12 +79,13 @@ const VlanTable = (props) => {
             .then(res => {
                 console.log('refresh', res)
                 if (res.data !== "") {
-                res.data.forEach(element => {
-                    element.members = JSON.stringify(element.members);
-                });
-                setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
-    }})
+                    res.data.forEach(element => {
+                        element.members = JSON.stringify(element.members);
+                    });
+                    setDataTable(res.data);
+                    setOriginalData(JSON.parse(JSON.stringify(res.data)));
+                }
+            })
             .catch(err => {
                 console.error("Error fetching data:", err);
                 setMessageModalContent("Error fetching data: " + err.message);
@@ -264,7 +265,7 @@ const VlanTable = (props) => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios.put(apiMUrl, output)
             .then(res => {
-              setLog(res.data.result)
+                setLog(res.data.result)
                 setConfigStatus('Config Successful');
                 setTimeout(resetConfigStatus, 5000);
             })
@@ -353,6 +354,7 @@ const VlanTable = (props) => {
 
     const handleBtnClicked = (e) => {
         e.preventDefault();
+        setIsConfigInProgress(false);
         if (member) {
             const newStatus = isCheckboxChecked ? "tagged" : "untagged";
             setMemberFinalObj(prev => ({
@@ -397,8 +399,6 @@ const VlanTable = (props) => {
         setDataTable(updatedVlans);
         resetMemberSelectionModal();
         setIsMemberSelectionModalOpen(false);
-
-
         setChanges([...changes, { name: currentEditingVlan.name, members: memberSelectionObject }]);
     };
 
@@ -407,35 +407,9 @@ const VlanTable = (props) => {
         setIsMemberSelectionModalOpen(false);
     };
 
-    const removeSelectedMembers = async () => {
-        if (!currentEditingVlan || membersSelectedForRemoval.length === 0) return;
-
-        const updatedMembersObj = { ...memberFinalObj };
-        membersSelectedForRemoval.forEach(member => {
-            delete updatedMembersObj[member];
-        });
-
-        const payload = {
-            mgt_ip: selectedDeviceIp,
-            name: currentEditingVlan.name,
-            members: updatedMembersObj,
-        };
-
-        try {
-            await axios.delete(deleteVlanMembersURL(selectedDeviceIp), payload);
-            console.log('VLAN members updated successfully');
-
-            setMemberFinalObj(updatedMembersObj);
-            setMembersSelectedForRemoval([]);
-            refreshData();
-        } catch (error) {
-            console.error('Failed to update VLAN members', error);
-        }
-    };
-
     const deleteVlanMembers = async () => {
         if (!currentEditingVlan || membersSelectedForRemoval.length === 0) return;
-
+        setIsConfigInProgress(true);
         const updatedMembersObj = { ...memberFinalObj };
         membersSelectedForRemoval.forEach(member => {
             delete updatedMembersObj[member];
@@ -460,6 +434,7 @@ const VlanTable = (props) => {
             console.error('Failed to update VLAN members', error);
         }
     };
+
 
     return (
         <div className="datatable-container">
