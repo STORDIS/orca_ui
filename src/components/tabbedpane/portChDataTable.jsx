@@ -101,18 +101,41 @@ const PortChDataTable = (props) => {
     const handleFormSubmit = (formData) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         axios.put(apiPUrl, formData)
-            .then(response => {
+            .then(res => {
                 setShowForm(false);
-                setLog(response.data.result);
+
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+
                 setMessageModalContent('Port Channel added Successfully');
                 setIsMessageModalOpen(true);
                 refreshData();
             })
-            .catch(error => {
+            .catch(err => {
                 setMessageModalContent('Error adding port channel');
                 setIsMessageModalOpen(true);
-                setLog(error.response.data.result);
-            });
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });            });
     };
 
 
@@ -124,7 +147,20 @@ const PortChDataTable = (props) => {
         console.log('DeleteData', deleteData)
         axios.delete(apiPUrl, { data: deleteData })
             .then(response => {
-                setLog(response.data.result);
+
+                let startIndex = response.data.result[0].indexOf("{");
+                let endIndex = response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+
                 if (response.data && Array.isArray(response.data.result)) {
                     const updatedDataTable = dataTable.filter(row =>
                         !selectedRows.some(selectedRow => selectedRow.lag_name === row.lag_name)
@@ -135,8 +171,18 @@ const PortChDataTable = (props) => {
                 setMessageModalContent("Port Channel Deleted Successfully.");
                 setIsMessageModalOpen(true);
             })
-            .catch(error => {
-                setLog(error.response.data.result);
+            .catch(err => {
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
             })
             .finally(() => {
             });
@@ -254,12 +300,31 @@ const PortChDataTable = (props) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         axios.put(apiPUrl, output)
             .then(res => {
-                setLog(res.data.result)
-                setConfigStatus('Config Successful');
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });                setConfigStatus('Config Successful');
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch(err => {
-                setLog(err.response.data.result)
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
                 setConfigStatus('Config Failed');
                 setTimeout(resetConfigStatus, 5000);
             })
@@ -301,6 +366,7 @@ const PortChDataTable = (props) => {
                         checkboxSelection
                         enableCellTextSelection='true'
                         onSelectionChanged={onSelectionChanged}
+                        stopEditingWhenCellsLoseFocus={true}
                     ></AgGridReact>
                 </div>
                 {isDeleteConfirmationModalOpen && (

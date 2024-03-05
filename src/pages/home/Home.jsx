@@ -3,14 +3,7 @@ import Datatable from "../../components/tabbedpane/Datatable";
 
 import "./home.scss";
 
-// import { useLog } from "../../LogContext";
-
 function Home() {
-    // const { setLog } = useLog();
-
-    // useEffect(() => {
-    //   setLog("test");
-    // }, [setLog]);
 
     return (
         <div>
