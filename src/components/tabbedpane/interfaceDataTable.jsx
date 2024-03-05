@@ -143,11 +143,8 @@ const InterfaceDataTable = (props) => {
                     startIndex + 1,
                     endIndex
                 );
-
                 const match = err.response.data.result[0].match(/Reason:(.*)/);
-
                 const reasonText = match[1].trim();
-
                 setLog({
                     status: reasonText,
                     result: trimmedResponse,
