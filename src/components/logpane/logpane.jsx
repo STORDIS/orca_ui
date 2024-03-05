@@ -65,7 +65,7 @@ function LogViewer() {
                         <div className="icon">
                             <span className="material-symbols-outlined">
                                 cancel
-                            </span>{" "}
+                            </span>
                             &nbsp; {params.value}
                         </div>
                     );
