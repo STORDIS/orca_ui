@@ -300,6 +300,7 @@ const PortChDataTable = (props) => {
                         checkboxSelection
                         enableCellTextSelection='true'
                         onSelectionChanged={onSelectionChanged}
+                        stopEditingWhenCellsLoseFocus={true}
                     ></AgGridReact>
                 </div>
                 {isDeleteConfirmationModalOpen && (
