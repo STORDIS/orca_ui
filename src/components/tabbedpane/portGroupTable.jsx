@@ -86,11 +86,29 @@ const PortGroupTable = (props) => {
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         axios.put(apiUrl, req_json)
             .then(res => {
-                setLog(res.data.result)
-                setConfigStatus('Config Successful');
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });                setConfigStatus('Config Successful');
             }).catch(err => {
-                setLog(err.response.data.result)
-                setConfigStatus('Config Failed');
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });                setConfigStatus('Config Failed');
             }).finally(() => {
                 setIsConfigInProgress(false);
                 setChanges([]);
@@ -100,7 +118,7 @@ const PortGroupTable = (props) => {
 
     return (
         <div className="datatable">
-            <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
+            <button type="button" style={{ marginBottom : '15px' }} onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
             <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
