@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
-import MemberSelectionComponent from "./MemberSelectionComponent";
 
 
 export const defaultColDef = {

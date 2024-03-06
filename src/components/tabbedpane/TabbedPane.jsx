@@ -1,6 +1,4 @@
 import React from "react";
-import Navbar from "../navbar/Navbar"
-import Sidebar from "../sidebar/Sidebar"
 import "./tabbedPane.scss"
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';

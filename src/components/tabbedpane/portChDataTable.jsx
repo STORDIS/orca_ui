@@ -15,13 +15,12 @@ import { useLog } from "../../LogContext";
 const PortChDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%', maxWidth: '100%' }), []);
-    const { rows, columns, selectedDeviceIp = '' } = props;
+    const { selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [showForm, setShowForm] = useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [messageModalContent, setMessageModalContent] = useState('');
@@ -30,8 +29,6 @@ const PortChDataTable = (props) => {
     const [modalType, setModalType] = useState('success');
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] = useState(false);
     const [modalTitle, setModalTitle] = useState('');
-    const [isDeletionConfirmed, setIsDeletionConfirmed] = useState(false);
-    const [memberNames, setMemberNames] = useState([]);
     const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
     const [currentRowData, setCurrentRowData] = useState(null);
     const [interfaceNames, setInterfaceNames] = useState([]);
@@ -262,8 +259,6 @@ const PortChDataTable = (props) => {
                     console.error("Expected array but got:", prev);
                     return [];
                 }
-                const index = prev.findIndex(change => change.lag_name === params.data.lag_name);
-
                 let latestChanges;
                 let isNameExsits = prev.filter(val => val.lag_name === params.data.lag_name)
                 if (isNameExsits.length > 0) {

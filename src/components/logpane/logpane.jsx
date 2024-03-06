@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLog } from "../../LogContext";
 import "./logpane.scss";
 import Time from "react-time-format";
@@ -23,7 +23,7 @@ function LogViewer() {
     };
 
     // Column Definitions: Defines the columns to be displayed.
-    const [colDefs, setColDefs] = useState([
+    const [colDefs] = useState([
         {
             field: "index",
             headerName: "#",
@@ -80,8 +80,6 @@ function LogViewer() {
             },
         },
     ]);
-
-    const gridRef = useRef();
 
     const gridStyle = useMemo(() => ({ height: "270px", width: "100%" }), []);
 

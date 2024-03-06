@@ -1,21 +1,18 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./tabbedPaneTable.scss";
-import { vlanColumns, defaultColDef } from "./datatablesourse";
+import { vlanColumns } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axios from "axios";
 import {
-    getAllBGPOfDeviceURL,
     getVlansURL,
     getAllInterfacesOfDeviceURL,
     deleteVlanMembersURL,
 } from "../../backend_rest_urls";
-import LogViewer from "../logpane/logpane";
 import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
-import MemberSelectionComponent from "./MemberSelectionComponent";
 import { useLog } from "../../LogContext";
 
 const VlanTable = (props) => {
@@ -36,7 +33,6 @@ const VlanTable = (props) => {
     const [showForm, setShowForm] = useState(false);
     const [modalType, setModalType] = useState("success");
     const [modalTitle, setModalTitle] = useState("");
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteButtonEnabled, setIsDeleteButtonEnabled] = useState(false);
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedMembers, setSelectedMembers] = useState([]);
@@ -187,7 +183,7 @@ const VlanTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
             })
-            .finally(() => {});
+            .finally(() => { });
     };
 
     const onSelectionChanged = () => {
@@ -273,10 +269,6 @@ const VlanTable = (props) => {
                         console.error("Expected array but got:", prev);
                         return [];
                     }
-                    const index = prev.findIndex(
-                        (change) => change.name === params.data.name
-                    );
-
                     let lastestChanges;
                     let isNameExists = prev.filter(
                         (val) => val.name === params.data.name
@@ -393,26 +385,6 @@ const VlanTable = (props) => {
             });
     }, [createJSONOutput, selectedDeviceIp, changes]);
 
-    const onCellValueChanged = useCallback((params) => {
-        if (params.colDef.field === "members") {
-            const currentMembers = params.data.members.split(", ");
-            const newMember = params.newValue;
-            if (!currentMembers.includes(newMember)) {
-                params.node.setDataValue(
-                    "members",
-                    [...currentMembers, newMember].join(", ")
-                );
-            }
-        }
-    }, []);
-
-    const handleMemberChange = (updatedMember) => {
-        setSelectedMembers((prev) => ({
-            ...prev,
-            [updatedMember.member]: updatedMember.status,
-        }));
-    };
-
     const openMemberSelectionModal = (vlanData) => {
         setCurrentEditingVlan(vlanData);
         const existingMembers = vlanData.members
@@ -430,31 +402,6 @@ const VlanTable = (props) => {
             setIsMemberSelectionModalOpen(true);
         }
     }, []);
-
-    const handleMemberSelectionChange = (e) => {
-        const selectedOptions = Array.from(e.target.selectedOptions);
-        const selectedValues = selectedOptions.map((option) => option.value);
-        setSelectedMembers(selectedValues);
-    };
-
-    const updateVlanMembers = () => {
-        if (!currentEditingVlan) return;
-        const membersString = `{${selectedMembers
-            .map((member) => `"${member}"`)
-            .join(",")}}`;
-        const updatedDataTable = dataTable.map((vlan) => {
-            if (vlan.name === currentEditingVlan.name) {
-                return { ...vlan, members: membersString };
-            }
-            console.log("value", updatedDataTable);
-            return vlan;
-        });
-
-        setDataTable(updatedDataTable);
-        setIsMemberSelectionModalOpen(false);
-        setSelectedMembers([]);
-        setCurrentEditingVlan(null);
-    };
 
     const handleDropdownChange = (e) => {
         if (e.target.value !== "") {
@@ -587,13 +534,12 @@ const VlanTable = (props) => {
                         Apply Config
                     </button>
                     <span
-                        className={`config-status ${
-                            configStatus === "Config Successful"
+                        className={`config-status ${configStatus === "Config Successful"
                                 ? "config-successful"
                                 : configStatus === "Config Failed"
-                                ? "config-failed"
-                                : "config-in-progress"
-                        }`}
+                                    ? "config-failed"
+                                    : "config-in-progress"
+                            }`}
                     >
                         {configStatus}
                     </span>
