@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
+import MemberSelectionComponent from "./MemberSelectionComponent";
+
 
 export const defaultColDef = {
     tooltipValueGetter: (params) => {
@@ -161,24 +163,21 @@ export const portGroupColumns = [
     },
 ];
 
-export const vlanColumns = [
-    { field: "vlanid", headerName: "VLAN_ID", type: "number", width: 130 },
-    { field: "name", headerName: "Name", width: 130 },
-    { field: "mtu", headerName: "MTU", type: "number", width: 130 },
-    {
-        field: "admin_status",
-        headerName: "Admin Status",
-        type: "boolean",
-        width: 130,
-    },
-    {
-        field: "oper_status",
-        headerName: "Oper_STS",
-        type: "boolean",
-        width: 130,
-    },
-    { field: "members", headerName: "Member IFs", width: 130 },
+export const vlanColumns = (interfaceNames) => [
+  { headerCheckboxSelection: true, checkboxSelection: true, width:50 },
+  { field: 'vlanid', headerName: 'VLAN_ID', type: 'number', width: 130 },
+  { field: 'name', headerName: 'Name', width: 130 },
+  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true, headerComponent: EditableHeaderComponent },
+  { field: 'admin_status', headerName: 'Admin Status', type: 'boolean', width: 150, editable: true,
+  cellEditor: 'agSelectCellEditor',
+  cellEditorParams: {
+    values: ['up', 'down'],
+  }, headerComponent: EditableHeaderComponent },
+  { field: 'oper_status', headerName: 'Oper_STS', type: 'boolean', width: 130 },
+  { field: 'members', headerName: 'Member IFs', width: 130, editable: true,  
+  cellEditorParams: {values: interfaceNames}, headerComponent: EditableHeaderComponent},
 ];
+
 
 export const portChannelColumns = [
     { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
@@ -227,7 +226,7 @@ export const portChannelColumns = [
     { field: "oper_sts", headerName: "Operation Status", width: 130 },
     { field: "speed", headerName: "Speed", width: 130 },
     { field: "oper_sts_reason", headerName: "OperReason", width: 130 },
-    { field: "members", headerName: "Members", width: 130 },
+    { field: "members", headerName: "Members", width: 130, editable: true, headerComponent: EditableHeaderComponent },
 ];
 
 export const mclagColumns = [

@@ -18,6 +18,7 @@ const InterfaceDataTable = (props) => {
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
+    const [interfaceNames, setInterfaceNames] = useState([]);
 
     const { setLog } = useLog();
 
@@ -28,6 +29,8 @@ const InterfaceDataTable = (props) => {
             .then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
+                const names = res.data.map(item => item.name);
+                setInterfaceNames(names);
             })
             .catch((err) => console.log(err));
     };
@@ -140,11 +143,8 @@ const InterfaceDataTable = (props) => {
                     startIndex + 1,
                     endIndex
                 );
-
                 const match = err.response.data.result[0].match(/Reason:(.*)/);
-
                 const reasonText = match[1].trim();
-
                 setLog({
                     status: reasonText,
                     result: trimmedResponse,
@@ -187,6 +187,7 @@ const InterfaceDataTable = (props) => {
                 {configStatus}
             </span>
             <p>&nbsp;</p>
+
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}

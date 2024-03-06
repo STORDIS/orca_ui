@@ -18,6 +18,7 @@ import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
 import { useNavigate } from 'react-router-dom';
+import { useLog } from "../../LogContext";
 
 const TabbedPane = () => {
     const { deviceIP } = useParams();
@@ -25,6 +26,7 @@ const TabbedPane = () => {
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [dataTable, setDataTable] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const { setLog } = useLog();
 
     useEffect(() => {
         axios(getAllDevicesURL())
@@ -100,7 +102,9 @@ const TabbedPane = () => {
                             <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
-                            <VlanTable selectedDeviceIp={deviceIP} />
+
+                            <VlanTable selectedDeviceIp={deviceIP} setLog={setLog} />
+
                         </TabPanel>
                     </Box>
                 </div>
