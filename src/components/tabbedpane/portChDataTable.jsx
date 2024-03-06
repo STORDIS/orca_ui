@@ -3,18 +3,19 @@ import "./tabbedPaneTable.scss";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { portChannelColumns} from "./datatablesourse";
+import { portChannelColumns } from "./datatablesourse";
 import axios from 'axios'
-import { getAllPortChnlsOfDeviceURL } from '../../backend_rest_urls'
+import { getAllInterfacesOfDeviceURL, getAllPortChnlsOfDeviceURL } from '../../backend_rest_urls'
 import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
-
+//import MemberSelectionComponent from "./MemberSelectionComponent";
+import MembersSelection from "./MembersSelection";
 import { useLog } from "../../LogContext";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%', maxWidth: '100%' }), []);
-    const { rows, columns, selectedDeviceIp = ''} = props;
+    const { rows, columns, selectedDeviceIp = '' } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
@@ -31,6 +32,10 @@ const PortChDataTable = (props) => {
     const [modalTitle, setModalTitle] = useState('');
     const [isDeletionConfirmed, setIsDeletionConfirmed] = useState(false);
     const [memberNames, setMemberNames] = useState([]);
+    const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
+    const [currentRowData, setCurrentRowData] = useState(null);
+    const [interfaceNames, setInterfaceNames] = useState([]);
+    const [existingMembers, setExistingMembers] = useState([]);
 
     const { setLog } = useLog();
 
@@ -46,6 +51,16 @@ const PortChDataTable = (props) => {
             })
             .catch(err => console.log(err));
     }, [selectedDeviceIp]);
+
+    useEffect(() => {
+        axios.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+            .then(res => {
+                const names = res.data.map(item => item.name);
+                setInterfaceNames(names);
+            })
+            .catch(error => console.error("Failed to fetch interface names:", error));
+    }, [selectedDeviceIp]);
+
 
     useEffect(() => {
         if (props.refresh) {
@@ -270,18 +285,21 @@ const PortChDataTable = (props) => {
 
 
     const createJsonOutput = useCallback(() => {
+        let output = changes.map(change => {
+            let members = change.members;
+            if (Array.isArray(members) && members.length > 0 && Array.isArray(members[0])) {
+                members = members.flat();
+            }
 
-        let isMembers = changes.flatMap(Object.keys).includes('members');
-        if (isMembers) {
-            setChanges(changes.filter(val => val.members = [val.members]))
-        }
-        let aa = changes.map(change => ({
-            mgt_ip: selectedDeviceIp,
-            lag_name: change.lag_name,
-            ...change
-        }));
+            return {
+                mgt_ip: selectedDeviceIp,
+                lag_name: change.lag_name,
+                ...change,
+                members,
+            };
+        });
 
-        return aa
+        return output;
     }, [selectedDeviceIp, changes]);
 
 
@@ -333,6 +351,47 @@ const PortChDataTable = (props) => {
             });
     }, [createJsonOutput, selectedDeviceIp, changes]);
 
+    const onCellClicked = useCallback((params) => {
+        if (params.colDef.field === 'members') {
+            setCurrentRowData(params.data);
+            setExistingMembers(params.data.members.split(','));
+            setIsMemberModalOpen(true);
+        }
+    }, []);
+
+
+    const handleMembersSave = (selectedMembers) => {
+        const updatedData = dataTable.map(row => {
+            if (row.lag_name === currentRowData.lag_name) {
+                return { ...row, members: selectedMembers };
+            }
+            return row;
+        });
+        setDataTable(updatedData);
+
+
+        const changeIndex = changes.findIndex(change => change.lag_name === currentRowData.lag_name);
+        if (changeIndex !== -1) {
+
+            const updatedChanges = [...changes];
+            updatedChanges[changeIndex] = {
+                ...updatedChanges[changeIndex],
+
+                members: selectedMembers
+            };
+            setChanges(updatedChanges);
+        } else {
+
+            setChanges([...changes, {
+                lag_name: currentRowData.lag_name,
+
+                members: selectedMembers
+            }]);
+        }
+
+        setIsMemberModalOpen(false);
+    };
+
 
     return (
         <div className="datatable-container">
@@ -366,6 +425,7 @@ const PortChDataTable = (props) => {
                         checkboxSelection
                         enableCellTextSelection='true'
                         onSelectionChanged={onSelectionChanged}
+                        onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
                     ></AgGridReact>
                 </div>
@@ -400,6 +460,20 @@ const PortChDataTable = (props) => {
                             </div>
                         </div>
                     </Modal>}
+
+                {isMemberModalOpen && (
+                    <Modal show={isMemberModalOpen} onClose={() => setIsMemberModalOpen(false)} title="Select Member Interfaces">
+                        <MembersSelection
+                            interfaceNames={interfaceNames}
+                            existingMembers={existingMembers}
+                            onSave={(selectedMembers) => {
+                                handleMembersSave(selectedMembers);
+                                setIsMemberModalOpen(false);
+                            }}
+                            onCancel={() => setIsMemberModalOpen(false)}
+                        />
+                    </Modal>
+                )}
             </div>
         </div>
     )
