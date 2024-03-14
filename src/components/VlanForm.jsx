@@ -69,10 +69,10 @@ const VlanForm = ({
         }));
 
         console.log("----", handelSubmitButton);
-    }, [selectedInterfaces]);
+    }, [handelSubmitButton, selectedInterfaces]);
 
     return (
-        <div className="form-wrapper">
+        <div className="">
             <form onSubmit={handleSubmit} className="vlan-form">
                 <div className="form-field">
                     <label>Device IP:</label>
@@ -123,13 +123,13 @@ const VlanForm = ({
                     />
                 </div>
 
-                <div className="form-field">
+                <div className="">
                     {/* <input type="submit" value="Submit" /> */}
-                    <button type="submit" disabled={disableSubmit}>
-                        submit
+                    <button type="submit" className="btnStyle" disabled={disableSubmit}>
+                        Apply Config
                     </button>
 
-                    <button type="button" onClick={onCancel}>
+                    <button type="button" className="btnStyle" onClick={onCancel}>
                         Cancel
                     </button>
                 </div>

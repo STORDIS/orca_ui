@@ -1,50 +1,53 @@
 .form-wrapper {
-  max-width: 500px;
-  margin: auto;
-  padding: 15px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
-  border-radius: 4px;
+    max-width: 500px;
+    margin: auto;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 4px;
 }
 
 .form-field {
-  margin-bottom: 15px;
-  display: flex;
-  flex-direction: column;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-field label {
-  margin-bottom: 4px;
-  font-weight: bold;
+    margin-bottom: 4px;
+    font-weight: bold;
 }
 
 .form-field input[type="text"],
 .form-field input[type="number"],
 .form-field select {
-  padding: 6px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+    padding: 6px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 .form-field input[type="submit"],
 .form-field button {
-  padding: 8px 15px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  margin-top: 10px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
 }
 
 .form-field input[type="submit"]:hover,
 .form-field button:hover {
-  opacity: 0.9;
+    opacity: 0.9;
+}
+
+.btnStyle {
+    margin-right: 25px;
 }
 
 @media (max-width: 640px) {
-  .form-wrapper {
-    padding: 10px;
-    max-width: 100%;
-  }
+    .form-wrapper {
+        padding: 10px;
+        max-width: 100%;
+    }
 }
-
