@@ -371,9 +371,7 @@ const VlanTable = (props) => {
                 );
 
                 const match = err.response.data.result[0].match(/Reason:(.*)/);
-
                 const reasonText = match[1].trim();
-
                 setLog({
                     status: reasonText,
                     result: trimmedResponse,
@@ -473,7 +471,7 @@ const VlanTable = (props) => {
         setIsMemberSelectionModalOpen(false);
 
         const output = {
-            vlanid: updatedVlans[0].vlanid,
+            vlanid: currentEditingVlan.vlanid,
             mgt_ip: selectedDeviceIp,
             name: currentEditingVlan.name,
             members: memberSelectionObject,
