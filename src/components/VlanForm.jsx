@@ -1,34 +1,43 @@
-import React, { useEffect, useState } from 'react';
-import './tabbedpane/Form.scss'
+import React, { useEffect, useState } from "react";
+import "./tabbedpane/Form.scss";
 
-const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
+const VlanForm = ({
+    onSubmit,
+    selectedDeviceIp,
+    onCancel,
+    handelSubmitButton,
+}) => {
+    const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
+
     const [formData, setFormData] = useState({
-        mgt_ip: selectedDeviceIp || '',
+        mgt_ip: selectedDeviceIp || "",
         vlanid: 0,
-        name: '',
-        admin_sts: '',
+        name: "",
+        admin_sts: "",
         mtu: 9100,
     });
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        if (name === 'vlanid') {
+        if (name === "vlanid") {
             const vlanName = `Vlan${value}`;
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            vlanid: value,
-            name: vlanName
-        }));
-    } else {
-        setFormData(prevFormData => ({
-            ...prevFormData,
-            [name]: value
-        }));
-    }
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                vlanid: value,
+                name: vlanName,
+            }));
+        } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+        }
     };
 
     const handleSubmit = (e) => {
+        setDisableSubmit(true);
+
         e.preventDefault();
 
         const vlanid = parseFloat(formData.vlanid);
@@ -40,26 +49,31 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         const dataToSubmit = {
             ...formData,
             vlanid,
-            members: selectedInterfaces.join(', ')
+            members: selectedInterfaces.join(", "),
         };
         onSubmit(dataToSubmit);
     };
 
     const handleInterfaceSelect = (event) => {
-        const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+        const selectedOptions = Array.from(
+            event.target.selectedOptions,
+            (option) => option.value
+        );
         setSelectedInterfaces(selectedOptions);
     };
 
     useEffect(() => {
-        setFormData(prevFormData => ({
+        setFormData((prevFormData) => ({
             ...prevFormData,
-            members: selectedInterfaces.join(', ')
+            members: selectedInterfaces.join(", "),
         }));
+
+        console.log("----", handelSubmitButton);
     }, [selectedInterfaces]);
 
     return (
         <div className="form-wrapper">
-            <form onSubmit={handleSubmit} className="vlan-form"> 
+            <form onSubmit={handleSubmit} className="vlan-form">
                 <div className="form-field">
                     <label>Device IP:</label>
                     <span>{selectedDeviceIp}</span>
@@ -110,9 +124,14 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 </div>
 
                 <div className="form-field">
-                    <input type="submit" value="Submit" />
-                    <button type='button' onClick={onCancel}>Cancel</button>
+                    {/* <input type="submit" value="Submit" /> */}
+                    <button type="submit" disabled={disableSubmit}>
+                        submit
+                    </button>
 
+                    <button type="button" onClick={onCancel}>
+                        Cancel
+                    </button>
                 </div>
             </form>
         </div>

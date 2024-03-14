@@ -47,6 +47,7 @@ const VlanTable = (props) => {
         []
     );
     const { setLog } = useLog();
+    const [disableSubmit, setDisableSubmit] = useState(false);
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -183,7 +184,7 @@ const VlanTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
             })
-            .finally(() => { });
+            .finally(() => {});
     };
 
     const onSelectionChanged = () => {
@@ -209,6 +210,7 @@ const VlanTable = (props) => {
         }
     };
 
+
     const handleFormSubmit = (formData) => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios
@@ -231,6 +233,7 @@ const VlanTable = (props) => {
                 setMessageModalContent("Vlan added successfully");
                 setIsMessageModalOpen(true);
                 refreshData();
+                // setDisableSubmit(false);
             })
             .catch((err) => {
                 setMessageModalContent("Error in adding Vlan");
@@ -248,6 +251,8 @@ const VlanTable = (props) => {
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
                 });
+                // setDisableSubmit(false);
+
             });
     };
 
@@ -534,12 +539,13 @@ const VlanTable = (props) => {
                         Apply Config
                     </button>
                     <span
-                        className={`config-status ${configStatus === "Config Successful"
+                        className={`config-status ${
+                            configStatus === "Config Successful"
                                 ? "config-successful"
                                 : configStatus === "Config Failed"
-                                    ? "config-failed"
-                                    : "config-in-progress"
-                            }`}
+                                ? "config-failed"
+                                : "config-in-progress"
+                        }`}
                     >
                         {configStatus}
                     </span>
@@ -554,6 +560,7 @@ const VlanTable = (props) => {
                         onSubmit={handleFormSubmit}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
+                        handelSubmitButton={disableSubmit}
                     />
                 </Modal>
 
