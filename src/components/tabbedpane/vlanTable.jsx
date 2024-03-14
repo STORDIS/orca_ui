@@ -210,7 +210,6 @@ const VlanTable = (props) => {
         }
     };
 
-
     const handleFormSubmit = (formData) => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios
@@ -252,7 +251,6 @@ const VlanTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
                 // setDisableSubmit(false);
-
             });
     };
 
@@ -473,10 +471,57 @@ const VlanTable = (props) => {
         setDataTable(updatedVlans);
         resetMemberSelectionModal();
         setIsMemberSelectionModalOpen(false);
-        setChanges([
-            ...changes,
-            { name: currentEditingVlan.name, members: memberSelectionObject },
-        ]);
+
+        const output = {
+            vlanid: updatedVlans[0].vlanid,
+            mgt_ip: selectedDeviceIp,
+            name: currentEditingVlan.name,
+            members: memberSelectionObject,
+        };
+        console.log(output);
+
+        const apiMUrl = getVlansURL(selectedDeviceIp);
+        axios
+            .put(apiMUrl, output)
+            .then((res) => {
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+                setConfigStatus("Config Successful");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .catch((err) => {
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+
+                const match = err.response.data.result[0].match(/Reason:(.*)/);
+
+                const reasonText = match[1].trim();
+
+                setLog({
+                    status: reasonText,
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+
+                setConfigStatus("Config Failed");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .finally(() => {
+                setIsConfigInProgress(false);
+            });
     };
 
     const handleModalClose = () => {
