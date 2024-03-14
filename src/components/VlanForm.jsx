@@ -67,8 +67,6 @@ const VlanForm = ({
             ...prevFormData,
             members: selectedInterfaces.join(", "),
         }));
-
-        console.log("----", handelSubmitButton);
     }, [handelSubmitButton, selectedInterfaces]);
 
     return (
@@ -125,11 +123,19 @@ const VlanForm = ({
 
                 <div className="">
                     {/* <input type="submit" value="Submit" /> */}
-                    <button type="submit" className="btnStyle" disabled={disableSubmit}>
+                    <button
+                        type="submit"
+                        className="btnStyle"
+                        disabled={disableSubmit}
+                    >
                         Apply Config
                     </button>
 
-                    <button type="button" className="btnStyle" onClick={onCancel}>
+                    <button
+                        type="button"
+                        className="btnStyle"
+                        onClick={onCancel}
+                    >
                         Cancel
                     </button>
                 </div>

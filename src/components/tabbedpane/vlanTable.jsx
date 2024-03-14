@@ -478,7 +478,6 @@ const VlanTable = (props) => {
             name: currentEditingVlan.name,
             members: memberSelectionObject,
         };
-        console.log(output);
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
         axios
