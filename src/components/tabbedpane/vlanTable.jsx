@@ -560,6 +560,29 @@ const VlanTable = (props) => {
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group">
+                    <div className="button-column">
+                        <button
+                            onClick={sendUpdates}
+                            disabled={
+                                isConfigInProgress || changes.length === 0
+                            }
+                            className="btnStyle"
+                        >
+                            Apply Config
+                        </button>
+                        <span
+                            className={`config-status ${
+                                configStatus === "Config Successful"
+                                    ? "config-successful"
+                                    : configStatus === "Config Failed"
+                                    ? "config-failed"
+                                    : "config-in-progress"
+                            }`}
+                        >
+                            {configStatus}
+                        </span>
+                    </div>
+
                     <button className="btnStyle" onClick={openAddModal}>
                         Add Vlan
                     </button>
@@ -571,26 +594,7 @@ const VlanTable = (props) => {
                         Delete selected Vlan
                     </button>
                 </div>
-                <div className="button-column">
-                    <button
-                        onClick={sendUpdates}
-                        disabled={isConfigInProgress || changes.length === 0}
-                        className="btnStyle"
-                    >
-                        Apply Config
-                    </button>
-                    <span
-                        className={`config-status ${
-                            configStatus === "Config Successful"
-                                ? "config-successful"
-                                : configStatus === "Config Failed"
-                                ? "config-failed"
-                                : "config-in-progress"
-                        }`}
-                    >
-                        {configStatus}
-                    </span>
-                </div>
+
                 <p>&nbsp;</p>
                 <Modal
                     show={showForm}

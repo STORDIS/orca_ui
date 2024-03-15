@@ -11,9 +11,7 @@
     }
 
     .button-column {
-        display: flex;
-        justify-content: flex-start;
-        margin-bottom: 15px;
+        flex: 1;
     }
 
     .selection-container {
