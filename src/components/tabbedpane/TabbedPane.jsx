@@ -16,12 +16,14 @@ import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
 import { useNavigate } from 'react-router-dom';
+import { useLog } from "../../LogContext";
 
 const TabbedPane = () => {
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(parseInt(localStorage.getItem('selectedTab')) !== null ? parseInt(localStorage.getItem('selectedTab')) : 0);
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [refresh, setRefresh] = useState(false);
+    const { setLog } = useLog();
 
     useEffect(() => {
         axios(getAllDevicesURL())
@@ -62,7 +64,7 @@ const TabbedPane = () => {
                         ))}
                     </select>
                     &nbsp; &nbsp;
-                    <button onClick={onUndo}>Undo Changes</button>
+                    <button type="button" onClick={onUndo}>Undo Changes</button>
                 </div>
                 <div className="listContainer">
                     <Box sx={{ width: '100%' }}>
@@ -96,7 +98,9 @@ const TabbedPane = () => {
                             <PortGroupTable selectedDeviceIp={deviceIP} refresh={refresh} setRefresh={setRefresh} />
                         </TabPanel>
                         <TabPanel tabValue={tabValue} index={6}>
-                            <VlanTable selectedDeviceIp={deviceIP} />
+
+                            <VlanTable selectedDeviceIp={deviceIP} setLog={setLog} />
+
                         </TabPanel>
                     </Box>
                 </div>

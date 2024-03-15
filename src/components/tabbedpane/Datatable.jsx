@@ -21,7 +21,7 @@ const Datatable = (props) => {
       .then(res => {
         console.log("response", res.data)
         if (isTabbedPane) {
-          let data = res.data.filter(item => item.mgt_ip == selectedDeviceIp)
+          let data = res.data.filter(item => item.mgt_ip === selectedDeviceIp)
           setDataTable(data)
         } else {
           setDataTable(res.data)
