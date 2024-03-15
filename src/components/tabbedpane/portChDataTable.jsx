@@ -512,6 +512,7 @@ const PortChDataTable = (props) => {
                         <div>
                             {messageModalContent}
                             <button
+                                className="btnStyle"
                                 onClick={() => setIsMessageModalOpen(false)}
                             >
                                 OK
@@ -535,6 +536,7 @@ const PortChDataTable = (props) => {
                                     <button onClick={handleOkClick}>OK</button>
                                 ) : (
                                     <button
+                                        className="btnStyle"
                                         onClick={() =>
                                             setIsMessageModalOpen(false)
                                         }

@@ -127,13 +127,6 @@ const PortChannelForm = ({
 
                 <div className="form-field">
                     <label>Members: </label>
-                    {/* <input
-                        type="text"
-                        name="members"
-                        value={formData.members}
-                        onChange={handleChange}
-                    /> */}
-
                     <select
                         id="memberDropdown"
                         onChange={handleDropdownChange}

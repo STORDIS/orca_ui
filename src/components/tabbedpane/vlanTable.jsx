@@ -649,6 +649,7 @@ const VlanTable = (props) => {
                         <div>
                             {messageModalContent}
                             <button
+                                className="btnStyle"
                                 onClick={() => setIsMessageModalOpen(false)}
                             >
                                 Ok
@@ -669,9 +670,15 @@ const VlanTable = (props) => {
                                 }}
                             >
                                 {modalType === "success" ? (
-                                    <button onClick={handleOkClick}>OK</button>
+                                    <button
+                                        className="btnStyle"
+                                        onClick={handleOkClick}
+                                    >
+                                        OK
+                                    </button>
                                 ) : (
                                     <button
+                                        className="btnStyle"
                                         onClick={() =>
                                             setIsMessageModalOpen(false)
                                         }
@@ -748,20 +755,23 @@ const VlanTable = (props) => {
                                     )}
                                 </select>
                             </div>
-                            <div style={{ marginTop: "10px" }}></div>
                             <div
                                 style={{
                                     marginTop: "10px",
                                     display: "flex",
-                                    justifyContent: "center",
                                     gap: "10px",
                                 }}
                             >
-                                <button onClick={handleSaveMemberSelection}>
+                                <button
+                                    className="btnStyle"
+                                    onClick={handleSaveMemberSelection}
+                                >
                                     Ok
                                 </button>
-                                &nbsp;
-                                <button onClick={handleModalClose}>
+                                <button
+                                    className="btnStyle"
+                                    onClick={handleModalClose}
+                                >
                                     Cancel
                                 </button>
                                 <button
@@ -769,6 +779,7 @@ const VlanTable = (props) => {
                                     disabled={
                                         membersSelectedForRemoval.length === 0
                                     }
+                                    className="btnStyle"
                                 >
                                     Delete Selected Members
                                 </button>
