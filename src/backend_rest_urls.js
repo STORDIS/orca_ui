@@ -32,5 +32,5 @@ export function getVlansURL(device_ip) {
 }
 
 export function deleteVlanMembersURL(device_ip) {
-    return host_addr + '/vlans/mem/delete/?mgt_ip=' + device_ip
+    return host_addr + '/vlans_mem_delete/?mgt_ip=' + device_ip
 }
