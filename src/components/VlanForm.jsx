@@ -125,7 +125,7 @@ const VlanForm = ({
                     {/* <input type="submit" value="Submit" /> */}
                     <button
                         type="submit"
-                        className="btnStyle"
+                        className="btnStyle mr-10"
                         disabled={disableSubmit}
                     >
                         Apply Config

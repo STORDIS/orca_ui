@@ -560,8 +560,11 @@ const VlanTable = (props) => {
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group">
-                    <button onClick={openAddModal}>Add Vlan</button>
+                    <button className="btnStyle" onClick={openAddModal}>
+                        Add Vlan
+                    </button>
                     <button
+                        className="btnStyle"
                         onClick={openDeleteModal}
                         disabled={!isDeleteButtonEnabled}
                     >
@@ -572,11 +575,7 @@ const VlanTable = (props) => {
                     <button
                         onClick={sendUpdates}
                         disabled={isConfigInProgress || changes.length === 0}
-                        className={
-                            isConfigInProgress || changes.length === 0
-                                ? "button-disabled"
-                                : ""
-                        }
+                        className="btnStyle"
                     >
                         Apply Config
                     </button>

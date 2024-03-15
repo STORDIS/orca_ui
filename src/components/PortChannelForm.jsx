@@ -30,8 +30,7 @@ const PortChannelForm = ({
             [name]: value,
         }));
 
-        console.log('change',formData);
-
+        console.log("change", formData);
     };
 
     const handleDropdownChange = (e) => {
@@ -39,7 +38,7 @@ const PortChannelForm = ({
             ...prevFormData,
             members: e.target.value,
         }));
-        console.log('drop',formData);
+        console.log("drop", formData);
     };
 
     const handleSubmit = (e) => {
@@ -153,12 +152,16 @@ const PortChannelForm = ({
                 <div className="">
                     <button
                         type="submit"
-                        className="btnStyle"
+                        className="btnStyle mr-10"
                         disabled={disableSubmit}
                     >
                         Apply Config
                     </button>
-                    <button type="button" onClick={onCancel}>
+                    <button
+                        type="button"
+                        className="btnStyle"
+                        onClick={onCancel}
+                    >
                         Cancel
                     </button>
                 </div>

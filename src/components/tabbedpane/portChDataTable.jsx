@@ -424,8 +424,11 @@ const PortChDataTable = (props) => {
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group">
-                    <button onClick={openAddModal}>Add Port Channel</button>
+                    <button className="btnStyle" onClick={openAddModal}>
+                        Add Port Channel
+                    </button>
                     <button
+                        className="btnStyle"
                         onClick={openDeleteModal}
                         disabled={selectedRows.length === 0}
                     >
@@ -436,11 +439,7 @@ const PortChDataTable = (props) => {
                     <button
                         onClick={sendUpdates}
                         disabled={isConfigInProgress || changes.length === 0}
-                        className={
-                            isConfigInProgress || changes.length === 0
-                                ? "button-disabled"
-                                : ""
-                        }
+                        className="btnStyle"
                     >
                         Apply Config
                     </button>
