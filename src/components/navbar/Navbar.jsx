@@ -24,7 +24,7 @@ const Navbar = () => {
                     </div>
 
                     <div className="items" onClick={handleLogout}>
-                        <button>Logout</button>
+                        <button className="btnStyle" >Logout</button>
                     </div>
                 </div>
             </div>
