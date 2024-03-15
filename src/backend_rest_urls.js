@@ -30,3 +30,15 @@ export function getPortGroupsURL(device_ip) {
 export function getVlansURL(device_ip) {
     return host_addr + '/vlans/?mgt_ip=' + device_ip
 }
+
+export function postLogin() {
+    return host_addr + '/auth/login'
+}
+
+export function getUser(user) {
+    return host_addr + '/auth/user/' + user
+}
+
+export function deleteVlanMembersURL(device_ip) {
+    return host_addr + '/vlans/mem/delete/?mgt_ip=' + device_ip
+}
