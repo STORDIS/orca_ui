@@ -24,7 +24,7 @@ export const Login = () => {
 
     useEffect(() => {
         // auto login
-        if (secureLocalStorage.getItem("access_token")) {
+        if (secureLocalStorage.getItem("token")) {
             window.location.href = "/home";
         }
     }, []);

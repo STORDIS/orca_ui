@@ -12,7 +12,7 @@ const interceptor = () => {
 
     instance.interceptors.request.use(
         (config) => {
-            const token = secureLocalStorage.getItem("access_token");
+            const token = secureLocalStorage.getItem("token");
             if (token) {
                 config.headers.Authorization = token;
             }

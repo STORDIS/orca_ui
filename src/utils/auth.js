@@ -12,41 +12,22 @@ export const AuthProvider = ({ children }) => {
     const instance = interceptor();
 
     const login = async (credential) => {
-        /* 
-            this is hard coded values when apis are ready we can remove this 
-            And un comment the below cemented api call 
-        */
-        if (
-            credential.username === "orca" &&
-            credential.password === "test@123"
-        ) {
-            setAccessToken(credential);
-            secureLocalStorage.setItem("access_token", credential.password);
-            window.location.href = "/home";
-        } else {
-            alert("Invalid credential");
-            secureLocalStorage.clear();
-        }
-
-        // api call to get credentials
         
-        // await instance
-        //     .post(postLogin(), credential)
-        //     .then((response) => {
-        //         secureLocalStorage.setItem(
-        //             "access_token",
-        //             response.data.access_token
-        //         );
-        //         secureLocalStorage.setItem("access_token", credential);
-        //         setAccessToken(credential);
-        //         console.log("here");
-        //         window.location.href = "/home";
-        //     })
-        //     .catch((error) => {
-        //         console.error("Error:", error);
-        //         secureLocalStorage.clear();
-        //         alert("Invalid credential");
-        //     });
+        await instance
+            .post(postLogin(), credential)
+            .then((response) => {
+                secureLocalStorage.setItem(
+                    "token",
+                    response.data.token
+                );
+                setAccessToken(credential);
+                window.location.href = "/home";
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                secureLocalStorage.clear();
+                alert("Invalid credential");
+            });
     };
 
     const logout = () => {

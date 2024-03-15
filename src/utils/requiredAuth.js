@@ -5,7 +5,7 @@ import secureLocalStorage from "react-secure-storage";
 export const RequireAuth = ({ children }) => {
     const location = useLocation();
     const auth = useAuth();
-    if (!secureLocalStorage.getItem("access_token")) {
+    if (!secureLocalStorage.getItem("token")) {
         return <Navigate to="/login" state={{ from: location }} />;
     }
     return children;

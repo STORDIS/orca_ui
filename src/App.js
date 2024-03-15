@@ -27,7 +27,7 @@ const App = () => {
     const [token, setToken] = useState("");
 
     useEffect(() => {
-        setToken(secureLocalStorage.getItem("access_token"));
+        setToken(secureLocalStorage.getItem("token"));
         console.log(token);
     }, [token]);
 
