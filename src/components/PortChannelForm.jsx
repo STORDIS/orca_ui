@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./tabbedpane/Form.scss";
-import axios from "axios";
 import { getAllInterfacesOfDeviceURL } from "../backend_rest_urls";
-
+import interceptor from "../interceptor";
 const PortChannelForm = ({
     onSubmit,
     selectedDeviceIp,
@@ -10,6 +9,8 @@ const PortChannelForm = ({
     handelSubmitButton,
 }) => {
     const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
+
+    const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -65,7 +66,7 @@ const PortChannelForm = ({
     const [interfaceNames, setInterfaceNames] = useState([]);
 
     useEffect(() => {
-        axios
+        instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((response) => {
                 const fetchedInterfaceNames = response.data.map(
@@ -143,7 +144,11 @@ const PortChannelForm = ({
                     >
                         Apply Config
                     </button>
-                    <button type="button" onClick={onCancel}>
+                    <button
+                        type="button"
+                        className="btnStyle mr-10"
+                        onClick={onCancel}
+                    >
                         Cancel
                     </button>
                 </div>

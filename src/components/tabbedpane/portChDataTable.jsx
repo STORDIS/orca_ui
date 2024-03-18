@@ -3,8 +3,6 @@ import "./tabbedPaneTable.scss";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
 import { portChannelColumns } from "./datatablesourse";
 import axios from "axios";
 import {
@@ -25,27 +23,16 @@ const PortChDataTable = (props) => {
         []
     );
     const { selectedDeviceIp = "" } = props;
-    const gridStyle = useMemo(
-        () => ({ height: "100%", width: "100%", maxWidth: "100%" }),
-        []
-    );
-    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
-    const [configStatus, setConfigStatus] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [messageModalContent, setMessageModalContent] = useState("");
-    const [messageModalContent, setMessageModalContent] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [modalType, setModalType] = useState("success");
-    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
-        useState(false);
-    const [modalTitle, setModalTitle] = useState("");
     const [modalType, setModalType] = useState("success");
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
         useState(false);
@@ -54,21 +41,18 @@ const PortChDataTable = (props) => {
     const [currentRowData, setCurrentRowData] = useState(null);
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [existingMembers, setExistingMembers] = useState([]);
-    const [disableSubmit, setDisableSubmit] = useState(false);
 
     const { setLog } = useLog();
     const instance = interceptor();
+    const [disableSubmit, setDisableSubmit] = useState(false);
 
     useEffect(() => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.get(apiPUrl)
-            .then(res => {
+        instance
+            .get(apiPUrl)
+            .then((res) => {
                 let data = res.data;
                 console.log("data", data);
-                data &&
-                    data.map(
-                        (val) => (val["members"] = val["members"].toString())
-                    );
                 data &&
                     data.map(
                         (val) => (val["members"] = val["members"].toString())
@@ -77,18 +61,15 @@ const PortChDataTable = (props) => {
                 setOriginalData(JSON.parse(JSON.stringify(data)));
             })
             .catch((err) => console.log(err));
-            .catch((err) => console.log(err));
     }, [selectedDeviceIp]);
 
     useEffect(() => {
-        instance.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then(res => {
-                const names = res.data.map(item => item.name);
+        instance
+            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+            .then((res) => {
+                const names = res.data.map((item) => item.name);
                 setInterfaceNames(names);
             })
-            .catch((error) =>
-                console.error("Failed to fetch interface names:", error)
-            );
             .catch((error) =>
                 console.error("Failed to fetch interface names:", error)
             );
@@ -102,22 +83,18 @@ const PortChDataTable = (props) => {
         }
     }, [props.refresh]);
 
-
     const defaultColDef = {
-        tooltipValueGetter: (params) => {
-            return params.value;
-        },
         tooltipValueGetter: (params) => {
             return params.value;
         },
         resizable: true,
     };
-    };
 
     const refreshData = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.get(apiPUrl)
-            .then(res => {
+        instance
+            .get(apiPUrl)
+            .then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
@@ -152,8 +129,9 @@ const PortChDataTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.put(apiPUrl, formData)
-            .then(res => {
+        instance
+            .put(apiPUrl, formData)
+            .then((res) => {
                 setShowForm(false);
 
                 let startIndex = res.data.result[0].indexOf("{");
@@ -189,8 +167,6 @@ const PortChDataTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
             });
-                });
-            });
     };
 
     const handleDelete = () => {
@@ -198,16 +174,9 @@ const PortChDataTable = (props) => {
         const deleteData = selectedRows.map((rowData) => ({
             mgt_ip: selectedDeviceIp,
             lag_name: rowData.lag_name,
-        const deleteData = selectedRows.map((rowData) => ({
-            mgt_ip: selectedDeviceIp,
-            lag_name: rowData.lag_name,
         }));
-        console.log('DeleteData', deleteData)
-        instance.delete(apiPUrl, { data: deleteData })
-            .then(response => {
-
         console.log("DeleteData", deleteData);
-        axios
+        instance
             .delete(apiPUrl, { data: deleteData })
             .then((response) => {
                 let startIndex = response.data.result[0].indexOf("{");
@@ -230,21 +199,13 @@ const PortChDataTable = (props) => {
                                 (selectedRow) =>
                                     selectedRow.lag_name === row.lag_name
                             )
-                    const updatedDataTable = dataTable.filter(
-                        (row) =>
-                            !selectedRows.some(
-                                (selectedRow) =>
-                                    selectedRow.lag_name === row.lag_name
-                            )
                     );
-                    setDataTable(updatedDataTable);
                     setDataTable(updatedDataTable);
                 }
                 setSelectedRows([]);
                 setMessageModalContent("Port Channel Deleted Successfully.");
                 setIsMessageModalOpen(true);
             })
-            .catch((err) => {
             .catch((err) => {
                 let startIndex = err.response.data.result[0].indexOf("{");
                 let endIndex = err.response.data.result[0].lastIndexOf("}");
@@ -259,12 +220,10 @@ const PortChDataTable = (props) => {
                 });
             })
             .finally(() => {});
-            .finally(() => {});
     };
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
-        const selectedData = selectedNodes.map((node) => node.data);
         const selectedData = selectedNodes.map((node) => node.data);
         setSelectedRows(selectedData);
     };
@@ -278,8 +237,6 @@ const PortChDataTable = (props) => {
             return `Are you sure you want to delete ${selectedRows[0].lag_name}?`;
         } else if (selectedRows.length > 1) {
             const lagNames = selectedRows.map((row) => row.lag_name).join(", ");
-        } else if (selectedRows.length > 1) {
-            const lagNames = selectedRows.map((row) => row.lag_name).join(", ");
             return `Are you sure you want to delete these port channels: ${lagNames}?`;
         } else {
             return "No port channel selected.";
@@ -287,7 +244,6 @@ const PortChDataTable = (props) => {
     };
 
     const resetConfigStatus = () => {
-        setConfigStatus("");
         setConfigStatus("");
         setChanges([]);
 
@@ -354,65 +310,10 @@ const PortChDataTable = (props) => {
         },
         [dataTable]
     );
-    const handleCellValueChanged = useCallback(
-        (params) => {
-            console.log("new value handle--->", params, params.newValue);
-            console.log("old value handle--->", params.oldValue);
-            if (params.newValue !== params.oldValue) {
-                if (params.colDef.field === "lag_name") {
-                    if (!/^PortChannel\d+$/.test(params.newValue)) {
-                        alert(
-                            'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-                        );
-                        params.node.setDataValue("lag_name", params.oldValue);
-                        return;
-                    }
-                }
-                setChanges((prev) => {
-                    console.log("prev-->", prev);
-                    if (!Array.isArray(prev)) {
-                        console.error("Expected array but got:", prev);
-                        return [];
-                    }
-                    let latestChanges;
-                    let isNameExsits = prev.filter(
-                        (val) => val.lag_name === params.data.lag_name
-                    );
-                    if (isNameExsits.length > 0) {
-                        console.log("ifff");
-                        let existedIndex = prev.findIndex(
-                            (val) => val.lag_name === params.data.lag_name
-                        );
-                        prev[existedIndex][params.colDef.field] =
-                            params.newValue;
-                        latestChanges = [...prev];
-                    } else {
-                        console.log("else", params.newValue, params);
-                        latestChanges = [
-                            ...prev,
-                            {
-                                lag_name: params.data.lag_name,
-                                [params.colDef.field]: params.newValue,
-                            },
-                        ];
-                    }
-                    console.log("value Change--->", latestChanges);
-                    return latestChanges;
-                });
-            }
-        },
-        [dataTable]
-    );
 
     const createJsonOutput = useCallback(() => {
         let output = changes.map((change) => {
-        let output = changes.map((change) => {
             let members = change.members;
-            if (
-                Array.isArray(members) &&
-                members.length > 0 &&
-                Array.isArray(members[0])
-            ) {
             if (
                 Array.isArray(members) &&
                 members.length > 0 &&
@@ -438,14 +339,13 @@ const PortChDataTable = (props) => {
         }
         setIsConfigInProgress(true);
         setConfigStatus("Config In Progress....");
-        setConfigStatus("Config In Progress....");
 
         const output = createJsonOutput();
         console.log("output sendUpdate", output);
-        console.log("output sendUpdate", output);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.put(apiPUrl, output)
-            .then(res => {
+        instance
+            .put(apiPUrl, output)
+            .then((res) => {
                 let startIndex = res.data.result[0].indexOf("{");
                 let endIndex = res.data.result[0].lastIndexOf("}");
                 let trimmedResponse = res.data.result[0].substring(
@@ -456,8 +356,6 @@ const PortChDataTable = (props) => {
                     status: "success",
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
-                });
-                setConfigStatus("Config Successful");
                 });
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
@@ -484,8 +382,8 @@ const PortChDataTable = (props) => {
 
     const onCellClicked = useCallback((params) => {
         if (params.colDef.field === "members") {
-            setCurrentRowData(params.data);
-            setExistingMembers(params.data.members.split(","));
+            setCurrentRowData(params?.data);
+            setExistingMembers(params?.data?.members?.split(","));
             setIsMemberModalOpen(true);
         }
     }, []);
@@ -573,6 +471,7 @@ const PortChDataTable = (props) => {
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
                         handelSubmitButton={disableSubmit}
+
                     />
                 </Modal>
 
