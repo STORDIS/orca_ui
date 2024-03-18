@@ -30,7 +30,7 @@ const InterfaceDataTable = (props) => {
             .then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
-                const names = res.data.map(item => item.name);
+                const names = res.data.map((item) => item.name);
                 setInterfaceNames(names);
             })
             .catch((err) => console.log(err));
@@ -168,11 +168,7 @@ const InterfaceDataTable = (props) => {
             <button
                 onClick={sendUpdates}
                 disabled={isConfigInProgress || changes.length === 0}
-                className={
-                    isConfigInProgress || changes.length === 0
-                        ? "button-disabled"
-                        : ""
-                }
+                className="btnStyle"
             >
                 Apply Config
             </button>

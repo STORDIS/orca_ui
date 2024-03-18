@@ -90,8 +90,8 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 />
             </div>
             <div className="form-field">
-                <input type="submit" value="Submit" />
-                <button type='button' onClick={onCancel}>Cancel</button>
+                <input type="submit" className="btnStyle mr-10" value="Submit" />
+                <button type='button' className="btnStyle mr-10" onClick={onCancel}>Cancel</button>
 
             </div>
         </form>

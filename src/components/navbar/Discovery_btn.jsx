@@ -88,7 +88,7 @@ const DiscoverButton = () => {
     return (
         <>
             <button
-                style={buttonStyle}
+                className="btnStyle"
                 id="btnDiscovery"
                 // onClick={btnHandler}
                 onClick={() => setShowForm(true)}

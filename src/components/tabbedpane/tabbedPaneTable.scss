@@ -2,8 +2,7 @@
     height: 500px;
     padding: 20px;
     flex: 10;
-    overflow:auto;
-
+    overflow: auto;
 
     .button-group {
         display: flex;
@@ -12,57 +11,53 @@
     }
 
     .button-column {
-        display: flex;
-        justify-content: flex-start;
-        margin-bottom: 15px;
+        flex: 1;
     }
 
     .selection-container {
         display: flex;
         align-items: center;
-        gap: 8px; 
+        gap: 8px;
     }
 
     .checkbox-label {
         display: flex;
         align-items: center;
-        margin-left: 8px; 
-        cursor: pointer; 
+        margin-left: 8px;
+        cursor: pointer;
 
         input[type="checkbox"] {
-            margin-right: 4px; 
+            margin-right: 4px;
         }
     }
 
     .button-container {
-        margin-top: 8px; 
-        flex-direction: column; 
-        gap: 12px; 
+        margin-top: 8px;
+        flex-direction: column;
+        gap: 12px;
 
+        button {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: 1px solid black;
+            background-color: lightgray;
+            color: black;
+            cursor: pointer;
+            transition: background-color 0.15s ease-in-out;
 
+            &:disabled {
+                background-color: #ccc;
+                color: #666;
+                cursor: not-allowed;
+            }
 
-    button {
-        padding: 6px 12px;
-        border-radius: 4px;
-        border: 1px solid black;
-        background-color: lightgray;
-        color: black;
-        cursor: pointer;
-        transition: background-color 0.15s ease-in-out;
-
-        &:disabled {
-            background-color: #ccc;
-            color: #666;
-            cursor: not-allowed;
-        }
-
-        &.button-disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            background-color: gray;
+            &.button-disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                background-color: gray;
+            }
         }
     }
-}
 
     .config-status {
         margin-left: 10px;
