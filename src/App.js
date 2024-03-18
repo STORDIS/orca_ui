@@ -58,12 +58,12 @@ const App = () => {
                                         </RequireAuth>
                                     }
                                 />
-                                {/* <Route
+                                <Route
                                     path="/"
                                     element={<Navigate replace to="/login" />}
-                                /> */}
+                                />
 
-                                {/* <Route path="*" element={<ErrorPage />} /> */}
+                                <Route path="*" element={<ErrorPage />} />
                             </Routes>
 
                             {token ? (
