@@ -20,7 +20,12 @@ export const AuthProvider = ({ children }) => {
                 setAccessToken(credential);
 
                 console.log("---", redirectUrl);
-                window.location.href = redirectUrl || '/login';
+
+                // if (redirectUrl) {
+                    window.location.href = redirectUrl;
+                // } else {
+                //     window.location.href = "/home";
+                // }
             })
             .catch((error) => {
                 console.error("Error:", error);

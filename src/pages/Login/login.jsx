@@ -25,7 +25,11 @@ export const Login = () => {
         const param = queryParams.get("redirect");
         console.log(param);
 
-        auth.login(formData, atob(param));
+        if (param) {
+            auth.login(formData, atob(param));
+        } else {
+            auth.login(formData, "/home");
+        }
     };
 
     const location = useLocation();
