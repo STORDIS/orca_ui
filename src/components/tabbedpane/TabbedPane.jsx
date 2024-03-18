@@ -10,7 +10,6 @@ import McLagDataTable from "../../components/tabbedpane/mclagDataTable";
 import BGPTable from "../../components/tabbedpane/bgpTable";
 import { useParams } from "react-router-dom";
 import { getAllDevicesURL } from "../../backend_rest_urls";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
@@ -18,8 +17,11 @@ import "../../pages/home/home.scss";
 import { useNavigate } from "react-router-dom";
 import { useLog } from "../../LogContext";
 import secureLocalStorage from "react-secure-storage";
+import interceptor from "../../interceptor";
 
 const TabbedPane = () => {
+    const instance = interceptor();
+
     const { deviceIP } = useParams();
     const [tabValue, setTabValue] = React.useState(
         parseInt(secureLocalStorage.getItem("selectedTab")) !== null
@@ -36,7 +38,7 @@ const TabbedPane = () => {
             secureLocalStorage.setItem("selectedTab", tabValue.toString());
         }
 
-        axios(getAllDevicesURL())
+        instance(getAllDevicesURL())
             .then((res) => {
                 let data = res.data.map((element) => {
                     return { value: element.mgt_ip, label: element.mgt_ip };

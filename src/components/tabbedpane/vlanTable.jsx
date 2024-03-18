@@ -4,7 +4,6 @@ import { vlanColumns } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import axios from "axios";
 import {
     getVlansURL,
     getAllInterfacesOfDeviceURL,
@@ -14,6 +13,7 @@ import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
 import { useLog } from "../../LogContext";
+import interceptor from "../../interceptor";
 
 const VlanTable = (props) => {
     const gridRef = useRef();
@@ -47,10 +47,11 @@ const VlanTable = (props) => {
         []
     );
     const { setLog } = useLog();
+    const instance = interceptor();
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .get(apiMUrl)
             .then((res) => {
                 //iterate the json array res.data and convert the value of key "members" in each element to string
@@ -63,7 +64,7 @@ const VlanTable = (props) => {
     }, [selectedDeviceIp]);
 
     useEffect(() => {
-        axios
+        instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((response) => {
                 const fetchedInterfaceNames = response.data.map(
@@ -85,7 +86,7 @@ const VlanTable = (props) => {
 
     const refreshData = () => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .get(apiMUrl)
             .then((res) => {
                 console.log("refresh", res);
@@ -140,7 +141,7 @@ const VlanTable = (props) => {
             name: rowData.name,
         }));
         console.log("DeleteData", deleteData);
-        axios
+        instance
             .delete(apiMUrl, { data: deleteData })
             .then((response) => {
                 let startIndex = response.data.result[0].indexOf("{");
@@ -211,7 +212,7 @@ const VlanTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .put(apiMUrl, formData)
             .then((response) => {
                 setShowForm(false);
@@ -300,7 +301,7 @@ const VlanTable = (props) => {
         if (props.refresh) {
             props.setRefresh(!props.refresh);
             const apiMUrl = getVlansURL(selectedDeviceIp);
-            axios.get(apiMUrl).then((res) => {
+            instance.get(apiMUrl).then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             });
@@ -342,7 +343,7 @@ const VlanTable = (props) => {
 
         const output = createJSONOutput();
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .put(apiMUrl, output)
             .then((res) => {
                 let startIndex = res.data.result[0].indexOf("{");
@@ -495,7 +496,7 @@ const VlanTable = (props) => {
         };
 
         try {
-            const response = await axios.delete(
+            const response = await instance.delete(
                 deleteVlanMembersURL(selectedDeviceIp),
                 { data: payload }
             );

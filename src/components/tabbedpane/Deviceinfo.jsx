@@ -3,9 +3,8 @@ import "./tabbedPaneTable.scss";
 import { deviceUserColumns } from "./datatablesourse";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import axios from "axios";
 import { getAllDevicesURL } from "../../backend_rest_urls.js";
-
+import interceptor from "../../interceptor.js";
 
 const Deviceinfo = (props) => {
   const {
@@ -17,10 +16,10 @@ const Deviceinfo = (props) => {
   console.log(rows, columns, selectedDeviceIp);
 
   const [dataTable, setDataTable] = useState([]);
-  console.log(dataTable);
+  const instance = interceptor();
 
   useEffect(() => {    
-    axios(getAllDevicesURL())
+    instance(getAllDevicesURL())
       .then((res) => {
         console.log("response", res.data);
         if (isTabbedPane) {

@@ -4,13 +4,13 @@ import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
 import { portChannelColumns } from "./datatablesourse";
-import axios from 'axios'
 import { getAllInterfacesOfDeviceURL, getAllPortChnlsOfDeviceURL } from '../../backend_rest_urls'
 import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
 //import MemberSelectionComponent from "./MemberSelectionComponent";
 import MembersSelection from "./MembersSelection";
 import { useLog } from "../../LogContext";
+import interceptor from "../../interceptor";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -35,10 +35,11 @@ const PortChDataTable = (props) => {
     const [existingMembers, setExistingMembers] = useState([]);
 
     const { setLog } = useLog();
+    const instance = interceptor();
 
     useEffect(() => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.get(apiPUrl)
+        instance.get(apiPUrl)
             .then(res => {
                 let data = res.data;
                 console.log("data", data);
@@ -50,7 +51,7 @@ const PortChDataTable = (props) => {
     }, [selectedDeviceIp]);
 
     useEffect(() => {
-        axios.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+        instance.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then(res => {
                 const names = res.data.map(item => item.name);
                 setInterfaceNames(names);
@@ -74,7 +75,7 @@ const PortChDataTable = (props) => {
 
     const refreshData = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.get(apiPUrl)
+        instance.get(apiPUrl)
             .then(res => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
@@ -112,7 +113,7 @@ const PortChDataTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.put(apiPUrl, formData)
+        instance.put(apiPUrl, formData)
             .then(res => {
                 setShowForm(false);
 
@@ -157,7 +158,7 @@ const PortChDataTable = (props) => {
             mgt_ip: selectedDeviceIp, lag_name: rowData.lag_name
         }));
         console.log('DeleteData', deleteData)
-        axios.delete(apiPUrl, { data: deleteData })
+        instance.delete(apiPUrl, { data: deleteData })
             .then(response => {
 
                 let startIndex = response.data.result[0].indexOf("{");
@@ -311,7 +312,7 @@ const PortChDataTable = (props) => {
         const output = createJsonOutput();
         console.log('output sendUpdate', output)
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.put(apiPUrl, output)
+        instance.put(apiPUrl, output)
             .then(res => {
                 let startIndex = res.data.result[0].indexOf("{");
                 let endIndex = res.data.result[0].lastIndexOf("}");

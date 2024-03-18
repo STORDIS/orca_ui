@@ -14,7 +14,7 @@ const interceptor = () => {
         (config) => {
             const token = secureLocalStorage.getItem("token");
             if (token) {
-                config.headers.Authorization = token;
+                config.headers.Authorization = "Token " + token;
             }
             return config;
         },
