@@ -7,7 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axios from "axios";
 import { getPortGroupsURL } from "../../backend_rest_urls";
 import "../../pages/home/home.scss";
-
+import interceptor from "../../interceptor";
 import { useLog } from "../../LogContext";
 
 const PortGroupTable = (props) => {
@@ -21,12 +21,12 @@ const PortGroupTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
 
     const { setLog } = useLog();
+    const instance = interceptor();
 
     useEffect(() => {
         const apiMUrl = getPortGroupsURL(selectedDeviceIp);
-        axios
-            .get(apiMUrl)
-            .then((res) => {
+        instance.get(apiMUrl)
+            .then(res => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
@@ -97,9 +97,8 @@ const PortGroupTable = (props) => {
         const req_json = createReqJson();
         console.log(JSON.stringify(req_json));
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
-        axios
-            .put(apiUrl, req_json)
-            .then((res) => {
+        instance.put(apiUrl, req_json)
+            .then(res => {
                 let startIndex = res.data.result[0].indexOf("{");
                 let endIndex = res.data.result[0].lastIndexOf("}");
                 let trimmedResponse = res.data.result[0].substring(

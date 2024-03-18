@@ -1,7 +1,10 @@
 import Home from "./pages/home/Home";
+import ErrorPage from "./pages/error/errorPage.jsx";
+
 import TabbedPane from "./components/tabbedpane/TabbedPane";
 import LogViewer from "./components/logpane/logpane";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import {
     BrowserRouter as Router,
     Routes,
@@ -12,37 +15,67 @@ import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
 
 import { DataProvider } from "./LogContext";
+import { AuthProvider } from "./utils/auth";
+import RequireAuth from "./utils/requiredAuth";
 
 import "./App.scss";
+import { Login } from "./pages/Login/login.jsx";
+
+import secureLocalStorage from "react-secure-storage";
 
 const App = () => {
+    const [token, setToken] = useState("");
+
+    useEffect(() => {
+        setToken(secureLocalStorage.getItem("token"));
+    }, [token]);
 
     return (
-        <div className="mainContainer">
-            <Router>
-                <Sidebar />
-                <DataProvider>
-                    <div className="container">
-                        <Navbar />
-                        <Routes>
-                            <Route path="/home" element={<Home />} />
-                            <Route
-                                path="/"
-                                element={<Navigate replace to="/home" />}
-                            />
-                            <Route
-                                path="devices/:deviceIP"
-                                element={<TabbedPane />}
-                            />
-                        </Routes>
+        <AuthProvider>
+            <div className="mainContainer">
+                <Router>
+                    {token ? <Sidebar /> : null}
 
-                        <div className="listContainer">
-                            <LogViewer />
+                    <DataProvider>
+                        <div className="container">
+                            {token ? <Navbar /> : null}
+                            <Routes>
+                                <Route path="/login" element={<Login />} />
+                                <Route
+                                    path="/home"
+                                    element={
+                                        <RequireAuth>
+                                            <Home />
+                                        </RequireAuth>
+                                    }
+                                />
+
+                                <Route
+                                    path="devices/:deviceIP"
+                                    element={
+                                        <RequireAuth>
+                                            <TabbedPane />
+                                        </RequireAuth>
+                                    }
+                                />
+                                <Route
+                                    path="/"
+                                    element={<Navigate replace to="/login" />}
+                                />
+
+                                <Route path="*" element={<ErrorPage />} />
+                            </Routes>
+
+                            {token ? (
+                                <div className="listContainer">
+                                    <LogViewer />
+                                </div>
+                            ) : null}
                         </div>
-                    </div>
-                </DataProvider>
-            </Router>
-        </div>
+                    </DataProvider>
+                </Router>
+            </div>
+        </AuthProvider>
     );
 };
 

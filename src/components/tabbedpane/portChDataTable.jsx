@@ -14,6 +14,7 @@ import Modal from "../modal/Modal";
 //import MemberSelectionComponent from "./MemberSelectionComponent";
 import MembersSelection from "./MembersSelection";
 import { useLog } from "../../LogContext";
+import interceptor from "../../interceptor";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -42,12 +43,12 @@ const PortChDataTable = (props) => {
     const [existingMembers, setExistingMembers] = useState([]);
 
     const { setLog } = useLog();
+    const instance = interceptor();
 
     useEffect(() => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios
-            .get(apiPUrl)
-            .then((res) => {
+        instance.get(apiPUrl)
+            .then(res => {
                 let data = res.data;
                 console.log("data", data);
                 data &&
@@ -61,10 +62,9 @@ const PortChDataTable = (props) => {
     }, [selectedDeviceIp]);
 
     useEffect(() => {
-        axios
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((res) => {
-                const names = res.data.map((item) => item.name);
+        instance.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+            .then(res => {
+                const names = res.data.map(item => item.name);
                 setInterfaceNames(names);
             })
             .catch((error) =>
@@ -89,9 +89,8 @@ const PortChDataTable = (props) => {
 
     const refreshData = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios
-            .get(apiPUrl)
-            .then((res) => {
+        instance.get(apiPUrl)
+            .then(res => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
@@ -126,9 +125,8 @@ const PortChDataTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios
-            .put(apiPUrl, formData)
-            .then((res) => {
+        instance.put(apiPUrl, formData)
+            .then(res => {
                 setShowForm(false);
 
                 let startIndex = res.data.result[0].indexOf("{");
@@ -172,10 +170,10 @@ const PortChDataTable = (props) => {
             mgt_ip: selectedDeviceIp,
             lag_name: rowData.lag_name,
         }));
-        console.log("DeleteData", deleteData);
-        axios
-            .delete(apiPUrl, { data: deleteData })
-            .then((response) => {
+        console.log('DeleteData', deleteData)
+        instance.delete(apiPUrl, { data: deleteData })
+            .then(response => {
+
                 let startIndex = response.data.result[0].indexOf("{");
                 let endIndex = response.data.result[0].lastIndexOf("}");
                 let trimmedResponse = response.data.result[0].substring(
@@ -340,12 +338,11 @@ const PortChDataTable = (props) => {
         const output = createJsonOutput();
         console.log("output sendUpdate", output);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios
-            .put(apiPUrl, output)
-            .then((res) => {
-                let startIndex = res?.data?.result[0]?.indexOf("{");
-                let endIndex = res?.data?.result[0]?.lastIndexOf("}");
-                let trimmedResponse = res?.data?.result[0]?.substring(
+        instance.put(apiPUrl, output)
+            .then(res => {
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
                     startIndex + 1,
                     endIndex
                 );
