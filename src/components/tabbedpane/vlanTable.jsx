@@ -479,7 +479,7 @@ const VlanTable = (props) => {
         };
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .put(apiMUrl, output)
             .then((res) => {
                 let startIndex = res.data.result[0].indexOf("{");
