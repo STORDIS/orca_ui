@@ -4,7 +4,6 @@ import { vlanColumns } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import axios from "axios";
 import {
     getVlansURL,
     getAllInterfacesOfDeviceURL,
@@ -14,6 +13,7 @@ import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
 import { useLog } from "../../LogContext";
+import interceptor from "../../interceptor";
 
 const VlanTable = (props) => {
     const gridRef = useRef();
@@ -47,10 +47,12 @@ const VlanTable = (props) => {
         []
     );
     const { setLog } = useLog();
+    const instance = interceptor();
+    const [disableSubmit, setDisableSubmit] = useState(false);
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .get(apiMUrl)
             .then((res) => {
                 //iterate the json array res.data and convert the value of key "members" in each element to string
@@ -63,7 +65,7 @@ const VlanTable = (props) => {
     }, [selectedDeviceIp]);
 
     useEffect(() => {
-        axios
+        instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((response) => {
                 const fetchedInterfaceNames = response.data.map(
@@ -85,7 +87,7 @@ const VlanTable = (props) => {
 
     const refreshData = () => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .get(apiMUrl)
             .then((res) => {
                 console.log("refresh", res);
@@ -140,7 +142,7 @@ const VlanTable = (props) => {
             name: rowData.name,
         }));
         console.log("DeleteData", deleteData);
-        axios
+        instance
             .delete(apiMUrl, { data: deleteData })
             .then((response) => {
                 let startIndex = response.data.result[0].indexOf("{");
@@ -183,7 +185,7 @@ const VlanTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
             })
-            .finally(() => { });
+            .finally(() => {});
     };
 
     const onSelectionChanged = () => {
@@ -211,7 +213,7 @@ const VlanTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .put(apiMUrl, formData)
             .then((response) => {
                 setShowForm(false);
@@ -231,6 +233,7 @@ const VlanTable = (props) => {
                 setMessageModalContent("Vlan added successfully");
                 setIsMessageModalOpen(true);
                 refreshData();
+                // setDisableSubmit(false);
             })
             .catch((err) => {
                 setMessageModalContent("Error in adding Vlan");
@@ -248,6 +251,7 @@ const VlanTable = (props) => {
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
                 });
+                // setDisableSubmit(false);
             });
     };
 
@@ -300,7 +304,7 @@ const VlanTable = (props) => {
         if (props.refresh) {
             props.setRefresh(!props.refresh);
             const apiMUrl = getVlansURL(selectedDeviceIp);
-            axios.get(apiMUrl).then((res) => {
+            instance.get(apiMUrl).then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             });
@@ -342,7 +346,7 @@ const VlanTable = (props) => {
 
         const output = createJSONOutput();
         const apiMUrl = getVlansURL(selectedDeviceIp);
-        axios
+        instance
             .put(apiMUrl, output)
             .then((res) => {
                 let startIndex = res.data.result[0].indexOf("{");
@@ -368,9 +372,7 @@ const VlanTable = (props) => {
                 );
 
                 const match = err.response.data.result[0].match(/Reason:(.*)/);
-
                 const reasonText = match[1].trim();
-
                 setLog({
                     status: reasonText,
                     result: trimmedResponse,
@@ -468,10 +470,56 @@ const VlanTable = (props) => {
         setDataTable(updatedVlans);
         resetMemberSelectionModal();
         setIsMemberSelectionModalOpen(false);
-        setChanges([
-            ...changes,
-            { name: currentEditingVlan.name, members: memberSelectionObject },
-        ]);
+
+        const output = {
+            vlanid: currentEditingVlan.vlanid,
+            mgt_ip: selectedDeviceIp,
+            name: currentEditingVlan.name,
+            members: memberSelectionObject,
+        };
+
+        const apiMUrl = getVlansURL(selectedDeviceIp);
+        instance
+            .put(apiMUrl, output)
+            .then((res) => {
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+                setConfigStatus("Config Successful");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .catch((err) => {
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+
+                const match = err.response.data.result[0].match(/Reason:(.*)/);
+
+                const reasonText = match[1].trim();
+
+                setLog({
+                    status: reasonText,
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+
+                setConfigStatus("Config Failed");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .finally(() => {
+                setIsConfigInProgress(false);
+            });
     };
 
     const handleModalClose = () => {
@@ -495,7 +543,7 @@ const VlanTable = (props) => {
         };
 
         try {
-            const response = await axios.delete(
+            const response = await instance.delete(
                 deleteVlanMembersURL(selectedDeviceIp),
                 { data: payload }
             );
@@ -513,37 +561,41 @@ const VlanTable = (props) => {
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group">
-                    <button onClick={openAddModal}>Add Vlan</button>
+                    <div className="button-column">
+                        <button
+                            onClick={sendUpdates}
+                            disabled={
+                                isConfigInProgress || changes.length === 0
+                            }
+                            className="btnStyle"
+                        >
+                            Apply Config
+                        </button>
+                        <span
+                            className={`config-status ${
+                                configStatus === "Config Successful"
+                                    ? "config-successful"
+                                    : configStatus === "Config Failed"
+                                    ? "config-failed"
+                                    : "config-in-progress"
+                            }`}
+                        >
+                            {configStatus}
+                        </span>
+                    </div>
+
+                    <button className="btnStyle" onClick={openAddModal}>
+                        Add Vlan
+                    </button>
                     <button
+                        className="btnStyle"
                         onClick={openDeleteModal}
                         disabled={!isDeleteButtonEnabled}
                     >
                         Delete selected Vlan
                     </button>
                 </div>
-                <div className="button-column">
-                    <button
-                        onClick={sendUpdates}
-                        disabled={isConfigInProgress || changes.length === 0}
-                        className={
-                            isConfigInProgress || changes.length === 0
-                                ? "button-disabled"
-                                : ""
-                        }
-                    >
-                        Apply Config
-                    </button>
-                    <span
-                        className={`config-status ${configStatus === "Config Successful"
-                                ? "config-successful"
-                                : configStatus === "Config Failed"
-                                    ? "config-failed"
-                                    : "config-in-progress"
-                            }`}
-                    >
-                        {configStatus}
-                    </span>
-                </div>
+
                 <p>&nbsp;</p>
                 <Modal
                     show={showForm}
@@ -554,6 +606,7 @@ const VlanTable = (props) => {
                         onSubmit={handleFormSubmit}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
+                        handelSubmitButton={disableSubmit}
                     />
                 </Modal>
 
@@ -597,6 +650,7 @@ const VlanTable = (props) => {
                         <div>
                             {messageModalContent}
                             <button
+                                className="btnStyle"
                                 onClick={() => setIsMessageModalOpen(false)}
                             >
                                 Ok
@@ -617,9 +671,15 @@ const VlanTable = (props) => {
                                 }}
                             >
                                 {modalType === "success" ? (
-                                    <button onClick={handleOkClick}>OK</button>
+                                    <button
+                                        className="btnStyle"
+                                        onClick={handleOkClick}
+                                    >
+                                        OK
+                                    </button>
                                 ) : (
                                     <button
+                                        className="btnStyle"
                                         onClick={() =>
                                             setIsMessageModalOpen(false)
                                         }
@@ -696,20 +756,23 @@ const VlanTable = (props) => {
                                     )}
                                 </select>
                             </div>
-                            <div style={{ marginTop: "10px" }}></div>
                             <div
                                 style={{
                                     marginTop: "10px",
                                     display: "flex",
-                                    justifyContent: "center",
                                     gap: "10px",
                                 }}
                             >
-                                <button onClick={handleSaveMemberSelection}>
+                                <button
+                                    className="btnStyle"
+                                    onClick={handleSaveMemberSelection}
+                                >
                                     Ok
                                 </button>
-                                &nbsp;
-                                <button onClick={handleModalClose}>
+                                <button
+                                    className="btnStyle"
+                                    onClick={handleModalClose}
+                                >
                                     Cancel
                                 </button>
                                 <button
@@ -717,6 +780,7 @@ const VlanTable = (props) => {
                                     disabled={
                                         membersSelectedForRemoval.length === 0
                                     }
+                                    className="btnStyle"
                                 >
                                     Delete Selected Members
                                 </button>

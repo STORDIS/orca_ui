@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { getDiscoveryUrl } from "../../backend_rest_urls";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 
 import { useLog } from "../../LogContext";
+
+import interceptor from "../../interceptor";
 
 const DiscoverButton = () => {
     const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(false);
@@ -33,12 +34,14 @@ const DiscoverButton = () => {
 
     const [showForm, setShowForm] = useState(false);
 
+    const instance = interceptor();
+
     const start_discovery = async (formData) => {
         setDiscBtnText("Discovery In Progress");
         disableDiscBtn(true);
         try {
             setShowForm(false);
-            const response = await axios.put(getDiscoveryUrl(), formData);
+            const response = await instance.put(getDiscoveryUrl(), formData);
             console.log(response.data);
 
             if (response?.data?.result?.length === 1) {
@@ -85,7 +88,7 @@ const DiscoverButton = () => {
     return (
         <>
             <button
-                style={buttonStyle}
+                className="btnStyle"
                 id="btnDiscovery"
                 // onClick={btnHandler}
                 onClick={() => setShowForm(true)}

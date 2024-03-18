@@ -4,10 +4,10 @@ import { interfaceColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import axios from "axios";
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
 
 import { useLog } from "../../LogContext";
+import interceptor from "../../interceptor";
 
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
@@ -21,15 +21,16 @@ const InterfaceDataTable = (props) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
 
     const { setLog } = useLog();
+    const instance = interceptor();
 
     const setInterfaceData = () => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        axios
+        instance
             .get(apiUrl)
             .then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
-                const names = res.data.map(item => item.name);
+                const names = res.data.map((item) => item.name);
                 setInterfaceNames(names);
             })
             .catch((err) => console.log(err));
@@ -116,7 +117,7 @@ const InterfaceDataTable = (props) => {
         setConfigStatus("Config In Progress....");
         const output = createJsonOutput();
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        axios
+        instance
             .put(apiUrl, output)
             .then((res) => {
                 let startIndex = res.data.result[0].indexOf("{");
@@ -167,11 +168,7 @@ const InterfaceDataTable = (props) => {
             <button
                 onClick={sendUpdates}
                 disabled={isConfigInProgress || changes.length === 0}
-                className={
-                    isConfigInProgress || changes.length === 0
-                        ? "button-disabled"
-                        : ""
-                }
+                className="btnStyle"
             >
                 Apply Config
             </button>

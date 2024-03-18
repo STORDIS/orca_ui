@@ -38,10 +38,7 @@ function LogViewer() {
             resizable: true,
             cellRenderer: (params) => {
                 return (
-                    <Time
-                        value={params.value}
-                        format="hh:mm:ss DD-MM-YYYY"
-                    />
+                    <Time value={params.value} format="hh:mm:ss DD-MM-YYYY" />
                 );
             },
         },
@@ -94,13 +91,15 @@ function LogViewer() {
                     paginationPageSizeSelector={[5, 10, 15]}
                 />
 
-                <button className="clearLogBtn" onClick={handelClearLog}>
+                <button
+                    className="clearLogBtn btnStyle"
+                    onClick={handelClearLog}
+                >
                     Clear Log
                 </button>
             </div>
         </div>
     );
 }
-
 
 export default LogViewer;
