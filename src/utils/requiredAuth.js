@@ -6,7 +6,11 @@ export const RequireAuth = ({ children }) => {
     const location = useLocation();
     const auth = useAuth();
     if (!secureLocalStorage.getItem("token")) {
-        return <Navigate to="/login" state={{ from: location }} />;
+        console.log("here", location.pathname);
+        let targetUrl = "/login?redirect=" + location.pathname;
+        return (
+            <Navigate to={targetUrl || "/login"} state={{ from: location }} />
+        );
     }
     return children;
 };

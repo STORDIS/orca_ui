@@ -4,6 +4,8 @@ import "./login.scss";
 import logo from "../../assets/orca.png";
 import secureLocalStorage from "react-secure-storage";
 
+import { useLocation, useNavigate } from "react-router-dom";
+
 export const Login = () => {
     const auth = useAuth();
 
@@ -18,14 +20,22 @@ export const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log(formData);
-        auth.login(formData);
+
+        const queryParams = new URLSearchParams(location.search);
+        const param = queryParams.get("redirect");
+        console.log(param);
+
+        auth.login(formData, param);
     };
+
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         // auto login
         if (secureLocalStorage.getItem("token")) {
-            window.location.href = "/login";
+            console.log("auto login", location.pathname);
+            window.location.href = location.pathname;
         }
     }, []);
 

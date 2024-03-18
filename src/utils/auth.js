@@ -9,19 +9,18 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null);
+
     const instance = interceptor();
 
-    const login = async (credential) => {
-        
+    const login = async (credential, redirectUrl) => {
         await instance
             .post(postLogin(), credential)
             .then((response) => {
-                secureLocalStorage.setItem(
-                    "token",
-                    response.data.token
-                );
+                secureLocalStorage.setItem("token", response.data.token);
                 setAccessToken(credential);
-                window.location.href = "/home";
+
+                console.log("---", redirectUrl);
+                window.location.href = redirectUrl || '/login';
             })
             .catch((error) => {
                 console.error("Error:", error);
