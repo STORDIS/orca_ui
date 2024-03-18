@@ -1,16 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./tabbedpane/Form.scss";
-import axios from "axios";
-import { getAllInterfacesOfDeviceURL } from "../backend_rest_urls";
 
-const PortChannelForm = ({
-    onSubmit,
-    selectedDeviceIp,
-    onCancel,
-    handelSubmitButton,
-}) => {
-    const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
-
+const PortChannelForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         lag_name: "",
@@ -29,21 +20,9 @@ const PortChannelForm = ({
             ...prevFormData,
             [name]: value,
         }));
-
-        console.log("change", formData);
-    };
-
-    const handleDropdownChange = (e) => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            members: e.target.value,
-        }));
-        console.log("drop", formData);
     };
 
     const handleSubmit = (e) => {
-        setDisableSubmit(true);
-
         const membersArray = formData.members
             .split(",")
             .map((member) => member.trim())
@@ -65,24 +44,8 @@ const PortChannelForm = ({
         }
     };
 
-    const [interfaceNames, setInterfaceNames] = useState([]);
-
-    useEffect(() => {
-        axios
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const fetchedInterfaceNames = response.data.map(
-                    (item) => item.name
-                );
-                setInterfaceNames(fetchedInterfaceNames);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
-            });
-    }, []);
-
     return (
-        <div className="">
+        <div className="form-wrapper">
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -126,33 +89,23 @@ const PortChannelForm = ({
                 </div>
 
                 <div className="form-field">
-                    <label>Members: </label>
-                    <select
-                        id="memberDropdown"
-                        onChange={handleDropdownChange}
+                    <label>Members:</label>
+                    <input
+                        type="text"
+                        name="members"
                         value={formData.members}
-                    >
-                        <option value="" disabled>
-                            Select Member Interface
-                        </option>
-                        {interfaceNames.map((val, index) => (
-                            <option key={index} value={val}>
-                                {val}
-                            </option>
-                        ))}
-                    </select>
+                        onChange={handleChange}
+                    />
                 </div>
                 <div className="">
-                    <button
+                    <input
                         type="submit"
                         className="btnStyle mr-10"
-                        disabled={disableSubmit}
-                    >
-                        Apply Config
-                    </button>
+                        value="Submit"
+                    />
                     <button
                         type="button"
-                        className="btnStyle"
+                        className="btnStyle mr-10"
                         onClick={onCancel}
                     >
                         Cancel

@@ -40,7 +40,6 @@ const PortChDataTable = (props) => {
     const [currentRowData, setCurrentRowData] = useState(null);
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [existingMembers, setExistingMembers] = useState([]);
-    const [disableSubmit, setDisableSubmit] = useState(false);
 
     const { setLog } = useLog();
 
@@ -468,7 +467,6 @@ const PortChDataTable = (props) => {
                         onSubmit={handleFormSubmit}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
-                        handelSubmitButton={disableSubmit}
                     />
                 </Modal>
 
