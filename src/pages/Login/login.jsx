@@ -25,7 +25,7 @@ export const Login = () => {
         const param = queryParams.get("redirect");
         console.log(param);
 
-        auth.login(formData, param);
+        auth.login(formData, atob(param));
     };
 
     const location = useLocation();
@@ -35,7 +35,7 @@ export const Login = () => {
         // auto login
         if (secureLocalStorage.getItem("token")) {
             console.log("auto login", location.pathname);
-            window.location.href = location.pathname;
+            window.location.href = "/home";
         }
     }, []);
 

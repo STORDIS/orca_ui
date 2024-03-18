@@ -7,7 +7,7 @@ export const RequireAuth = ({ children }) => {
     const auth = useAuth();
     if (!secureLocalStorage.getItem("token")) {
         console.log("here", location.pathname);
-        let targetUrl = "/login?redirect=" + location.pathname;
+        let targetUrl = "/login?redirect=" + btoa(location.pathname);
         return (
             <Navigate to={targetUrl || "/login"} state={{ from: location }} />
         );
