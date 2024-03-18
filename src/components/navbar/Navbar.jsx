@@ -1,9 +1,16 @@
-import "./navbar.scss"
-import SearchIcon from '@mui/icons-material/Search';
+import "./navbar.scss";
+import SearchIcon from "@mui/icons-material/Search";
 import Discovery from "./Discovery_btn";
-
+import { useAuth } from "../../utils/auth";
 
 const Navbar = () => {
+
+    const auth = useAuth();
+
+    const handleLogout = () => {
+        auth.logout();
+    };
+
     return (
         <div className="navbar">
             <div className="wrapper">
@@ -15,10 +22,14 @@ const Navbar = () => {
                     <div className="item">
                         <Discovery />
                     </div>
+
+                    <div className="items" onClick={handleLogout}>
+                        <button className="btnStyle" >Logout</button>
+                    </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

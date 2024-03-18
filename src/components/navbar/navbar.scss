@@ -1,50 +1,46 @@
-.navbar{
+.navbar {
     height: 50px;
-    border-bottom: 0.5px solid rgb(231, 228, 228); 
+    border-bottom: 0.5px solid rgb(231, 228, 228);
     display: flex;
     align-items: center;
     font-size: 14px;
     color: #888;
 
-    .wrapper{
+    .wrapper {
         width: 100%;
         display: flex;
         padding: 20px;
         align-items: center;
         justify-content: space-between;
 
-        .search{
+        .search {
             display: flex;
             align-items: center;
             border: 0.5px solid lightgray;
             padding: 3px;
 
-
-            input{
+            input {
                 border: none;
                 outline: none;
                 background: transparent;
-
             }
         }
 
-
-        .items{
+        .items {
             display: flex;
             align-items: center;
 
-            .item{
+            .item {
                 display: flex;
                 align-items: center;
                 margin-right: 20px;
                 position: relative;
 
-                .icon{
+                .icon {
                     font-size: 20px;
-
                 }
 
-                .counter{
+                .counter {
                     width: 15px;
                     height: 15px;
                     background-color: red;
@@ -57,12 +53,17 @@
                     position: absolute;
                     top: -5px;
                     right: -5px;
-
-
-
                 }
-
             }
         }
+    }
+
+    .btnStyle {
+        background-color: lightgray;
+        color: black;
+        border: 1px solid black;
+        border-radius: 4px;
+        padding: 6px 12px;
+        font-family: Nunito, sans-serif;
     }
 }

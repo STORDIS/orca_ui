@@ -4,12 +4,13 @@ import { bgpColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import axios from 'axios'
 import { getAllBGPOfDeviceURL } from "../../backend_rest_urls";
 
-
+import interceptor from "../../interceptor";
 
 const BGPTable = (props) => {
+    const instance = interceptor();
+
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const { rows, columns, selectedDeviceIp = '' } = props;
@@ -20,7 +21,7 @@ const BGPTable = (props) => {
     
     useEffect(() => {
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
-        axios.get(apiMUrl)
+        instance.get(apiMUrl)
             .then((res) => {
                 // get neighbor_prop property from json and convert to string
                 res.data.forEach(element => {

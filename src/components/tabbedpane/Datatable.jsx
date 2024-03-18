@@ -4,10 +4,13 @@ import { deviceUserColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import axios from 'axios'
 import { getAllDevicesURL } from "../../backend_rest_urls.js";
 
+import interceptor from "../../interceptor";
+
 const Datatable = (props) => {
+  const instance = interceptor();
+
   const gridRef = useRef();
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
   const { rows, columns, isTabbedPane = false, selectedDeviceIp = '' } = props;
@@ -17,7 +20,7 @@ const Datatable = (props) => {
   console.log(dataTable)
   
   useEffect(() => {
-    axios(getAllDevicesURL())
+    instance(getAllDevicesURL())
       .then(res => {
         console.log("response", res.data)
         if (isTabbedPane) {
