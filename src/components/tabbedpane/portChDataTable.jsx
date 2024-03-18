@@ -1,11 +1,14 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "./tabbedPaneTable.scss";
 import { AgGridReact } from "ag-grid-react";
-import 'ag-grid-community/styles/ag-grid.css';
-import 'ag-grid-community/styles/ag-theme-alpine.css';
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
 import { portChannelColumns } from "./datatablesourse";
-import axios from 'axios'
-import { getAllInterfacesOfDeviceURL, getAllPortChnlsOfDeviceURL } from '../../backend_rest_urls'
+import axios from "axios";
+import {
+    getAllInterfacesOfDeviceURL,
+    getAllPortChnlsOfDeviceURL,
+} from "../../backend_rest_urls";
 import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
 //import MemberSelectionComponent from "./MemberSelectionComponent";
@@ -14,50 +17,61 @@ import { useLog } from "../../LogContext";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: '100%', width: '100%', maxWidth: '100%' }), []);
-    const { selectedDeviceIp = '' } = props;
+    const gridStyle = useMemo(
+        () => ({ height: "100%", width: "100%", maxWidth: "100%" }),
+        []
+    );
+    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [isConfigInProgress, setIsConfigInProgress] = useState(false);
-    const [configStatus, setConfigStatus] = useState('');
+    const [configStatus, setConfigStatus] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-    const [messageModalContent, setMessageModalContent] = useState('');
+    const [messageModalContent, setMessageModalContent] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [modalType, setModalType] = useState('success');
-    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] = useState(false);
-    const [modalTitle, setModalTitle] = useState('');
+    const [modalType, setModalType] = useState("success");
+    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
+        useState(false);
+    const [modalTitle, setModalTitle] = useState("");
     const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
     const [currentRowData, setCurrentRowData] = useState(null);
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [existingMembers, setExistingMembers] = useState([]);
+    const [disableSubmit, setDisableSubmit] = useState(false);
 
     const { setLog } = useLog();
 
     useEffect(() => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.get(apiPUrl)
-            .then(res => {
+        axios
+            .get(apiPUrl)
+            .then((res) => {
                 let data = res.data;
                 console.log("data", data);
-                data && data.map(val => val['members'] = val['members'].toString())
+                data &&
+                    data.map(
+                        (val) => (val["members"] = val["members"].toString())
+                    );
                 setDataTable(data);
                 setOriginalData(JSON.parse(JSON.stringify(data)));
             })
-            .catch(err => console.log(err));
+            .catch((err) => console.log(err));
     }, [selectedDeviceIp]);
 
     useEffect(() => {
-        axios.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then(res => {
-                const names = res.data.map(item => item.name);
+        axios
+            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+            .then((res) => {
+                const names = res.data.map((item) => item.name);
                 setInterfaceNames(names);
             })
-            .catch(error => console.error("Failed to fetch interface names:", error));
+            .catch((error) =>
+                console.error("Failed to fetch interface names:", error)
+            );
     }, [selectedDeviceIp]);
-
 
     useEffect(() => {
         if (props.refresh) {
@@ -66,20 +80,23 @@ const PortChDataTable = (props) => {
             setChanges([]);
         }
     }, [props.refresh]);
-    
+
     const defaultColDef = {
-        tooltipValueGetter: (params) => { return params.value },
+        tooltipValueGetter: (params) => {
+            return params.value;
+        },
         resizable: true,
-    }
+    };
 
     const refreshData = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.get(apiPUrl)
-            .then(res => {
+        axios
+            .get(apiPUrl)
+            .then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
-            .catch(err => {
+            .catch((err) => {
                 console.error("Error fetching data:", err);
                 setMessageModalContent("Error fetching data: " + err.message);
                 setIsMessageModalOpen(true);
@@ -92,7 +109,7 @@ const PortChDataTable = (props) => {
     const handleOkClick = () => {
         setIsMessageModalOpen(false);
         refreshData();
-    }
+    };
 
     const promptDeleteConfirmation = () => {
         setMessageModalContent(getDeleteConfirmationMessage());
@@ -108,12 +125,11 @@ const PortChDataTable = (props) => {
         setIsDeleteConfirmationModalOpen(false);
     };
 
-
-
     const handleFormSubmit = (formData) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.put(apiPUrl, formData)
-            .then(res => {
+        axios
+            .put(apiPUrl, formData)
+            .then((res) => {
                 setShowForm(false);
 
                 let startIndex = res.data.result[0].indexOf("{");
@@ -129,12 +145,12 @@ const PortChDataTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
 
-                setMessageModalContent('Port Channel added Successfully');
+                setMessageModalContent("Port Channel added Successfully");
                 setIsMessageModalOpen(true);
                 refreshData();
             })
-            .catch(err => {
-                setMessageModalContent('Error adding port channel');
+            .catch((err) => {
+                setMessageModalContent("Error adding port channel");
                 setIsMessageModalOpen(true);
                 let startIndex = err.response.data.result[0].indexOf("{");
                 let endIndex = err.response.data.result[0].lastIndexOf("}");
@@ -147,19 +163,20 @@ const PortChDataTable = (props) => {
                     status: "error",
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
-                });            });
+                });
+            });
     };
-
 
     const handleDelete = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        const deleteData = selectedRows.map(rowData => ({
-            mgt_ip: selectedDeviceIp, lag_name: rowData.lag_name
+        const deleteData = selectedRows.map((rowData) => ({
+            mgt_ip: selectedDeviceIp,
+            lag_name: rowData.lag_name,
         }));
-        console.log('DeleteData', deleteData)
-        axios.delete(apiPUrl, { data: deleteData })
-            .then(response => {
-
+        console.log("DeleteData", deleteData);
+        axios
+            .delete(apiPUrl, { data: deleteData })
+            .then((response) => {
                 let startIndex = response.data.result[0].indexOf("{");
                 let endIndex = response.data.result[0].lastIndexOf("}");
                 let trimmedResponse = response.data.result[0].substring(
@@ -174,16 +191,20 @@ const PortChDataTable = (props) => {
                 });
 
                 if (response.data && Array.isArray(response.data.result)) {
-                    const updatedDataTable = dataTable.filter(row =>
-                        !selectedRows.some(selectedRow => selectedRow.lag_name === row.lag_name)
+                    const updatedDataTable = dataTable.filter(
+                        (row) =>
+                            !selectedRows.some(
+                                (selectedRow) =>
+                                    selectedRow.lag_name === row.lag_name
+                            )
                     );
-                    setDataTable(updatedDataTable)
+                    setDataTable(updatedDataTable);
                 }
                 setSelectedRows([]);
                 setMessageModalContent("Port Channel Deleted Successfully.");
                 setIsMessageModalOpen(true);
             })
-            .catch(err => {
+            .catch((err) => {
                 let startIndex = err.response.data.result[0].indexOf("{");
                 let endIndex = err.response.data.result[0].lastIndexOf("}");
                 let trimmedResponse = err.response.data.result[0].substring(
@@ -196,13 +217,12 @@ const PortChDataTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
             })
-            .finally(() => {
-            });
+            .finally(() => {});
     };
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
-        const selectedData = selectedNodes.map(node => node.data);
+        const selectedData = selectedNodes.map((node) => node.data);
         setSelectedRows(selectedData);
     };
 
@@ -213,18 +233,16 @@ const PortChDataTable = (props) => {
     const getDeleteConfirmationMessage = () => {
         if (selectedRows.length === 1) {
             return `Are you sure you want to delete ${selectedRows[0].lag_name}?`;
-        }
-        else if (selectedRows.length > 1) {
-            const lagNames = selectedRows.map(row => row.lag_name).join(', ');
+        } else if (selectedRows.length > 1) {
+            const lagNames = selectedRows.map((row) => row.lag_name).join(", ");
             return `Are you sure you want to delete these port channels: ${lagNames}?`;
-        }
-        else {
+        } else {
             return "No port channel selected.";
         }
     };
 
     const resetConfigStatus = () => {
-        setConfigStatus('');
+        setConfigStatus("");
         setChanges([]);
 
         gridRef.current.api.deselectAll();
@@ -241,48 +259,64 @@ const PortChDataTable = (props) => {
         promptDeleteConfirmation();
     };
 
-    const handleCellValueChanged = useCallback((params) => {
-        console.log('new value handle--->', params, params.newValue)
-        console.log('old value handle--->', params.oldValue)
-        if (params.newValue !== params.oldValue) {
-
-            if (params.colDef.field === 'lag_name') {
-                if (!/^PortChannel\d+$/.test(params.newValue)) {
-                    alert('Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.');
-                    params.node.setDataValue('lag_name', params.oldValue);
-                    return;
+    const handleCellValueChanged = useCallback(
+        (params) => {
+            console.log("new value handle--->", params, params.newValue);
+            console.log("old value handle--->", params.oldValue);
+            if (params.newValue !== params.oldValue) {
+                if (params.colDef.field === "lag_name") {
+                    if (!/^PortChannel\d+$/.test(params.newValue)) {
+                        alert(
+                            'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
+                        );
+                        params.node.setDataValue("lag_name", params.oldValue);
+                        return;
+                    }
                 }
+                setChanges((prev) => {
+                    console.log("prev-->", prev);
+                    if (!Array.isArray(prev)) {
+                        console.error("Expected array but got:", prev);
+                        return [];
+                    }
+                    let latestChanges;
+                    let isNameExsits = prev.filter(
+                        (val) => val.lag_name === params.data.lag_name
+                    );
+                    if (isNameExsits.length > 0) {
+                        console.log("ifff");
+                        let existedIndex = prev.findIndex(
+                            (val) => val.lag_name === params.data.lag_name
+                        );
+                        prev[existedIndex][params.colDef.field] =
+                            params.newValue;
+                        latestChanges = [...prev];
+                    } else {
+                        console.log("else", params.newValue, params);
+                        latestChanges = [
+                            ...prev,
+                            {
+                                lag_name: params.data.lag_name,
+                                [params.colDef.field]: params.newValue,
+                            },
+                        ];
+                    }
+                    console.log("value Change--->", latestChanges);
+                    return latestChanges;
+                });
             }
-            setChanges(prev => {
-                console.log('prev-->', prev)
-                if (!Array.isArray(prev)) {
-                    console.error("Expected array but got:", prev);
-                    return [];
-                }
-                let latestChanges;
-                let isNameExsits = prev.filter(val => val.lag_name === params.data.lag_name)
-                if (isNameExsits.length > 0) {
-                    console.log('ifff')
-                    let existedIndex = prev.findIndex(val => val.lag_name === params.data.lag_name);
-                    prev[existedIndex][params.colDef.field] = params.newValue
-                    latestChanges = [...prev]
-                } else {
-                    console.log('else', params.newValue, params)
-                    latestChanges = [...prev, { lag_name: params.data.lag_name, [params.colDef.field]: params.newValue }];
-                }
-                console.log('value Change--->', latestChanges)
-                return latestChanges
-            });
-        }
-    }, [dataTable]);
-
-
-
+        },
+        [dataTable]
+    );
 
     const createJsonOutput = useCallback(() => {
-        let output = changes.map(change => {
+        let output = changes.map((change) => {
             let members = change.members;
-            if (Array.isArray(members) && members.length > 0 && Array.isArray(members[0])) {
+            if (
+                Array.isArray(members) &&
+                members.length > 0 &&
+                Array.isArray(members[0])
+            ) {
                 members = members.flat();
             }
 
@@ -297,22 +331,19 @@ const PortChDataTable = (props) => {
         return output;
     }, [selectedDeviceIp, changes]);
 
-
-
-
     const sendUpdates = useCallback(() => {
         if (changes.length === 0) {
             return;
         }
         setIsConfigInProgress(true);
-        setConfigStatus('Config In Progress....');
-
+        setConfigStatus("Config In Progress....");
 
         const output = createJsonOutput();
-        console.log('output sendUpdate', output)
+        console.log("output sendUpdate", output);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        axios.put(apiPUrl, output)
-            .then(res => {
+        axios
+            .put(apiPUrl, output)
+            .then((res) => {
                 let startIndex = res.data.result[0].indexOf("{");
                 let endIndex = res.data.result[0].lastIndexOf("}");
                 let trimmedResponse = res.data.result[0].substring(
@@ -323,10 +354,11 @@ const PortChDataTable = (props) => {
                     status: "success",
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
-                });                setConfigStatus('Config Successful');
+                });
+                setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
-            .catch(err => {
+            .catch((err) => {
                 let startIndex = err.response.data.result[0].indexOf("{");
                 let endIndex = err.response.data.result[0].lastIndexOf("}");
                 let trimmedResponse = err.response.data.result[0].substring(
@@ -338,7 +370,7 @@ const PortChDataTable = (props) => {
                     result: trimmedResponse,
                     timestamp: new Date().getTime(),
                 });
-                setConfigStatus('Config Failed');
+                setConfigStatus("Config Failed");
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
@@ -347,16 +379,15 @@ const PortChDataTable = (props) => {
     }, [createJsonOutput, selectedDeviceIp, changes]);
 
     const onCellClicked = useCallback((params) => {
-        if (params.colDef.field === 'members') {
+        if (params.colDef.field === "members") {
             setCurrentRowData(params.data);
-            setExistingMembers(params.data.members.split(','));
+            setExistingMembers(params.data.members.split(","));
             setIsMemberModalOpen(true);
         }
     }, []);
 
-
     const handleMembersSave = (selectedMembers) => {
-        const updatedData = dataTable.map(row => {
+        const updatedData = dataTable.map((row) => {
             if (row.lag_name === currentRowData.lag_name) {
                 return { ...row, members: selectedMembers };
             }
@@ -364,50 +395,80 @@ const PortChDataTable = (props) => {
         });
         setDataTable(updatedData);
 
-
-        const changeIndex = changes.findIndex(change => change.lag_name === currentRowData.lag_name);
+        const changeIndex = changes.findIndex(
+            (change) => change.lag_name === currentRowData.lag_name
+        );
         if (changeIndex !== -1) {
-
             const updatedChanges = [...changes];
             updatedChanges[changeIndex] = {
                 ...updatedChanges[changeIndex],
 
-                members: selectedMembers
+                members: selectedMembers,
             };
             setChanges(updatedChanges);
         } else {
+            setChanges([
+                ...changes,
+                {
+                    lag_name: currentRowData.lag_name,
 
-            setChanges([...changes, {
-                lag_name: currentRowData.lag_name,
-
-                members: selectedMembers
-            }]);
+                    members: selectedMembers,
+                },
+            ]);
         }
 
         setIsMemberModalOpen(false);
     };
-
 
     return (
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group">
                     <button onClick={openAddModal}>Add Port Channel</button>
-                    <button onClick={openDeleteModal} disabled={selectedRows.length === 0}>Delete Selected Port Channel</button>
+                    <button
+                        onClick={openDeleteModal}
+                        disabled={selectedRows.length === 0}
+                    >
+                        Delete Selected Port Channel
+                    </button>
                 </div>
                 <div className="button-column">
-                    <button onClick={sendUpdates} disabled={isConfigInProgress || changes.length === 0} className={isConfigInProgress || changes.length === 0 ? 'button-disabled' : ''}>Apply Config</button>
-                    <span className={`config-status ${configStatus === 'Config Successful' ? 'config-successful' : configStatus === 'Config Failed' ? 'config-failed' : 'config-in-progress'}`}>{configStatus}</span>
+                    <button
+                        onClick={sendUpdates}
+                        disabled={isConfigInProgress || changes.length === 0}
+                        className={
+                            isConfigInProgress || changes.length === 0
+                                ? "button-disabled"
+                                : ""
+                        }
+                    >
+                        Apply Config
+                    </button>
+                    <span
+                        className={`config-status ${
+                            configStatus === "Config Successful"
+                                ? "config-successful"
+                                : configStatus === "Config Failed"
+                                ? "config-failed"
+                                : "config-in-progress"
+                        }`}
+                    >
+                        {configStatus}
+                    </span>
                 </div>
                 <p>&nbsp;</p>
-                <Modal show={showForm} onClose={() => setShowForm(false)} title={modalTitle}>
+                <Modal
+                    show={showForm}
+                    onClose={() => setShowForm(false)}
+                    title={modalTitle}
+                >
                     <PortChannelForm
                         onSubmit={handleFormSubmit}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
+                        handelSubmitButton={disableSubmit}
                     />
                 </Modal>
-
 
                 <div style={gridStyle} className="ag-theme-alpine">
                     <AgGridReact
@@ -418,46 +479,78 @@ const PortChDataTable = (props) => {
                         onCellValueChanged={handleCellValueChanged}
                         rowSelection="multiple"
                         checkboxSelection
-                        enableCellTextSelection='true'
+                        enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
                     ></AgGridReact>
                 </div>
                 {isDeleteConfirmationModalOpen && (
-                    <Modal show={isDeleteConfirmationModalOpen} onClose={handleDeleteCancellation}>
+                    <Modal
+                        show={isDeleteConfirmationModalOpen}
+                        onClose={handleDeleteCancellation}
+                    >
                         <div>
                             <p>{messageModalContent}</p>
-                            <button onClick={handleDeleteConfirmation}>Yes</button>
-                            <button onClick={handleDeleteCancellation}>No</button>
+                            <button onClick={handleDeleteConfirmation}>
+                                Yes
+                            </button>
+                            <button onClick={handleDeleteCancellation}>
+                                No
+                            </button>
                         </div>
                     </Modal>
                 )}
 
                 {isMessageModalOpen && (
-                    <Modal show={isMessageModalOpen} onClose={() => setIsMessageModalOpen(false)}>
+                    <Modal
+                        show={isMessageModalOpen}
+                        onClose={() => setIsMessageModalOpen(false)}
+                    >
                         <div>
                             {messageModalContent}
-                            <button onClick={() => setIsMessageModalOpen(false)}>OK</button>
+                            <button
+                                onClick={() => setIsMessageModalOpen(false)}
+                            >
+                                OK
+                            </button>
                         </div>
                     </Modal>
                 )}
-                {isMessageModalOpen &&
-                    <Modal show={isMessageModalOpen} >
+                {isMessageModalOpen && (
+                    <Modal show={isMessageModalOpen}>
                         <div>
                             {messageModalContent}
-                            <div style={{ marginTop: '10px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                                {modalType === 'success' ? (
+                            <div
+                                style={{
+                                    marginTop: "10px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: "10px",
+                                }}
+                            >
+                                {modalType === "success" ? (
                                     <button onClick={handleOkClick}>OK</button>
                                 ) : (
-                                    <button onClick={() => setIsMessageModalOpen(false)}>Close</button>
+                                    <button
+                                        onClick={() =>
+                                            setIsMessageModalOpen(false)
+                                        }
+                                    >
+                                        Close
+                                    </button>
                                 )}
                             </div>
                         </div>
-                    </Modal>}
+                    </Modal>
+                )}
 
                 {isMemberModalOpen && (
-                    <Modal show={isMemberModalOpen} onClose={() => setIsMemberModalOpen(false)} title="Select Member Interfaces">
+                    <Modal
+                        show={isMemberModalOpen}
+                        onClose={() => setIsMemberModalOpen(false)}
+                        title="Select Member Interfaces"
+                    >
                         <MembersSelection
                             interfaceNames={interfaceNames}
                             existingMembers={existingMembers}
@@ -471,7 +564,7 @@ const PortChDataTable = (props) => {
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default PortChDataTable
+export default PortChDataTable;

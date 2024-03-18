@@ -79,7 +79,7 @@ const PortChannelForm = ({
     }, []);
 
     return (
-        <div className="form-wrapper">
+        <div className="">
             <form
                 onSubmit={(e) => {
                     e.preventDefault();
@@ -135,8 +135,14 @@ const PortChannelForm = ({
                         ))}
                     </select>
                 </div>
-                <div className="form-field">
-                    <input type="submit" value="Submit" />
+                <div className="">
+                    <button
+                        type="submit"
+                        className="btnStyle mr-10"
+                        disabled={disableSubmit}
+                    >
+                        Apply Config
+                    </button>
                     <button type="button" onClick={onCancel}>
                         Cancel
                     </button>
