@@ -10,7 +10,6 @@ const MembersSelection = ({
     const [selectedMembers, setSelectedMembers] = useState([]);
 
     useEffect(() => {
-        console.log("---", typeof existingMembers);
 
         if (typeof existingMembers !== "string") {
             setSelectedMembers(existingMembers || []);

@@ -52,7 +52,6 @@ const PortChDataTable = (props) => {
             .get(apiPUrl)
             .then((res) => {
                 let data = res.data;
-                console.log("data", data);
                 data &&
                     data.map(
                         (val) => (val["members"] = val["members"].toString())
@@ -175,7 +174,6 @@ const PortChDataTable = (props) => {
             mgt_ip: selectedDeviceIp,
             lag_name: rowData.lag_name,
         }));
-        console.log("DeleteData", deleteData);
         instance
             .delete(apiPUrl, { data: deleteData })
             .then((response) => {
@@ -262,8 +260,6 @@ const PortChDataTable = (props) => {
     };
 
     const handleCellValueChanged = useCallback((params) => {
-        console.log("new value handle--->", params, params.newValue);
-        console.log("old value handle--->", params.oldValue);
         if (params.newValue !== params.oldValue) {
             if (params.colDef.field === "lag_name") {
                 if (!/^PortChannel\d+$/.test(params.newValue)) {
@@ -275,7 +271,6 @@ const PortChDataTable = (props) => {
                 }
             }
             setChanges((prev) => {
-                console.log("prev-->", prev);
                 if (!Array.isArray(prev)) {
                     console.error("Expected array but got:", prev);
                     return [];
@@ -285,14 +280,12 @@ const PortChDataTable = (props) => {
                     (val) => val.lag_name === params.data.lag_name
                 );
                 if (isNameExsits.length > 0) {
-                    console.log("ifff");
                     let existedIndex = prev.findIndex(
                         (val) => val.lag_name === params.data.lag_name
                     );
                     prev[existedIndex][params.colDef.field] = params.newValue;
                     latestChanges = [...prev];
                 } else {
-                    console.log("else", params.newValue, params);
                     latestChanges = [
                         ...prev,
                         {
@@ -301,7 +294,6 @@ const PortChDataTable = (props) => {
                         },
                     ];
                 }
-                console.log("value Change--->", latestChanges);
                 return latestChanges;
             });
         }
@@ -337,7 +329,6 @@ const PortChDataTable = (props) => {
         setConfigStatus("Config In Progress....");
 
         const output = createJsonOutput();
-        console.log("output sendUpdate", output);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, output)
@@ -373,13 +364,10 @@ const PortChDataTable = (props) => {
             })
             .finally(() => {
                 setIsConfigInProgress(false);
-                refreshData();
             });
     }, [changes.length, createJsonOutput, selectedDeviceIp, instance, setLog]);
 
     const onCellClicked = useCallback((params) => {
-        console.log("--------", params?.data?.members);
-        console.log("--------", params?.data?.members);
         if (params?.colDef?.field === "members") {
             setCurrentRowData(params?.data);
             setExistingMembers(params?.data?.members);
