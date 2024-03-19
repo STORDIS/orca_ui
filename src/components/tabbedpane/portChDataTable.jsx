@@ -261,55 +261,51 @@ const PortChDataTable = (props) => {
         promptDeleteConfirmation();
     };
 
-    const handleCellValueChanged = useCallback(
-        (params) => {
-            console.log("new value handle--->", params, params.newValue);
-            console.log("old value handle--->", params.oldValue);
-            if (params.newValue !== params.oldValue) {
-                if (params.colDef.field === "lag_name") {
-                    if (!/^PortChannel\d+$/.test(params.newValue)) {
-                        alert(
-                            'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-                        );
-                        params.node.setDataValue("lag_name", params.oldValue);
-                        return;
-                    }
+    const handleCellValueChanged = useCallback((params) => {
+        console.log("new value handle--->", params, params.newValue);
+        console.log("old value handle--->", params.oldValue);
+        if (params.newValue !== params.oldValue) {
+            if (params.colDef.field === "lag_name") {
+                if (!/^PortChannel\d+$/.test(params.newValue)) {
+                    alert(
+                        'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
+                    );
+                    params.node.setDataValue("lag_name", params.oldValue);
+                    return;
                 }
-                setChanges((prev) => {
-                    console.log("prev-->", prev);
-                    if (!Array.isArray(prev)) {
-                        console.error("Expected array but got:", prev);
-                        return [];
-                    }
-                    let latestChanges;
-                    let isNameExsits = prev.filter(
+            }
+            setChanges((prev) => {
+                console.log("prev-->", prev);
+                if (!Array.isArray(prev)) {
+                    console.error("Expected array but got:", prev);
+                    return [];
+                }
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.lag_name === params.data.lag_name
+                );
+                if (isNameExsits.length > 0) {
+                    console.log("ifff");
+                    let existedIndex = prev.findIndex(
                         (val) => val.lag_name === params.data.lag_name
                     );
-                    if (isNameExsits.length > 0) {
-                        console.log("ifff");
-                        let existedIndex = prev.findIndex(
-                            (val) => val.lag_name === params.data.lag_name
-                        );
-                        prev[existedIndex][params.colDef.field] =
-                            params.newValue;
-                        latestChanges = [...prev];
-                    } else {
-                        console.log("else", params.newValue, params);
-                        latestChanges = [
-                            ...prev,
-                            {
-                                lag_name: params.data.lag_name,
-                                [params.colDef.field]: params.newValue,
-                            },
-                        ];
-                    }
-                    console.log("value Change--->", latestChanges);
-                    return latestChanges;
-                });
-            }
-        },
-        [dataTable]
-    );
+                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    latestChanges = [...prev];
+                } else {
+                    console.log("else", params.newValue, params);
+                    latestChanges = [
+                        ...prev,
+                        {
+                            lag_name: params.data.lag_name,
+                            [params.colDef.field]: params.newValue,
+                        },
+                    ];
+                }
+                console.log("value Change--->", latestChanges);
+                return latestChanges;
+            });
+        }
+    }, []);
 
     const createJsonOutput = useCallback(() => {
         let output = changes.map((change) => {
@@ -377,13 +373,16 @@ const PortChDataTable = (props) => {
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                refreshData();
             });
-    }, [createJsonOutput, selectedDeviceIp, changes]);
+    }, [changes.length, createJsonOutput, selectedDeviceIp, instance, setLog]);
 
     const onCellClicked = useCallback((params) => {
-        if (params.colDef.field === "members") {
+        console.log("--------", params?.data?.members);
+        console.log("--------", params?.data?.members);
+        if (params?.colDef?.field === "members") {
             setCurrentRowData(params?.data);
-            setExistingMembers(params?.data?.members?.split(","));
+            setExistingMembers(params?.data?.members);
             setIsMemberModalOpen(true);
         }
     }, []);
