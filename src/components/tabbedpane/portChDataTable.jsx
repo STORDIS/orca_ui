@@ -471,7 +471,6 @@ const PortChDataTable = (props) => {
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
                         handelSubmitButton={disableSubmit}
-
                     />
                 </Modal>
 
@@ -497,10 +496,16 @@ const PortChDataTable = (props) => {
                     >
                         <div>
                             <p>{messageModalContent}</p>
-                            <button onClick={handleDeleteConfirmation}>
+                            <button
+                                className="btnStyle mt-10 mr-10"
+                                onClick={handleDeleteConfirmation}
+                            >
                                 Yes
                             </button>
-                            <button onClick={handleDeleteCancellation}>
+                            <button
+                                className="btnStyle mt-10"
+                                onClick={handleDeleteCancellation}
+                            >
                                 No
                             </button>
                         </div>
