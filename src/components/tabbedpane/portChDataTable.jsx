@@ -19,7 +19,7 @@ import interceptor from "../../interceptor";
 const PortChDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(
-        () => ({ height: "100%", width: "100%", maxWidth: "100%" }),
+        () => ({ height: "90%", width: "100%", maxWidth: "100%" }),
         []
     );
     const { selectedDeviceIp = "" } = props;
@@ -391,7 +391,6 @@ const PortChDataTable = (props) => {
             const updatedChanges = [...changes];
             updatedChanges[changeIndex] = {
                 ...updatedChanges[changeIndex],
-
                 members: selectedMembers,
             };
             setChanges(updatedChanges);
@@ -400,7 +399,6 @@ const PortChDataTable = (props) => {
                 ...changes,
                 {
                     lag_name: currentRowData.lag_name,
-
                     members: selectedMembers,
                 },
             ]);
