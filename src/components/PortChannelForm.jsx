@@ -42,10 +42,12 @@ const PortChannelForm = ({
             ...formData,
             members: membersArray,
         };
+        console.log(formData)
         onSubmit(dataToSubmit);
     };
 
     const handleDropdownChange = (e) => {
+        console.log('prevFormData', e.target.value)
         setFormData((prevFormData) => ({
             ...prevFormData,
             members: e.target.value,
@@ -126,7 +128,7 @@ const PortChannelForm = ({
                 <div className="form-field">
                     <label>Members:</label>
                     <select id="memberDropdown" onChange={handleDropdownChange}>
-                        <option value="" disabled>
+                        <option value="" disabled selected >
                             Select Member Interface
                         </option>
                         {interfaceNames.map((val, index) => (

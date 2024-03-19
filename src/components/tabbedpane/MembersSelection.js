@@ -10,19 +10,24 @@ const MembersSelection = ({
     const [selectedMembers, setSelectedMembers] = useState([]);
 
     useEffect(() => {
-
-        if (typeof existingMembers !== "string") {
-            setSelectedMembers(existingMembers || []);
-        } else {
-            setSelectedMembers(existingMembers.split(",") || []);
+        if (existingMembers) {
+            if (typeof existingMembers !== "string") {
+                setSelectedMembers(existingMembers || []);
+            } else {
+                setSelectedMembers(existingMembers.split(",") || []);
+            }
         }
+
+        console.log("existingMembers", selectedMembers);
     }, [existingMembers]);
 
     const handleDropdownChange = (e) => {
+        console.log("--", e.target.value);
         setMember(e.target.value);
     };
 
     const handleAddMember = () => {
+        console.log("member", member);
         if (member && !selectedMembers.includes(member)) {
             setSelectedMembers((prev) => [...prev, member]);
         }
@@ -51,7 +56,7 @@ const MembersSelection = ({
                     value={member}
                     style={{ marginRight: "10px", marginBottom: "10px" }}
                 >
-                    <option value="" disabled>
+                    <option value="" disabled selected>
                         Select Member
                     </option>
                     {interfaceNames.map((val, index) => (
@@ -63,14 +68,10 @@ const MembersSelection = ({
                 <button onClick={handleAddMember}>Add Member Interface</button>
             </div>
 
-            {/* <textarea
-        value={selectedMembers.join("\n")} 
-        readOnly
-        style={{ width: '80%', height: '100px', marginBottom: '20px' }} 
-      /> */}
-
             {selectedMembers.map((item, index) => (
-                <div>{item}</div>
+                <div>
+                    {index} &nbsp; {item}
+                </div>
             ))}
 
             <div
@@ -81,9 +82,16 @@ const MembersSelection = ({
                     gap: "10px",
                 }}
             >
-                <button onClick={() => onSave(selectedMembers)}>Ok</button>{" "}
-                &nbsp; &nbsp;
-                <button onClick={onCancel}>Cancel</button>
+                <button
+                    className="btnStyle  mr-10"
+                    onClick={() => onSave(selectedMembers)}
+                >
+                    Ok
+                </button>
+
+                <button className="btnStyle  " onClick={onCancel}>
+                    Cancel
+                </button>
             </div>
         </div>
     );

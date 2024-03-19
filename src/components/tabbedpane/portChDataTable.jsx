@@ -47,22 +47,6 @@ const PortChDataTable = (props) => {
     const [disableSubmit, setDisableSubmit] = useState(false);
 
     useEffect(() => {
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
-            .then((res) => {
-                let data = res.data;
-                data &&
-                    data.map(
-                        (val) => (val["members"] = val["members"].toString())
-                    );
-                setDataTable(data);
-                setOriginalData(JSON.parse(JSON.stringify(data)));
-            })
-            .catch((err) => console.log(err));
-    }, [selectedDeviceIp]);
-
-    useEffect(() => {
         instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((res) => {
@@ -72,6 +56,8 @@ const PortChDataTable = (props) => {
             .catch((error) =>
                 console.error("Failed to fetch interface names:", error)
             );
+
+        getAllPortChanalData();
     }, [selectedDeviceIp]);
 
     useEffect(() => {
@@ -81,6 +67,23 @@ const PortChDataTable = (props) => {
             setChanges([]);
         }
     }, [props.refresh]);
+
+    const getAllPortChanalData = () => {
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        instance
+            .get(apiPUrl)
+            .then((res) => {
+                let data = res.data;
+
+                data &&
+                    data.map(
+                        (val) => (val["members"] = val["members"].toString())
+                    );
+                setDataTable(data);
+                setOriginalData(JSON.parse(JSON.stringify(data)));
+            })
+            .catch((err) => console.log(err));
+    };
 
     const defaultColDef = {
         tooltipValueGetter: (params) => {
@@ -322,11 +325,15 @@ const PortChDataTable = (props) => {
     }, [selectedDeviceIp, changes]);
 
     const sendUpdates = useCallback(() => {
+        console.log("1");
         if (changes.length === 0) {
+            console.log("2");
+
             return;
         }
         setIsConfigInProgress(true);
         setConfigStatus("Config In Progress....");
+        console.log("3");
 
         const output = createJsonOutput();
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
@@ -376,34 +383,52 @@ const PortChDataTable = (props) => {
     }, []);
 
     const handleMembersSave = (selectedMembers) => {
-        const updatedData = dataTable.map((row) => {
-            if (row.lag_name === currentRowData.lag_name) {
-                return { ...row, members: selectedMembers };
-            }
-            return row;
-        });
-        setDataTable(updatedData);
+        const output = {
+            mgt_ip: selectedDeviceIp,
+            members: selectedMembers,
+            lag_name: currentRowData.lag_name,
+        };
 
-        const changeIndex = changes.findIndex(
-            (change) => change.lag_name === currentRowData.lag_name
-        );
-        if (changeIndex !== -1) {
-            const updatedChanges = [...changes];
-            updatedChanges[changeIndex] = {
-                ...updatedChanges[changeIndex],
-                members: selectedMembers,
-            };
-            setChanges(updatedChanges);
-        } else {
-            setChanges([
-                ...changes,
-                {
-                    lag_name: currentRowData.lag_name,
-                    members: selectedMembers,
-                },
-            ]);
-        }
-        sendUpdates();
+        console.log("---", output);
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+
+        instance
+            .put(apiPUrl, output)
+            .then((res) => {
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+                setConfigStatus("Config Successful");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .catch((err) => {
+                let startIndex = err?.response?.data?.result[0]?.indexOf("{");
+                let endIndex = err?.response?.data?.result[0]?.lastIndexOf("}");
+                let trimmedResponse = err?.response?.data?.result[0]?.substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+                setConfigStatus("Config Failed");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .finally(() => {
+                setIsConfigInProgress(false);
+                getAllPortChanalData();
+            });
+
         setIsMemberModalOpen(false);
     };
 
