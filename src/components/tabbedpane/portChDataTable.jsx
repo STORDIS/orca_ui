@@ -405,7 +405,7 @@ const PortChDataTable = (props) => {
                 },
             ]);
         }
-
+        sendUpdates();
         setIsMemberModalOpen(false);
     };
 
