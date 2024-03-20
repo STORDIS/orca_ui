@@ -109,18 +109,19 @@ const MembersSelection = ({
                 }}
             >
                 <button
-                    className="btnStyle  mr-10"
+                    className="btnStyle mr-10"
                     onClick={() => onSave(selectedMembers)}
                 >
                     Ok
                 </button>
 
-                <button className="btnStyle mr-10 " onClick={onCancel}>
+                <button className="btnStyle mr-10" onClick={onCancel}>
                     Cancel
                 </button>
 
                 <button
-                    className="btnStyle  "
+                    className="btnStyle "
+                    disabled={membersSelectedForRemoval.length === 0}
                     onClick={() => onDeleteMember(membersSelectedForRemoval)}
                 >
                     Delete Selected Member
