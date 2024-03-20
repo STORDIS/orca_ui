@@ -432,6 +432,63 @@ const PortChDataTable = (props) => {
         setIsMemberModalOpen(false);
     };
 
+    const handelDeleteMemeber = (e) => {
+        console.log('delete', e);
+        setIsMemberModalOpen(false);
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        const deleteData = selectedRows.map((rowData) => ({
+            mgt_ip: selectedDeviceIp,
+            lag_name: rowData.lag_name,
+            member: e
+        }));
+        instance
+            .delete(apiPUrl, { data: deleteData })
+            .then((response) => {
+                let startIndex = response.data.result[0].indexOf("{");
+                let endIndex = response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+
+                if (response.data && Array.isArray(response.data.result)) {
+                    const updatedDataTable = dataTable.filter(
+                        (row) =>
+                            !selectedRows.some(
+                                (selectedRow) =>
+                                    selectedRow.lag_name === row.lag_name
+                            )
+                    );
+                    setDataTable(updatedDataTable);
+                }
+                setSelectedRows([]);
+                setMessageModalContent("Port Channel Deleted Successfully.");
+                setIsMessageModalOpen(true);
+            })
+            .catch((err) => {
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+            })
+            .finally(() => {
+
+            });
+    }
+
     return (
         <div className="datatable-container">
             <div className="datatable">
@@ -576,6 +633,7 @@ const PortChDataTable = (props) => {
                         <MembersSelection
                             interfaceNames={interfaceNames}
                             existingMembers={existingMembers}
+                            onDeleteMember={handelDeleteMemeber}
                             onSave={(selectedMembers) => {
                                 handleMembersSave(selectedMembers);
                                 setIsMemberModalOpen(false);

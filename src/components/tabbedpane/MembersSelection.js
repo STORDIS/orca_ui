@@ -5,6 +5,7 @@ const MembersSelection = ({
     onSave,
     onCancel,
     existingMembers,
+    onDeleteMember,
 }) => {
     const [member, setMember] = useState("");
     const [selectedMembers, setSelectedMembers] = useState([]);
@@ -32,6 +33,10 @@ const MembersSelection = ({
             setSelectedMembers((prev) => [...prev, member]);
         }
     };
+
+    const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState(
+        []
+    );
 
     return (
         <div
@@ -68,11 +73,32 @@ const MembersSelection = ({
                 <button onClick={handleAddMember}>Add Member Interface</button>
             </div>
 
-            {selectedMembers.map((item, index) => (
+            {/* {selectedMembers.map((item, index) => (
                 <div>
                     {index} &nbsp; {item}
-                </div>
-            ))}
+                </div>              
+            ))} */}
+
+            <select
+                multiple
+                size="5"
+                style={{ width: "100%" }}
+                value={membersSelectedForRemoval}
+                onChange={(e) =>
+                    setMembersSelectedForRemoval(
+                        Array.from(
+                            e.target.selectedOptions,
+                            (option) => option.value
+                        )
+                    )
+                }
+            >
+                {selectedMembers.map((member) => (
+                    <option key={member} value={member}>
+                        {member}
+                    </option>
+                ))}
+            </select>
 
             <div
                 className="button-container"
@@ -89,8 +115,15 @@ const MembersSelection = ({
                     Ok
                 </button>
 
-                <button className="btnStyle  " onClick={onCancel}>
+                <button className="btnStyle mr-10 " onClick={onCancel}>
                     Cancel
+                </button>
+
+                <button
+                    className="btnStyle  "
+                    onClick={() => onDeleteMember(membersSelectedForRemoval)}
+                >
+                    Delete Selected Member
                 </button>
             </div>
         </div>
