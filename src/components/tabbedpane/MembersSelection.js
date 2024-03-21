@@ -59,7 +59,7 @@ const MembersSelection = ({
                     id="memberDropdown"
                     onChange={handleDropdownChange}
                     value={member}
-                    style={{ marginRight: "10px", marginBottom: "10px" }}
+                    className="mr-10"
                 >
                     <option value="" disabled selected>
                         Select Member
@@ -72,12 +72,6 @@ const MembersSelection = ({
                 </select>
                 <button onClick={handleAddMember}>Add Member Interface</button>
             </div>
-
-            {/* {selectedMembers.map((item, index) => (
-                <div>
-                    {index} &nbsp; {item}
-                </div>              
-            ))} */}
 
             <select
                 multiple
@@ -101,7 +95,7 @@ const MembersSelection = ({
             </select>
 
             <div
-                className="button-container"
+                className=""
                 style={{
                     marginTop: "10px",
                     justifyContent: "center",
@@ -111,9 +105,10 @@ const MembersSelection = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
+                    disabled={selectedMembers.length === 0}
                     onClick={() => onSave(selectedMembers)}
                 >
-                    Ok
+                    Apply Config
                 </button>
 
                 <button
@@ -126,7 +121,7 @@ const MembersSelection = ({
 
                 <button
                     type="button"
-                    className="btnStyle "
+                    className="btnStyle"
                     disabled={membersSelectedForRemoval.length === 0}
                     onClick={() => onDeleteMember(membersSelectedForRemoval)}
                 >

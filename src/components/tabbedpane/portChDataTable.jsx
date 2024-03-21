@@ -220,7 +220,9 @@ const PortChDataTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
             })
-            .finally(() => {});
+            .finally(() => {
+                refreshData();
+            });
     };
 
     const onSelectionChanged = () => {
@@ -433,23 +435,17 @@ const PortChDataTable = (props) => {
     };
 
     const handelDeleteMemeber = (e) => {
-        console.log('delete', e);
+        console.log("delete", e);
         setIsMemberModalOpen(false);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        // const deleteData = selectedRows.map((rowData) => ({
-        //     mgt_ip: selectedDeviceIp,
-        //     lag_name: rowData.lag_name,
-        //     member: e
-        // }));
-
         const output = {
-            mgt_ip : selectedDeviceIp,
+            mgt_ip: selectedDeviceIp,
             members: e,
             lag_name: currentRowData.lag_name,
         };
-        console.log('output', output)
+        console.log("output", output);
         instance
-            .delete(apiPUrl, {data: output})
+            .delete(apiPUrl, { data: output })
             .then((response) => {
                 let startIndex = response.data.result[0].indexOf("{");
                 let endIndex = response.data.result[0].lastIndexOf("}");
@@ -475,7 +471,9 @@ const PortChDataTable = (props) => {
                     setDataTable(updatedDataTable);
                 }
                 setSelectedRows([]);
-                setMessageModalContent("Port Channel Deleted Successfully.");
+                setMessageModalContent(
+                    "Port Channel Member Deleted Successfully."
+                );
                 setIsMessageModalOpen(true);
             })
             .catch((err) => {
@@ -492,9 +490,9 @@ const PortChDataTable = (props) => {
                 });
             })
             .finally(() => {
-
+                refreshData();
             });
-    }
+    };
 
     return (
         <div className="datatable-container">
