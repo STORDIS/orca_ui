@@ -45,7 +45,7 @@ const DiscoveryForm = ({ handleSubmit, onCancel }) => {
                     If submitted with no address, discovery from server config
                     will be triggered.
                 </p>
-                <button className="btnStyle mt-10" type="submit">
+                <button className="btnStyle mt-10 mr-10" type="submit">
                     Submit
                 </button>
                 <button className="btnStyle mt-10" type="button" onClick={onCancel}>

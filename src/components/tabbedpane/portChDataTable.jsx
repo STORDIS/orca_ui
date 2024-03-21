@@ -19,7 +19,7 @@ import interceptor from "../../interceptor";
 const PortChDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(
-        () => ({ height: "100%", width: "100%", maxWidth: "100%" }),
+        () => ({ height: "90%", width: "100%", maxWidth: "100%" }),
         []
     );
     const { selectedDeviceIp = "" } = props;
@@ -44,32 +44,20 @@ const PortChDataTable = (props) => {
 
     const { setLog } = useLog();
     const instance = interceptor();
+    const [disableSubmit, setDisableSubmit] = useState(false);
 
     useEffect(() => {
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.get(apiPUrl)
-            .then(res => {
-                let data = res.data;
-                console.log("data", data);
-                data &&
-                    data.map(
-                        (val) => (val["members"] = val["members"].toString())
-                    );
-                setDataTable(data);
-                setOriginalData(JSON.parse(JSON.stringify(data)));
-            })
-            .catch((err) => console.log(err));
-    }, [selectedDeviceIp]);
-
-    useEffect(() => {
-        instance.get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then(res => {
-                const names = res.data.map(item => item.name);
+        instance
+            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+            .then((res) => {
+                const names = res.data.map((item) => item.name);
                 setInterfaceNames(names);
             })
             .catch((error) =>
                 console.error("Failed to fetch interface names:", error)
             );
+
+        getAllPortChanalData();
     }, [selectedDeviceIp]);
 
     useEffect(() => {
@@ -80,6 +68,23 @@ const PortChDataTable = (props) => {
         }
     }, [props.refresh]);
 
+    const getAllPortChanalData = () => {
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        instance
+            .get(apiPUrl)
+            .then((res) => {
+                let data = res.data;
+
+                data &&
+                    data.map(
+                        (val) => (val["members"] = val["members"].toString())
+                    );
+                setDataTable(data);
+                setOriginalData(JSON.parse(JSON.stringify(data)));
+            })
+            .catch((err) => console.log(err));
+    };
+
     const defaultColDef = {
         tooltipValueGetter: (params) => {
             return params.value;
@@ -89,8 +94,9 @@ const PortChDataTable = (props) => {
 
     const refreshData = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.get(apiPUrl)
-            .then(res => {
+        instance
+            .get(apiPUrl)
+            .then((res) => {
                 setDataTable(res.data);
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
@@ -125,8 +131,9 @@ const PortChDataTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.put(apiPUrl, formData)
-            .then(res => {
+        instance
+            .put(apiPUrl, formData)
+            .then((res) => {
                 setShowForm(false);
 
                 let startIndex = res.data.result[0].indexOf("{");
@@ -170,10 +177,9 @@ const PortChDataTable = (props) => {
             mgt_ip: selectedDeviceIp,
             lag_name: rowData.lag_name,
         }));
-        console.log('DeleteData', deleteData)
-        instance.delete(apiPUrl, { data: deleteData })
-            .then(response => {
-
+        instance
+            .delete(apiPUrl, { data: deleteData })
+            .then((response) => {
                 let startIndex = response.data.result[0].indexOf("{");
                 let endIndex = response.data.result[0].lastIndexOf("}");
                 let trimmedResponse = response.data.result[0].substring(
@@ -214,7 +220,9 @@ const PortChDataTable = (props) => {
                     timestamp: new Date().getTime(),
                 });
             })
-            .finally(() => {});
+            .finally(() => {
+                refreshData();
+            });
     };
 
     const onSelectionChanged = () => {
@@ -256,55 +264,45 @@ const PortChDataTable = (props) => {
         promptDeleteConfirmation();
     };
 
-    const handleCellValueChanged = useCallback(
-        (params) => {
-            console.log("new value handle--->", params, params.newValue);
-            console.log("old value handle--->", params.oldValue);
-            if (params.newValue !== params.oldValue) {
-                if (params.colDef.field === "lag_name") {
-                    if (!/^PortChannel\d+$/.test(params.newValue)) {
-                        alert(
-                            'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-                        );
-                        params.node.setDataValue("lag_name", params.oldValue);
-                        return;
-                    }
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            if (params.colDef.field === "lag_name") {
+                if (!/^PortChannel\d+$/.test(params.newValue)) {
+                    alert(
+                        'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
+                    );
+                    params.node.setDataValue("lag_name", params.oldValue);
+                    return;
                 }
-                setChanges((prev) => {
-                    console.log("prev-->", prev);
-                    if (!Array.isArray(prev)) {
-                        console.error("Expected array but got:", prev);
-                        return [];
-                    }
-                    let latestChanges;
-                    let isNameExsits = prev.filter(
+            }
+            setChanges((prev) => {
+                if (!Array.isArray(prev)) {
+                    console.error("Expected array but got:", prev);
+                    return [];
+                }
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.lag_name === params.data.lag_name
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
                         (val) => val.lag_name === params.data.lag_name
                     );
-                    if (isNameExsits.length > 0) {
-                        console.log("ifff");
-                        let existedIndex = prev.findIndex(
-                            (val) => val.lag_name === params.data.lag_name
-                        );
-                        prev[existedIndex][params.colDef.field] =
-                            params.newValue;
-                        latestChanges = [...prev];
-                    } else {
-                        console.log("else", params.newValue, params);
-                        latestChanges = [
-                            ...prev,
-                            {
-                                lag_name: params.data.lag_name,
-                                [params.colDef.field]: params.newValue,
-                            },
-                        ];
-                    }
-                    console.log("value Change--->", latestChanges);
-                    return latestChanges;
-                });
-            }
-        },
-        [dataTable]
-    );
+                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    latestChanges = [...prev];
+                } else {
+                    latestChanges = [
+                        ...prev,
+                        {
+                            lag_name: params.data.lag_name,
+                            [params.colDef.field]: params.newValue,
+                        },
+                    ];
+                }
+                return latestChanges;
+            });
+        }
+    }, []);
 
     const createJsonOutput = useCallback(() => {
         let output = changes.map((change) => {
@@ -329,17 +327,21 @@ const PortChDataTable = (props) => {
     }, [selectedDeviceIp, changes]);
 
     const sendUpdates = useCallback(() => {
+        console.log("1");
         if (changes.length === 0) {
+            console.log("2");
+
             return;
         }
         setIsConfigInProgress(true);
         setConfigStatus("Config In Progress....");
+        console.log("3");
 
         const output = createJsonOutput();
-        console.log("output sendUpdate", output);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance.put(apiPUrl, output)
-            .then(res => {
+        instance
+            .put(apiPUrl, output)
+            .then((res) => {
                 let startIndex = res.data.result[0].indexOf("{");
                 let endIndex = res.data.result[0].lastIndexOf("}");
                 let trimmedResponse = res.data.result[0].substring(
@@ -372,48 +374,124 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 setIsConfigInProgress(false);
             });
-    }, [createJsonOutput, selectedDeviceIp, changes]);
+    }, [changes.length, createJsonOutput, selectedDeviceIp, instance, setLog]);
 
     const onCellClicked = useCallback((params) => {
-        if (params.colDef.field === "members") {
-            setCurrentRowData(params.data);
-            setExistingMembers(params.data.members.split(","));
+        if (params?.colDef?.field === "members") {
+            setCurrentRowData(params?.data);
+            setExistingMembers(params?.data?.members);
             setIsMemberModalOpen(true);
         }
     }, []);
 
     const handleMembersSave = (selectedMembers) => {
-        const updatedData = dataTable.map((row) => {
-            if (row.lag_name === currentRowData.lag_name) {
-                return { ...row, members: selectedMembers };
-            }
-            return row;
-        });
-        setDataTable(updatedData);
+        const output = {
+            mgt_ip: selectedDeviceIp,
+            members: selectedMembers,
+            lag_name: currentRowData.lag_name,
+        };
 
-        const changeIndex = changes.findIndex(
-            (change) => change.lag_name === currentRowData.lag_name
-        );
-        if (changeIndex !== -1) {
-            const updatedChanges = [...changes];
-            updatedChanges[changeIndex] = {
-                ...updatedChanges[changeIndex],
+        console.log("---", output);
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
 
-                members: selectedMembers,
-            };
-            setChanges(updatedChanges);
-        } else {
-            setChanges([
-                ...changes,
-                {
-                    lag_name: currentRowData.lag_name,
-
-                    members: selectedMembers,
-                },
-            ]);
-        }
+        instance
+            .put(apiPUrl, output)
+            .then((res) => {
+                let startIndex = res.data.result[0].indexOf("{");
+                let endIndex = res.data.result[0].lastIndexOf("}");
+                let trimmedResponse = res.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+                setConfigStatus("Config Successful");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .catch((err) => {
+                let startIndex = err?.response?.data?.result[0]?.indexOf("{");
+                let endIndex = err?.response?.data?.result[0]?.lastIndexOf("}");
+                let trimmedResponse = err?.response?.data?.result[0]?.substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+                setConfigStatus("Config Failed");
+                setTimeout(resetConfigStatus, 5000);
+            })
+            .finally(() => {
+                setIsConfigInProgress(false);
+                getAllPortChanalData();
+            });
 
         setIsMemberModalOpen(false);
+    };
+
+    const handelDeleteMemeber = (e) => {
+        console.log("delete", e);
+        setIsMemberModalOpen(false);
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        const output = {
+            mgt_ip: selectedDeviceIp,
+            members: e,
+            lag_name: currentRowData.lag_name,
+        };
+        console.log("output", output);
+        instance
+            .delete(apiPUrl, { data: output })
+            .then((response) => {
+                let startIndex = response.data.result[0].indexOf("{");
+                let endIndex = response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+
+                setLog({
+                    status: "success",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+
+                if (response.data && Array.isArray(response.data.result)) {
+                    const updatedDataTable = dataTable.filter(
+                        (row) =>
+                            !selectedRows.some(
+                                (selectedRow) =>
+                                    selectedRow.lag_name === row.lag_name
+                            )
+                    );
+                    setDataTable(updatedDataTable);
+                }
+                setSelectedRows([]);
+                setMessageModalContent(
+                    "Port Channel Member Deleted Successfully."
+                );
+                setIsMessageModalOpen(true);
+            })
+            .catch((err) => {
+                let startIndex = err.response.data.result[0].indexOf("{");
+                let endIndex = err.response.data.result[0].lastIndexOf("}");
+                let trimmedResponse = err.response.data.result[0].substring(
+                    startIndex + 1,
+                    endIndex
+                );
+                setLog({
+                    status: "error",
+                    result: trimmedResponse,
+                    timestamp: new Date().getTime(),
+                });
+            })
+            .finally(() => {
+                refreshData();
+            });
     };
 
     return (
@@ -464,6 +542,7 @@ const PortChDataTable = (props) => {
                         onSubmit={handleFormSubmit}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
+                        handelSubmitButton={disableSubmit}
                     />
                 </Modal>
 
@@ -489,10 +568,16 @@ const PortChDataTable = (props) => {
                     >
                         <div>
                             <p>{messageModalContent}</p>
-                            <button onClick={handleDeleteConfirmation}>
+                            <button
+                                className="btnStyle mt-10 mr-10"
+                                onClick={handleDeleteConfirmation}
+                            >
                                 Yes
                             </button>
-                            <button onClick={handleDeleteCancellation}>
+                            <button
+                                className="btnStyle mt-10"
+                                onClick={handleDeleteCancellation}
+                            >
                                 No
                             </button>
                         </div>
@@ -553,6 +638,7 @@ const PortChDataTable = (props) => {
                         <MembersSelection
                             interfaceNames={interfaceNames}
                             existingMembers={existingMembers}
+                            onDeleteMember={handelDeleteMemeber}
                             onSave={(selectedMembers) => {
                                 handleMembersSave(selectedMembers);
                                 setIsMemberModalOpen(false);

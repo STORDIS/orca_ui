@@ -17,7 +17,7 @@ import interceptor from "../../interceptor";
 
 const VlanTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
@@ -631,11 +631,17 @@ const VlanTable = (props) => {
                     >
                         <div>
                             <p>{messageModalContent}</p> &nbsp;
-                            <button onClick={handleDeleteConfirmation}>
+                            <button
+                                className="btnStyle mt-10 mr-10"
+                                onClick={handleDeleteConfirmation}
+                            >
                                 Yes
-                            </button>{" "}
+                            </button>
                             &ensp;
-                            <button onClick={handleDeleteCancellation}>
+                            <button
+                                className="btnStyle mt-10 "
+                                onClick={handleDeleteCancellation}
+                            >
                                 No
                             </button>
                         </div>

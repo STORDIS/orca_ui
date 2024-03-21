@@ -11,7 +11,7 @@ import interceptor from "../../interceptor";
 
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);

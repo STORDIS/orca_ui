@@ -1,50 +1,132 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
-const MembersSelection = ({ interfaceNames, onSave, onCancel, existingMembers }) => {
-  const [member, setMember] = useState("");
-  const [selectedMembers, setSelectedMembers] = useState([]);
+const MembersSelection = ({
+    interfaceNames,
+    onSave,
+    onCancel,
+    existingMembers,
+    onDeleteMember,
+}) => {
+    const [member, setMember] = useState("");
+    const [selectedMembers, setSelectedMembers] = useState([]);
 
-  useEffect(() => {
-    setSelectedMembers(existingMembers || []);
-  }, [existingMembers]);
+    useEffect(() => {
+        if (existingMembers) {
+            if (typeof existingMembers !== "string") {
+                setSelectedMembers(existingMembers || []);
+            } else {
+                setSelectedMembers(existingMembers.split(",") || []);
+            }
+        }
 
-  const handleDropdownChange = (e) => {
-    setMember(e.target.value);
-  };
+    }, [existingMembers]);
 
-  const handleAddMember = () => {
-    if (member && !selectedMembers.includes(member)) {
-      setSelectedMembers(prev => [...prev, member]);
-    }
-  };
+    const handleDropdownChange = (e) => {
+        setMember(e.target.value);
+    };
 
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '600px', margin: 'auto' }}>
+    const handleAddMember = () => {
+        if (member && !selectedMembers.includes(member)) {
+            setSelectedMembers((prev) => [...prev, member]);
+        }
+    };
 
-      <div className="selection-container" style={{ display: 'flex', alignItems: 'center', marginBottom: '20px' }}>
-        <select id="memberDropdown" onChange={handleDropdownChange} value={member} style={{ marginRight: '10px', marginBottom: '10px' }}>
-          <option value="" disabled>Select Member</option>
-          {interfaceNames.map((val, index) => (
-            <option key={index} value={val}>{val}</option>
-          ))}
-        </select>
-        <button onClick={handleAddMember}>Add Member Interface</button>
-      </div>
+    const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState(
+        []
+    );
 
-      <textarea
-        value={selectedMembers.join("\n")} 
-        readOnly
-        style={{ width: '80%', height: '100px', marginBottom: '20px' }} 
-      />
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                maxWidth: "600px",
+                margin: "auto",
+            }}
+        >
+            <div
+                className="selection-container"
+                style={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginBottom: "20px",
+                }}
+            >
+                <select
+                    id="memberDropdown"
+                    onChange={handleDropdownChange}
+                    value={member}
+                    className="mr-10"
+                >
+                    <option value="" disabled selected>
+                        Select Member
+                    </option>
+                    {interfaceNames.map((val, index) => (
+                        <option key={index} value={val}>
+                            {val}
+                        </option>
+                    ))}
+                </select>
+                <button onClick={handleAddMember}>Add Member Interface</button>
+            </div>
 
-      <div className="button-container" style={{marginTop: '10px', justifyContent: 'center', gap: '10px' }}>
-        <button onClick={() => onSave(selectedMembers)}>Ok</button>   &nbsp; 
-        &nbsp;
-        <button onClick={onCancel}>Cancel</button>
-      </div>
-    </div>
-  );
+            <select
+                multiple
+                size="5"
+                style={{ width: "100%" }}
+                value={membersSelectedForRemoval}
+                onChange={(e) =>
+                    setMembersSelectedForRemoval(
+                        Array.from(
+                            e.target.selectedOptions,
+                            (option) => option.value
+                        )
+                    )
+                }
+            >
+                {selectedMembers.map((member) => (
+                    <option key={member} value={member}>
+                        {member}
+                    </option>
+                ))}
+            </select>
+
+            <div
+                className=""
+                style={{
+                    marginTop: "10px",
+                    justifyContent: "center",
+                    gap: "10px",
+                }}
+            >
+                <button
+                    type="button"
+                    className="btnStyle mr-10"
+                    disabled={selectedMembers.length === 0}
+                    onClick={() => onSave(selectedMembers)}
+                >
+                    Apply Config
+                </button>
+
+                <button
+                    type="button"
+                    className="btnStyle mr-10"
+                    onClick={onCancel}
+                >
+                    Cancel
+                </button>
+
+                <button
+                    type="button"
+                    className="btnStyle"
+                    disabled={membersSelectedForRemoval.length === 0}
+                    onClick={() => onDeleteMember(membersSelectedForRemoval)}
+                >
+                    Delete Selected Member
+                </button>
+            </div>
+        </div>
+    );
 };
 
 export default MembersSelection;
-

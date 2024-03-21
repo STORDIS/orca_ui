@@ -12,7 +12,7 @@ import { useLog } from "../../LogContext";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { selectedDeviceIp = "" } = props;
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
