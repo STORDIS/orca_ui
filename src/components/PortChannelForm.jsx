@@ -34,25 +34,14 @@ const PortChannelForm = ({
 
     const handleSubmit = (e) => {
         setDisableSubmit(true);
-        const membersArray = formData.members
-            .split(",")
-            .map((member) => member.trim())
-            .filter((part) => part);
-        const dataToSubmit = {
-            ...formData,
-            members: membersArray,
-        };
-        console.log(formData)
-        onSubmit(dataToSubmit);
+        onSubmit(formData);
     };
 
     const handleDropdownChange = (e) => {
-        console.log('prevFormData', e.target.value)
         setFormData((prevFormData) => ({
             ...prevFormData,
-            members: e.target.value,
+            members: e,
         }));
-        console.log("drop", formData);
     };
 
     const handleValue = (e) => {
@@ -127,13 +116,32 @@ const PortChannelForm = ({
 
                 <div className="form-field">
                     <label>Members:</label>
-                    <select id="memberDropdown" onChange={handleDropdownChange}>
+                    {/* <select id="memberDropdown" onChange={handleDropdownChange}>
                         <option value="" disabled selected >
                             Select Member Interface
                         </option>
                         {interfaceNames.map((val, index) => (
                             <option key={index} value={val}>
                                 {val}
+                            </option>
+                        ))}
+                    </select> */}
+                    <select
+                        multiple
+                        size="5"
+                        style={{ width: "100%" }}
+                        onChange={(e) =>
+                            handleDropdownChange(
+                                Array.from(
+                                    e.target.selectedOptions,
+                                    (option) => option.value
+                                )
+                            )
+                        }
+                    >
+                        {interfaceNames.map((member) => (
+                            <option key={member} value={member}>
+                                {member}
                             </option>
                         ))}
                     </select>

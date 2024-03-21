@@ -19,16 +19,13 @@ const MembersSelection = ({
             }
         }
 
-        console.log("existingMembers", selectedMembers);
     }, [existingMembers]);
 
     const handleDropdownChange = (e) => {
-        console.log("--", e.target.value);
         setMember(e.target.value);
     };
 
     const handleAddMember = () => {
-        console.log("member", member);
         if (member && !selectedMembers.includes(member)) {
             setSelectedMembers((prev) => [...prev, member]);
         }
