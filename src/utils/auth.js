@@ -18,14 +18,7 @@ export const AuthProvider = ({ children }) => {
             .then((response) => {
                 secureLocalStorage.setItem("token", response.data.token);
                 setAccessToken(credential);
-
-                console.log("---", redirectUrl);
-
-                // if (redirectUrl) {
-                    window.location.href = redirectUrl;
-                // } else {
-                //     window.location.href = "/home";
-                // }
+                window.location.href = redirectUrl;
             })
             .catch((error) => {
                 console.error("Error:", error);
