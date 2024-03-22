@@ -1,8 +1,6 @@
 import { useState, createContext, useContext } from "react";
 import secureLocalStorage from "react-secure-storage";
-
 import interceptor from "../interceptor";
-
 import { postLogin } from "../backend_rest_urls";
 
 const AuthContext = createContext(null);

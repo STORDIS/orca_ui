@@ -3,7 +3,7 @@ import StorageIcon from "@mui/icons-material/Storage";
 import { Link } from "react-router-dom";
 import logo from "../../assets/orca.png";
 import { useNavigate } from "react-router-dom";
-import SmartToyIcon from '@mui/icons-material/SmartToy';
+import SmartToyIcon from "@mui/icons-material/SmartToy";
 
 const Sidebar = () => {
     const navigate = useNavigate();
@@ -21,6 +21,7 @@ const Sidebar = () => {
                         width="200"
                         className="img-thumbnail"
                         style={{ marginTop: "40px" }}
+                        alt="logo.png"
                     />
                 </Link>
             </div>

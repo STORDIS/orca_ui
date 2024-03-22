@@ -23,8 +23,6 @@ export const Login = () => {
 
         const queryParams = new URLSearchParams(location.search);
         const param = queryParams.get("redirect");
-        console.log(param);
-
         if (param) {
             auth.login(formData, atob(param));
         } else {
