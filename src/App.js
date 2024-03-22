@@ -23,6 +23,8 @@ import { Login } from "./pages/Login/login.jsx";
 
 import secureLocalStorage from "react-secure-storage";
 
+import askOrca from "./pages/ai/askorca.jsx";
+
 const App = () => {
     const [token, setToken] = useState("");
 
@@ -55,6 +57,14 @@ const App = () => {
                                     element={
                                         <RequireAuth>
                                             <TabbedPane />
+                                        </RequireAuth>
+                                    }
+                                />
+                                <Route
+                                    path="/askOrca"
+                                    element={
+                                        <RequireAuth>
+                                            <askOrca />
                                         </RequireAuth>
                                     }
                                 />
