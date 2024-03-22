@@ -1,7 +1,7 @@
 import React from "react";
 
 
-function askOrca() {
+function Layout() {
 
     return (
         <div>
@@ -11,4 +11,4 @@ function askOrca() {
         </div>
     );
 }
-export default askOrca;
+export default Layout;

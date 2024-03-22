@@ -1,10 +1,8 @@
 import Home from "./pages/home/Home";
 import ErrorPage from "./pages/error/errorPage.jsx";
-
 import TabbedPane from "./components/tabbedpane/TabbedPane";
 import LogViewer from "./components/logpane/logpane";
 import React, { useEffect, useState } from "react";
-
 import {
     BrowserRouter as Router,
     Routes,
@@ -13,16 +11,12 @@ import {
 } from "react-router-dom";
 import Navbar from "./components/navbar/Navbar";
 import Sidebar from "./components/sidebar/Sidebar";
-
 import { DataProvider } from "./LogContext";
 import { AuthProvider } from "./utils/auth";
 import RequireAuth from "./utils/requiredAuth";
-
 import "./App.scss";
 import { Login } from "./pages/Login/login.jsx";
-
 import secureLocalStorage from "react-secure-storage";
-
 import askOrca from "./pages/ai/askorca.jsx";
 
 const App = () => {
@@ -51,7 +45,6 @@ const App = () => {
                                         </RequireAuth>
                                     }
                                 />
-
                                 <Route
                                     path="devices/:deviceIP"
                                     element={
@@ -72,7 +65,6 @@ const App = () => {
                                     path="/"
                                     element={<Navigate replace to="/login" />}
                                 />
-
                                 <Route path="*" element={<ErrorPage />} />
                             </Routes>
 
