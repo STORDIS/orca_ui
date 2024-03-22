@@ -1,7 +1,7 @@
 import React from "react";
 
 
-function AskOrca() {
+export const AskOrca = () => {
 
     return (
         <div>
