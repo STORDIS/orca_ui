@@ -1,19 +1,17 @@
 .flexContainer {
     display: flex;
-    // grid-template-columns: repeat(2, 1fr); /* Three equal columns */
     gap: 10px;
     margin: 10px;
 
     .leftColumn {
         flex: 2;
 
-        // border: 2px solid black;
-
         .topColumn {
             height: 400px;
             -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
             box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
             margin-bottom: 10px;
+
             .codeSection {
                 background-color: rgb(43, 43, 43);
                 margin: 10px;
@@ -24,6 +22,7 @@
             .buttonSection {
                 margin: 10px;
                 text-align: right;
+                align-items: center;
             }
         }
         .bottomColumn {
@@ -42,7 +41,8 @@
                     max-width: 85%;
                     padding: 10px;
                     margin: 10px;
-                    border-radius: 10px;
+                    border-radius: 25px;
+                    border-bottom-left-radius: 0px;
                 }
 
                 .promtStyle {
@@ -52,15 +52,32 @@
                     max-width: 85%;
                     padding: 10px;
                     margin: 10px;
-                    border-radius: 10px;
+                    border-radius: 25px;
+                    border-bottom-right-radius: 0px;
                 }
             }
 
-            .textArea {
+            .promptArea {
                 margin-top: 10px;
                 align-items: center;
                 display: flex;
-                width: 98%;
+                width: -webkit-fill-available;
+                padding: 10px;
+                border-radius: 25px;
+                border: 1px solid lightgray;
+
+                textarea {
+                    width: 90%;
+                    font-size: 16px;
+                    min-height: 3rem !important;
+                    resize: none;
+                    overflow-y: auto;
+                    border: none;
+                }
+                textarea:focus {
+                    outline: none;
+                    border-right: 1px solid lightgray;
+                }
             }
         }
     }

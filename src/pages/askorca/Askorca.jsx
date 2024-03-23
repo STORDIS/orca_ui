@@ -62,7 +62,7 @@ export const AskOrca = () => {
                     <div className="buttonSection ">
                         <button className="btnStyle mr-10">Execute</button>
                         <button className="btnStyle mr-10">Test</button>
-                        <button className="btnStyle ">save</button>
+                        <button className="btnStyle ">Save</button>
                     </div>
                 </div>
                 <div className="bottomColumn">
@@ -82,13 +82,17 @@ export const AskOrca = () => {
                             eveniet consequatur, ex quas! Rerum.
                         </div>
                     </div>
-                    <div className="textArea">
+                    <div className="promptArea">
                         <textarea
-                            style={{ width: "90%" }}
+                            className="textArea"
                             name=""
-                            rows="4"
+                            placeholder="Ask me something...... "
                         ></textarea>
-                        <button className="btnStyle ml-10">Send</button>
+                        <button className="btnStyle ml-10">
+                            <span class="material-symbols-outlined">
+                                arrow_upward
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
