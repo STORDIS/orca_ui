@@ -150,11 +150,11 @@ export const AskOrca = () => {
 
                 {!isBookMark ? (
                     <>
-                        <a href="default" className="links">
+                        <a href="default" target="_blank" className="links">
                             <span class="material-symbols-outlined">link</span>
                             <div className="title">Link 1</div>
                         </a>
-                        <a href="default" className="links">
+                        <a href="default" target="_blank" className="links">
                             <span class="material-symbols-outlined">link</span>
                             <div className="title">Link 2</div>
                         </a>
