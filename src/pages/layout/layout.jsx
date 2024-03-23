@@ -6,6 +6,7 @@ import {
     Navigate,
 } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import RequireAuth from "../../utils/requiredAuth.js";
 
@@ -21,12 +22,11 @@ import { DataProvider } from "../../LogContext.js";
 
 import "./Layout.scss";
 
-import { useLocation } from "react-router-dom";
-
 const Layout = () => {
     const [token, setToken] = useState("");
     const [isAI, setIsAI] = useState(true);
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (location.pathname.includes("/askOrca")) {
@@ -34,6 +34,12 @@ const Layout = () => {
         } else {
             setIsAI(true);
         }
+
+        // auto login
+        // if (secureLocalStorage.getItem("token") && location.pathname === '/login' ) {
+        //     console.log("auto login", location.pathname);
+        //     navigate('/home');
+        // }
 
         setToken(secureLocalStorage.getItem("token"));
     }, [location.pathname, token]);
@@ -71,10 +77,12 @@ const Layout = () => {
                                 </RequireAuth>
                             }
                         />
-                        <Route
+                        {/* <Route
                             path="/"
                             element={<Navigate replace to="/login" />}
-                        />
+                        /> */}
+                        <Route path="/" element={<Redirect />} />
+
                         <Route path="*" element={<ErrorPage />} />
                     </Routes>
 
@@ -89,4 +97,19 @@ const Layout = () => {
     );
 };
 
+function Redirect() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        // console.log('location.pathname',location.pathname)
+
+        if (secureLocalStorage.getItem("token")) {
+            navigate("/home");
+        } else {
+            navigate("/login");
+        }
+    }, [navigate]);
+
+    return null;
+}
 export default Layout;

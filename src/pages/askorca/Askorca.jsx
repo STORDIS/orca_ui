@@ -90,7 +90,7 @@ export const AskOrca = () => {
                             placeholder="Ask me something...... "
                         ></textarea>
                         <button className="btnStyle ml-10">
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                                 arrow_upward
                             </span>
                         </button>
@@ -107,7 +107,7 @@ export const AskOrca = () => {
                                 : "tabButtonDeSelected"
                         }
                     >
-                        <span class="material-symbols-outlined mr-10">
+                        <span className="material-symbols-outlined mr-10">
                             bookmark
                         </span>
                         Bookmark
@@ -120,7 +120,7 @@ export const AskOrca = () => {
                                 : "tabButtonDeSelected"
                         }
                     >
-                        <span class="material-symbols-outlined mr-10">
+                        <span className="material-symbols-outlined mr-10">
                             link
                         </span>
                         Api Docs
@@ -130,7 +130,7 @@ export const AskOrca = () => {
                 {isBookMark ? (
                     <>
                         <div className="bookmark">
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                                 bookmark
                             </span>
                             <div className="title">
@@ -138,7 +138,7 @@ export const AskOrca = () => {
                             </div>
                         </div>
                         <div className="bookmark">
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                                 bookmark
                             </span>
                             <div className="title">
@@ -151,11 +151,11 @@ export const AskOrca = () => {
                 {!isBookMark ? (
                     <>
                         <a href="default" target="_blank" className="links">
-                            <span class="material-symbols-outlined">link</span>
+                            <span className="material-symbols-outlined">link</span>
                             <div className="title">Link 1</div>
                         </a>
                         <a href="default" target="_blank" className="links">
-                            <span class="material-symbols-outlined">link</span>
+                            <span className="material-symbols-outlined">link</span>
                             <div className="title">Link 2</div>
                         </a>
                     </>
