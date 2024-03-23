@@ -43,8 +43,9 @@ export const AskOrca = () => {
 
     const [isBookMark, setIsBookMark] = useState(true);
 
-    const handelTabChanage = () => {
-        setIsBookMark(!isBookMark);
+    const handelTabChanage = (e) => {
+        console.log(e);
+        setIsBookMark(e);
     };
 
     return (
@@ -99,7 +100,7 @@ export const AskOrca = () => {
             <div className=" rightColumn">
                 <div className="tab">
                     <div
-                        onClick={handelTabChanage}
+                        onClick={() => handelTabChanage(true)}
                         className={
                             !isBookMark
                                 ? "tabButtonSelected"
@@ -112,7 +113,7 @@ export const AskOrca = () => {
                         Bookmark
                     </div>
                     <div
-                        onClick={handelTabChanage}
+                        onClick={() => handelTabChanage(false)}
                         className={
                             isBookMark
                                 ? "tabButtonSelected"
