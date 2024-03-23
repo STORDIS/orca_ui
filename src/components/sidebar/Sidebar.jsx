@@ -8,21 +8,11 @@ import SmartToyIcon from "@mui/icons-material/SmartToy";
 const Sidebar = () => {
     const navigate = useNavigate();
 
-    const handleClick = () => {
-        navigate("/home");
-    };
-
     return (
         <div className="sidebar">
             <div className="top">
                 <Link to="/home" style={{ textDecoration: "none" }}>
-                    <img
-                        src={logo}
-                        width="200"
-                        className="img-thumbnail"
-                        style={{ marginTop: "40px" }}
-                        alt="logo.png"
-                    />
+                    <img src={logo} className="logo" alt="logo.png" />
                 </Link>
             </div>
             <hr />
