@@ -5,59 +5,46 @@
 
     .leftColumn {
         flex: 2;
+        flex-direction: column;
+        display: flex;
 
-        .topColumn {
-            height: 400px;
-            -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-            box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
-            margin-bottom: 10px;
 
-            .codeSection {
-                background-color: rgb(43, 43, 43);
-                margin: 10px;
-                height: 88%;
-                overflow-y: auto;
-            }
-
-            .buttonSection {
-                margin: 10px;
-                text-align: right;
-                align-items: center;
-            }
-        }
-        .bottomColumn {
             padding: 10px;
-            height: 400px;
+            height: 80vh;
             -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
             box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
 
             .chatSection {
+                flex: 1;
                 background-color: lightgray;
-                height: 80%;
+                overflow-y: auto;
+                display: grid;
+                width: -webkit-fill-available;
 
                 .aiStyle {
-                    float: left;
                     background-color: white;
+                    width: fit-content;
                     max-width: 85%;
                     padding: 10px;
-                    margin: 10px;
+                    margin: 10px auto 10px 10px;
                     border-radius: 25px;
                     border-bottom-left-radius: 0px;
                 }
 
-                .promtStyle {
-                    float: right;
+                .promptStyle {
                     text-align: right;
                     background-color: white;
+                    width: fit-content;
                     max-width: 85%;
                     padding: 10px;
-                    margin: 10px;
+                    margin: 10px 10px 10px auto;
                     border-radius: 25px;
                     border-bottom-right-radius: 0px;
                 }
             }
 
             .promptArea {
+                height: 60px;
                 margin-top: 10px;
                 align-items: center;
                 display: flex;
@@ -67,19 +54,19 @@
                 border: 1px solid lightgray;
 
                 textarea {
-                    width: 90%;
+                    width: 92%;
                     font-size: 16px;
                     min-height: 3rem !important;
                     resize: none;
                     overflow-y: auto;
                     border: none;
+                    border-right: 1px solid lightgray !important;
                 }
                 textarea:focus {
                     outline: none;
-                    border-right: 1px solid lightgray;
                 }
             }
-        }
+        
     }
 
     .rightColumn {
@@ -148,4 +135,5 @@
             }
         }
     }
+    
 }

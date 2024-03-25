@@ -5,6 +5,9 @@ import Tab from "@mui/material/Tab";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
 
+import interceptor from "../../interceptor";
+import { gptCompletionsURL } from "../../backend_rest_urls";
+
 import "./Askorca.scss";
 
 export const AskOrca = () => {
@@ -43,58 +46,75 @@ export const AskOrca = () => {
 
     const [isBookMark, setIsBookMark] = useState(true);
 
+    const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
+
+    const instance = interceptor();
+
     const handelTabChanage = (e) => {
         console.log(e);
         setIsBookMark(e);
     };
 
+    const gptCompletions = () => {
+        instance
+            .post(gptCompletionsURL(), questionPrompt)
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.error("Error ", error);
+            });
+    };
+
+    const handleInputChange = (event) => {
+        setQuestionPrompt({ prompt: event.target.value });
+        console.log(event.target.value);
+    };
+
     return (
         <div className="flexContainer">
             <div className="leftColumn">
-                <div className="topColumn">
-                    <div className="codeSection">
-                        <SyntaxHighlighter
-                            language={codeLangauge}
-                            style={darcula}
-                        >
-                            {pythonCode}
-                        </SyntaxHighlighter>
+                <div className="chatSection">
+                    <div className="aiStyle">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Neque, blanditiis.
                     </div>
-                    <div className="buttonSection ">
-                        <button className="btnStyle mr-10">Execute</button>
-                        <button className="btnStyle mr-10">Test</button>
-                        <button className="btnStyle ">Save</button>
+                    <div className="promptStyle">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </div>
+                    <div className="aiStyle">impedit unde officiis?</div>
+                    <div className="promptStyle">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae, modi labore optio distinctio ducimus corporis
+                        laborum omnis.
+                    </div>
+                    <div className="aiStyle">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Neque, blanditiis. Maxime tenetur laboriosam veritatis
+                        eaque reprehenderit sint quos facilis corporis? Expedita
+                        praesentium accusantium labore dolorem optio iure
+                        impedit unde officiis?
+                    </div>
+                    <div className="promptStyle">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Molestiae, modi labore optio distinctio ducimus corporis
+                        laborum omnis, minima sit perspiciatis impedit
+                        temporibus unde cupiditate in eveniet consequatur, ex
+                        quas! Rerum.
                     </div>
                 </div>
-                <div className="bottomColumn">
-                    <div className="chatSection">
-                        <div className="aiStyle">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Neque, blanditiis. Maxime tenetur laboriosam
-                            veritatis eaque reprehenderit sint quos facilis
-                            corporis? Expedita praesentium accusantium labore
-                            dolorem optio iure impedit unde officiis?
-                        </div>
-                        <div className="promtStyle">
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Molestiae, modi labore optio distinctio
-                            ducimus corporis laborum omnis, minima sit
-                            perspiciatis impedit temporibus unde cupiditate in
-                            eveniet consequatur, ex quas! Rerum.
-                        </div>
-                    </div>
-                    <div className="promptArea">
-                        <textarea
-                            className="textArea"
-                            name=""
-                            placeholder="Ask me something...... "
-                        ></textarea>
-                        <button className="btnStyle ml-10">
-                            <span className="material-symbols-outlined">
-                                arrow_upward
-                            </span>
-                        </button>
-                    </div>
+                <div className="promptArea">
+                    <textarea
+                        onChange={handleInputChange}
+                        className="textArea"
+                        name=""
+                        placeholder="Ask me something...... "
+                    ></textarea>
+                    <button onClick={gptCompletions} className="btnStyle ml-10">
+                        <span className="material-symbols-outlined">
+                            arrow_upward
+                        </span>
+                    </button>
                 </div>
             </div>
             <div className=" rightColumn">
@@ -121,9 +141,11 @@ export const AskOrca = () => {
                         }
                     >
                         <span className="material-symbols-outlined mr-10">
-                            link
+                            <span class="material-symbols-outlined">
+                                history
+                            </span>
                         </span>
-                        Api Docs
+                        History
                     </div>
                 </div>
 
@@ -151,11 +173,15 @@ export const AskOrca = () => {
                 {!isBookMark ? (
                     <>
                         <a href="default" target="_blank" className="links">
-                            <span className="material-symbols-outlined">link</span>
+                            <span className="material-symbols-outlined">
+                                link
+                            </span>
                             <div className="title">Link 1</div>
                         </a>
                         <a href="default" target="_blank" className="links">
-                            <span className="material-symbols-outlined">link</span>
+                            <span className="material-symbols-outlined">
+                                link
+                            </span>
                             <div className="title">Link 2</div>
                         </a>
                     </>

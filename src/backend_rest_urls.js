@@ -42,3 +42,10 @@ export function getUser(user) {
 export function deleteVlanMembersURL(device_ip) {
     return host_addr + '/vlans_mem_delete/?mgt_ip=' + device_ip
 }
+
+export function gptCodeCompletionsURL() {
+    return host_addr + '/chatgpt/code_completions'
+}
+export function gptCompletionsURL() {
+    return host_addr + '/chatgpt/completions'
+}
