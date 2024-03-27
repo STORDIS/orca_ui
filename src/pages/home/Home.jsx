@@ -3,7 +3,7 @@ import Datatable from "../../components/tabbedpane/Datatable";
 
 import "./home.scss";
 
-function Home() {
+export const Home = () => {
 
     return (
         <div>

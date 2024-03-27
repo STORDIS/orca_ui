@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../utils/auth";
-import "./login.scss";
+import "./Login.scss";
 import logo from "../../assets/orca.png";
 import secureLocalStorage from "react-secure-storage";
 
@@ -23,8 +23,6 @@ export const Login = () => {
 
         const queryParams = new URLSearchParams(location.search);
         const param = queryParams.get("redirect");
-        console.log(param);
-
         if (param) {
             auth.login(formData, atob(param));
         } else {
@@ -39,7 +37,8 @@ export const Login = () => {
         // auto login
         if (secureLocalStorage.getItem("token")) {
             console.log("auto login", location.pathname);
-            window.location.href = "/home";
+            // window.location.href = "/home";
+            navigate("/home");
         }
     }, []);
 

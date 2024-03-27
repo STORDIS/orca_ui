@@ -14,15 +14,12 @@ const Datatable = (props) => {
   const gridRef = useRef();
   const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
   const { rows, columns, isTabbedPane = false, selectedDeviceIp = '' } = props;
-  console.log(rows, columns, selectedDeviceIp)
 
   const [dataTable, setDataTable] = useState([]);
-  console.log(dataTable)
   
   useEffect(() => {
     instance(getAllDevicesURL())
       .then(res => {
-        console.log("response", res.data)
         if (isTabbedPane) {
           let data = res.data.filter(item => item.mgt_ip === selectedDeviceIp)
           setDataTable(data)
@@ -30,7 +27,6 @@ const Datatable = (props) => {
           setDataTable(res.data)
         }
       })
-      // .then(res => console.log(res.data))
       .catch(err => console.log(err))
   }, [isTabbedPane]);
 

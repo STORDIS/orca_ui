@@ -120,9 +120,9 @@ const InterfaceDataTable = (props) => {
         instance
             .put(apiUrl, output)
             .then((res) => {
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
+                let startIndex = res?.data?.result[0]?.indexOf("{");
+                let endIndex = res?.data?.result[0]?.lastIndexOf("}");
+                let trimmedResponse = res?.data?.result[0]?.substring(
                     startIndex + 1,
                     endIndex
                 );
@@ -138,14 +138,15 @@ const InterfaceDataTable = (props) => {
             .catch((err) => {
                 console.log("check", err);
 
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
+                let startIndex = err?.response?.data?.result[0]?.indexOf("{");
+                let endIndex = err?.response?.data?.result[0]?.lastIndexOf("}");
+                let trimmedResponse = err?.response?.data?.result[0]?.substring(
                     startIndex + 1,
                     endIndex
                 );
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-                const reasonText = match[1].trim();
+                const match =
+                    err?.response?.data?.result[0]?.match(/Reason:(.*)/);
+                const reasonText = match[1]?.trim();
                 setLog({
                     status: reasonText,
                     result: trimmedResponse,
@@ -162,6 +163,14 @@ const InterfaceDataTable = (props) => {
                 setChanges([]);
             });
     }, [createJsonOutput, selectedDeviceIp, changes]);
+
+    const defaultFilterModel = {
+        country: {
+            filterType: "text",
+            type: "includes",
+            filter: "Ethernet",
+        },
+    };
 
     return (
         <div className="datatable">
@@ -184,6 +193,9 @@ const InterfaceDataTable = (props) => {
                 {configStatus}
             </span>
             <p>&nbsp;</p>
+            {/* .filter((row) =>
+                        row.name.includes("Ethernet")
+                    ) */}
 
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
@@ -193,6 +205,7 @@ const InterfaceDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
+                    quickFilterText='Ethernet'
                 ></AgGridReact>
             </div>
         </div>
