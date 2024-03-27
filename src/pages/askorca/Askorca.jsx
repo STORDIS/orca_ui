@@ -1,9 +1,4 @@
-import React, { useState } from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { darcula } from "react-syntax-highlighter/dist/esm/styles/prism";
+import React, { useState, useEffect, useRef } from "react";
 
 import interceptor from "../../interceptor";
 import { gptCompletionsURL } from "../../backend_rest_urls";
@@ -11,55 +6,45 @@ import { gptCompletionsURL } from "../../backend_rest_urls";
 import "./Askorca.scss";
 
 export const AskOrca = () => {
-    const pythonCode = `import random
-
-    # Define a list of fruits
-    fruits = ["apple", "banana", "orange", "grape", "kiwi"]
-    
-    # Select a random fruit from the list
-    random_fruit = random.choice(fruits)
-    print("Random fruit selected:", random_fruit)
-    
-    # Generate a random number between 1 and 100
-    random_number = random.randint(1, 100)
-    print("Random number:", random_number)
-    
-    # Shuffle the list of fruits
-    random.shuffle(fruits)
-    print("Shuffled fruits:", fruits)
-    `;
-
-    const jsCode = `
-    // Define a function to generate a random number between 1 and 10
-    function generateRandomNumber() {
-      return Math.floor(Math.random() * 10) + 1;
-    }
-    
-    // Call the function and store the result
-    const randomNumber = generateRandomNumber();
-    
-    // Log the random number to the console
-    console.log("Random number:", randomNumber);
-      `;
-
-    const codeLangauge = "javascript";
-
     const [isBookMark, setIsBookMark] = useState(true);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
 
+    const [currentChatHistory, setCurrentChatHistory] = useState([
+        { index: 0, message: "i am orca AI. How can I, help you ?" },
+    ]);
+
     const instance = interceptor();
 
     const handelTabChanage = (e) => {
-        console.log(e);
         setIsBookMark(e);
     };
 
     const gptCompletions = () => {
+        console.log(questionPrompt);
+
+        setCurrentChatHistory((prevChatHistory) => [
+            ...prevChatHistory,
+            {
+                index: prevChatHistory.length,
+                ...questionPrompt,
+            },
+        ]);
+
+        console.log(currentChatHistory);
+        setQuestionPrompt({ prompt: "" });
+
         instance
             .post(gptCompletionsURL(), questionPrompt)
             .then((response) => {
-                console.log(response);
+                console.log(response.data);
+                setCurrentChatHistory((prevChatHistory) => [
+                    ...prevChatHistory,
+                    {
+                        index: prevChatHistory.length,
+                        ...response.data,
+                    },
+                ]);
             })
             .catch((error) => {
                 console.error("Error ", error);
@@ -68,43 +53,48 @@ export const AskOrca = () => {
 
     const handleInputChange = (event) => {
         setQuestionPrompt({ prompt: event.target.value });
-        console.log(event.target.value);
     };
+
+    const chatSectionRef = useRef(null);
+
+    useEffect(() => {
+        // Scroll down to the bottom of the chat section
+        chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
+    }, [currentChatHistory]);
 
     return (
         <div className="flexContainer">
             <div className="leftColumn">
-                <div className="chatSection">
-                    <div className="aiStyle">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Neque, blanditiis.
-                    </div>
-                    <div className="promptStyle">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    </div>
-                    <div className="aiStyle">impedit unde officiis?</div>
-                    <div className="promptStyle">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Molestiae, modi labore optio distinctio ducimus corporis
-                        laborum omnis.
-                    </div>
-                    <div className="aiStyle">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Neque, blanditiis. Maxime tenetur laboriosam veritatis
-                        eaque reprehenderit sint quos facilis corporis? Expedita
-                        praesentium accusantium labore dolorem optio iure
-                        impedit unde officiis?
-                    </div>
-                    <div className="promptStyle">
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Molestiae, modi labore optio distinctio ducimus corporis
-                        laborum omnis, minima sit perspiciatis impedit
-                        temporibus unde cupiditate in eveniet consequatur, ex
-                        quas! Rerum.
-                    </div>
+                <div className="chatSection" ref={chatSectionRef}>
+                    {currentChatHistory.map((item) => (
+                        <>
+                            {item.message ? (
+                                <div key={item.index} className="aiStyle">
+                                    <span className="material-symbols-outlined icon">
+                                        smart_toy
+                                    </span>
+                                    <span className="text">
+                                        {item.index} - {item.message}
+                                    </span>
+                                </div>
+                            ) : null}
+                            {item.prompt ? (
+                                <div key={item.index} className=" promptStyle">
+                                    <span className="text">
+                                        {item.index} - {item.prompt}
+                                    </span>
+                                    <span className="material-symbols-outlined icon">
+                                        person
+                                    </span>
+                                </div>
+                            ) : null}
+                        </>
+                    ))}
                 </div>
+
                 <div className="promptArea">
                     <textarea
+                        value={questionPrompt.prompt}
                         onChange={handleInputChange}
                         className="textArea"
                         name=""
@@ -141,7 +131,7 @@ export const AskOrca = () => {
                         }
                     >
                         <span className="material-symbols-outlined mr-10">
-                            <span class="material-symbols-outlined">
+                            <span className="material-symbols-outlined">
                                 history
                             </span>
                         </span>

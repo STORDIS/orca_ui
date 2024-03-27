@@ -5,68 +5,91 @@
 
     .leftColumn {
         flex: 2;
-        flex-direction: column;
-        display: flex;
+        // flex-direction: column;
 
+        padding: 10px;
+        height: 80vh;
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
 
-            padding: 10px;
-            height: 80vh;
-            -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-            box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+        .chatSection {
+            background-color: lightgray;
+            overflow-y: auto;
+            width: -webkit-fill-available;
+            height: calc(100% - 90px);
 
-            .chatSection {
-                flex: 1;
-                background-color: lightgray;
-                overflow-y: auto;
-                display: grid;
-                width: -webkit-fill-available;
+            .aiStyle {
+                width: fit-content;
+                max-width: 85%;
+                height: max-content;
+                align-items: center;
+                margin-left: 5px;
+                display: flex;
+                margin: 10px auto 10px 5px;
 
-                .aiStyle {
+                .icon {
                     background-color: white;
-                    width: fit-content;
-                    max-width: 85%;
+                    border-radius: 25px;
                     padding: 10px;
-                    margin: 10px auto 10px 10px;
+                }
+
+                .text {
+                    background-color: white;
                     border-radius: 25px;
                     border-bottom-left-radius: 0px;
+                    padding: 10px;
+                    margin-left: 10px;
+                }
+            }
+
+            .promptStyle {
+                text-align: right;
+                width: fit-content;
+                max-width: 85%;
+                margin: 10px 5px 10px auto;
+                height: max-content;
+                display: flex;
+                align-items: center;
+
+                .icon {
+                    background-color: white;
+                    border-radius: 25px;
+                    padding: 10px;
                 }
 
-                .promptStyle {
-                    text-align: right;
+                .text {
                     background-color: white;
-                    width: fit-content;
-                    max-width: 85%;
-                    padding: 10px;
-                    margin: 10px 10px 10px auto;
                     border-radius: 25px;
                     border-bottom-right-radius: 0px;
+                    padding: 10px;
+                    margin-right: 10px;
                 }
             }
+        }
 
-            .promptArea {
-                height: 60px;
-                margin-top: 10px;
-                align-items: center;
-                display: flex;
-                width: -webkit-fill-available;
-                padding: 10px;
-                border-radius: 25px;
-                border: 1px solid lightgray;
+        .promptArea {
+            height: 60px;
+            margin-top: 10px;
+            align-items: center;
+            display: flex;
+            width: -webkit-fill-available;
+            padding: 10px;
+            border-radius: 25px;
+            border: 1px solid lightgray;
 
-                textarea {
-                    width: 92%;
-                    font-size: 16px;
-                    min-height: 3rem !important;
-                    resize: none;
-                    overflow-y: auto;
-                    border: none;
-                    border-right: 1px solid lightgray !important;
-                }
-                textarea:focus {
-                    outline: none;
-                }
+            textarea {
+                width: 92%;
+                font-size: 16px;
+                min-height: 3rem !important;
+                resize: none;
+                overflow-y: auto;
+                border: none;
+                border-right: 1px solid lightgray !important;
             }
-        
+            textarea:focus {
+                outline: none;
+            }
+        }
     }
 
     .rightColumn {
@@ -135,5 +158,4 @@
             }
         }
     }
-    
 }
