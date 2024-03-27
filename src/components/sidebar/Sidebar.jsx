@@ -21,9 +21,9 @@ const Sidebar = () => {
                     <StorageIcon className="icon" />
                     <span>Devices</span>
                 </Link>
-                <Link className="navLink" to="/askOrca">
+                <Link className="navLink" to="/orcAsk">
                     <SmartToyIcon className="icon" />
-                    <span>Ask Orca</span>
+                    <span>OrcAsk</span>
                 </Link>
             </div>
         </div>
