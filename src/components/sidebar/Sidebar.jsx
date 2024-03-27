@@ -21,10 +21,6 @@ const Sidebar = () => {
                     <StorageIcon className="icon" />
                     <span>Devices</span>
                 </Link>
-                <Link className="navLink" to="/askOrca">
-                    <SmartToyIcon className="icon" />
-                    <span>Ask Orca</span>
-                </Link>
             </div>
         </div>
     );

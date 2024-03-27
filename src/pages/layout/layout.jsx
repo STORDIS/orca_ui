@@ -12,7 +12,6 @@ import RequireAuth from "../../utils/requiredAuth.js";
 
 import Home from "../home/Home.jsx";
 import ErrorPage from "../error/errorPage.jsx";
-import AskOrca from "../askorca/Askorca.jsx";
 import Login from "../Login/Login.jsx";
 import TabbedPane from "../../components/tabbedpane/TabbedPane.jsx";
 import LogViewer from "../../components/logpane/logpane.jsx";
@@ -66,14 +65,6 @@ const Layout = () => {
                             element={
                                 <RequireAuth>
                                     <TabbedPane />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/askOrca"
-                            element={
-                                <RequireAuth>
-                                    <AskOrca />
                                 </RequireAuth>
                             }
                         />
