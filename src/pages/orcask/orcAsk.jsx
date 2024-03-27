@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import interceptor from "../../interceptor";
 import { gptCompletionsURL } from "../../backend_rest_urls";
 
-import "./Askorca.scss";
+import "./orcAsk.scss";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
