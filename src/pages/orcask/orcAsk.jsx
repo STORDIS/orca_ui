@@ -18,7 +18,7 @@ export const AskOrca = () => {
         {
             index: 0,
             message:
-                "I am an ORCASK AI developed to assist you. How can I help you?",
+                "I am, ORCASK AI developed to assist you. How can I help you?",
         },
     ]);
 
@@ -33,7 +33,7 @@ export const AskOrca = () => {
             {
                 index: 0,
                 message:
-                    "I am an ORCASK AI developed to assist you. How can I help you?",
+                    "I am, ORCASK AI developed to assist you. How can I help you?",
             },
         ]);
     };
@@ -60,10 +60,17 @@ export const AskOrca = () => {
             .post(gptCompletionsURL(), questionPrompt)
             .then((response) => {
                 setCurrentChatHistory((prevChatHistory) => {
-                    const updatedHistory = [...prevChatHistory];
-                    updatedHistory[updatedHistory.length - 1].message =
-                        JSON.stringify(response.data.pop(), null, 2);
-                    return updatedHistory;
+                    if (Array.isArray(response?.data)) {
+                        const updatedHistory = [...prevChatHistory];
+                        updatedHistory[updatedHistory.length - 1].message =
+                            JSON.stringify(response?.data.pop(), null, 2);
+                        return updatedHistory;
+                    } else {
+                        const updatedHistory = [...prevChatHistory];
+                        updatedHistory[updatedHistory.length - 1].message =
+                            JSON.stringify(response?.data?.message, null, 2);
+                        return updatedHistory;
+                    }
                 });
 
                 setIsLoading(false);
@@ -83,7 +90,7 @@ export const AskOrca = () => {
     useEffect(() => {
         // Scroll down to the bottom of the chat section
         chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
-        console.log(currentChatHistory);
+        // console.log(currentChatHistory);
     }, [currentChatHistory]);
 
     return (
@@ -111,7 +118,7 @@ export const AskOrca = () => {
                                             customStyle={{
                                                 borderRadius: "25px",
                                                 borderBottomLeftRadius: "0px",
-                                                padding: "10px",
+                                                padding: "10px 15px 10px 15px",
                                                 margin: "0px 0px 0px 10px",
                                                 background: "white",
                                             }}
