@@ -3,10 +3,15 @@ import React, { useState, useEffect, useRef } from "react";
 import interceptor from "../../interceptor";
 import { gptCompletionsURL } from "../../backend_rest_urls";
 
+import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
+import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
+import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
+
 import "./orcAsk.scss";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
 
@@ -21,13 +26,17 @@ export const AskOrca = () => {
     };
 
     const gptCompletions = () => {
-        console.log(questionPrompt);
+        setIsLoading(true);
 
         setCurrentChatHistory((prevChatHistory) => [
             ...prevChatHistory,
             {
                 index: prevChatHistory.length,
                 ...questionPrompt,
+            },
+            {
+                index: prevChatHistory.length + 1,
+                message: [],
             },
         ]);
 
@@ -37,17 +46,26 @@ export const AskOrca = () => {
         instance
             .post(gptCompletionsURL(), questionPrompt)
             .then((response) => {
-                console.log(response.data);
-                setCurrentChatHistory((prevChatHistory) => [
-                    ...prevChatHistory,
-                    {
-                        index: prevChatHistory.length,
-                        ...response.data,
-                    },
-                ]);
+                setCurrentChatHistory((prevChatHistory) => {
+                    const updatedHistory = [...prevChatHistory];
+                    updatedHistory[updatedHistory.length - 1].message =
+                        JSON.stringify(response.data.pop(), null, 2);
+                    return updatedHistory;
+                });
+
+                // setCurrentChatHistory((prevChatHistory) => [
+                //     ...prevChatHistory,
+                //     {
+                //         index: prevChatHistory.length,
+                //         ...message,
+                //     },
+                // ]);
+
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.error("Error ", error);
+                setIsLoading(false);
             });
     };
 
@@ -60,29 +78,49 @@ export const AskOrca = () => {
     useEffect(() => {
         // Scroll down to the bottom of the chat section
         chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
+        console.log(currentChatHistory);
     }, [currentChatHistory]);
 
     return (
         <div className="flexContainer">
             <div className="leftColumn">
                 <div className="chatSection" ref={chatSectionRef}>
-                    {currentChatHistory.map((item) => (
+                    {currentChatHistory.map((item, index) => (
                         <>
                             {item.message ? (
                                 <div key={item.index} className="aiStyle">
                                     <span className="material-symbols-outlined icon">
                                         smart_toy
                                     </span>
-                                    <span className="text">
-                                        {item.index} - {item.message}
-                                    </span>
+                                    {index === currentChatHistory.length - 1 &&
+                                    isLoading ? (
+                                        <div className="loader">
+                                            <div className="dot"></div>
+                                            <div className="dot"></div>
+                                            <div className="dot"></div>
+                                        </div>
+                                    ) : null}
+
+                                    <SyntaxHighlighter
+                                        customStyle={{
+                                            borderRadius: "25px",
+                                            borderBottomLeftRadius: "0px",
+                                            padding: "10px",
+                                            margin: "0px 0px 0px 10px",
+                                            background: "white",
+                                        }}
+                                        language="javascript"
+                                        style={prism}
+                                        wrapLines={true}
+                                        wrapLongLines={true}
+                                    >
+                                        {item.message}
+                                    </SyntaxHighlighter>
                                 </div>
                             ) : null}
                             {item.prompt ? (
                                 <div key={item.index} className=" promptStyle">
-                                    <span className="text">
-                                        {item.index} - {item.prompt}
-                                    </span>
+                                    <span className="text">{item.prompt}</span>
                                     <span className="material-symbols-outlined icon">
                                         person
                                     </span>

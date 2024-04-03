@@ -37,7 +37,7 @@
                     background-color: white;
                     border-radius: 25px;
                     border-bottom-left-radius: 0px;
-                    padding: 10px;
+                    padding: 12px;
                     margin-left: 10px;
                 }
             }
@@ -61,8 +61,39 @@
                     background-color: white;
                     border-radius: 25px;
                     border-bottom-right-radius: 0px;
-                    padding: 10px;
+                    padding: 12px;
                     margin-right: 10px;
+                }
+            }
+
+            .loader {
+                display: inline-block;
+            }
+
+            .dot {
+                width: 10px;
+                height: 10px;
+                background-color: black;
+                border-radius: 50%;
+                display: inline-block;
+                animation: dance 1.5s infinite ease-in-out;
+            }
+
+            .dot:nth-child(2) {
+                animation-delay: 0.2s;
+            }
+
+            .dot:nth-child(3) {
+                animation-delay: 0.4s;
+            }
+
+            @keyframes dance {
+                0%,
+                100% {
+                    transform: translateY(0);
+                }
+                50% {
+                    transform: translateY(-10px);
                 }
             }
         }
@@ -128,6 +159,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                // box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px 0px inset;
             }
         }
 
