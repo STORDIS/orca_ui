@@ -14,15 +14,28 @@ export const AskOrca = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
-
     const [currentChatHistory, setCurrentChatHistory] = useState([
-        { index: 0, message: "i am orca AI. How can I, help you ?" },
+        {
+            index: 0,
+            message:
+                "I am an ORCASK AI developed to assist you. How can I help you?",
+        },
     ]);
 
     const instance = interceptor();
 
     const handelTabChanage = (e) => {
         setIsBookMark(e);
+    };
+
+    const resetCurrentChat = () => {
+        setCurrentChatHistory([
+            {
+                index: 0,
+                message:
+                    "I am an ORCASK AI developed to assist you. How can I help you?",
+            },
+        ]);
     };
 
     const gptCompletions = () => {
@@ -52,14 +65,6 @@ export const AskOrca = () => {
                         JSON.stringify(response.data.pop(), null, 2);
                     return updatedHistory;
                 });
-
-                // setCurrentChatHistory((prevChatHistory) => [
-                //     ...prevChatHistory,
-                //     {
-                //         index: prevChatHistory.length,
-                //         ...message,
-                //     },
-                // ]);
 
                 setIsLoading(false);
             })
@@ -100,22 +105,24 @@ export const AskOrca = () => {
                                             <div className="dot"></div>
                                         </div>
                                     ) : null}
-
-                                    <SyntaxHighlighter
-                                        customStyle={{
-                                            borderRadius: "25px",
-                                            borderBottomLeftRadius: "0px",
-                                            padding: "10px",
-                                            margin: "0px 0px 0px 10px",
-                                            background: "white",
-                                        }}
-                                        language="javascript"
-                                        style={prism}
-                                        wrapLines={true}
-                                        wrapLongLines={true}
-                                    >
-                                        {item.message}
-                                    </SyntaxHighlighter>
+                                    {!isLoading ||
+                                    index !== currentChatHistory.length - 1 ? (
+                                        <SyntaxHighlighter
+                                            customStyle={{
+                                                borderRadius: "25px",
+                                                borderBottomLeftRadius: "0px",
+                                                padding: "10px",
+                                                margin: "0px 0px 0px 10px",
+                                                background: "white",
+                                            }}
+                                            language="javascript"
+                                            style={prism}
+                                            wrapLines={true}
+                                            wrapLongLines={true}
+                                        >
+                                            {item.message}
+                                        </SyntaxHighlighter>
+                                    ) : null}
                                 </div>
                             ) : null}
                             {item.prompt ? (
@@ -141,6 +148,14 @@ export const AskOrca = () => {
                     <button onClick={gptCompletions} className="btnStyle ml-10">
                         <span className="material-symbols-outlined">
                             arrow_upward
+                        </span>
+                    </button>
+                    <button
+                        onClick={resetCurrentChat}
+                        className="btnStyle ml-10"
+                    >
+                        <span class="material-symbols-outlined">
+                            restart_alt
                         </span>
                     </button>
                 </div>
