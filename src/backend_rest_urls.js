@@ -46,3 +46,7 @@ export function deleteVlanMembersURL(device_ip) {
 export function gptCompletionsURL() {
     return host_addr + '/orcask/completions'
 }
+
+export function logPanelURL() {
+    return host_addr + '/logs/all/1?size=100'
+}
