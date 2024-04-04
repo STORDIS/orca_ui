@@ -6,7 +6,6 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
 
-import { useLog } from "../../LogContext";
 import interceptor from "../../interceptor";
 
 const InterfaceDataTable = (props) => {
@@ -20,7 +19,6 @@ const InterfaceDataTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
     const [interfaceNames, setInterfaceNames] = useState([]);
 
-    const { setLog } = useLog();
     const instance = interceptor();
 
     const setInterfaceData = () => {
@@ -120,39 +118,10 @@ const InterfaceDataTable = (props) => {
         instance
             .put(apiUrl, output)
             .then((res) => {
-                let startIndex = res?.data?.result[0]?.indexOf("{");
-                let endIndex = res?.data?.result[0]?.lastIndexOf("}");
-                let trimmedResponse = res?.data?.result[0]?.substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
-                console.log("check", err);
-
-                let startIndex = err?.response?.data?.result[0]?.indexOf("{");
-                let endIndex = err?.response?.data?.result[0]?.lastIndexOf("}");
-                let trimmedResponse = err?.response?.data?.result[0]?.substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                const match =
-                    err?.response?.data?.result[0]?.match(/Reason:(.*)/);
-                const reasonText = match[1]?.trim();
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setConfigStatus("Config Failed");
                 setInterfaceData();
 
@@ -205,7 +174,7 @@ const InterfaceDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    quickFilterText='Ethernet'
+                    quickFilterText="Ethernet"
                 ></AgGridReact>
             </div>
         </div>

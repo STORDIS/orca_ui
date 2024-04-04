@@ -12,7 +12,6 @@ import {
 import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
-import { useLog } from "../../LogContext";
 import interceptor from "../../interceptor";
 
 const VlanTable = (props) => {
@@ -46,7 +45,6 @@ const VlanTable = (props) => {
     const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState(
         []
     );
-    const { setLog } = useLog();
     const instance = interceptor();
     const [disableSubmit, setDisableSubmit] = useState(false);
 
@@ -145,18 +143,6 @@ const VlanTable = (props) => {
         instance
             .delete(apiMUrl, { data: deleteData })
             .then((response) => {
-                let startIndex = response.data.result[0].indexOf("{");
-                let endIndex = response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 if (response.data && Array.isArray(response.data.result)) {
                     const updatedDataTable = dataTable.filter(
                         (row) =>
@@ -170,21 +156,7 @@ const VlanTable = (props) => {
                 setMessageModalContent("Vlan Delete Successfully.");
                 setIsMessageModalOpen(true);
             })
-            .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-                const reasonText = match[1].trim();
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-            })
+            .catch((err) => {})
             .finally(() => {});
     };
 
@@ -218,18 +190,6 @@ const VlanTable = (props) => {
             .then((response) => {
                 setShowForm(false);
 
-                let startIndex = response.data.result[0].indexOf("{");
-                let endIndex = response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setMessageModalContent("Vlan added successfully");
                 setIsMessageModalOpen(true);
                 refreshData();
@@ -238,19 +198,7 @@ const VlanTable = (props) => {
             .catch((err) => {
                 setMessageModalContent("Error in adding Vlan");
                 setIsMessageModalOpen(true);
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-                const reasonText = match[1].trim();
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
+
                 // setDisableSubmit(false);
             });
     };
@@ -349,36 +297,10 @@ const VlanTable = (props) => {
         instance
             .put(apiMUrl, output)
             .then((res) => {
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-                const reasonText = match[1].trim();
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setConfigStatus("Config Failed");
                 setTimeout(resetConfigStatus, 5000);
             })
@@ -482,38 +404,10 @@ const VlanTable = (props) => {
         instance
             .put(apiMUrl, output)
             .then((res) => {
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-
-                const reasonText = match[1].trim();
-
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setConfigStatus("Config Failed");
                 setTimeout(resetConfigStatus, 5000);
             })

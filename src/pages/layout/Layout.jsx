@@ -17,8 +17,7 @@ import TabbedPane from "../../components/tabbedpane/TabbedPane.jsx";
 import LogViewer from "../../components/logpane/logpane.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import Sidebar from "../../components/sidebar/Sidebar.jsx";
-import { DataProvider } from "../../LogContext.js";
-import OrcAsk from "../orcask/orcAsk.jsx"
+import OrcAsk from "../orcask/orcAsk.jsx";
 
 import "./Layout.scss";
 
@@ -48,51 +47,49 @@ const Layout = () => {
         <div className="mainContainer">
             {token ? <Sidebar /> : null}
 
-            <DataProvider>
-                <div className="container">
-                    {token ? <Navbar /> : null}
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route
-                            path="/home"
-                            element={
-                                <RequireAuth>
-                                    <Home />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/orcAsk"
-                            element={
-                                <RequireAuth>
-                                    <OrcAsk />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="devices/:deviceIP"
-                            element={
-                                <RequireAuth>
-                                    <TabbedPane />
-                                </RequireAuth>
-                            }
-                        />
-                        {/* <Route
+            <div className="container">
+                {token ? <Navbar /> : null}
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route
+                        path="/home"
+                        element={
+                            <RequireAuth>
+                                <Home />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/orcAsk"
+                        element={
+                            <RequireAuth>
+                                <OrcAsk />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="devices/:deviceIP"
+                        element={
+                            <RequireAuth>
+                                <TabbedPane />
+                            </RequireAuth>
+                        }
+                    />
+                    {/* <Route
                             path="/"
                             element={<Navigate replace to="/login" />}
                         /> */}
-                        <Route path="/" element={<Redirect />} />
+                    <Route path="/" element={<Redirect />} />
 
-                        <Route path="*" element={<ErrorPage />} />
-                    </Routes>
+                    <Route path="*" element={<ErrorPage />} />
+                </Routes>
 
-                    {token && isAI ? (
-                        <div className="listContainer">
-                            <LogViewer />
-                        </div>
-                    ) : null}
-                </div>
-            </DataProvider>
+                {token && isAI ? (
+                    <div className="listContainer">
+                        <LogViewer />
+                    </div>
+                ) : null}
+            </div>
         </div>
     );
 };

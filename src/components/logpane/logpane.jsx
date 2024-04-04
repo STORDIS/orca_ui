@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useLog } from "../../LogContext";
 import "./logpane.scss";
 import Time from "react-time-format";
 
@@ -13,15 +12,12 @@ import { logPanelURL } from "../../backend_rest_urls";
 import { textAlign } from "@mui/system";
 
 export const LogViewer = () => {
-    const { log, clearLog } = useLog();
     const [logEntries, setLogEntries] = useState([]);
 
     const instance = interceptor();
 
     useEffect(() => {
-        // if (Object.keys(log).length !== 0) {
-        //     setLogEntries((prevLogEntries) => [log, ...prevLogEntries]);
-        // }
+
 
         getLogs();
     }, []);
@@ -39,7 +35,6 @@ export const LogViewer = () => {
     };
 
     const handelClearLog = () => {
-        clearLog();
         setLogEntries([]);
     };
 
@@ -133,12 +128,12 @@ export const LogViewer = () => {
                     paginationPageSizeSelector={[5, 10, 15, 20]}
                 />
 
-                <button
+                {/* <button
                     className="clearLogBtn btnStyle"
                     onClick={handelClearLog}
                 >
                     Clear Log
-                </button>
+                </button> */}
             </div>
         </div>
     );
