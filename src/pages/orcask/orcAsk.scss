@@ -1,0 +1,220 @@
+.flexContainer {
+    display: flex;
+    gap: 10px;
+    margin: 10px;
+
+    .leftColumn {
+        flex: 2;
+        // flex-direction: column;
+
+        padding: 10px;
+        height: 80vh;
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+
+        .chatSection {
+            background-color: #a7a7a7;
+            overflow-y: auto;
+            width: -webkit-fill-available;
+            height: calc(100% - 90px);
+
+            .aiStyle {
+                width: fit-content;
+                max-width: 85%;
+                height: max-content;
+                align-items: center;
+                margin-left: 5px;
+                display: flex;
+                margin: 10px auto 10px 5px;
+                align-items: end;
+
+                .icon {
+                    // background-color: white;
+                    background-color: rgb(245, 242, 240);
+                    border-radius: 25px;
+                    padding: 10px;
+                }
+
+                .text {
+                    background-color: white;
+                    border-radius: 25px;
+                    border-bottom-left-radius: 0px;
+                    padding: 12px 15px 12px 15px;
+                    margin-left: 10px;
+                }
+
+                .loader {
+                    display: inline-block;
+                    background-color: white;
+                    border-radius: 25px;
+                    border-bottom-left-radius: 0px;
+                    padding: 12px;
+                    margin-left: 10px;
+                }
+
+                .dot {
+                    width: 10px;
+                    height: 10px;
+                    background-color: black;
+                    border-radius: 50%;
+                    display: inline-block;
+                    animation: dance 1.5s infinite ease-in-out;
+                    margin-left: 10px;
+                }
+
+                .dot:nth-child(2) {
+                    animation-delay: 0.2s;
+                }
+
+                .dot:nth-child(3) {
+                    animation-delay: 0.4s;
+                }
+
+                @keyframes dance {
+                    0%,
+                    100% {
+                        transform: translateY(0);
+                    }
+                    50% {
+                        transform: translateY(-10px);
+                    }
+                }
+            }
+
+            .aiStyle:hover .copy {
+                visibility: visible !important;
+            }
+
+            .copy {
+                cursor: pointer;
+                display: flex;
+                background-color: white;
+                border-radius: 25px;
+                padding: 5px;
+                margin: 0px 10px 0px 10px;
+                font-size: 5px;
+                visibility: hidden;
+            }
+
+            .promptStyle:hover .copy {
+                visibility: visible !important;
+            }
+            
+            .promptStyle {
+                text-align: right;
+                width: fit-content;
+                max-width: 85%;
+                margin: 10px 5px 10px auto;
+                height: max-content;
+                display: flex;
+                align-items: end;
+
+                .icon {
+                    background-color: white;
+                    border-radius: 25px;
+                    padding: 10px;
+                }
+
+                .text {
+                    background-color: white;
+                    border-radius: 25px;
+                    border-bottom-right-radius: 0px;
+                    padding: 12px;
+                    margin-right: 10px;
+                }
+            }
+        }
+
+        .promptArea {
+            height: 60px;
+            margin-top: 10px;
+            align-items: center;
+            display: flex;
+            width: -webkit-fill-available;
+            padding: 10px;
+            border-radius: 25px;
+            border: 1px solid lightgray;
+
+            textarea {
+                width: 92%;
+                font-size: 16px;
+                min-height: 3rem !important;
+                resize: none;
+                overflow-y: auto;
+                border: none;
+                border-right: 1px solid lightgray !important;
+            }
+            textarea:focus {
+                outline: none;
+            }
+        }
+    }
+
+    .rightColumn {
+        flex: 1;
+        padding: 15px;
+        min-height: 100%;
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+
+        .tab {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+            box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+
+            .tabButtonDeSelected {
+                padding: 10px;
+                border-bottom: 1px solid gray;
+                width: 50%;
+                text-align: center;
+                background-color: white;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .tabButtonSelected {
+                padding: 10px;
+                border-bottom: 1px solid gray;
+                width: 50%;
+                text-align: center;
+                background-color: lightgray;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                // box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px 0px inset;
+            }
+        }
+
+        .bookmark {
+            display: flex;
+            align-items: center;
+            background-color: #e7dbdb;
+            padding: 10px;
+            margin-bottom: 10px;
+
+            .title {
+                font-size: 16px;
+                margin-left: 10px;
+            }
+        }
+
+        .links {
+            display: flex;
+            align-items: center;
+            background-color: #e7dbdb;
+            padding: 10px;
+            margin-bottom: 10px;
+            text-decoration: none;
+
+            .title {
+                font-size: 16px;
+                margin-left: 10px;
+            }
+        }
+    }
+}

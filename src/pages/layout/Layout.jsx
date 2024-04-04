@@ -12,12 +12,13 @@ import RequireAuth from "../../utils/requiredAuth.js";
 
 import Home from "../home/Home.jsx";
 import ErrorPage from "../error/errorPage.jsx";
-import Login from "../Login/Login.jsx";
+import Login from "../Login/login.jsx";
 import TabbedPane from "../../components/tabbedpane/TabbedPane.jsx";
 import LogViewer from "../../components/logpane/logpane.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import Sidebar from "../../components/sidebar/Sidebar.jsx";
 import { DataProvider } from "../../LogContext.js";
+import OrcAsk from "../orcask/orcAsk.jsx"
 
 import "./Layout.scss";
 
@@ -57,6 +58,14 @@ const Layout = () => {
                             element={
                                 <RequireAuth>
                                     <Home />
+                                </RequireAuth>
+                            }
+                        />
+                        <Route
+                            path="/orcAsk"
+                            element={
+                                <RequireAuth>
+                                    <OrcAsk />
                                 </RequireAuth>
                             }
                         />
