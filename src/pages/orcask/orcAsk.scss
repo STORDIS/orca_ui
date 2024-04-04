@@ -13,7 +13,7 @@
         box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
 
         .chatSection {
-            background-color: lightgray;
+            background-color: #a7a7a7;
             overflow-y: auto;
             width: -webkit-fill-available;
             height: calc(100% - 90px);
@@ -26,9 +26,11 @@
                 margin-left: 5px;
                 display: flex;
                 margin: 10px auto 10px 5px;
+                align-items: end;
 
                 .icon {
-                    background-color: white;
+                    // background-color: white;
+                    background-color: rgb(245, 242, 240);
                     border-radius: 25px;
                     padding: 10px;
                 }
@@ -79,6 +81,25 @@
                 }
             }
 
+            .aiStyle:hover .copy {
+                visibility: visible !important;
+            }
+
+            .copy {
+                cursor: pointer;
+                display: flex;
+                background-color: white;
+                border-radius: 25px;
+                padding: 5px;
+                margin: 0px 10px 0px 10px;
+                font-size: 5px;
+                visibility: hidden;
+            }
+
+            .promptStyle:hover .copy {
+                visibility: visible !important;
+            }
+            
             .promptStyle {
                 text-align: right;
                 width: fit-content;
@@ -86,7 +107,7 @@
                 margin: 10px 5px 10px auto;
                 height: max-content;
                 display: flex;
-                align-items: center;
+                align-items: end;
 
                 .icon {
                     background-color: white;

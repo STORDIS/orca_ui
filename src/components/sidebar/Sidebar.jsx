@@ -23,7 +23,7 @@ const Sidebar = () => {
                 </Link>
                 <Link className="navLink" to="/orcAsk">
                     <SmartToyIcon className="icon" />
-                    <span>Orc Ask</span>
+                    <span>ORCASK</span>
                 </Link>
             </div>
         </div>

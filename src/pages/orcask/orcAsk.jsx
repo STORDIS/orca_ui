@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 
 import interceptor from "../../interceptor";
 import { gptCompletionsURL } from "../../backend_rest_urls";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
-import jsx from "react-syntax-highlighter/dist/esm/languages/prism/jsx";
 import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 
 import "./orcAsk.scss";
@@ -114,26 +114,46 @@ export const AskOrca = () => {
                                     ) : null}
                                     {!isLoading ||
                                     index !== currentChatHistory.length - 1 ? (
-                                        <SyntaxHighlighter
-                                            customStyle={{
-                                                borderRadius: "25px",
-                                                borderBottomLeftRadius: "0px",
-                                                padding: "10px 15px 10px 15px",
-                                                margin: "0px 0px 0px 10px",
-                                                background: "white",
-                                            }}
-                                            language="javascript"
-                                            style={prism}
-                                            wrapLines={true}
-                                            wrapLongLines={true}
-                                        >
-                                            {item.message}
-                                        </SyntaxHighlighter>
+                                        <>
+                                            <SyntaxHighlighter
+                                                customStyle={{
+                                                    borderRadius: "25px",
+                                                    borderBottomLeftRadius:
+                                                        "0px",
+                                                    padding:
+                                                        "10px 15px 10px 15px",
+                                                    margin: "0px 0px 0px 10px",
+                                                }}
+                                                language="javascript"
+                                                style={prism}
+                                                wrapLines={true}
+                                                wrapLongLines={true}
+                                            >
+                                                {item.message}
+                                            </SyntaxHighlighter>
+
+                                            <span className="copy">
+                                                <CopyToClipboard
+                                                    text={item.message}
+                                                >
+                                                    <span class="material-symbols-outlined">
+                                                        content_copy
+                                                    </span>
+                                                </CopyToClipboard>
+                                            </span>
+                                        </>
                                     ) : null}
                                 </div>
                             ) : null}
                             {item.prompt ? (
                                 <div key={item.index} className=" promptStyle">
+                                    <span className="copy">
+                                        <CopyToClipboard text={item.prompt}>
+                                            <span class="material-symbols-outlined">
+                                                content_copy
+                                            </span>
+                                        </CopyToClipboard>
+                                    </span>
                                     <span className="text">{item.prompt}</span>
                                     <span className="material-symbols-outlined icon">
                                         person
