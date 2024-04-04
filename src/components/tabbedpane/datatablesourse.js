@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
 
-
 export const defaultColDef = {
     tooltipValueGetter: (params) => {
         return params.value;
@@ -12,6 +11,7 @@ export const defaultColDef = {
     enableCellTextSelection: "true",
     singleClickEdit: "true",
     stopEditingWhenCellsLoseFocus: "true",
+    filter: true,
 };
 
 export const interfaceColumns = [
@@ -19,7 +19,12 @@ export const interfaceColumns = [
         field: "name",
         headerName: "Name",
         width: 130,
-        filter: "agTextColumnFilter",
+        getQuickFilterText: (params) => {
+            if (params.data.name.includes("Ethernet")) {
+                return params.data.name;
+            }
+            // console.log( params.data.name)
+        },
         sortable: true,
     },
     {
@@ -163,20 +168,44 @@ export const portGroupColumns = [
 ];
 
 export const vlanColumns = (interfaceNames) => [
-  { headerCheckboxSelection: true, checkboxSelection: true, width:50 },
-  { field: 'vlanid', headerName: 'VLAN_ID', type: 'number', width: 130 },
-  { field: 'name', headerName: 'Name', width: 130 },
-  { field: 'mtu', headerName: 'MTU', type: 'number', width: 130, editable: true, headerComponent: EditableHeaderComponent },
-  { field: 'admin_status', headerName: 'Admin Status', type: 'boolean', width: 150, editable: true,
-  cellEditor: 'agSelectCellEditor',
-  cellEditorParams: {
-    values: ['up', 'down'],
-  }, headerComponent: EditableHeaderComponent },
-  { field: 'oper_status', headerName: 'Oper_STS', type: 'boolean', width: 130 },
-  { field: 'members', headerName: 'Member IFs', width: 130, editable: true,  
-  cellEditorParams: {values: interfaceNames}, headerComponent: EditableHeaderComponent},
+    { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
+    { field: "vlanid", headerName: "VLAN_ID", type: "number", width: 130 },
+    { field: "name", headerName: "Name", width: 130 },
+    {
+        field: "mtu",
+        headerName: "MTU",
+        type: "number",
+        width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "admin_status",
+        headerName: "Admin Status",
+        type: "boolean",
+        width: 150,
+        editable: true,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: ["up", "down"],
+        },
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "oper_status",
+        headerName: "Oper_STS",
+        type: "boolean",
+        width: 130,
+    },
+    {
+        field: "members",
+        headerName: "Member IFs",
+        width: 130,
+        editable: true,
+        cellEditorParams: { values: interfaceNames },
+        headerComponent: EditableHeaderComponent,
+    },
 ];
-
 
 export const portChannelColumns = [
     { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
@@ -225,7 +254,13 @@ export const portChannelColumns = [
     { field: "oper_sts", headerName: "Operation Status", width: 130 },
     { field: "speed", headerName: "Speed", width: 130 },
     { field: "oper_sts_reason", headerName: "OperReason", width: 130 },
-    { field: "members", headerName: "Members", width: 130, editable: true, headerComponent: EditableHeaderComponent },
+    {
+        field: "members",
+        headerName: "Members",
+        width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
 ];
 
 export const mclagColumns = [
@@ -294,7 +329,7 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             cellRenderer: (params) => {
                 return (
                     <Link to={`/devices/${params.data.mgt_ip}`}>
-                        <button className="btnStyle" >Details</button>
+                        <button className="btnStyle">Details</button>
                     </Link>
                 );
             },

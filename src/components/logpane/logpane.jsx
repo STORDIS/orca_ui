@@ -7,7 +7,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { AgGridReact } from "ag-grid-react";
 
-function LogViewer() {
+export const LogViewer = () => {
     const { log, clearLog } = useLog();
     const [logEntries, setLogEntries] = useState([]);
 
@@ -100,6 +100,6 @@ function LogViewer() {
             </div>
         </div>
     );
-}
+};
 
 export default LogViewer;
