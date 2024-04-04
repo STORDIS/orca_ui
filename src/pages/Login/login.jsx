@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../utils/auth";
-import "./Login.scss";
+import "./login.scss";
 import logo from "../../assets/orca.png";
 import secureLocalStorage from "react-secure-storage";
 
