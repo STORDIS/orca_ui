@@ -15,7 +15,6 @@ import PortGroupTable from "../../components/tabbedpane/portGroupTable";
 import VlanTable from "../../components/tabbedpane/vlanTable";
 import "../../pages/home/home.scss";
 import { useNavigate } from "react-router-dom";
-import { useLog } from "../../LogContext";
 import secureLocalStorage from "react-secure-storage";
 import interceptor from "../../interceptor";
 
@@ -30,7 +29,6 @@ const TabbedPane = () => {
     );
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [refresh, setRefresh] = useState(false);
-    const { setLog } = useLog();
 
     useEffect(() => {
         if (!secureLocalStorage.getItem("selectedTab")) {
@@ -129,10 +127,7 @@ const TabbedPane = () => {
                         />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={6}>
-                        <VlanTable
-                            selectedDeviceIp={deviceIP}
-                            setLog={setLog}
-                        />
+                        <VlanTable selectedDeviceIp={deviceIP} />
                     </TabPanel>
                 </Box>
             </div>

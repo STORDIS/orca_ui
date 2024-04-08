@@ -13,8 +13,8 @@ import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
 //import MemberSelectionComponent from "./MemberSelectionComponent";
 import MembersSelection from "./MembersSelection";
-import { useLog } from "../../LogContext";
 import interceptor from "../../interceptor";
+import { useLog } from "../../utils/logpannelContext";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -42,9 +42,10 @@ const PortChDataTable = (props) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [existingMembers, setExistingMembers] = useState([]);
 
-    const { setLog } = useLog();
     const instance = interceptor();
     const [disableSubmit, setDisableSubmit] = useState(false);
+
+    const { setLog } = useLog();
 
     useEffect(() => {
         instance
@@ -135,20 +136,6 @@ const PortChDataTable = (props) => {
             .put(apiPUrl, formData)
             .then((res) => {
                 setShowForm(false);
-
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setMessageModalContent("Port Channel added Successfully");
                 setIsMessageModalOpen(true);
                 refreshData();
@@ -156,18 +143,7 @@ const PortChDataTable = (props) => {
             .catch((err) => {
                 setMessageModalContent("Error adding port channel");
                 setIsMessageModalOpen(true);
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                setLog({
-                    status: "error",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
+                setLog(true);
             });
     };
 
@@ -180,19 +156,6 @@ const PortChDataTable = (props) => {
         instance
             .delete(apiPUrl, { data: deleteData })
             .then((response) => {
-                let startIndex = response.data.result[0].indexOf("{");
-                let endIndex = response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 if (response.data && Array.isArray(response.data.result)) {
                     const updatedDataTable = dataTable.filter(
                         (row) =>
@@ -207,21 +170,10 @@ const PortChDataTable = (props) => {
                 setMessageModalContent("Port Channel Deleted Successfully.");
                 setIsMessageModalOpen(true);
             })
-            .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "error",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-            })
+            .catch((err) => {})
             .finally(() => {
                 refreshData();
+                setLog(true);
             });
     };
 
@@ -327,54 +279,29 @@ const PortChDataTable = (props) => {
     }, [selectedDeviceIp, changes]);
 
     const sendUpdates = useCallback(() => {
-        console.log("1");
         if (changes.length === 0) {
-            console.log("2");
-
             return;
         }
         setIsConfigInProgress(true);
         setConfigStatus("Config In Progress....");
-        console.log("3");
 
         const output = createJsonOutput();
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, output)
             .then((res) => {
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
-                let startIndex = err?.response?.data?.result[0]?.indexOf("{");
-                let endIndex = err?.response?.data?.result[0]?.lastIndexOf("}");
-                let trimmedResponse = err?.response?.data?.result[0]?.substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "error",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Failed");
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                setLog(true);
             });
-    }, [changes.length, createJsonOutput, selectedDeviceIp, instance, setLog]);
+    }, [changes.length, createJsonOutput, selectedDeviceIp, instance]);
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "members") {
@@ -397,38 +324,17 @@ const PortChDataTable = (props) => {
         instance
             .put(apiPUrl, output)
             .then((res) => {
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
-                let startIndex = err?.response?.data?.result[0]?.indexOf("{");
-                let endIndex = err?.response?.data?.result[0]?.lastIndexOf("}");
-                let trimmedResponse = err?.response?.data?.result[0]?.substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "error",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Failed");
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
                 getAllPortChanalData();
+                setLog(true);
             });
 
         setIsMemberModalOpen(false);
@@ -447,19 +353,6 @@ const PortChDataTable = (props) => {
         instance
             .delete(apiPUrl, { data: output })
             .then((response) => {
-                let startIndex = response.data.result[0].indexOf("{");
-                let endIndex = response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 if (response.data && Array.isArray(response.data.result)) {
                     const updatedDataTable = dataTable.filter(
                         (row) =>
@@ -476,21 +369,10 @@ const PortChDataTable = (props) => {
                 );
                 setIsMessageModalOpen(true);
             })
-            .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "error",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-            })
+            .catch((err) => {})
             .finally(() => {
                 refreshData();
+                setLog(true);
             });
     };
 

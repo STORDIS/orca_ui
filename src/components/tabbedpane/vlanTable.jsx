@@ -12,8 +12,8 @@ import {
 import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
-import { useLog } from "../../LogContext";
 import interceptor from "../../interceptor";
+import { useLog } from "../../utils/logpannelContext";
 
 const VlanTable = (props) => {
     const gridRef = useRef();
@@ -46,9 +46,10 @@ const VlanTable = (props) => {
     const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState(
         []
     );
-    const { setLog } = useLog();
     const instance = interceptor();
     const [disableSubmit, setDisableSubmit] = useState(false);
+
+    const { setLog } = useLog();
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -145,18 +146,6 @@ const VlanTable = (props) => {
         instance
             .delete(apiMUrl, { data: deleteData })
             .then((response) => {
-                let startIndex = response.data.result[0].indexOf("{");
-                let endIndex = response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 if (response.data && Array.isArray(response.data.result)) {
                     const updatedDataTable = dataTable.filter(
                         (row) =>
@@ -170,22 +159,10 @@ const VlanTable = (props) => {
                 setMessageModalContent("Vlan Delete Successfully.");
                 setIsMessageModalOpen(true);
             })
-            .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-                const reasonText = match[1].trim();
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-            })
-            .finally(() => {});
+            .catch((err) => {})
+            .finally(() => {
+                setLog(true);
+            });
     };
 
     const onSelectionChanged = () => {
@@ -217,41 +194,16 @@ const VlanTable = (props) => {
             .put(apiMUrl, formData)
             .then((response) => {
                 setShowForm(false);
-
-                let startIndex = response.data.result[0].indexOf("{");
-                let endIndex = response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setMessageModalContent("Vlan added successfully");
                 setIsMessageModalOpen(true);
                 refreshData();
-                // setDisableSubmit(false);
             })
             .catch((err) => {
                 setMessageModalContent("Error in adding Vlan");
                 setIsMessageModalOpen(true);
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-                const reasonText = match[1].trim();
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-                // setDisableSubmit(false);
+            })
+            .finally(() => {
+                setLog(true);
             });
     };
 
@@ -349,41 +301,16 @@ const VlanTable = (props) => {
         instance
             .put(apiMUrl, output)
             .then((res) => {
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-                const reasonText = match[1].trim();
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setConfigStatus("Config Failed");
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                setLog(true);
             });
     }, [createJSONOutput, selectedDeviceIp, changes]);
 
@@ -482,43 +409,16 @@ const VlanTable = (props) => {
         instance
             .put(apiMUrl, output)
             .then((res) => {
-                let startIndex = res.data.result[0].indexOf("{");
-                let endIndex = res.data.result[0].lastIndexOf("}");
-                let trimmedResponse = res.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-                setLog({
-                    status: "success",
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
-                let startIndex = err.response.data.result[0].indexOf("{");
-                let endIndex = err.response.data.result[0].lastIndexOf("}");
-                let trimmedResponse = err.response.data.result[0].substring(
-                    startIndex + 1,
-                    endIndex
-                );
-
-                const match = err.response.data.result[0].match(/Reason:(.*)/);
-
-                const reasonText = match[1].trim();
-
-                setLog({
-                    status: reasonText,
-                    result: trimmedResponse,
-                    timestamp: new Date().getTime(),
-                });
-
                 setConfigStatus("Config Failed");
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                setLog(true);
             });
     };
 
@@ -542,19 +442,19 @@ const VlanTable = (props) => {
             members: updatedMembersObj,
         };
 
-        try {
-            const response = await instance.delete(
-                deleteVlanMembersURL(selectedDeviceIp),
-                { data: payload }
-            );
-            console.log("VLAN members updated successfully", response.data);
-
-            setMemberFinalObj(updatedMembersObj);
-            setMembersSelectedForRemoval([]);
-            refreshData();
-        } catch (error) {
-            console.error("Failed to update VLAN members", error);
-        }
+        instance
+            .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
+            .then((res) => {
+                setMemberFinalObj(updatedMembersObj);
+                setMembersSelectedForRemoval([]);
+                refreshData();
+            })
+            .catch((err) => {
+                console.error("Failed to update VLAN members", err);
+            })
+            .finally(() => {
+                setLog(true);
+            });
     };
 
     return (

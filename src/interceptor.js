@@ -1,9 +1,8 @@
-// api.js
-
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 
 const interceptor = () => {
+
     const instance = axios.create({
         headers: {
             "Content-Type": "application/json",
@@ -17,6 +16,7 @@ const interceptor = () => {
                 config.headers.Authorization = "Token " + token;
             }
             return config;
+            
         },
         (error) => {
             return Promise.reject(error);

@@ -3,8 +3,6 @@ import { getDiscoveryUrl } from "../../backend_rest_urls";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 
-import { useLog } from "../../LogContext";
-
 import interceptor from "../../interceptor";
 
 const DiscoverButton = () => {
@@ -30,8 +28,6 @@ const DiscoverButton = () => {
                   fontFamily: "Nunito, sans-serif",
               };
 
-    const { setLog } = useLog();
-
     const [showForm, setShowForm] = useState(false);
 
     const instance = interceptor();
@@ -46,18 +42,8 @@ const DiscoverButton = () => {
 
             if (response?.data?.result?.length === 1) {
                 console.log("if");
-                setLog({
-                    status: "success",
-                    result: "Device discovered successfully",
-                    timestamp: new Date().getTime(),
-                });
             } else {
                 console.log("else");
-                setLog({
-                    status: response?.data?.result[1],
-                    result: response?.data?.result[0],
-                    timestamp: new Date().getTime(),
-                });
             }
 
             setDiscBtnText("Discover Network");
@@ -77,12 +63,6 @@ const DiscoverButton = () => {
                 error?.response?.data?.result[0]?.match(/Reason:(.*)/);
 
             const reasonText = match[1].trim();
-
-            setLog({
-                status: reasonText,
-                result: trimmedResponse,
-                timestamp: new Date().getTime(),
-            });
         }
     };
     return (

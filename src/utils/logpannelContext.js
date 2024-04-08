@@ -6,14 +6,10 @@ const LogContext = createContext();
 export const useLog = () => useContext(LogContext);
 
 export const DataProvider = ({ children }) => {
-    const [log, setLog] = useState({});
-
-    const clearLog = () => {
-        setLog({});
-    };
+    const [log, setLog] = useState(false);
 
     return (
-        <LogContext.Provider value={{ log, setLog, clearLog }}>
+        <LogContext.Provider value={{ log, setLog }}>
             {children}
         </LogContext.Provider>
     );

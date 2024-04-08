@@ -17,8 +17,9 @@ import TabbedPane from "../../components/tabbedpane/TabbedPane.jsx";
 import LogViewer from "../../components/logpane/logpane.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import Sidebar from "../../components/sidebar/Sidebar.jsx";
-import { DataProvider } from "../../LogContext.js";
-import OrcAsk from "../orcask/orcAsk.jsx"
+import OrcAsk from "../orcask/orcAsk.jsx";
+
+import { DataProvider } from "../../utils/logpannelContext.js";
 
 import "./Layout.scss";
 
