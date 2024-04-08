@@ -8,7 +8,7 @@ import { AgGridReact } from "ag-grid-react";
 
 import interceptor from "../../interceptor";
 
-import { logPanelURL } from "../../backend_rest_urls";
+import { logPanelURL, logPanelDeleteURL } from "../../backend_rest_urls";
 
 import { useLog } from "../../utils/logpannelContext";
 
@@ -37,7 +37,18 @@ export const LogViewer = () => {
     };
 
     const handelClearLog = () => {
-        setLogEntries([]);
+        instance
+            .delete(logPanelDeleteURL())
+            .then((response) => {
+                setLog(false);
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            })
+            .finally(() => {
+                getLogs();
+                setLog(false);
+            });
     };
 
     // Column Definitions: Defines the columns to be displayed.
@@ -130,12 +141,12 @@ export const LogViewer = () => {
                     paginationPageSizeSelector={[50, 100, 150, 200]}
                 />
 
-                {/* <button
+                <button
                     className="clearLogBtn btnStyle"
                     onClick={handelClearLog}
                 >
                     Clear Log
-                </button> */}
+                </button>
             </div>
         </div>
     );

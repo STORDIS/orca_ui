@@ -116,16 +116,6 @@ const PortChannelForm = ({
 
                 <div className="form-field">
                     <label>Members:</label>
-                    {/* <select id="memberDropdown" onChange={handleDropdownChange}>
-                        <option value="" disabled selected >
-                            Select Member Interface
-                        </option>
-                        {interfaceNames.map((val, index) => (
-                            <option key={index} value={val}>
-                                {val}
-                            </option>
-                        ))}
-                    </select> */}
                     <select
                         multiple
                         size="5"

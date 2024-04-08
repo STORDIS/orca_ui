@@ -52,17 +52,6 @@ const DiscoverButton = () => {
             console.log(error);
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
-
-            let startIndex = error?.response?.data?.result[0]?.indexOf("{");
-            let endIndex = error?.response?.data?.result[0]?.lastIndexOf("}");
-            let trimmedResponse = error?.response?.data?.result[0]?.substring(
-                startIndex + 1,
-                endIndex
-            );
-            const match =
-                error?.response?.data?.result[0]?.match(/Reason:(.*)/);
-
-            const reasonText = match[1].trim();
         }
     };
     return (
