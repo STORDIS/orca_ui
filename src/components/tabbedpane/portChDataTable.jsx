@@ -14,6 +14,7 @@ import Modal from "../modal/Modal";
 //import MemberSelectionComponent from "./MemberSelectionComponent";
 import MembersSelection from "./MembersSelection";
 import interceptor from "../../interceptor";
+import { useLog } from "../../utils/logpannelContext";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -43,6 +44,8 @@ const PortChDataTable = (props) => {
 
     const instance = interceptor();
     const [disableSubmit, setDisableSubmit] = useState(false);
+
+    const { setLog } = useLog();
 
     useEffect(() => {
         instance
@@ -140,6 +143,7 @@ const PortChDataTable = (props) => {
             .catch((err) => {
                 setMessageModalContent("Error adding port channel");
                 setIsMessageModalOpen(true);
+                setLog(true);
             });
     };
 
@@ -169,6 +173,7 @@ const PortChDataTable = (props) => {
             .catch((err) => {})
             .finally(() => {
                 refreshData();
+                setLog(true);
             });
     };
 
@@ -274,15 +279,11 @@ const PortChDataTable = (props) => {
     }, [selectedDeviceIp, changes]);
 
     const sendUpdates = useCallback(() => {
-        console.log("1");
         if (changes.length === 0) {
-            console.log("2");
-
             return;
         }
         setIsConfigInProgress(true);
         setConfigStatus("Config In Progress....");
-        console.log("3");
 
         const output = createJsonOutput();
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
@@ -298,6 +299,7 @@ const PortChDataTable = (props) => {
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                setLog(true);
             });
     }, [changes.length, createJsonOutput, selectedDeviceIp, instance]);
 
@@ -332,6 +334,7 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 setIsConfigInProgress(false);
                 getAllPortChanalData();
+                setLog(true);
             });
 
         setIsMemberModalOpen(false);
@@ -369,6 +372,7 @@ const PortChDataTable = (props) => {
             .catch((err) => {})
             .finally(() => {
                 refreshData();
+                setLog(true);
             });
     };
 

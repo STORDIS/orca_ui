@@ -48,5 +48,5 @@ export function gptCompletionsURL() {
 }
 
 export function logPanelURL() {
-    return host_addr + '/logs/all/1?size=100'
+    return host_addr + '/logs/all/1?size=1000'
 }

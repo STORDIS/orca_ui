@@ -13,6 +13,7 @@ import "../../pages/home/home.scss";
 import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
 import interceptor from "../../interceptor";
+import { useLog } from "../../utils/logpannelContext";
 
 const VlanTable = (props) => {
     const gridRef = useRef();
@@ -47,6 +48,8 @@ const VlanTable = (props) => {
     );
     const instance = interceptor();
     const [disableSubmit, setDisableSubmit] = useState(false);
+
+    const { setLog } = useLog();
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -157,7 +160,9 @@ const VlanTable = (props) => {
                 setIsMessageModalOpen(true);
             })
             .catch((err) => {})
-            .finally(() => {});
+            .finally(() => {
+                setLog(true);
+            });
     };
 
     const onSelectionChanged = () => {
@@ -189,17 +194,16 @@ const VlanTable = (props) => {
             .put(apiMUrl, formData)
             .then((response) => {
                 setShowForm(false);
-
                 setMessageModalContent("Vlan added successfully");
                 setIsMessageModalOpen(true);
                 refreshData();
-                // setDisableSubmit(false);
             })
             .catch((err) => {
                 setMessageModalContent("Error in adding Vlan");
                 setIsMessageModalOpen(true);
-
-                // setDisableSubmit(false);
+            })
+            .finally(() => {
+                setLog(true);
             });
     };
 
@@ -306,6 +310,7 @@ const VlanTable = (props) => {
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                setLog(true);
             });
     }, [createJSONOutput, selectedDeviceIp, changes]);
 
@@ -413,6 +418,7 @@ const VlanTable = (props) => {
             })
             .finally(() => {
                 setIsConfigInProgress(false);
+                setLog(true);
             });
     };
 
@@ -436,19 +442,19 @@ const VlanTable = (props) => {
             members: updatedMembersObj,
         };
 
-        try {
-            const response = await instance.delete(
-                deleteVlanMembersURL(selectedDeviceIp),
-                { data: payload }
-            );
-            console.log("VLAN members updated successfully", response.data);
-
-            setMemberFinalObj(updatedMembersObj);
-            setMembersSelectedForRemoval([]);
-            refreshData();
-        } catch (error) {
-            console.error("Failed to update VLAN members", error);
-        }
+        instance
+            .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
+            .then((res) => {
+                setMemberFinalObj(updatedMembersObj);
+                setMembersSelectedForRemoval([]);
+                refreshData();
+            })
+            .catch((err) => {
+                console.error("Failed to update VLAN members", err);
+            })
+            .finally(() => {
+                setLog(true);
+            });
     };
 
     return (

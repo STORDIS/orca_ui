@@ -8,6 +8,7 @@ import axios from "axios";
 import { getPortGroupsURL } from "../../backend_rest_urls";
 import "../../pages/home/home.scss";
 import interceptor from "../../interceptor";
+import { useLog } from "../../utils/logpannelContext";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
@@ -20,6 +21,7 @@ const PortGroupTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
 
     const instance = interceptor();
+    const { setLog } = useLog();
 
     useEffect(() => {
         const apiMUrl = getPortGroupsURL(selectedDeviceIp);
@@ -107,6 +109,7 @@ const PortGroupTable = (props) => {
             .finally(() => {
                 setIsConfigInProgress(false);
                 setChanges([]);
+                setLog(true);
             });
     }, [createReqJson, selectedDeviceIp, changes]);
 

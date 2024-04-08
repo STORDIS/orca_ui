@@ -9,18 +9,19 @@ import { AgGridReact } from "ag-grid-react";
 import interceptor from "../../interceptor";
 
 import { logPanelURL } from "../../backend_rest_urls";
-import { textAlign } from "@mui/system";
+
+import { useLog } from "../../utils/logpannelContext";
 
 export const LogViewer = () => {
     const [logEntries, setLogEntries] = useState([]);
 
     const instance = interceptor();
 
+    const { log, setLog } = useLog();
+
     useEffect(() => {
-
-
         getLogs();
-    }, []);
+    }, [log]);
 
     const getLogs = () => {
         instance
@@ -28,6 +29,7 @@ export const LogViewer = () => {
             .then((response) => {
                 console.log(response.data);
                 setLogEntries(response.data);
+                setLog(false);
             })
             .catch((error) => {
                 console.error("Error:", error);
@@ -115,17 +117,17 @@ export const LogViewer = () => {
         },
     ]);
 
-    const gridStyle = useMemo(() => ({ height: "270px", width: "100%" }), []);
+    const gridStyle = useMemo(() => ({ height: "440px", width: "100%" }), []);
 
     return (
-        <div style={{ width: "100%", height: "300px" }}>
+        <div style={{ width: "100%", height: "450px" }}>
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     rowData={logEntries}
                     columnDefs={colDefs}
                     pagination={true}
-                    paginationPageSize={5}
-                    paginationPageSizeSelector={[5, 10, 15, 20]}
+                    paginationPageSize={50}
+                    paginationPageSizeSelector={[50, 100, 150, 200]}
                 />
 
                 {/* <button

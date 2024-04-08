@@ -5,10 +5,12 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
-
 import interceptor from "../../interceptor";
+import { useLog } from "../../utils/logpannelContext";
 
 const InterfaceDataTable = (props) => {
+    const { setLog } = useLog();
+
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { selectedDeviceIp = "" } = props;
@@ -124,12 +126,12 @@ const InterfaceDataTable = (props) => {
             .catch((err) => {
                 setConfigStatus("Config Failed");
                 setInterfaceData();
-
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setIsConfigInProgress(false);
                 setChanges([]);
+                setLog(true);
             });
     }, [createJsonOutput, selectedDeviceIp, changes]);
 
