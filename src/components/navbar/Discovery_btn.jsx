@@ -2,10 +2,14 @@ import React, { useState } from "react";
 import { getDiscoveryUrl } from "../../backend_rest_urls";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
-
+import { useLog } from "../../utils/logpannelContext";
 import interceptor from "../../interceptor";
+import { useNavigate } from "react-router-dom";
 
 const DiscoverButton = () => {
+    const { setLog } = useLog();
+    const navigate = useNavigate();
+
     const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(false);
     const [discBtnText, setDiscBtnText] = useState("Discover Network");
     const buttonStyle =
@@ -48,21 +52,15 @@ const DiscoverButton = () => {
 
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
+            setLog(true);
+            // navigate("/home");
+            window.location.reload();
+
         } catch (error) {
             console.log(error);
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
-
-            let startIndex = error?.response?.data?.result[0]?.indexOf("{");
-            let endIndex = error?.response?.data?.result[0]?.lastIndexOf("}");
-            let trimmedResponse = error?.response?.data?.result[0]?.substring(
-                startIndex + 1,
-                endIndex
-            );
-            const match =
-                error?.response?.data?.result[0]?.match(/Reason:(.*)/);
-
-            const reasonText = match[1].trim();
+            setLog(true);
         }
     };
     return (
