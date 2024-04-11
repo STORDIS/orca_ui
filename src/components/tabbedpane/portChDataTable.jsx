@@ -144,6 +144,12 @@ const PortChDataTable = (props) => {
                 setMessageModalContent("Error adding port channel");
                 setIsMessageModalOpen(true);
                 setLog(true);
+            })
+            .finally(() => {
+                setShowForm(false);
+                setIsMessageModalOpen(true);
+                setLog(true);
+                refreshData();
             });
     };
 
