@@ -19,7 +19,6 @@
             height: calc(100% - 90px);
 
             .aiStyle {
-                width: fit-content;
                 max-width: 85%;
                 height: max-content;
                 align-items: center;
@@ -29,7 +28,7 @@
                 align-items: end;
 
                 .icon {
-                    // background-color: white;
+                    width: 25px;
                     background-color: rgb(245, 242, 240);
                     border-radius: 25px;
                     padding: 10px;
@@ -79,10 +78,33 @@
                         transform: translateY(-10px);
                     }
                 }
+
+                .tableStyle {
+                    background-color: white;
+                    border-radius: 25px !important;
+                    padding: 10px 15px 10px 15px !important;
+                    margin: 0px 0px 0px 10px !important;
+                    border-bottom-left-radius: 0px !important;
+                }
             }
 
             .aiStyle:hover .copy {
                 visibility: visible !important;
+            }
+            .aiStyle:hover .tableView {
+                visibility: visible !important;
+            }
+
+            .tableView {
+                cursor: pointer;
+                display: flex;
+                background-color: white;
+                border-radius: 25px;
+                padding: 5px;
+                margin: 0px 10px 0px 10px;
+                font-size: 15px;
+                visibility: hidden;
+                top: 5px;
             }
 
             .copy {
@@ -99,7 +121,7 @@
             .promptStyle:hover .copy {
                 visibility: visible !important;
             }
-            
+
             .promptStyle {
                 text-align: right;
                 width: fit-content;
