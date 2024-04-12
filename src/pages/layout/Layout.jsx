@@ -30,7 +30,7 @@ const Layout = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        if (location.pathname.includes("/orcAsk")) {
+        if (location.pathname.includes("/ORCAsk")) {
             setIsAI(false);
         } else {
             setIsAI(true);
@@ -63,7 +63,7 @@ const Layout = () => {
                             }
                         />
                         <Route
-                            path="/orcAsk"
+                            path="/ORCAsk"
                             element={
                                 <RequireAuth>
                                     <OrcAsk />
