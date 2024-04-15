@@ -80,7 +80,7 @@
                 }
 
                 .tableStyle {
-                    background-color: white;
+                    background-color: rgb(245, 242, 240);
                     border-radius: 25px !important;
                     padding: 10px 15px 10px 15px !important;
                     margin: 0px 0px 0px 10px !important;
@@ -90,21 +90,6 @@
 
             .aiStyle:hover .copy {
                 visibility: visible !important;
-            }
-            .aiStyle:hover .tableView {
-                visibility: visible !important;
-            }
-
-            .tableView {
-                cursor: pointer;
-                display: flex;
-                background-color: white;
-                border-radius: 25px;
-                padding: 5px;
-                margin: 0px 10px 0px 10px;
-                font-size: 15px;
-                visibility: hidden;
-                top: 5px;
             }
 
             .copy {

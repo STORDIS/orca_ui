@@ -26,7 +26,7 @@ export const AskOrca = () => {
         {
             index: 0,
             message:
-                "I am, ORCASK AI developed to assist you. How can I help you?",
+                "I am, ORCAsk AI developed to assist you. How can I help you?",
             type: "string",
         },
     ]);
@@ -44,7 +44,7 @@ export const AskOrca = () => {
             {
                 index: 0,
                 message:
-                    "I am, ORCASK AI developed to assist you. How can I help you?",
+                    "I am, ORCAsk AI developed to assist you. How can I help you?",
                 type: "string",
             },
         ]);
@@ -99,50 +99,6 @@ export const AskOrca = () => {
         instance
             .post(gptCompletionsURL(), questionPrompt)
             .then((response) => {
-                // setCurrentChatHistory((prevChatHistory) => {
-                //     console.log(
-                //         Array.isArray(response?.data[0]),
-                //         response?.data,
-                //         typeof response?.data[0]
-                //     );
-
-                // if (Array.isArray(response?.data[0])) {
-                //     console.log("1");
-                //     const updatedHistory = [...prevChatHistory];
-                //     updatedHistory[updatedHistory.length - 1].message =
-                //         response?.data[0];
-                //     updatedHistory[updatedHistory.length - 1].type = "json";
-                //     return updatedHistory;
-                // } else if (
-                //     !Array.isArray(response?.data[0]) &&
-                //     typeof response?.data[0] === "object"
-                // ) {
-                //     console.log("2");
-                //     const updatedHistory = [...prevChatHistory];
-                //     updatedHistory[updatedHistory.length - 1].message =
-                //         response?.data;
-                //     updatedHistory[updatedHistory.length - 1].type = "json";
-
-                //     return updatedHistory;
-                // } else if (
-                //     !Array.isArray(response?.data[0]) &&
-                //     typeof response?.data[0] === "string"
-                // ) {
-                //     console.log("3");
-                //     const updatedHistory = [...prevChatHistory];
-                //     updatedHistory[updatedHistory.length - 1].message =
-                //         response?.data[0];
-                //     updatedHistory[updatedHistory.length - 1].type =
-                //         "string";
-                //     return updatedHistory;
-                // } else {
-                //     console.log("4");
-                //     const updatedHistory = [...prevChatHistory];
-                //     updatedHistory[updatedHistory.length - 1].message =
-                //         response?.data?.message;
-                //     return updatedHistory;
-                // }
-                // });
                 setCurrentChatHistory((prevChatHistory) => {
                     return handleMessageData(response?.data, prevChatHistory);
                 });
@@ -159,14 +115,6 @@ export const AskOrca = () => {
         setQuestionPrompt({ prompt: event.target.value });
     };
 
-    // const checkMessage = (message) => typeof message === "object";
-
-    const changeView = (event) => {
-        if (typeof event === "object") {
-            setJson(event);
-            setKeys(Object.keys(event[0]));
-        }
-    };
 
     const getKey = (event) => {
         const temp = Object.keys(event[0]).map((key) => ({
@@ -249,7 +197,7 @@ export const AskOrca = () => {
 
                                             <span className="copy">
                                                 <CopyToClipboard
-                                                    text={item.message}
+                                                    text={JSON.stringify(item.message, null, 4)}
                                                 >
                                                     <span class="material-symbols-outlined">
                                                         content_copy
