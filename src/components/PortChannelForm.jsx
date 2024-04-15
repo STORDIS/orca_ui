@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import "./tabbedpane/Form.scss";
 import { getAllInterfacesOfDeviceURL } from "../backend_rest_urls";
 import interceptor from "../interceptor";
+import { useDisableConfig } from "../utils/dissableConfigContext";
+
 const PortChannelForm = ({
     onSubmit,
     selectedDeviceIp,
     onCancel,
     handelSubmitButton,
 }) => {
-    const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
+    // const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
+    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const instance = interceptor();
 
@@ -33,7 +36,6 @@ const PortChannelForm = ({
     };
 
     const handleSubmit = (e) => {
-        setDisableSubmit(true);
         onSubmit(formData);
     };
 
@@ -140,7 +142,7 @@ const PortChannelForm = ({
                     <button
                         type="submit"
                         className="btnStyle mr-10"
-                        disabled={disableSubmit}
+                        disabled={disableConfig}
                     >
                         Apply Config
                     </button>

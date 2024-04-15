@@ -19,7 +19,10 @@ import Navbar from "../../components/navbar/Navbar.jsx";
 import Sidebar from "../../components/sidebar/Sidebar.jsx";
 import OrcAsk from "../orcask/orcAsk.jsx";
 
-import { DataProvider } from "../../utils/logpannelContext.js";
+// import { DataProvider } from "../../utils/logpannelContext.js";
+
+import { DataProviderLog } from "../../utils/logpannelContext.js";
+import { DataProviderConfig } from "../../utils/dissableConfigContext.js";
 
 import "./Layout.scss";
 
@@ -27,7 +30,6 @@ const Layout = () => {
     const [token, setToken] = useState("");
     const [isAI, setIsAI] = useState(true);
     const location = useLocation();
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (location.pathname.includes("/askOrca")) {
@@ -36,12 +38,6 @@ const Layout = () => {
             setIsAI(true);
         }
 
-        // auto login
-        // if (secureLocalStorage.getItem("token") && location.pathname === '/login' ) {
-        //     console.log("auto login", location.pathname);
-        //     navigate('/home');
-        // }
-
         setToken(secureLocalStorage.getItem("token"));
     }, [location.pathname, token]);
 
@@ -49,43 +45,41 @@ const Layout = () => {
         <div className="mainContainer">
             {token ? <Sidebar /> : null}
 
-            <DataProvider>
+            <DataProviderLog>
                 <div className="container">
                     {token ? <Navbar /> : null}
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route
-                            path="/home"
-                            element={
-                                <RequireAuth>
-                                    <Home />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/orcAsk"
-                            element={
-                                <RequireAuth>
-                                    <OrcAsk />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="devices/:deviceIP"
-                            element={
-                                <RequireAuth>
-                                    <TabbedPane />
-                                </RequireAuth>
-                            }
-                        />
-                        {/* <Route
-                            path="/"
-                            element={<Navigate replace to="/login" />}
-                        /> */}
-                        <Route path="/" element={<Redirect />} />
+                    <DataProviderConfig>
+                        <Routes>
+                            <Route path="/login" element={<Login />} />
+                            <Route
+                                path="/home"
+                                element={
+                                    <RequireAuth>
+                                        <Home />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="/orcAsk"
+                                element={
+                                    <RequireAuth>
+                                        <OrcAsk />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route
+                                path="devices/:deviceIP"
+                                element={
+                                    <RequireAuth>
+                                        <TabbedPane />
+                                    </RequireAuth>
+                                }
+                            />
+                            <Route path="/" element={<Redirect />} />
 
-                        <Route path="*" element={<ErrorPage />} />
-                    </Routes>
+                            <Route path="*" element={<ErrorPage />} />
+                        </Routes>
+                    </DataProviderConfig>
 
                     {token && isAI ? (
                         <div className="listContainer mb">
@@ -93,7 +87,7 @@ const Layout = () => {
                         </div>
                     ) : null}
                 </div>
-            </DataProvider>
+            </DataProviderLog>
         </div>
     );
 };

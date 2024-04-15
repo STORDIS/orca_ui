@@ -14,6 +14,7 @@ import Modal from "../modal/Modal";
 import VlanForm from "../VlanForm";
 import interceptor from "../../interceptor";
 import { useLog } from "../../utils/logpannelContext";
+import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const VlanTable = (props) => {
     const gridRef = useRef();
@@ -22,7 +23,6 @@ const VlanTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
-    const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
@@ -50,6 +50,7 @@ const VlanTable = (props) => {
     const [disableSubmit, setDisableSubmit] = useState(false);
 
     const { setLog } = useLog();
+    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     useEffect(() => {
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -137,12 +138,13 @@ const VlanTable = (props) => {
     };
 
     const handleDelete = () => {
+        setDisableConfig(true);
+
         const apiMUrl = getVlansURL(selectedDeviceIp);
         const deleteData = selectedRows.map((rowData) => ({
             mgt_ip: selectedDeviceIp,
             name: rowData.name,
         }));
-        console.log("DeleteData", deleteData);
         instance
             .delete(apiMUrl, { data: deleteData })
             .then((response) => {
@@ -159,9 +161,12 @@ const VlanTable = (props) => {
                 setMessageModalContent("Vlan Delete Successfully.");
                 setIsMessageModalOpen(true);
             })
-            .catch((err) => {})
+            .catch((err) => {
+                setMessageModalContent("Error in Deleting Vlan.");
+            })
             .finally(() => {
                 setLog(true);
+                setDisableConfig(false);
             });
     };
 
@@ -189,21 +194,23 @@ const VlanTable = (props) => {
     };
 
     const handleFormSubmit = (formData) => {
+        setDisableConfig(true);
+
         const apiMUrl = getVlansURL(selectedDeviceIp);
         instance
             .put(apiMUrl, formData)
             .then((response) => {
-                setShowForm(false);
                 setMessageModalContent("Vlan added successfully");
-                setIsMessageModalOpen(true);
-                refreshData();
             })
             .catch((err) => {
                 setMessageModalContent("Error in adding Vlan");
-                setIsMessageModalOpen(true);
             })
             .finally(() => {
+                setShowForm(false);
+                refreshData();
+                setIsMessageModalOpen(true);
                 setLog(true);
+                setDisableConfig(false);
             });
     };
 
@@ -290,10 +297,11 @@ const VlanTable = (props) => {
     }, [selectedDeviceIp, changes, dataTable]);
 
     const sendUpdates = useCallback(() => {
+        setDisableConfig(true);
+
         if (changes.length === 0) {
             return;
         }
-        setIsConfigInProgress(true);
         setConfigStatus("Config In Progress...");
 
         const output = createJSONOutput();
@@ -309,8 +317,8 @@ const VlanTable = (props) => {
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
-                setIsConfigInProgress(false);
                 setLog(true);
+                setDisableConfig(false);
             });
     }, [createJSONOutput, selectedDeviceIp, changes]);
 
@@ -350,7 +358,7 @@ const VlanTable = (props) => {
 
     const handleBtnClicked = (e) => {
         e.preventDefault();
-        setIsConfigInProgress(false);
+        setDisableConfig(false);
         if (member) {
             const newStatus = isCheckboxChecked ? "tagged" : "untagged";
             setMemberFinalObj((prev) => ({
@@ -381,6 +389,8 @@ const VlanTable = (props) => {
     };
 
     const handleSaveMemberSelection = () => {
+        setDisableConfig(true);
+
         const memberSelectionObject = convertToObject(
             Object.entries(memberFinalObj)
         );
@@ -410,15 +420,14 @@ const VlanTable = (props) => {
             .put(apiMUrl, output)
             .then((res) => {
                 setConfigStatus("Config Successful");
-                setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
                 setConfigStatus("Config Failed");
-                setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
-                setIsConfigInProgress(false);
+                setTimeout(resetConfigStatus, 5000);
                 setLog(true);
+                setDisableConfig(false);
             });
     };
 
@@ -428,9 +437,10 @@ const VlanTable = (props) => {
     };
 
     const deleteVlanMembers = async () => {
+        setDisableConfig(true);
+
         if (!currentEditingVlan || membersSelectedForRemoval.length === 0)
             return;
-        setIsConfigInProgress(true);
         const updatedMembersObj = { ...memberFinalObj };
         membersSelectedForRemoval.forEach((member) => {
             delete updatedMembersObj[member];
@@ -454,6 +464,7 @@ const VlanTable = (props) => {
             })
             .finally(() => {
                 setLog(true);
+                setDisableConfig(false);
             });
     };
 
@@ -464,9 +475,7 @@ const VlanTable = (props) => {
                     <div className="button-column">
                         <button
                             onClick={sendUpdates}
-                            disabled={
-                                isConfigInProgress || changes.length === 0
-                            }
+                            disabled={disableConfig}
                             className="btnStyle"
                         >
                             Apply Config
