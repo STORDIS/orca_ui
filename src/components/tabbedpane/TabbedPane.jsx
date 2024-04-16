@@ -17,6 +17,7 @@ import "../../pages/home/home.scss";
 import { useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 import interceptor from "../../interceptor";
+import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const TabbedPane = () => {
     const instance = interceptor();
@@ -30,7 +31,11 @@ const TabbedPane = () => {
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [refresh, setRefresh] = useState(false);
 
+    const { disableConfig } = useDisableConfig();
+
     useEffect(() => {
+        console.log("----------", disableConfig);
+
         if (!secureLocalStorage.getItem("selectedTab")) {
             setTabValue(0);
             secureLocalStorage.setItem("selectedTab", tabValue.toString());
@@ -44,7 +49,7 @@ const TabbedPane = () => {
                 setDropdownOptions(data);
             })
             .catch((err) => console.log(err));
-    }, [tabValue]);
+    }, [disableConfig, tabValue]);
 
     const handleTabs = (event, val) => {
         setTabValue(val);

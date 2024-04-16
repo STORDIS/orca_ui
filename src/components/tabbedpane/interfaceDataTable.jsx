@@ -7,9 +7,12 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllInterfacesOfDeviceURL } from "../../backend_rest_urls";
 import interceptor from "../../interceptor";
 import { useLog } from "../../utils/logpannelContext";
+import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const InterfaceDataTable = (props) => {
     const { setLog } = useLog();
+    const { disableConfig, setDisableConfig } = useDisableConfig();
+    // setDisableConfig(true);
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
@@ -17,7 +20,6 @@ const InterfaceDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
-    const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [interfaceNames, setInterfaceNames] = useState([]);
 
@@ -113,7 +115,7 @@ const InterfaceDataTable = (props) => {
         if (changes.length === 0) {
             return;
         }
-        setIsConfigInProgress(true);
+        setDisableConfig(true);
         setConfigStatus("Config In Progress....");
         const output = createJsonOutput();
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
@@ -129,9 +131,9 @@ const InterfaceDataTable = (props) => {
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
-                setIsConfigInProgress(false);
                 setChanges([]);
                 setLog(true);
+                setDisableConfig(false);
             });
     }, [createJsonOutput, selectedDeviceIp, changes]);
 
@@ -147,7 +149,7 @@ const InterfaceDataTable = (props) => {
         <div className="datatable">
             <button
                 onClick={sendUpdates}
-                disabled={isConfigInProgress || changes.length === 0}
+                disabled={disableConfig}
                 className="btnStyle"
             >
                 Apply Config

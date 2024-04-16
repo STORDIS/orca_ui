@@ -9,6 +9,7 @@ import { getPortGroupsURL } from "../../backend_rest_urls";
 import "../../pages/home/home.scss";
 import interceptor from "../../interceptor";
 import { useLog } from "../../utils/logpannelContext";
+import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
@@ -17,11 +18,11 @@ const PortGroupTable = (props) => {
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [dataTable, setDataTable] = useState([]);
-    const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
 
     const instance = interceptor();
     const { setLog } = useLog();
+    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     useEffect(() => {
         const apiMUrl = getPortGroupsURL(selectedDeviceIp);
@@ -92,7 +93,7 @@ const PortGroupTable = (props) => {
         if (changes.length === 0) {
             return;
         }
-        setIsConfigInProgress(true);
+        setDisableConfig(true);
         setConfigStatus("Config In Progress....");
 
         const req_json = createReqJson();
@@ -107,9 +108,9 @@ const PortGroupTable = (props) => {
                 setConfigStatus("Config Failed");
             })
             .finally(() => {
-                setIsConfigInProgress(false);
                 setChanges([]);
                 setLog(true);
+                setDisableConfig(false);
             });
     }, [createReqJson, selectedDeviceIp, changes]);
 
@@ -119,7 +120,7 @@ const PortGroupTable = (props) => {
                 type="button"
                 style={{ marginBottom: "15px" }}
                 onClick={sendUpdates}
-                disabled={isConfigInProgress || changes.length === 0}
+                disabled={disableConfig}
                 className="btnStyle"
             >
                 Apply Config

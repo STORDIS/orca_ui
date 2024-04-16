@@ -27,7 +27,6 @@ export const LogViewer = () => {
         instance
             .get(logPanelURL())
             .then((response) => {
-                console.log(response.data);
                 setLogEntries(response.data);
                 setLog(false);
             })

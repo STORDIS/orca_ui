@@ -15,6 +15,7 @@ import Modal from "../modal/Modal";
 import MembersSelection from "./MembersSelection";
 import interceptor from "../../interceptor";
 import { useLog } from "../../utils/logpannelContext";
+import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -26,7 +27,6 @@ const PortChDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
-    const [isConfigInProgress, setIsConfigInProgress] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
@@ -46,6 +46,7 @@ const PortChDataTable = (props) => {
     const [disableSubmit, setDisableSubmit] = useState(false);
 
     const { setLog } = useLog();
+    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     useEffect(() => {
         instance
@@ -131,24 +132,22 @@ const PortChDataTable = (props) => {
     };
 
     const handleFormSubmit = (formData) => {
+        setDisableConfig(true);
+
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
             .then((res) => {
-                setShowForm(false);
                 setMessageModalContent("Port Channel added Successfully");
-                setIsMessageModalOpen(true);
-                refreshData();
             })
             .catch((err) => {
                 setMessageModalContent("Error adding port channel");
-                setIsMessageModalOpen(true);
-                setLog(true);
             })
             .finally(() => {
                 setShowForm(false);
                 setIsMessageModalOpen(true);
                 setLog(true);
+                setDisableConfig(false);
                 refreshData();
             });
     };
@@ -288,7 +287,7 @@ const PortChDataTable = (props) => {
         if (changes.length === 0) {
             return;
         }
-        setIsConfigInProgress(true);
+        setDisableConfig(true);
         setConfigStatus("Config In Progress....");
 
         const output = createJsonOutput();
@@ -304,7 +303,7 @@ const PortChDataTable = (props) => {
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
-                setIsConfigInProgress(false);
+                setDisableConfig(false);
                 setLog(true);
             });
     }, [changes.length, createJsonOutput, selectedDeviceIp, instance]);
@@ -318,6 +317,8 @@ const PortChDataTable = (props) => {
     }, []);
 
     const handleMembersSave = (selectedMembers) => {
+        setDisableConfig(true);
+
         const output = {
             mgt_ip: selectedDeviceIp,
             members: selectedMembers,
@@ -338,15 +339,17 @@ const PortChDataTable = (props) => {
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
-                setIsConfigInProgress(false);
                 getAllPortChanalData();
                 setLog(true);
+                setDisableConfig(false);
             });
 
         setIsMemberModalOpen(false);
     };
 
     const handelDeleteMemeber = (e) => {
+        setDisableConfig(true);
+
         console.log("delete", e);
         setIsMemberModalOpen(false);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
@@ -379,6 +382,7 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 refreshData();
                 setLog(true);
+                setDisableConfig(false);
             });
     };
 
@@ -389,9 +393,7 @@ const PortChDataTable = (props) => {
                     <div className="button-column">
                         <button
                             onClick={sendUpdates}
-                            disabled={
-                                isConfigInProgress || changes.length === 0
-                            }
+                            disabled={disableConfig}
                             className="btnStyle"
                         >
                             Apply Config
