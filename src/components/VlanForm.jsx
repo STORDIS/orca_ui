@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./tabbedpane/Form.scss";
+import { useDisableConfig } from "../utils/dissableConfigContext";
 
 const VlanForm = ({
     onSubmit,
@@ -7,7 +8,8 @@ const VlanForm = ({
     onCancel,
     handelSubmitButton,
 }) => {
-    const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
+    // const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
+    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -36,7 +38,7 @@ const VlanForm = ({
     };
 
     const handleSubmit = (e) => {
-        setDisableSubmit(true);
+        setDisableConfig(true);
 
         e.preventDefault();
 
@@ -126,7 +128,7 @@ const VlanForm = ({
                     <button
                         type="submit"
                         className="btnStyle mr-10"
-                        disabled={disableSubmit}
+                        disabled={disableConfig}
                     >
                         Apply Config
                     </button>

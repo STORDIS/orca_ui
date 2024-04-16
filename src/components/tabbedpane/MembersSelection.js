@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const MembersSelection = ({
     interfaceNames,
@@ -9,6 +10,7 @@ const MembersSelection = ({
 }) => {
     const [member, setMember] = useState("");
     const [selectedMembers, setSelectedMembers] = useState([]);
+    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     useEffect(() => {
         if (existingMembers) {
@@ -102,7 +104,7 @@ const MembersSelection = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    disabled={selectedMembers.length === 0}
+                    disabled={disableConfig}
                     onClick={() => onSave(selectedMembers)}
                 >
                     Apply Config
