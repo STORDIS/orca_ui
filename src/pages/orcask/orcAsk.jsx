@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import interceptor from "../../interceptor";
 import { gptCompletionsURL } from "../../backend_rest_urls";
@@ -7,31 +7,20 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
-import { AgGridReact } from "ag-grid-react";
-
 import "./orcAsk.scss";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [isTable, setIsTable] = useState(false);
-    const [keys, setKeys] = useState({});
-    const [json, setJson] = useState({});
-    const [selectedIndex, setSelectedIndex] = useState(0);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
     const [currentChatHistory, setCurrentChatHistory] = useState([
         {
             index: 0,
             message:
-                "I am, ORCAsk AI developed to assist you. How can I help you?",
-            type: "string",
+                "I am, ORCASK AI developed to assist you. How can I help you?",
         },
     ]);
-
-    const gridStyle = useMemo(() => ({ width: "100%" }), []);
 
     const instance = interceptor();
 
@@ -44,37 +33,9 @@ export const AskOrca = () => {
             {
                 index: 0,
                 message:
-                    "I am, ORCAsk AI developed to assist you. How can I help you?",
-                type: "string",
+                    "I am, ORCASK AI developed to assist you. How can I help you?",
             },
         ]);
-    };
-
-    const handleMessageData = (data, prevChatHistory) => {
-        const updatedHistory = [...prevChatHistory];
-        switch (true) {
-            case Array.isArray(data[0]):
-                console.log("1");
-                updatedHistory[updatedHistory.length - 1].message = data[0];
-                updatedHistory[updatedHistory.length - 1].type = "json";
-                break;
-            case !Array.isArray(data[0]) && typeof data[0] === "object":
-                console.log("2");
-                updatedHistory[updatedHistory.length - 1].message = data;
-                updatedHistory[updatedHistory.length - 1].type = "json";
-                break;
-            case !Array.isArray(data[0]) && typeof data[0] === "string":
-                console.log("3");
-                updatedHistory[updatedHistory.length - 1].message = data[0];
-                updatedHistory[updatedHistory.length - 1].type = "string";
-                break;
-            default:
-                console.log("4");
-                updatedHistory[updatedHistory.length - 1].message =
-                    data?.message;
-                break;
-        }
-        return updatedHistory;
     };
 
     const gptCompletions = () => {
@@ -89,7 +50,6 @@ export const AskOrca = () => {
             {
                 index: prevChatHistory.length + 1,
                 message: [],
-                type: "string",
             },
         ]);
 
@@ -100,7 +60,28 @@ export const AskOrca = () => {
             .post(gptCompletionsURL(), questionPrompt)
             .then((response) => {
                 setCurrentChatHistory((prevChatHistory) => {
-                    return handleMessageData(response?.data, prevChatHistory);
+                    if (Array.isArray(response?.data)) {
+                        const updatedHistory = [...prevChatHistory];
+
+                        try {
+                            let temp = response?.data.pop();
+                            temp = JSON.parse(temp);
+                            console.log(temp);
+
+                            updatedHistory[updatedHistory.length - 1].message =
+                                JSON.stringify(temp, null, 2);
+                                return updatedHistory;
+                        } catch {
+                            updatedHistory[updatedHistory.length - 1].message =
+                                JSON.stringify(response?.data.pop(), null, 2);
+                            return updatedHistory;
+                        }
+                    } else {
+                        const updatedHistory = [...prevChatHistory];
+                        updatedHistory[updatedHistory.length - 1].message =
+                            JSON.stringify(response?.data?.message, null, 2);
+                        return updatedHistory;
+                    }
                 });
 
                 setIsLoading(false);
@@ -115,28 +96,12 @@ export const AskOrca = () => {
         setQuestionPrompt({ prompt: event.target.value });
     };
 
-
-    const getKey = (event) => {
-        const temp = Object.keys(event[0]).map((key) => ({
-            headerName: key
-                .split("_")
-                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                .join(" "),
-            field: key,
-            filter: true,
-        }));
-        return temp;
-    };
-
     const chatSectionRef = useRef(null);
 
-    const getMessage = (event) => {
-        return JSON.stringify(event, null, 2);
-    };
-
     useEffect(() => {
+        // Scroll down to the bottom of the chat section
         chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
-        console.log(currentChatHistory);
+        // console.log(currentChatHistory);
     }, [currentChatHistory]);
 
     return (
@@ -161,45 +126,28 @@ export const AskOrca = () => {
                                     {!isLoading ||
                                     index !== currentChatHistory.length - 1 ? (
                                         <>
-                                            {item.type === "string" ? (
-                                                <SyntaxHighlighter
-                                                    customStyle={{
-                                                        borderRadius: "25px",
-                                                        borderBottomLeftRadius:
-                                                            "0px",
-                                                        padding:
-                                                            "10px 15px 10px 15px",
-                                                        margin: "0px 0px 0px 10px",
-                                                    }}
-                                                    language="javascript"
-                                                    style={prism}
-                                                    wrapLines={true}
-                                                    wrapLongLines={true}
-                                                >
-                                                    {getMessage(item.message)}
-                                                </SyntaxHighlighter>
-                                            ) : null}
-                                            {item.type === "json" ? (
-                                                <div
-                                                    style={gridStyle}
-                                                    className="ag-theme-alpine"
-                                                >
-                                                    <AgGridReact
-                                                        className="tableStyle"
-                                                        rowData={item.message}
-                                                        columnDefs={getKey(
-                                                            item.message
-                                                        )}
-                                                        domLayout="autoHeight"
-                                                    />
-                                                </div>
-                                            ) : null}
+                                            <SyntaxHighlighter
+                                                customStyle={{
+                                                    borderRadius: "25px",
+                                                    borderBottomLeftRadius:
+                                                        "0px",
+                                                    padding:
+                                                        "10px 15px 10px 15px",
+                                                    margin: "0px 0px 0px 10px",
+                                                }}
+                                                language="javascript"
+                                                style={prism}
+                                                wrapLines={true}
+                                                wrapLongLines={true}
+                                            >
+                                                {item.message}
+                                            </SyntaxHighlighter>
 
                                             <span className="copy">
                                                 <CopyToClipboard
-                                                    text={JSON.stringify(item.message, null, 4)}
+                                                    text={item.message}
                                                 >
-                                                    <span class="material-symbols-outlined">
+                                                    <span className="material-symbols-outlined">
                                                         content_copy
                                                     </span>
                                                 </CopyToClipboard>
@@ -212,7 +160,7 @@ export const AskOrca = () => {
                                 <div key={item.index} className=" promptStyle">
                                     <span className="copy">
                                         <CopyToClipboard text={item.prompt}>
-                                            <span class="material-symbols-outlined">
+                                            <span className="material-symbols-outlined">
                                                 content_copy
                                             </span>
                                         </CopyToClipboard>
@@ -244,7 +192,7 @@ export const AskOrca = () => {
                         onClick={resetCurrentChat}
                         className="btnStyle ml-10"
                     >
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                             restart_alt
                         </span>
                     </button>

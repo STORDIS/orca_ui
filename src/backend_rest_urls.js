@@ -44,7 +44,7 @@ export function deleteVlanMembersURL(device_ip) {
 }
 
 export function gptCompletionsURL() {
-    return host_addr + '/orcask/completions'
+    return host_addr + '/orcask/completions?response_format=google chart json for table'
 }
 
 export function logPanelURL() {
