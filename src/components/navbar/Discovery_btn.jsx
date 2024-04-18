@@ -42,13 +42,7 @@ const DiscoverButton = () => {
         try {
             setShowForm(false);
             const response = await instance.put(getDiscoveryUrl(), formData);
-            console.log(response.data);
 
-            if (response?.data?.result?.length === 1) {
-                console.log("if");
-            } else {
-                console.log("else");
-            }
 
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);

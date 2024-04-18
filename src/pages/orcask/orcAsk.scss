@@ -19,7 +19,6 @@
             height: calc(100% - 90px);
 
             .aiStyle {
-                width: fit-content;
                 max-width: 85%;
                 height: max-content;
                 align-items: center;
@@ -29,23 +28,31 @@
                 align-items: end;
 
                 .icon {
-                    // background-color: white;
+                    width: 25px;
                     background-color: rgb(245, 242, 240);
                     border-radius: 25px;
                     padding: 10px;
                 }
 
-                .text {
-                    background-color: white;
+                .content {
+                    background-color: rgb(245, 242, 240);
                     border-radius: 25px;
                     border-bottom-left-radius: 0px;
                     padding: 12px 15px 12px 15px;
                     margin-left: 10px;
+                    width: 80%;
+                    text-align: center;
+                    justify-content: center;
+
+                    .selectView {
+                        text-align: end;
+                        margin: 0px 5px 5px 0px;
+                    }
                 }
 
                 .loader {
                     display: inline-block;
-                    background-color: white;
+                    background-color: rgb(245, 242, 240);
                     border-radius: 25px;
                     border-bottom-left-radius: 0px;
                     padding: 12px;
@@ -99,7 +106,7 @@
             .promptStyle:hover .copy {
                 visibility: visible !important;
             }
-            
+
             .promptStyle {
                 text-align: right;
                 width: fit-content;

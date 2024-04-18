@@ -32,7 +32,7 @@ const Layout = () => {
     const location = useLocation();
 
     useEffect(() => {
-        if (location.pathname.includes("/askOrca")) {
+        if (location.pathname.includes("/ORCAsk")) {
             setIsAI(false);
         } else {
             setIsAI(true);
@@ -96,7 +96,6 @@ function Redirect() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log('location.pathname',location.pathname)
 
         if (secureLocalStorage.getItem("token")) {
             navigate("/home");

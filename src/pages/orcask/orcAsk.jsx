@@ -7,18 +7,22 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 
+import { Chart } from "react-google-charts";
+
 import "./orcAsk.scss";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [viewType, setViewType] = useState("Table");
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
     const [currentChatHistory, setCurrentChatHistory] = useState([
         {
             index: 0,
             message:
-                "I am, ORCASK AI developed to assist you. How can I help you?",
+                "I am, ORCAsk AI developed to assist you. How can I help you?",
+            type: "string",
         },
     ]);
 
@@ -33,7 +37,8 @@ export const AskOrca = () => {
             {
                 index: 0,
                 message:
-                    "I am, ORCASK AI developed to assist you. How can I help you?",
+                    "I am, ORCAsk AI developed to assist you. How can I help you?",
+                type: "string",
             },
         ]);
     };
@@ -53,7 +58,6 @@ export const AskOrca = () => {
             },
         ]);
 
-        console.log(currentChatHistory);
         setQuestionPrompt({ prompt: "" });
 
         instance
@@ -62,13 +66,27 @@ export const AskOrca = () => {
                 setCurrentChatHistory((prevChatHistory) => {
                     if (Array.isArray(response?.data)) {
                         const updatedHistory = [...prevChatHistory];
-                        updatedHistory[updatedHistory.length - 1].message =
-                            JSON.stringify(response?.data.pop(), null, 2);
-                        return updatedHistory;
+
+                        try {
+                            let temp = JSON.parse(response?.data[0]);
+                            updatedHistory[updatedHistory.length - 1].message =
+                                temp;
+                            updatedHistory[updatedHistory.length - 1].type =
+                                "json";
+                            return updatedHistory;
+                        } catch {
+                            updatedHistory[updatedHistory.length - 1].message =
+                                JSON.stringify(response?.data[0], null, 2);
+                            updatedHistory[updatedHistory.length - 1].type =
+                                "string";
+                            return updatedHistory;
+                        }
                     } else {
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
+                        updatedHistory[updatedHistory.length - 1].type =
+                            "string";
                         return updatedHistory;
                     }
                 });
@@ -87,10 +105,12 @@ export const AskOrca = () => {
 
     const chatSectionRef = useRef(null);
 
+    const handleOptionChange = (e) => {
+        setViewType(e.target.value);
+    };
+
     useEffect(() => {
-        // Scroll down to the bottom of the chat section
         chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
-        // console.log(currentChatHistory);
     }, [currentChatHistory]);
 
     return (
@@ -115,28 +135,60 @@ export const AskOrca = () => {
                                     {!isLoading ||
                                     index !== currentChatHistory.length - 1 ? (
                                         <>
-                                            <SyntaxHighlighter
-                                                customStyle={{
-                                                    borderRadius: "25px",
-                                                    borderBottomLeftRadius:
-                                                        "0px",
-                                                    padding:
-                                                        "10px 15px 10px 15px",
-                                                    margin: "0px 0px 0px 10px",
-                                                }}
-                                                language="javascript"
-                                                style={prism}
-                                                wrapLines={true}
-                                                wrapLongLines={true}
-                                            >
-                                                {item.message}
-                                            </SyntaxHighlighter>
+                                            {item.type === "string" ? (
+                                                <SyntaxHighlighter
+                                                    customStyle={{
+                                                        borderRadius: "25px",
+                                                        borderBottomLeftRadius:
+                                                            "0px",
+                                                        padding:
+                                                            "10px 15px 10px 15px",
+                                                        margin: "0px 0px 0px 10px",
+                                                    }}
+                                                    language="javascript"
+                                                    style={prism}
+                                                    wrapLines={true}
+                                                    wrapLongLines={true}
+                                                >
+                                                    {item.message}
+                                                </SyntaxHighlighter>
+                                            ) : null}
+                                            {item.type === "json" ? (
+                                                <div className="content">
+                                                    <div className="selectView">
+                                                        <select
+                                                            className="selectView"
+                                                            name=""
+                                                            id=""
+                                                            value={viewType}
+                                                            onChange={
+                                                                handleOptionChange
+                                                            }
+                                                        >
+                                                            <option value="Table">
+                                                                Table
+                                                            </option>
+                                                            <option value="Bar">
+                                                                Bar
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                    <Chart
+                                                        chartType={viewType}
+                                                        data={item.message}
+                                                        width="100%"
+                                                        height="-webkit-fill-available"
+                                                        legendToggle
+                                                    />
+                                                </div>
+                                            ) : null}
 
                                             <span className="copy">
                                                 <CopyToClipboard
                                                     text={item.message}
                                                 >
-                                                    <span class="material-symbols-outlined">
+                                                    <span className="material-symbols-outlined">
                                                         content_copy
                                                     </span>
                                                 </CopyToClipboard>
@@ -149,7 +201,7 @@ export const AskOrca = () => {
                                 <div key={item.index} className=" promptStyle">
                                     <span className="copy">
                                         <CopyToClipboard text={item.prompt}>
-                                            <span class="material-symbols-outlined">
+                                            <span className="material-symbols-outlined">
                                                 content_copy
                                             </span>
                                         </CopyToClipboard>
@@ -181,7 +233,7 @@ export const AskOrca = () => {
                         onClick={resetCurrentChat}
                         className="btnStyle ml-10"
                     >
-                        <span class="material-symbols-outlined">
+                        <span className="material-symbols-outlined">
                             restart_alt
                         </span>
                     </button>

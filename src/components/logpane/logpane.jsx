@@ -58,6 +58,7 @@ export const LogViewer = () => {
             valueGetter: (params) => params.node.rowIndex + 1,
             width: 50,
             resizable: true,
+            filter: true,
         },
         {
             field: "timestamp",

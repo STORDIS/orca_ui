@@ -47,7 +47,6 @@ const PortChannelForm = ({
     };
 
     const handleValue = (e) => {
-        console.log("valiue", e);
         if (!/^PortChannel\d+$/.test(e.target.value)) {
             alert(
                 'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
