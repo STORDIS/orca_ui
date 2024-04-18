@@ -7,6 +7,8 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 
+import { Chart } from "react-google-charts";
+
 import "./orcAsk.scss";
 
 export const AskOrca = () => {
@@ -18,7 +20,8 @@ export const AskOrca = () => {
         {
             index: 0,
             message:
-                "I am, ORCASK AI developed to assist you. How can I help you?",
+                "I am, ORCAsk AI developed to assist you. How can I help you?",
+            type: "string",
         },
     ]);
 
@@ -33,7 +36,8 @@ export const AskOrca = () => {
             {
                 index: 0,
                 message:
-                    "I am, ORCASK AI developed to assist you. How can I help you?",
+                    "I am, ORCAsk AI developed to assist you. How can I help you?",
+                type: "string",
             },
         ]);
     };
@@ -64,22 +68,28 @@ export const AskOrca = () => {
                         const updatedHistory = [...prevChatHistory];
 
                         try {
-                            let temp = response?.data.pop();
-                            temp = JSON.parse(temp);
-                            console.log(temp);
-
+                            console.log('---', response?.data[0])
+                            // console.log('---', response?.data.pop())
                             updatedHistory[updatedHistory.length - 1].message =
-                                JSON.stringify(temp, null, 2);
-                                return updatedHistory;
+                                JSON.parse(response?.data[0]);
+                            updatedHistory[updatedHistory.length - 1].type =
+                                "json";
+                            console.log("2 ", updatedHistory);
+                            return updatedHistory;
                         } catch {
                             updatedHistory[updatedHistory.length - 1].message =
-                                JSON.stringify(response?.data.pop(), null, 2);
+                                JSON.stringify(response?.data[0], null, 2);
+                            updatedHistory[updatedHistory.length - 1].type =
+                                "string";
+                            console.log("3", updatedHistory);
                             return updatedHistory;
                         }
                     } else {
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
+                        updatedHistory[updatedHistory.length - 1].type =
+                            "string";
                         return updatedHistory;
                     }
                 });
@@ -126,22 +136,34 @@ export const AskOrca = () => {
                                     {!isLoading ||
                                     index !== currentChatHistory.length - 1 ? (
                                         <>
-                                            <SyntaxHighlighter
-                                                customStyle={{
-                                                    borderRadius: "25px",
-                                                    borderBottomLeftRadius:
-                                                        "0px",
-                                                    padding:
-                                                        "10px 15px 10px 15px",
-                                                    margin: "0px 0px 0px 10px",
-                                                }}
-                                                language="javascript"
-                                                style={prism}
-                                                wrapLines={true}
-                                                wrapLongLines={true}
-                                            >
-                                                {item.message}
-                                            </SyntaxHighlighter>
+                                            {item.type === "string" ? (
+                                                <SyntaxHighlighter
+                                                    customStyle={{
+                                                        borderRadius: "25px",
+                                                        borderBottomLeftRadius:
+                                                            "0px",
+                                                        padding:
+                                                            "10px 15px 10px 15px",
+                                                        margin: "0px 0px 0px 10px",
+                                                    }}
+                                                    language="javascript"
+                                                    style={prism}
+                                                    wrapLines={true}
+                                                    wrapLongLines={true}
+                                                >
+                                                    {item.message}
+                                                </SyntaxHighlighter>
+                                            ) : null}
+                                            {item.type === "json" ? (
+                                                <Chart
+                                                    className="content"
+                                                    chartType="Bar"
+                                                    data={item.message}
+                                                    width="90%"
+                                                    height="-webkit-fill-available"
+                                                    legendToggle
+                                                />
+                                            ) : null}
 
                                             <span className="copy">
                                                 <CopyToClipboard
