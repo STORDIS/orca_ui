@@ -68,20 +68,19 @@ export const AskOrca = () => {
                         const updatedHistory = [...prevChatHistory];
 
                         try {
-                            console.log('---', response?.data[0])
-                            // console.log('---', response?.data.pop())
+                            let temp = JSON.parse(response?.data[0]);
+                            console.log('1', temp)
                             updatedHistory[updatedHistory.length - 1].message =
-                                JSON.parse(response?.data[0]);
+                                temp;
                             updatedHistory[updatedHistory.length - 1].type =
                                 "json";
-                            console.log("2 ", updatedHistory);
                             return updatedHistory;
                         } catch {
+                            console.log('2', response?.data[0])
                             updatedHistory[updatedHistory.length - 1].message =
                                 JSON.stringify(response?.data[0], null, 2);
                             updatedHistory[updatedHistory.length - 1].type =
                                 "string";
-                            console.log("3", updatedHistory);
                             return updatedHistory;
                         }
                     } else {
@@ -109,9 +108,7 @@ export const AskOrca = () => {
     const chatSectionRef = useRef(null);
 
     useEffect(() => {
-        // Scroll down to the bottom of the chat section
         chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
-        // console.log(currentChatHistory);
     }, [currentChatHistory]);
 
     return (
@@ -157,7 +154,7 @@ export const AskOrca = () => {
                                             {item.type === "json" ? (
                                                 <Chart
                                                     className="content"
-                                                    chartType="Bar"
+                                                    chartType="Table"
                                                     data={item.message}
                                                     width="90%"
                                                     height="-webkit-fill-available"
