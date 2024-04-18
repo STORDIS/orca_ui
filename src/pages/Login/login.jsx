@@ -34,10 +34,7 @@ export const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // auto login
         if (secureLocalStorage.getItem("token")) {
-            console.log("auto login", location.pathname);
-            // window.location.href = "/home";
             navigate("/home");
         }
     }, []);

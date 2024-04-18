@@ -96,7 +96,6 @@ function Redirect() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // console.log('location.pathname',location.pathname)
 
         if (secureLocalStorage.getItem("token")) {
             navigate("/home");

@@ -34,7 +34,6 @@ const TabbedPane = () => {
     const { disableConfig } = useDisableConfig();
 
     useEffect(() => {
-        console.log("----------", disableConfig);
 
         if (!secureLocalStorage.getItem("selectedTab")) {
             setTabValue(0);

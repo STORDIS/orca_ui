@@ -21,7 +21,6 @@ const Deviceinfo = (props) => {
   useEffect(() => {    
     instance(getAllDevicesURL())
       .then((res) => {
-        console.log("response", res.data);
         if (isTabbedPane) {
           let data = res.data.filter((item) => item.mgt_ip === selectedDeviceIp);
           setDataTable(data);

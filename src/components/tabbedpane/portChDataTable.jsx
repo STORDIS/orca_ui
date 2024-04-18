@@ -325,7 +325,6 @@ const PortChDataTable = (props) => {
             lag_name: currentRowData.lag_name,
         };
 
-        console.log("---", output);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
 
         instance
@@ -350,7 +349,6 @@ const PortChDataTable = (props) => {
     const handelDeleteMemeber = (e) => {
         setDisableConfig(true);
 
-        console.log("delete", e);
         setIsMemberModalOpen(false);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const output = {
@@ -358,7 +356,6 @@ const PortChDataTable = (props) => {
             members: e,
             lag_name: currentRowData.lag_name,
         };
-        console.log("output", output);
         instance
             .delete(apiPUrl, { data: output })
             .then((response) => {

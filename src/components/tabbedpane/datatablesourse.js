@@ -23,7 +23,6 @@ export const interfaceColumns = [
             if (params.data.name.includes("Ethernet")) {
                 return params.data.name;
             }
-            // console.log( params.data.name)
         },
         sortable: true,
     },
@@ -33,14 +32,7 @@ export const interfaceColumns = [
         width: 130,
         cellRenderer: "agCheckboxCellRenderer",
         cellEditor: "agCheckboxCellEditor",
-        editable: (params) => {
-            const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
-                return false;
-            } else {
-                return true;
-            }
-        },
+        editable: true,
         suppressKeyboardEvent: (params) => params.event.key === " ",
         headerComponent: EditableHeaderComponent,
     },
@@ -49,28 +41,15 @@ export const interfaceColumns = [
         headerName: "MTU",
         type: "number",
         width: 130,
-        editable: (params) => {
-            const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
-                return false;
-            } else {
-                return true;
-            }
-        },
+        editable: true,
         headerComponent: EditableHeaderComponent,
     },
     {
         field: "fec",
         headerName: "FEC",
         width: 130,
-        editable: (params) => {
-            const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
-                return false;
-            } else {
-                return true;
-            }
-        },
+        editable: true,
+
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,
         stopEditingWhenCellsLoseFocus: true,
@@ -84,14 +63,8 @@ export const interfaceColumns = [
         field: "speed",
         headerName: "Speed",
         width: 130,
-        editable: (params) => {
-            const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
-                return false;
-            } else {
-                return true;
-            }
-        },
+        editable: true,
+
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
             values: [
@@ -111,14 +84,7 @@ export const interfaceColumns = [
         field: "description",
         headerName: "Description",
         width: 130,
-        editable: (params) => {
-            const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
-                return false;
-            } else {
-                return true;
-            }
-        },
+        editable: true,
         headerComponent: EditableHeaderComponent,
     },
     { field: "last_chng", headerName: "Last Change", width: 130 },

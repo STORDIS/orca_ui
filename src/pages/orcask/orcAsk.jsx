@@ -58,7 +58,6 @@ export const AskOrca = () => {
             },
         ]);
 
-        console.log(currentChatHistory);
         setQuestionPrompt({ prompt: "" });
 
         instance

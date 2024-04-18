@@ -14,10 +14,8 @@ const McLagDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: '100%', width: '100%' }), []);
     const { rows, columns, selectedDeviceIp = '' } = props;
-    console.log(rows, columns)
 
     const [dataTable, setDataTable] = useState([]);
-    console.log(dataTable)
     
     useEffect(() => {
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
