@@ -40,6 +40,14 @@
                     border-bottom-left-radius: 0px;
                     padding: 12px 15px 12px 15px;
                     margin-left: 10px;
+                    width: 80%;
+                    text-align: center;
+                    justify-content: center;
+
+                    .selectView {
+                        text-align: end;
+                        margin: 0px 5px 5px 0px;
+                    }
                 }
 
                 .loader {
@@ -78,8 +86,6 @@
                         transform: translateY(-10px);
                     }
                 }
-
-             
             }
 
             .aiStyle:hover .copy {

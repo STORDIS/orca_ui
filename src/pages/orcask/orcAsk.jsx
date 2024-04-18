@@ -14,6 +14,7 @@ import "./orcAsk.scss";
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [viewType, setViewType] = useState("Table");
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
     const [currentChatHistory, setCurrentChatHistory] = useState([
@@ -69,14 +70,12 @@ export const AskOrca = () => {
 
                         try {
                             let temp = JSON.parse(response?.data[0]);
-                            console.log('1', temp)
                             updatedHistory[updatedHistory.length - 1].message =
                                 temp;
                             updatedHistory[updatedHistory.length - 1].type =
                                 "json";
                             return updatedHistory;
                         } catch {
-                            console.log('2', response?.data[0])
                             updatedHistory[updatedHistory.length - 1].message =
                                 JSON.stringify(response?.data[0], null, 2);
                             updatedHistory[updatedHistory.length - 1].type =
@@ -106,6 +105,10 @@ export const AskOrca = () => {
     };
 
     const chatSectionRef = useRef(null);
+
+    const handleOptionChange = (e) => {
+        setViewType(e.target.value);
+    };
 
     useEffect(() => {
         chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
@@ -152,14 +155,34 @@ export const AskOrca = () => {
                                                 </SyntaxHighlighter>
                                             ) : null}
                                             {item.type === "json" ? (
-                                                <Chart
-                                                    className="content"
-                                                    chartType="Table"
-                                                    data={item.message}
-                                                    width="90%"
-                                                    height="-webkit-fill-available"
-                                                    legendToggle
-                                                />
+                                                <div className="content">
+                                                    <div className="selectView">
+                                                        <select
+                                                            className="selectView"
+                                                            name=""
+                                                            id=""
+                                                            value={viewType}
+                                                            onChange={
+                                                                handleOptionChange
+                                                            }
+                                                        >
+                                                            <option value="Table">
+                                                                Table
+                                                            </option>
+                                                            <option value="Bar">
+                                                                Bar
+                                                            </option>
+                                                        </select>
+                                                    </div>
+
+                                                    <Chart
+                                                        chartType={viewType}
+                                                        data={item.message}
+                                                        width="100%"
+                                                        height="-webkit-fill-available"
+                                                        legendToggle
+                                                    />
+                                                </div>
                                             ) : null}
 
                                             <span className="copy">
