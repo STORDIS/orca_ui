@@ -118,20 +118,28 @@ export const AskOrca = () => {
         }
     };
 
-    const chatSectionRef = useRef(null);
+    const chatContainerRef = useRef(null);
 
     const handleOptionChange = (e) => {
         setViewType(e.target.value);
     };
 
     useEffect(() => {
-        chatSectionRef.current.scrollTop = chatSectionRef.current.scrollHeight;
-    }, [currentChatHistory]);
+        if (isLoading && chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [isLoading]);
+    
+    useEffect(() => {
+        if (!isLoading && chatContainerRef.current) {
+            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+        }
+    }, [isLoading]);
 
     return (
         <div className="flexContainer">
             <div className="leftColumn">
-                <div className="chatSection" ref={chatSectionRef}>
+                <div className="chatSection" ref={chatContainerRef}>
                     {currentChatHistory.map((item, index) => (
                         <>
                             {item.message ? (
