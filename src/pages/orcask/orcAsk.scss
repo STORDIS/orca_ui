@@ -4,7 +4,7 @@
     margin: 10px;
 
     .leftColumn {
-        flex: 2;
+        width: 56vw;
         // flex-direction: column;
 
         padding: 10px;
@@ -163,7 +163,7 @@
     }
 
     .rightColumn {
-        flex: 1;
+        width: 20vw;
         padding: 15px;
         min-height: 100%;
         -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
