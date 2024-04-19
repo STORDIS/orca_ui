@@ -15,6 +15,7 @@ export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [viewType, setViewType] = useState("Table");
+    const textAreaRef = useRef(null);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
     const [currentChatHistory, setCurrentChatHistory] = useState([
@@ -59,6 +60,7 @@ export const AskOrca = () => {
         ]);
 
         setQuestionPrompt({ prompt: "" });
+        textAreaRef.current.value = "";
 
         instance
             .post(gptCompletionsURL(), questionPrompt)
@@ -69,8 +71,14 @@ export const AskOrca = () => {
 
                         try {
                             let temp = JSON.parse(response?.data[0]);
+
+                            let data = {
+                                cols: temp.cols,
+                                rows: temp.rows,
+                            };
+
                             updatedHistory[updatedHistory.length - 1].message =
-                                temp;
+                                data;
                             updatedHistory[updatedHistory.length - 1].type =
                                 "json";
                             return updatedHistory;
@@ -101,6 +109,13 @@ export const AskOrca = () => {
 
     const handleInputChange = (event) => {
         setQuestionPrompt({ prompt: event.target.value });
+    };
+
+    const handleKeyDown = (event) => {
+        if (event.keyCode === 13) {
+            gptCompletions();
+            event.preventDefault();
+        }
     };
 
     const chatSectionRef = useRef(null);
@@ -220,9 +235,11 @@ export const AskOrca = () => {
                     <textarea
                         value={questionPrompt.prompt}
                         onChange={handleInputChange}
+                        onKeyDown={handleKeyDown}
                         className="textArea"
                         name=""
-                        placeholder="Ask me something...... "
+                        ref={textAreaRef}
+                        placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                     ></textarea>
                     <button onClick={gptCompletions} className="btnStyle ml-10">
                         <span className="material-symbols-outlined">
