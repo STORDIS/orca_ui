@@ -259,10 +259,21 @@ export const AskOrca = () => {
                         ref={textAreaRef}
                         placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                     ></textarea>
-                    <button onClick={gptCompletions} className="btnStyle ml-10">
-                        <span className="material-symbols-outlined">
-                            arrow_upward
-                        </span>
+                    <button
+                        disabled={isLoading}
+                        onClick={gptCompletions}
+                        className="btnStyle ml-10"
+                    >
+                        {!isLoading ? (
+                            <span className="material-symbols-outlined">
+                                arrow_upward
+                            </span>
+                        ) : null}
+                        {isLoading ? (
+                            <span className="material-symbols-outlined">
+                                pending
+                            </span>
+                        ) : null}
                     </button>
                     <button
                         onClick={resetCurrentChat}
