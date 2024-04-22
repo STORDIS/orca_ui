@@ -108,6 +108,7 @@ export const AskOrca = () => {
     };
 
     const handleInputChange = (event) => {
+        console.log("handle");
         setQuestionPrompt({ prompt: event.target.value });
     };
 
@@ -126,13 +127,15 @@ export const AskOrca = () => {
 
     useEffect(() => {
         if (isLoading && chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            chatContainerRef.current.scrollTop =
+                chatContainerRef.current.scrollHeight;
         }
     }, [isLoading]);
-    
+
     useEffect(() => {
         if (!isLoading && chatContainerRef.current) {
-            chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+            chatContainerRef.current.scrollTop =
+                chatContainerRef.current.scrollHeight;
         }
     }, [isLoading]);
 
@@ -223,7 +226,14 @@ export const AskOrca = () => {
                             {item.prompt ? (
                                 <div key={item.index} className=" promptStyle">
                                     <span className="copy">
-                                        <CopyToClipboard text={item.prompt}>
+                                        <CopyToClipboard
+                                            text={item.prompt}
+                                            onCopy={() =>
+                                                setQuestionPrompt({
+                                                    prompt: item.prompt,
+                                                })
+                                            }
+                                        >
                                             <span className="material-symbols-outlined">
                                                 content_copy
                                             </span>
