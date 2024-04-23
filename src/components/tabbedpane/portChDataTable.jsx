@@ -4,14 +4,12 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { portChannelColumns } from "./datatablesourse";
-import axios from "axios";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
 } from "../../backend_rest_urls";
 import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
-//import MemberSelectionComponent from "./MemberSelectionComponent";
 import MembersSelection from "./MembersSelection";
 import interceptor from "../../interceptor";
 import { useLog } from "../../utils/logpannelContext";
@@ -43,7 +41,6 @@ const PortChDataTable = (props) => {
     const [existingMembers, setExistingMembers] = useState([]);
 
     const instance = interceptor();
-    const [disableSubmit, setDisableSubmit] = useState(false);
 
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -419,7 +416,6 @@ const PortChDataTable = (props) => {
                         Delete Selected Port Channel
                     </button>
                 </div>
-                <p>&nbsp;</p>
                 <Modal
                     show={showForm}
                     onClose={() => setShowForm(false)}
@@ -429,7 +425,7 @@ const PortChDataTable = (props) => {
                         onSubmit={handleFormSubmit}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
-                        handelSubmitButton={disableSubmit}
+                        handelSubmitButton={disableConfig}
                     />
                 </Modal>
 
