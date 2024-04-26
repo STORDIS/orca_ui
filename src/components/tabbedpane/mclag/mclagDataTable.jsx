@@ -23,6 +23,7 @@ const McLagDataTable = (props) => {
 
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
+    const [configStatus, setConfigStatus] = useState("");
 
     const [selectedRows, setSelectedRows] = useState([]);
 
@@ -59,6 +60,10 @@ const McLagDataTable = (props) => {
         setShowForm(false);
     };
 
+    const resetConfigStatus = () => {
+        setConfigStatus("");
+    };
+
     const handleFormSubmit = (formData) => {
         console.log(formData);
         setDisableConfig(true);
@@ -68,9 +73,11 @@ const McLagDataTable = (props) => {
             .put(apiPUrl, formData)
             .then((res) => {
                 setModalContent("Mclag Added Successfully");
+                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error in Adding Mclag");
+                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -78,7 +85,7 @@ const McLagDataTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setIsMessageModalOpen(true);
-                // refreshData();
+                setTimeout(resetConfigStatus, 5000);
             });
     };
 
@@ -101,9 +108,11 @@ const McLagDataTable = (props) => {
             .delete(apiPUrl, { data: output })
             .then((res) => {
                 setModalContent("Mclag Deleted Successfully");
+                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error Deleting Mclag");
+                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -111,6 +120,7 @@ const McLagDataTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
+                setTimeout(resetConfigStatus, 5000);
             });
     };
 
@@ -119,6 +129,23 @@ const McLagDataTable = (props) => {
     return (
         <div className="datatable">
             <div className="button-group">
+                <div className="button-column">
+                    <button disabled={disableConfig} className="btnStyle">
+                        Apply Config
+                    </button>
+                    <span
+                        className={`config-status ${
+                            configStatus === "Config Successful"
+                                ? "config-successful"
+                                : configStatus === "Config Failed"
+                                ? "config-failed"
+                                : "config-in-progress"
+                        }`}
+                    >
+                        {configStatus}
+                    </span>
+                </div>
+
                 <div className="">
                     <button className="btnStyle" onClick={openAddModal}>
                         Add Mclag
