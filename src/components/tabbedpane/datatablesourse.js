@@ -230,6 +230,7 @@ export const portChannelColumns = [
 ];
 
 export const mclagColumns = [
+    { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
     { field: "domain_id", headerName: "Domain_ID", type: "number", width: 130 },
     {
         field: "keepalive_interval",

@@ -37,6 +37,7 @@ const InterfaceDataTable = (props) => {
             })
             .catch((err) => console.log(err));
     };
+    
     useEffect(() => {
         if (selectedDeviceIp) {
             setInterfaceData();

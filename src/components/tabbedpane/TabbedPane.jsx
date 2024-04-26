@@ -34,7 +34,6 @@ const TabbedPane = () => {
     const { disableConfig } = useDisableConfig();
 
     useEffect(() => {
-
         if (!secureLocalStorage.getItem("selectedTab")) {
             setTabValue(0);
             secureLocalStorage.setItem("selectedTab", tabValue.toString());
@@ -118,7 +117,11 @@ const TabbedPane = () => {
                         />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={3}>
-                        <McLagDataTable selectedDeviceIp={deviceIP} />
+                        <McLagDataTable
+                            refresh={refresh}
+                            setRefresh={setRefresh}
+                            selectedDeviceIp={deviceIP}
+                        />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={4}>
                         <BGPTable selectedDeviceIp={deviceIP} />

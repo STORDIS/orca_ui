@@ -24,6 +24,8 @@ const McLagDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
 
+    const [selectedRows, setSelectedRows] = useState([]);
+
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
     const [modalContent, setModalContent] = useState("");
@@ -33,14 +35,14 @@ const McLagDataTable = (props) => {
 
     useEffect(() => {
         getMclag();
-    }, []);
+    }, [selectedDeviceIp]);
 
     const getMclag = () => {
+        setDataTable([]);
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
             .then((res) => setDataTable(res.data))
-            .then((res) => console.log(res.data))
             .catch((err) => console.log(err));
     };
 
@@ -65,10 +67,10 @@ const McLagDataTable = (props) => {
         instance
             .put(apiPUrl, formData)
             .then((res) => {
-                setModalContent("Mclag  added Successfully");
+                setModalContent("Mclag Added Successfully");
             })
             .catch((err) => {
-                setModalContent("Error adding port channel");
+                setModalContent("Error in Adding Mclag");
             })
             .finally(() => {
                 setShowForm(false);
@@ -77,6 +79,38 @@ const McLagDataTable = (props) => {
                 setDisableConfig(false);
                 setIsMessageModalOpen(true);
                 // refreshData();
+            });
+    };
+
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        console.log("====", selectedData);
+        setSelectedRows(selectedData);
+    };
+
+    const deleteMclag = () => {
+        setDisableConfig(true);
+
+        const output = {
+            mgt_ip: selectedDeviceIp,
+        };
+
+        const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
+        instance
+            .delete(apiPUrl, { data: output })
+            .then((res) => {
+                setModalContent("Mclag Deleted Successfully");
+            })
+            .catch((err) => {
+                setModalContent("Error Deleting Mclag");
+            })
+            .finally(() => {
+                setShowForm(false);
+                setIsMessageModalOpen(true);
+                setLog(true);
+                setDisableConfig(false);
+                setSelectedRows([]);
             });
     };
 
@@ -89,8 +123,17 @@ const McLagDataTable = (props) => {
                     <button className="btnStyle" onClick={openAddModal}>
                         Add Mclag
                     </button>
+
+                    <button
+                        className="ml-10 btnStyle"
+                        disabled={selectedRows.length === 0}
+                        onClick={deleteMclag}
+                    >
+                        Delete Mclag
+                    </button>
                 </div>
             </div>
+
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
@@ -100,6 +143,8 @@ const McLagDataTable = (props) => {
                     onColumnResized={onColumnResized}
                     checkboxSelection
                     enableCellTextSelection="true"
+                    rowSelection="single"
+                    onSelectionChanged={onSelectionChanged}
                 ></AgGridReact>
             </div>
 
