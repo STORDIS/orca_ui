@@ -5,8 +5,8 @@ const EditableHeaderComponent = (props) => {
   const { displayName, column } = props;
   return (
     <span>
+      {column.colDef.editable && <FaEdit style={{ marginRight: '5px' }} />} 
       {displayName} 
-      {column.colDef.editable && <FaEdit style={{ marginLeft: '5px' }} />} 
     </span>
   );
 };

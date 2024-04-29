@@ -11,7 +11,8 @@ export const defaultColDef = {
     enableCellTextSelection: "true",
     singleClickEdit: "true",
     stopEditingWhenCellsLoseFocus: "true",
-    filter: true,
+    // filter: true,
+    sortable: true,
 };
 
 export const interfaceColumns = [
@@ -236,40 +237,58 @@ export const mclagColumns = [
         type: "number",
         width: 130,
         editable: true,
+        headerComponent: EditableHeaderComponent,
     },
     {
         field: "mclag_sys_mac",
         headerName: "MCLAG Sys MAC",
         width: 130,
         editable: true,
+        headerComponent: EditableHeaderComponent,
     },
     {
         field: "peer_addr",
         headerName: "Peer Address",
         width: 130,
         editable: true,
+        headerComponent: EditableHeaderComponent,
     },
-    { field: "peer_link", headerName: "Peer Link", width: 130, editable: true },
+    {
+        field: "peer_link",
+        headerName: "Peer Link",
+        width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
     {
         field: "session_timeout",
         headerName: "Session Timeout",
         type: "number",
         width: 130,
         editable: true,
+        headerComponent: EditableHeaderComponent,
     },
     {
         field: "source_address",
         headerName: "Source Address",
         width: 130,
         editable: true,
+        headerComponent: EditableHeaderComponent,
     },
     { field: "oper_status", headerName: "Operation Status", width: 130 },
-    { field: "role", headerName: "Role", width: 130, editable: true },
+    {
+        field: "role",
+        headerName: "Role",
+        width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
     {
         field: "gateway_macs",
         headerName: "Gateway MAC",
         width: 130,
         editable: true,
+        headerComponent: EditableHeaderComponent,
     },
     {
         field: "delay_restore",
@@ -277,6 +296,7 @@ export const mclagColumns = [
         type: "number",
         width: 130,
         editable: true,
+        headerComponent: EditableHeaderComponent,
     },
 ];
 
