@@ -20,17 +20,13 @@ const McLagDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { rows, columns, selectedDeviceIp = "" } = props;
-
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
-
     const [selectedRows, setSelectedRows] = useState([]);
-
+    const [changes, setChanges] = useState({});
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-
     const [modalContent, setModalContent] = useState("");
-
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
@@ -64,19 +60,18 @@ const McLagDataTable = (props) => {
         setConfigStatus("");
     };
 
-    const handleFormSubmit = (formData) => {
-        console.log(formData);
+    const handleFormSubmit = (formData, status) => {
+        console.log(formData, status)
         setDisableConfig(true);
-
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
             .then((res) => {
-                setModalContent("Mclag Added Successfully");
+                setModalContent("Mclag " + status + "ed Successfully");
                 setConfigStatus("Config Successful");
             })
             .catch((err) => {
-                setModalContent("Error in Adding Mclag");
+                setModalContent("Error in " + status + "ing Mclag");
                 setConfigStatus("Config Failed");
             })
             .finally(() => {
@@ -124,13 +119,58 @@ const McLagDataTable = (props) => {
             });
     };
 
+    const handleCellValueChanged = useCallback((params) => {
+        if (
+            !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
+                params.data.mclag_sys_mac
+            )
+        ) {
+            alert("Invalid MAC address.");
+            return;
+        }
+
+        if (!/^PortChannel\d+$/.test(params.data.peer_link)) {
+            alert("Invalid peer_link format.");
+            return;
+        }
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                params.data.source_address
+            )
+        ) {
+            alert("Invalid source_address format.");
+            return;
+        }
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                params.data.peer_addr
+            )
+        ) {
+            alert("Invalid peer_addr format.");
+            return;
+        }
+        if (params.newValue !== params.oldValue) {
+            console.log(params.data);
+            let payload = {
+                mgt_ip: selectedDeviceIp,
+                ...params.data
+            }
+
+            setChanges(payload);
+        }
+    }, []);
+
     const onColumnResized = useCallback((params) => {}, []);
 
     return (
         <div className="datatable">
             <div className="button-group">
                 <div className="button-column">
-                    <button disabled={disableConfig} className="btnStyle">
+                    <button
+                        disabled={disableConfig}
+                        className="btnStyle"
+                        onClick={() => handleFormSubmit(changes, 'Updat')}
+                    >
                         Apply Config
                     </button>
                     <span
@@ -168,6 +208,8 @@ const McLagDataTable = (props) => {
                     columnDefs={mclagColumns}
                     defaultColDef={defaultColDef}
                     onColumnResized={onColumnResized}
+                    stopEditingWhenCellsLoseFocus={true}
+                    onCellValueChanged={handleCellValueChanged}
                     checkboxSelection
                     enableCellTextSelection="true"
                     rowSelection="single"
@@ -181,7 +223,7 @@ const McLagDataTable = (props) => {
                 title={"Add Mclag"}
             >
                 <MclagForm
-                    onSubmit={handleFormSubmit}
+                    onSubmit={(e)=> handleFormSubmit(e, 'Add')}
                     selectedDeviceIp={selectedDeviceIp}
                     onCancel={handleCancel}
                     handelSubmitButton={disableConfig}

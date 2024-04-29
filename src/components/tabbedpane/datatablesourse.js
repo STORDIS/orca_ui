@@ -49,7 +49,6 @@ export const interfaceColumns = [
         headerName: "FEC",
         width: 130,
         editable: true,
-
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,
         stopEditingWhenCellsLoseFocus: true,
@@ -64,7 +63,6 @@ export const interfaceColumns = [
         headerName: "Speed",
         width: 130,
         editable: true,
-
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
             values: [
@@ -237,25 +235,48 @@ export const mclagColumns = [
         headerName: "Keepalive Interval",
         type: "number",
         width: 130,
+        editable: true,
     },
-    { field: "mclag_sys_mac", headerName: "MCLAG Sys MAC", width: 130 },
-    { field: "peer_addr", headerName: "Peer Address", width: 130 },
-    { field: "peer_link", headerName: "Peer Link", width: 130 },
+    {
+        field: "mclag_sys_mac",
+        headerName: "MCLAG Sys MAC",
+        width: 130,
+        editable: true,
+    },
+    {
+        field: "peer_addr",
+        headerName: "Peer Address",
+        width: 130,
+        editable: true,
+    },
+    { field: "peer_link", headerName: "Peer Link", width: 130, editable: true },
     {
         field: "session_timeout",
         headerName: "Session Timeout",
         type: "number",
         width: 130,
+        editable: true,
     },
-    { field: "source_address", headerName: "Source Address", width: 130 },
+    {
+        field: "source_address",
+        headerName: "Source Address",
+        width: 130,
+        editable: true,
+    },
     { field: "oper_status", headerName: "Operation Status", width: 130 },
-    { field: "role", headerName: "Role", width: 130 },
-    { field: "gateway_macs", headerName: "Gateway MAC", width: 130 },
+    { field: "role", headerName: "Role", width: 130, editable: true },
+    {
+        field: "gateway_macs",
+        headerName: "Gateway MAC",
+        width: 130,
+        editable: true,
+    },
     {
         field: "delay_restore",
         headerName: "Delay Restore",
         type: "number",
         width: 130,
+        editable: true,
     },
 ];
 

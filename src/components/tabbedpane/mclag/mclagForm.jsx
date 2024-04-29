@@ -27,46 +27,6 @@ const MclagForm = ({
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // switch (name) {
-        //     case "mclag_sys_mac":
-        //         if (
-        //             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
-        //                 e.target.value
-        //             )
-        //         ) {
-        //             alert("Invalid MAC address.");
-        //             return;
-        //         }
-        //         break;
-        //     case "peer_link":
-        //         if (!/^PortChannel\d+$/.test(e.target.value)) {
-        //             alert(
-        //                 'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-        //             );
-        //             return;
-        //         }
-        //         break;
-        //     case "mem_port_chnl":
-        //         if (!/^PortChannel\d+$/.test(e.target.value)) {
-        //             alert(
-        //                 'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-        //             );
-        //             return;
-        //         }
-        //         break;
-        //     case "mem_port_chnl_2":
-        //         if (!/^PortChannel\d+$/.test(e.target.value)) {
-        //             alert(
-        //                 'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-        //             );
-        //             return;
-        //         }
-        //         break;
-
-        //     default:
-        //         break;
-        // }
-
         const updatedValue = name === "domain_id" ? parseInt(value, 10) : value;
         setFormData((prevState) => ({
             ...prevState,
@@ -85,21 +45,23 @@ const MclagForm = ({
         }
 
         if (!/^PortChannel\d+$/.test(formData.peer_link)) {
-            alert(
-                'Invalid peer_link format.'
-            );
+            alert("Invalid peer_link format.");
             return;
         }
-        if (!/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(formData.source_address)) {
-            alert(
-                'Invalid source_address format.'
-            );
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                formData.source_address
+            )
+        ) {
+            alert("Invalid source_address format.");
             return;
         }
-        if (!/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(formData.peer_addr)) {
-            alert(
-                'Invalid peer_addr format.'
-            );
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                formData.peer_addr
+            )
+        ) {
+            alert("Invalid peer_addr format.");
             return;
         }
 
