@@ -59,15 +59,11 @@ const PortChDataTable = (props) => {
         getAllPortChanalData();
     }, [selectedDeviceIp]);
 
-    useEffect(() => {
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            setDataTable(JSON.parse(JSON.stringify(originalData)));
-            setChanges([]);
-        }
-    }, [props.refresh]);
-
     const getAllPortChanalData = () => {
+        setDataTable([]);
+        setOriginalData([]);
+        setChanges([]);
+
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiPUrl)
@@ -81,7 +77,9 @@ const PortChDataTable = (props) => {
                 setDataTable(data);
                 setOriginalData(JSON.parse(JSON.stringify(data)));
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.log(err);
+            });
     };
 
     const defaultColDef = {
@@ -103,6 +101,8 @@ const PortChDataTable = (props) => {
                 console.error("Error fetching data:", err);
                 setMessageModalContent("Error fetching data: " + err.message);
                 setIsMessageModalOpen(true);
+                setDataTable([]);
+                setOriginalData([]);
             })
             .finally(() => {
                 setIsLoading(false);

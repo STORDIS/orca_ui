@@ -103,35 +103,19 @@ const TabbedPane = () => {
                         />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={1}>
-                        <InterfaceDataTable
-                            selectedDeviceIp={deviceIP}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
-                        />
+                        <InterfaceDataTable selectedDeviceIp={deviceIP} />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={2}>
-                        <PortChDataTable
-                            selectedDeviceIp={deviceIP}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
-                        />
+                        <PortChDataTable selectedDeviceIp={deviceIP} />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={3}>
-                        <McLagDataTable
-                            refresh={refresh}
-                            setRefresh={setRefresh}
-                            selectedDeviceIp={deviceIP}
-                        />
+                        <McLagDataTable selectedDeviceIp={deviceIP} />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={4}>
                         <BGPTable selectedDeviceIp={deviceIP} />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={5}>
-                        <PortGroupTable
-                            selectedDeviceIp={deviceIP}
-                            refresh={refresh}
-                            setRefresh={setRefresh}
-                        />
+                        <PortGroupTable selectedDeviceIp={deviceIP} />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={6}>
                         <VlanTable selectedDeviceIp={deviceIP} />
