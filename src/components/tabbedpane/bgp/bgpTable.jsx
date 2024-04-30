@@ -10,6 +10,7 @@ import interceptor from "../../../interceptor";
 import Modal from "../../modal/Modal";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import BgpForm from "./bgpForm";
 
 const BGPTable = (props) => {
     const instance = interceptor();
@@ -80,11 +81,11 @@ const BGPTable = (props) => {
         instance
             .delete(apiPUrl, { data: output })
             .then((res) => {
-                setModalContent("Mclag Deleted Successfully");
+                setModalContent("BGP Deleted Successfully");
                 setConfigStatus("Config Successful");
             })
             .catch((err) => {
-                setModalContent("Error Deleting Mclag");
+                setModalContent("Error Deleting BGP");
                 setConfigStatus("Config Failed");
             })
             .finally(() => {
@@ -97,7 +98,29 @@ const BGPTable = (props) => {
             });
     };
 
-    const handleFormSubmit = (formData, status) => {};
+    const handleFormSubmit = (formData, status) => {
+        console.log(formData, status)
+        setDisableConfig(true);
+        const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
+        instance
+            .put(apiPUrl, formData)
+            .then((res) => {
+                setModalContent("Bgp " + status + "ed Successfully");
+                setConfigStatus("Config Successful");
+            })
+            .catch((err) => {
+                setModalContent("Error in " + status + "ing Bgp");
+                setConfigStatus("Config Failed");
+            })
+            .finally(() => {
+                setShowForm(false);
+                setIsMessageModalOpen(true);
+                setLog(true);
+                setDisableConfig(false);
+                setIsMessageModalOpen(true);
+                setTimeout(resetConfigStatus, 5000);
+            });
+    };
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
@@ -161,6 +184,19 @@ const BGPTable = (props) => {
                     onSelectionChanged={onSelectionChanged}
                 ></AgGridReact>
             </div>
+
+            <Modal
+                show={showForm}
+                onClose={() => setShowForm(false)}
+                title={"Add BGP"}
+            >
+                <BgpForm
+                    onSubmit={(e)=> handleFormSubmit(e, 'Add')}
+                    selectedDeviceIp={selectedDeviceIp}
+                    onCancel={handleCancel}
+                    handelSubmitButton={disableConfig}
+                />
+            </Modal>
 
             {isMessageModalOpen && (
                 <Modal show={isMessageModalOpen}>
