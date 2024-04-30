@@ -11,7 +11,6 @@ export const defaultColDef = {
     enableCellTextSelection: "true",
     singleClickEdit: "true",
     stopEditingWhenCellsLoseFocus: "true",
-    filter: true,
 };
 
 export const interfaceColumns = [
