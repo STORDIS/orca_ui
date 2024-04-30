@@ -68,11 +68,13 @@ export const LogViewer = () => {
             resizable: true,
             filter: true,
             sortable: true,
-
             cellRenderer: (params) => {
                 return (
                     <Time value={params.value} format="hh:mm:ss DD-MM-YYYY" />
                 );
+            },
+            tooltipValueGetter: (params) => {
+                return params.value;
             },
         },
         {
@@ -82,12 +84,14 @@ export const LogViewer = () => {
             resizable: true,
             filter: true,
             sortable: true,
-
             cellRenderer: (params) => {
                 let num = params.value;
                 num = parseFloat(num);
                 num = num.toFixed(2);
                 return <span>{num} sec</span>;
+            },
+            tooltipValueGetter: (params) => {
+                return params.value;
             },
         },
         {
@@ -97,9 +101,11 @@ export const LogViewer = () => {
             resizable: true,
             filter: true,
             sortable: true,
-
             cellRenderer: (params) => {
                 return <span>{JSON.stringify(params.value)}</span>;
+            },
+            tooltipValueGetter: (params) => {
+                return JSON.stringify(params.value);
             },
         },
         {
@@ -135,6 +141,9 @@ export const LogViewer = () => {
                 } else {
                     return { color: "red", display: "flex" };
                 }
+            },
+            tooltipValueGetter: (params) => {
+                return params.data.response;
             },
         },
     ]);
