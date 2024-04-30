@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import "./tabbedPaneTable.scss"
-import { bgpColumns, defaultColDef } from "./datatablesourse";
+import "../tabbedPaneTable.scss"
+import { bgpColumns, defaultColDef } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
-import { getAllBGPOfDeviceURL } from "../../backend_rest_urls";
+import { getAllBGPOfDeviceURL } from "../../../backend_rest_urls";
 
-import interceptor from "../../interceptor";
+import interceptor from "../../../interceptor";
 
 const BGPTable = (props) => {
     const instance = interceptor();
