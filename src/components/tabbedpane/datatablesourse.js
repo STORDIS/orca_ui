@@ -259,6 +259,7 @@ export const mclagColumns = [
 ];
 
 export const bgpColumns = [
+    { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
     { field: "local_asn", headerName: "ASN", width: 130 },
     { field: "vrf_name", headerName: "VRF", width: 130 },
     { field: "router_id", headerName: "Router ID", width: 130 },

@@ -15,7 +15,7 @@ const BGPTable = (props) => {
     const instance = interceptor();
 
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { rows, columns, selectedDeviceIp = "" } = props;
 
     const [dataTable, setDataTable] = useState([]);
@@ -67,8 +67,44 @@ const BGPTable = (props) => {
         setConfigStatus("");
     };
 
-    const deleteMclag = () => {};
+    const deleteBgp = () => {
+        
+        const output = {
+            mgt_ip: selectedDeviceIp,
+            vrf_name : selectedRows.pop().vrf_name
+        };
+        // console.log('==', output)
+
+        setDisableConfig(true);
+        const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
+        instance
+            .delete(apiPUrl, { data: output })
+            .then((res) => {
+                setModalContent("Mclag Deleted Successfully");
+                setConfigStatus("Config Successful");
+            })
+            .catch((err) => {
+                setModalContent("Error Deleting Mclag");
+                setConfigStatus("Config Failed");
+            })
+            .finally(() => {
+                setShowForm(false);
+                setIsMessageModalOpen(true);
+                setLog(true);
+                setDisableConfig(false);
+                setSelectedRows([]);
+                setTimeout(resetConfigStatus, 5000);
+            });
+    };
+
     const handleFormSubmit = (formData, status) => {};
+
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        console.log("====", selectedData);
+        setSelectedRows(selectedData);
+    };
 
     const onColumnResized = useCallback((params) => {}, []);
 
@@ -98,15 +134,15 @@ const BGPTable = (props) => {
 
                 <div className="">
                     <button className="btnStyle" onClick={openAddModal}>
-                        Add Mclag
+                        Add BGP
                     </button>
 
                     <button
                         className="ml-10 btnStyle"
                         disabled={selectedRows.length === 0}
-                        onClick={deleteMclag}
+                        onClick={deleteBgp}
                     >
-                        Delete Mclag
+                        Delete BGP
                     </button>
                 </div>
             </div>
@@ -118,10 +154,33 @@ const BGPTable = (props) => {
                     columnDefs={bgpColumns}
                     defaultColDef={defaultColDef}
                     onColumnResized={onColumnResized}
+                    stopEditingWhenCellsLoseFocus={true}
                     checkboxSelection
                     enableCellTextSelection="true"
+                    rowSelection="single"
+                    onSelectionChanged={onSelectionChanged}
                 ></AgGridReact>
             </div>
+
+            {isMessageModalOpen && (
+                <Modal show={isMessageModalOpen}>
+                    <div>
+                        {modalContent}
+                        <div
+                            style={{
+                                marginTop: "10px",
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: "10px",
+                            }}
+                        >
+                            <button className="btnStyle" onClick={refreshData}>
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
         </div>
     );
 };
