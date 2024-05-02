@@ -4,33 +4,13 @@ import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 import { useLog } from "../../utils/logpannelContext";
 import interceptor from "../../interceptor";
-import { useNavigate } from "react-router-dom";
+import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const DiscoverButton = () => {
     const { setLog } = useLog();
-    const navigate = useNavigate();
+    const { disableConfig, setDisableConfig } = useDisableConfig();
 
-    const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(false);
     const [discBtnText, setDiscBtnText] = useState("Discover Network");
-    const buttonStyle =
-        discBtnText === "Discovery In Progress"
-            ? {
-                  backgroundColor: "#ccc",
-                  color: "#666",
-                  border: "1px solid black",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  fontFamily: "Nunito, sans-serif",
-                  disabled: true,
-              }
-            : {
-                  backgroundColor: "lightgray",
-                  color: "black",
-                  border: "1px solid black",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  fontFamily: "Nunito, sans-serif",
-              };
 
     const [showForm, setShowForm] = useState(false);
 
@@ -38,22 +18,20 @@ const DiscoverButton = () => {
 
     const start_discovery = async (formData) => {
         setDiscBtnText("Discovery In Progress");
-        disableDiscBtn(true);
+        setDisableConfig(true);
         try {
             setShowForm(false);
             const response = await instance.put(getDiscoveryUrl(), formData);
 
-
             setDiscBtnText("Discover Network");
-            disableDiscBtn(false);
+            setDisableConfig(false);
             setLog(true);
             // navigate("/home");
             window.location.reload();
-
         } catch (error) {
             console.log(error);
             setDiscBtnText("Discover Network");
-            disableDiscBtn(false);
+            setDisableConfig(false);
             setLog(true);
         }
     };
@@ -61,12 +39,9 @@ const DiscoverButton = () => {
         <>
             <button
                 className="btnStyle"
-                id="btnDiscovery"
-                // onClick={btnHandler}
                 onClick={() => setShowForm(true)}
-                disabled={isDiscoveryBtnDisabled}
-                variant="contained"
-                size="small"
+                disabled={disableConfig}
+               
             >
                 {discBtnText}
             </button>
