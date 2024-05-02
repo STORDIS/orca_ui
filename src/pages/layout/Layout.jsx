@@ -47,8 +47,8 @@ const Layout = () => {
 
             <DataProviderLog>
                 <div className="container">
-                    {token ? <Navbar /> : null}
                     <DataProviderConfig>
+                    {token ? <Navbar /> : null}
                         <Routes>
                             <Route path="/login" element={<Login />} />
                             <Route

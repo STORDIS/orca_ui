@@ -30,8 +30,7 @@ const PortChDataTable = (props) => {
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [messageModalContent, setMessageModalContent] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [modalType, setModalType] = useState("success");
+
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
         useState(false);
     const [modalTitle, setModalTitle] = useState("");
@@ -104,9 +103,7 @@ const PortChDataTable = (props) => {
                 setDataTable([]);
                 setOriginalData([]);
             })
-            .finally(() => {
-                setIsLoading(false);
-            });
+            .finally(() => {});
     };
 
     const handleOkClick = () => {
@@ -495,18 +492,13 @@ const PortChDataTable = (props) => {
                                     gap: "10px",
                                 }}
                             >
-                                {modalType === "success" ? (
-                                    <button onClick={handleOkClick}>OK</button>
-                                ) : (
-                                    <button
-                                        className="btnStyle"
-                                        onClick={() =>
-                                            setIsMessageModalOpen(false)
-                                        }
-                                    >
-                                        Close
-                                    </button>
-                                )}
+                                <button onClick={handleOkClick}>OK</button>
+                                <button
+                                    className="btnStyle"
+                                    onClick={() => setIsMessageModalOpen(false)}
+                                >
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </Modal>

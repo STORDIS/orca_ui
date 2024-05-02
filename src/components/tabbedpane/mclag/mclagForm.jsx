@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../Form.scss";
-import { getAllInterfacesOfDeviceURL } from "../../../backend_rest_urls";
-import interceptor from "../../../interceptor";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const MclagForm = ({
@@ -11,8 +9,6 @@ const MclagForm = ({
     handelSubmitButton,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
-
-    const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",

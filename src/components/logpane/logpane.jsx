@@ -59,16 +59,22 @@ export const LogViewer = () => {
             width: 50,
             resizable: true,
             filter: true,
+            sortable: true,
         },
         {
             field: "timestamp",
             headerName: "Time",
             width: 150,
             resizable: true,
+            filter: true,
+            sortable: true,
             cellRenderer: (params) => {
                 return (
                     <Time value={params.value} format="hh:mm:ss DD-MM-YYYY" />
                 );
+            },
+            tooltipValueGetter: (params) => {
+                return params.value;
             },
         },
         {
@@ -76,11 +82,16 @@ export const LogViewer = () => {
             headerName: "Process Time",
             width: 100,
             resizable: true,
+            filter: true,
+            sortable: true,
             cellRenderer: (params) => {
                 let num = params.value;
                 num = parseFloat(num);
                 num = num.toFixed(2);
                 return <span>{num} sec</span>;
+            },
+            tooltipValueGetter: (params) => {
+                return params.value;
             },
         },
         {
@@ -88,8 +99,13 @@ export const LogViewer = () => {
             headerName: "Task",
             width: 400,
             resizable: true,
+            filter: true,
+            sortable: true,
             cellRenderer: (params) => {
                 return <span>{JSON.stringify(params.value)}</span>;
+            },
+            tooltipValueGetter: (params) => {
+                return JSON.stringify(params.value);
             },
         },
         {
@@ -97,6 +113,7 @@ export const LogViewer = () => {
             headerName: "Status",
             width: 400,
             resizable: true,
+            sortable: true,
             cellRenderer: (params) => {
                 if (params.value === 200) {
                     return (
@@ -124,6 +141,9 @@ export const LogViewer = () => {
                 } else {
                     return { color: "red", display: "flex" };
                 }
+            },
+            tooltipValueGetter: (params) => {
+                return params.data.response;
             },
         },
     ]);
