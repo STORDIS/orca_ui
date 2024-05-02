@@ -136,7 +136,6 @@ const BGPTable = (props) => {
                 local_asn: params.data.local_asn,
                 router_id: params.data.router_id,
             };
-            console.log(payload);
             setChanges(payload);
         }
     }, []);
