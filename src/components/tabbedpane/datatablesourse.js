@@ -297,27 +297,23 @@ export const mclagColumns = [
         sortable: true,
     },
     {
-       
         field: "mclag_sys_mac",
-       
+
         headerName: "MCLAG Sys MAC",
-       
+
         width: 130,
         editable: true,
         headerComponent: EditableHeaderComponent,
-   ,
         sortable: true,
     },
     {
-       
         field: "peer_addr",
-       
+
         headerName: "Peer Address",
-       
+
         width: 130,
         editable: true,
         headerComponent: EditableHeaderComponent,
-   ,
         sortable: true,
     },
     {
@@ -326,7 +322,8 @@ export const mclagColumns = [
         width: 130,
         editable: true,
         headerComponent: EditableHeaderComponent,
-   , sortable: true },
+        sortable: true,
+    },
     {
         field: "session_timeout",
         headerName: "Session Timeout",
@@ -337,15 +334,14 @@ export const mclagColumns = [
         sortable: true,
     },
     {
-       
         field: "source_address",
-       
+
         headerName: "Source Address",
-       
+
         width: 130,
         editable: true,
         headerComponent: EditableHeaderComponent,
-   ,
+
         sortable: true,
     },
     {
@@ -360,17 +356,17 @@ export const mclagColumns = [
         width: 130,
         editable: true,
         headerComponent: EditableHeaderComponent,
-   , sortable: true },
+        sortable: true,
+    },
     {
-       
         field: "gateway_macs",
-       
+
         headerName: "Gateway MAC",
-       
+
         width: 130,
         editable: true,
         headerComponent: EditableHeaderComponent,
-   ,
+
         sortable: true,
     },
     {
