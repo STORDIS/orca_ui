@@ -61,7 +61,7 @@ const McLagDataTable = (props) => {
     };
 
     const handleFormSubmit = (formData, status) => {
-        console.log(formData, status)
+        console.log(formData, status);
         setDisableConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
@@ -150,11 +150,10 @@ const McLagDataTable = (props) => {
             return;
         }
         if (params.newValue !== params.oldValue) {
-            console.log(params.data);
             let payload = {
                 mgt_ip: selectedDeviceIp,
-                ...params.data
-            }
+                ...params.data,
+            };
 
             setChanges(payload);
         }
@@ -167,9 +166,11 @@ const McLagDataTable = (props) => {
             <div className="button-group">
                 <div className="button-column">
                     <button
-                        disabled={disableConfig}
+                        disabled={
+                            disableConfig || Object.keys(changes).length === 0
+                        }
                         className="btnStyle"
-                        onClick={() => handleFormSubmit(changes, 'Updat')}
+                        onClick={() => handleFormSubmit(changes, "Updat")}
                     >
                         Apply Config
                     </button>
@@ -223,7 +224,7 @@ const McLagDataTable = (props) => {
                 title={"Add Mclag"}
             >
                 <MclagForm
-                    onSubmit={(e)=> handleFormSubmit(e, 'Add')}
+                    onSubmit={(e) => handleFormSubmit(e, "Add")}
                     selectedDeviceIp={selectedDeviceIp}
                     onCancel={handleCancel}
                     handelSubmitButton={disableConfig}
