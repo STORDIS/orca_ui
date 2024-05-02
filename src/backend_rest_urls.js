@@ -8,7 +8,7 @@ export function getAllInterfacesOfDeviceURL(device_ip) {
 }
 
 export function getAllMclagsOfDeviceURL(device_ip) {
-    return host_addr + '/mclags/?mgt_ip=' + device_ip
+    return host_addr + '/mclags?mgt_ip=' + device_ip
 }
 
 export function getAllBGPOfDeviceURL(device_ip) {

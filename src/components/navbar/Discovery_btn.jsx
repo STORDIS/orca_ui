@@ -8,29 +8,9 @@ import { useNavigate } from "react-router-dom";
 
 const DiscoverButton = () => {
     const { setLog } = useLog();
-    const navigate = useNavigate();
 
     const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(false);
     const [discBtnText, setDiscBtnText] = useState("Discover Network");
-    const buttonStyle =
-        discBtnText === "Discovery In Progress"
-            ? {
-                  backgroundColor: "#ccc",
-                  color: "#666",
-                  border: "1px solid black",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  fontFamily: "Nunito, sans-serif",
-                  disabled: true,
-              }
-            : {
-                  backgroundColor: "lightgray",
-                  color: "black",
-                  border: "1px solid black",
-                  borderRadius: "4px",
-                  padding: "6px 12px",
-                  fontFamily: "Nunito, sans-serif",
-              };
 
     const [showForm, setShowForm] = useState(false);
 
@@ -43,13 +23,11 @@ const DiscoverButton = () => {
             setShowForm(false);
             const response = await instance.put(getDiscoveryUrl(), formData);
 
-
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
             setLog(true);
-            // navigate("/home");
-            window.location.reload();
 
+            window.location.reload();
         } catch (error) {
             console.log(error);
             setDiscBtnText("Discover Network");
@@ -61,12 +39,8 @@ const DiscoverButton = () => {
         <>
             <button
                 className="btnStyle"
-                id="btnDiscovery"
-                // onClick={btnHandler}
                 onClick={() => setShowForm(true)}
                 disabled={isDiscoveryBtnDisabled}
-                variant="contained"
-                size="small"
             >
                 {discBtnText}
             </button>

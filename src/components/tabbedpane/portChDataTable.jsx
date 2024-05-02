@@ -4,14 +4,12 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { portChannelColumns } from "./datatablesourse";
-import axios from "axios";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
 } from "../../backend_rest_urls";
 import PortChannelForm from "../PortChannelForm";
 import Modal from "../modal/Modal";
-//import MemberSelectionComponent from "./MemberSelectionComponent";
 import MembersSelection from "./MembersSelection";
 import interceptor from "../../interceptor";
 import { useLog } from "../../utils/logpannelContext";
@@ -32,8 +30,7 @@ const PortChDataTable = (props) => {
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [messageModalContent, setMessageModalContent] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [modalType, setModalType] = useState("success");
+
     const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
         useState(false);
     const [modalTitle, setModalTitle] = useState("");
@@ -43,7 +40,6 @@ const PortChDataTable = (props) => {
     const [existingMembers, setExistingMembers] = useState([]);
 
     const instance = interceptor();
-    const [disableSubmit, setDisableSubmit] = useState(false);
 
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -107,9 +103,7 @@ const PortChDataTable = (props) => {
                 setMessageModalContent("Error fetching data: " + err.message);
                 setIsMessageModalOpen(true);
             })
-            .finally(() => {
-                setIsLoading(false);
-            });
+            .finally(() => {});
     };
 
     const handleOkClick = () => {
@@ -419,7 +413,6 @@ const PortChDataTable = (props) => {
                         Delete Selected Port Channel
                     </button>
                 </div>
-                <p>&nbsp;</p>
                 <Modal
                     show={showForm}
                     onClose={() => setShowForm(false)}
@@ -429,7 +422,7 @@ const PortChDataTable = (props) => {
                         onSubmit={handleFormSubmit}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={handleCancel}
-                        handelSubmitButton={disableSubmit}
+                        handelSubmitButton={disableConfig}
                     />
                 </Modal>
 
@@ -499,18 +492,13 @@ const PortChDataTable = (props) => {
                                     gap: "10px",
                                 }}
                             >
-                                {modalType === "success" ? (
-                                    <button onClick={handleOkClick}>OK</button>
-                                ) : (
-                                    <button
-                                        className="btnStyle"
-                                        onClick={() =>
-                                            setIsMessageModalOpen(false)
-                                        }
-                                    >
-                                        Close
-                                    </button>
-                                )}
+                                <button onClick={handleOkClick}>OK</button>
+                                <button
+                                    className="btnStyle"
+                                    onClick={() => setIsMessageModalOpen(false)}
+                                >
+                                    Close
+                                </button>
                             </div>
                         </div>
                     </Modal>
