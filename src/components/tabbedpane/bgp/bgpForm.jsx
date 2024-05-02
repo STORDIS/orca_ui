@@ -52,6 +52,16 @@ const BgpForm = ({
                 </div>
 
                 <div className="form-field">
+                    <label htmlFor="lag-name"> Router Id :</label>
+                    <input
+                        type="number"
+                        name="router_id"
+                        value={formData.router_id}
+                        onChange={handleChange}
+                    />
+                </div>
+
+                <div className="form-field">
                     <label htmlFor="lag-name"> Local ASN :</label>
                     <input
                         type="number"

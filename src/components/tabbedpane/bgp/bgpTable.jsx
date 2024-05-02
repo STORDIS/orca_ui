@@ -31,9 +31,10 @@ const BGPTable = (props) => {
 
     useEffect(() => {
         getBgp();
-    }, []);
+    }, [selectedDeviceIp]);
 
     const getBgp = () => {
+        console.log('-----')
         setDataTable([]);
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
@@ -47,7 +48,6 @@ const BGPTable = (props) => {
                 });
                 setDataTable(res.data);
             })
-            .then((res) => console.log(res.data))
             .catch((err) => console.log(err));
     };
 
@@ -69,12 +69,10 @@ const BGPTable = (props) => {
     };
 
     const deleteBgp = () => {
-        
         const output = {
             mgt_ip: selectedDeviceIp,
-            vrf_name : selectedRows.pop().vrf_name
+            vrf_name: selectedRows.pop().vrf_name,
         };
-        // console.log('==', output)
 
         setDisableConfig(true);
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
@@ -99,7 +97,7 @@ const BGPTable = (props) => {
     };
 
     const handleFormSubmit = (formData, status) => {
-        console.log(formData, status)
+        console.log(formData, status);
         setDisableConfig(true);
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
@@ -191,7 +189,7 @@ const BGPTable = (props) => {
                 title={"Add BGP"}
             >
                 <BgpForm
-                    onSubmit={(e)=> handleFormSubmit(e, 'Add')}
+                    onSubmit={(e) => handleFormSubmit(e, "Add")}
                     selectedDeviceIp={selectedDeviceIp}
                     onCancel={handleCancel}
                     handelSubmitButton={disableConfig}
