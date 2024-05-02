@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "../Form.scss";
-import { getAllInterfacesOfDeviceURL } from "../../../backend_rest_urls";
-import interceptor from "../../../interceptor";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const MclagForm = ({
@@ -11,8 +9,6 @@ const MclagForm = ({
     handelSubmitButton,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
-
-    const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -26,46 +22,6 @@ const MclagForm = ({
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        // switch (name) {
-        //     case "mclag_sys_mac":
-        //         if (
-        //             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
-        //                 e.target.value
-        //             )
-        //         ) {
-        //             alert("Invalid MAC address.");
-        //             return;
-        //         }
-        //         break;
-        //     case "peer_link":
-        //         if (!/^PortChannel\d+$/.test(e.target.value)) {
-        //             alert(
-        //                 'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-        //             );
-        //             return;
-        //         }
-        //         break;
-        //     case "mem_port_chnl":
-        //         if (!/^PortChannel\d+$/.test(e.target.value)) {
-        //             alert(
-        //                 'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-        //             );
-        //             return;
-        //         }
-        //         break;
-        //     case "mem_port_chnl_2":
-        //         if (!/^PortChannel\d+$/.test(e.target.value)) {
-        //             alert(
-        //                 'Invalid lag_name format. It should follow the pattern "PortChannel..." where "..." is a numeric value.'
-        //             );
-        //             return;
-        //         }
-        //         break;
-
-        //     default:
-        //         break;
-        // }
 
         const updatedValue = name === "domain_id" ? parseInt(value, 10) : value;
         setFormData((prevState) => ({
