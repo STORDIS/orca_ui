@@ -34,7 +34,7 @@ const BGPTable = (props) => {
     }, [selectedDeviceIp]);
 
     const getBgp = () => {
-        console.log('-----')
+        console.log("-----");
         setDataTable([]);
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
@@ -127,6 +127,20 @@ const BGPTable = (props) => {
         setSelectedRows(selectedData);
     };
 
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            console.log(params.data);
+            let payload = {
+                mgt_ip: selectedDeviceIp,
+                vrf_name: params.data.vrf_name,
+                local_asn: params.data.local_asn,
+                router_id: params.data.router_id,
+            };
+            console.log(payload);
+            setChanges(payload);
+        }
+    }, []);
+
     const onColumnResized = useCallback((params) => {}, []);
 
     return (
@@ -134,7 +148,7 @@ const BGPTable = (props) => {
             <div className="button-group">
                 <div className="button-column">
                     <button
-                        disabled={disableConfig}
+                        disabled={disableConfig || Object.keys(changes).length === 0  }
                         className="btnStyle"
                         onClick={() => handleFormSubmit(changes, "Updat")}
                     >
@@ -180,6 +194,7 @@ const BGPTable = (props) => {
                     enableCellTextSelection="true"
                     rowSelection="single"
                     onSelectionChanged={onSelectionChanged}
+                    onCellValueChanged={handleCellValueChanged}
                 ></AgGridReact>
             </div>
 
