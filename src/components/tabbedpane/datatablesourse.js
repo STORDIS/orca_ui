@@ -404,9 +404,12 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             width: 200,
             cellRenderer: (params) => {
                 return (
-                    <Link to={`/devices/${params.data.mgt_ip}`}>
-                        <button className="btnStyle">Details</button>
-                    </Link>
+                    <>
+                        <Link to={`/devices/${params.data.mgt_ip}`}>
+                            <button className="btnStyle">Details</button>
+                        </Link>
+                        <button className=" ml-10 btnStyle">Remove</button>
+                    </>
                 );
             },
         });
