@@ -18,29 +18,28 @@ const McLagDataTable = (props) => {
     const instance = interceptor();
 
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { rows, columns, selectedDeviceIp = "" } = props;
-
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
-
+    const [configStatus, setConfigStatus] = useState("");
+    const [selectedRows, setSelectedRows] = useState([]);
+    const [changes, setChanges] = useState({});
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-
     const [modalContent, setModalContent] = useState("");
-
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     useEffect(() => {
         getMclag();
-    }, []);
+    }, [selectedDeviceIp]);
 
     const getMclag = () => {
+        setDataTable([]);
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
             .then((res) => setDataTable(res.data))
-            .then((res) => console.log(res.data))
             .catch((err) => console.log(err));
     };
 
@@ -57,18 +56,23 @@ const McLagDataTable = (props) => {
         setShowForm(false);
     };
 
-    const handleFormSubmit = (formData) => {
-        console.log(formData);
-        setDisableConfig(true);
+    const resetConfigStatus = () => {
+        setConfigStatus("");
+    };
 
+    const handleFormSubmit = (formData, status) => {
+        console.log(formData, status);
+        setDisableConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
             .then((res) => {
-                setModalContent("Mclag  added Successfully");
+                setModalContent("Mclag " + status + "ed Successfully");
+                setConfigStatus("Config Successful");
             })
             .catch((err) => {
-                setModalContent("Error adding port channel");
+                setModalContent("Error in " + status + "ing Mclag");
+                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -76,21 +80,128 @@ const McLagDataTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setIsMessageModalOpen(true);
-                // refreshData();
+                setTimeout(resetConfigStatus, 5000);
             });
     };
+
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        console.log("====", selectedData);
+        setSelectedRows(selectedData);
+    };
+
+    const deleteMclag = () => {
+        setDisableConfig(true);
+
+        const output = {
+            mgt_ip: selectedDeviceIp,
+        };
+
+        const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
+        instance
+            .delete(apiPUrl, { data: output })
+            .then((res) => {
+                setModalContent("Mclag Deleted Successfully");
+                setConfigStatus("Config Successful");
+            })
+            .catch((err) => {
+                setModalContent("Error Deleting Mclag");
+                setConfigStatus("Config Failed");
+            })
+            .finally(() => {
+                setShowForm(false);
+                setIsMessageModalOpen(true);
+                setLog(true);
+                setDisableConfig(false);
+                setSelectedRows([]);
+                setTimeout(resetConfigStatus, 5000);
+            });
+    };
+
+    const handleCellValueChanged = useCallback((params) => {
+        if (
+            !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
+                params.data.mclag_sys_mac
+            )
+        ) {
+            alert("Invalid MAC address.");
+            return;
+        }
+
+        if (!/^PortChannel\d+$/.test(params.data.peer_link)) {
+            alert("Invalid peer_link format.");
+            return;
+        }
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                params.data.source_address
+            )
+        ) {
+            alert("Invalid source_address format.");
+            return;
+        }
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                params.data.peer_addr
+            )
+        ) {
+            alert("Invalid peer_addr format.");
+            return;
+        }
+        if (params.newValue !== params.oldValue) {
+            let payload = {
+                mgt_ip: selectedDeviceIp,
+                ...params.data,
+            };
+
+            setChanges(payload);
+        }
+    }, []);
 
     const onColumnResized = useCallback((params) => {}, []);
 
     return (
         <div className="datatable">
             <div className="button-group">
+                <div className="button-column">
+                    <button
+                        disabled={
+                            disableConfig || Object.keys(changes).length === 0
+                        }
+                        className="btnStyle"
+                        onClick={() => handleFormSubmit(changes, "Updat")}
+                    >
+                        Apply Config
+                    </button>
+                    <span
+                        className={`config-status ${
+                            configStatus === "Config Successful"
+                                ? "config-successful"
+                                : configStatus === "Config Failed"
+                                ? "config-failed"
+                                : "config-in-progress"
+                        }`}
+                    >
+                        {configStatus}
+                    </span>
+                </div>
+
                 <div className="">
                     <button className="btnStyle" onClick={openAddModal}>
                         Add Mclag
                     </button>
+
+                    <button
+                        className="ml-10 btnStyle"
+                        disabled={selectedRows.length === 0}
+                        onClick={deleteMclag}
+                    >
+                        Delete Mclag
+                    </button>
                 </div>
             </div>
+
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
@@ -98,8 +209,12 @@ const McLagDataTable = (props) => {
                     columnDefs={mclagColumns}
                     defaultColDef={defaultColDef}
                     onColumnResized={onColumnResized}
+                    stopEditingWhenCellsLoseFocus={true}
+                    onCellValueChanged={handleCellValueChanged}
                     checkboxSelection
                     enableCellTextSelection="true"
+                    rowSelection="single"
+                    onSelectionChanged={onSelectionChanged}
                 ></AgGridReact>
             </div>
 
@@ -109,7 +224,7 @@ const McLagDataTable = (props) => {
                 title={"Add Mclag"}
             >
                 <MclagForm
-                    onSubmit={handleFormSubmit}
+                    onSubmit={(e) => handleFormSubmit(e, "Add")}
                     selectedDeviceIp={selectedDeviceIp}
                     onCancel={handleCancel}
                     handelSubmitButton={disableConfig}

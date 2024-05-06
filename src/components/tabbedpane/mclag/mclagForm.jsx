@@ -41,21 +41,23 @@ const MclagForm = ({
         }
 
         if (!/^PortChannel\d+$/.test(formData.peer_link)) {
-            alert(
-                'Invalid peer_link format.'
-            );
+            alert("Invalid peer_link format.");
             return;
         }
-        if (!/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(formData.source_address)) {
-            alert(
-                'Invalid source_address format.'
-            );
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                formData.source_address
+            )
+        ) {
+            alert("Invalid source_address format.");
             return;
         }
-        if (!/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(formData.peer_addr)) {
-            alert(
-                'Invalid peer_addr format.'
-            );
+        if (
+            !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
+                formData.peer_addr
+            )
+        ) {
+            alert("Invalid peer_addr format.");
             return;
         }
 

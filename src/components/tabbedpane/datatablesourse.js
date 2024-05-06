@@ -279,6 +279,7 @@ export const portChannelColumns = [
 ];
 
 export const mclagColumns = [
+    { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
     {
         field: "domain_id",
         headerName: "Domain_ID",
@@ -291,32 +292,56 @@ export const mclagColumns = [
         headerName: "Keepalive Interval",
         type: "number",
         width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
         sortable: true,
     },
     {
         field: "mclag_sys_mac",
+
         headerName: "MCLAG Sys MAC",
+
         width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
         sortable: true,
     },
     {
         field: "peer_addr",
+
         headerName: "Peer Address",
+
         width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
         sortable: true,
     },
-    { field: "peer_link", headerName: "Peer Link", width: 130, sortable: true },
+    {
+        field: "peer_link",
+        headerName: "Peer Link",
+        width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+    },
     {
         field: "session_timeout",
         headerName: "Session Timeout",
         type: "number",
         width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
         sortable: true,
     },
     {
         field: "source_address",
+
         headerName: "Source Address",
+
         width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+
         sortable: true,
     },
     {
@@ -325,11 +350,23 @@ export const mclagColumns = [
         width: 130,
         sortable: true,
     },
-    { field: "role", headerName: "Role", width: 130, sortable: true },
+    {
+        field: "role",
+        headerName: "Role",
+        width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+    },
     {
         field: "gateway_macs",
+
         headerName: "Gateway MAC",
+
         width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+
         sortable: true,
     },
     {
@@ -337,6 +374,8 @@ export const mclagColumns = [
         headerName: "Delay Restore",
         type: "number",
         width: 130,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
         sortable: true,
     },
 ];
