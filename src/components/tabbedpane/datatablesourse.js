@@ -381,9 +381,31 @@ export const mclagColumns = [
 ];
 
 export const bgpColumns = [
-    { field: "local_asn", headerName: "ASN", width: 130, sortable: true },
-    { field: "vrf_name", headerName: "VRF", width: 130, sortable: true },
-    { field: "router_id", headerName: "Router ID", width: 130, sortable: true },
+    { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
+    {
+        field: "local_asn",
+        headerName: "ASN",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "vrf_name",
+        headerName: "VRF",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "router_id",
+        headerName: "Router ID",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
     {
         field: "neighbor_prop",
         headerName: "Neighbors",
