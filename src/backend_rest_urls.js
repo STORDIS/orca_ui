@@ -60,5 +60,5 @@ export function logPanelDeleteURL() {
 }
 
 export function deleteDevicesURL(device_ip) {
-    return host_addr + "/del_db?" + device_ip;
+    return host_addr + "/del_db?mgt_ip=" + device_ip;
 }

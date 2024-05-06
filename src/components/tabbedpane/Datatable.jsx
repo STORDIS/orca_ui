@@ -37,7 +37,7 @@ const Datatable = (props) => {
     }, [isTabbedPane]);
 
     const getDevices = () => {
-        setDataTable([])
+        setDataTable([]);
         instance(getAllDevicesURL())
             .then((res) => {
                 if (isTabbedPane) {
@@ -103,7 +103,10 @@ const Datatable = (props) => {
                     onClose={handleDeleteCancellation}
                 >
                     <div>
-                        <p className="mb-10" >Device {selectedDeviceToDelete} will be removed</p>
+                        <p className="mb-10">
+                            Device {selectedDeviceToDelete}, its components and
+                            links will be removed
+                        </p>
                         <button
                             className="btnStyle mt-10 mr-10"
                             onClick={handleDeleteConfirmation}
