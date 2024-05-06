@@ -5,7 +5,7 @@ export function getAllDevicesURL() {
     return host_addr + "/devices";
 }
 export function getAllInterfacesOfDeviceURL(device_ip) {
-    return host_addr + "/interfaces/?mgt_ip=" + device_ip;
+    return host_addr + "/interfaces?mgt_ip=" + device_ip;
 }
 
 export function getAllMclagsOfDeviceURL(device_ip) {
@@ -13,11 +13,11 @@ export function getAllMclagsOfDeviceURL(device_ip) {
 }
 
 export function getAllBGPOfDeviceURL(device_ip) {
-    return host_addr + "/bgp/?mgt_ip=" + device_ip;
+    return host_addr + "/bgp?mgt_ip=" + device_ip;
 }
 
 export function getAllPortChnlsOfDeviceURL(device_ip) {
-    return host_addr + "/port_chnls/?mgt_ip=" + device_ip;
+    return host_addr + "/port_chnls?mgt_ip=" + device_ip;
 }
 
 export function getDiscoveryUrl() {
@@ -25,11 +25,11 @@ export function getDiscoveryUrl() {
 }
 
 export function getPortGroupsURL(device_ip) {
-    return host_addr + "/groups/?mgt_ip=" + device_ip;
+    return host_addr + "/groups?mgt_ip=" + device_ip;
 }
 
 export function getVlansURL(device_ip) {
-    return host_addr + "/vlans/?mgt_ip=" + device_ip;
+    return host_addr + "/vlans?mgt_ip=" + device_ip;
 }
 
 export function postLogin() {
@@ -41,7 +41,7 @@ export function getUser(user) {
 }
 
 export function deleteVlanMembersURL(device_ip) {
-    return host_addr + "/vlans_mem_delete/?mgt_ip=" + device_ip;
+    return host_addr + "/vlans_mem_delete?mgt_ip=" + device_ip;
 }
 
 export function gptCompletionsURL() {
