@@ -26,6 +26,10 @@ const InterfaceDataTable = (props) => {
     const instance = interceptor();
 
     const setInterfaceData = () => {
+        setDataTable([]);
+        setOriginalData([]);
+        setChanges([]);
+
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiUrl)
@@ -35,21 +39,17 @@ const InterfaceDataTable = (props) => {
                 const names = res.data.map((item) => item.name);
                 setInterfaceNames(names);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.log(err);
+                setDataTable([]);
+            });
     };
+
     useEffect(() => {
         if (selectedDeviceIp) {
             setInterfaceData();
         }
     }, [selectedDeviceIp]);
-
-    useEffect(() => {
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            setDataTable(JSON.parse(JSON.stringify(originalData)));
-            setChanges([]);
-        }
-    }, [props.refresh]);
 
     const resetConfigStatus = () => {
         setConfigStatus("");
