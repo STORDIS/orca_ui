@@ -8,7 +8,7 @@ import MclagForm from "./mclagForm";
 
 import { mclagColumns, defaultColDef } from "../datatablesourse";
 import { getAllMclagsOfDeviceURL } from "../../../backend_rest_urls";
-import interceptor from "../../../interceptor";
+import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
 import { useLog } from "../../../utils/logpannelContext";

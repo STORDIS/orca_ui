@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import { getAllInterfacesOfDeviceURL } from "../../../backend_rest_urls";
-import interceptor from "../../../interceptor";
+import interceptor from "../../../utils/interceptor";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const PortChannelForm = ({

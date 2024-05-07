@@ -7,7 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllDevicesURL } from "../../backend_rest_urls.js";
 import Modal from "../modal/Modal";
 
-import interceptor from "../../interceptor";
+import interceptor from "../../utils/interceptor";
 
 import { deleteDevicesURL } from "../../backend_rest_urls.js";
 

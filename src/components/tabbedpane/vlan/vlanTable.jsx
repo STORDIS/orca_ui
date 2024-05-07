@@ -11,7 +11,7 @@ import {
 } from "../../../backend_rest_urls";
 import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
-import interceptor from "../../../interceptor";
+import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 

@@ -3,7 +3,7 @@ import { getDiscoveryUrl } from "../../backend_rest_urls";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 import { useLog } from "../../utils/logpannelContext";
-import interceptor from "../../interceptor";
+import interceptor from "../../utils/interceptor";
 import { useNavigate } from "react-router-dom";
 
 const DiscoverButton = () => {

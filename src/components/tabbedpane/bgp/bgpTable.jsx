@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllBGPOfDeviceURL } from "../../../backend_rest_urls";
 
-import interceptor from "../../../interceptor";
+import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";

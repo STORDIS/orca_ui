@@ -15,7 +15,7 @@ import VlanTable from "./vlan/vlanTable";
 import "../../pages/home/home.scss";
 import { useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
-import interceptor from "../../interceptor";
+import interceptor from "../../utils/interceptor";
 import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const TabbedPane = () => {

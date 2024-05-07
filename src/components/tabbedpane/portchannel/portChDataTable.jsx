@@ -11,7 +11,7 @@ import {
 import PortChannelForm from "./PortChannelForm";
 import Modal from "../../modal/Modal";
 import MembersSelection from "./MembersSelection";
-import interceptor from "../../../interceptor";
+import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import interceptor from "../../interceptor";
+import interceptor from "../../utils/interceptor";
 import { gptCompletionsURL } from "../../backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
