@@ -4,12 +4,12 @@ import { deviceUserColumns, defaultColDef } from "./datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllDevicesURL } from "../../backend_rest_urls.js";
+import { getAllDevicesURL } from "../../utils/backend_rest_urls.js";
 import Modal from "../modal/Modal";
 
 import interceptor from "../../utils/interceptor";
 
-import { deleteDevicesURL } from "../../backend_rest_urls.js";
+import { deleteDevicesURL } from "../../utils/backend_rest_urls.js";
 
 import { useLog } from "../../utils/logpannelContext";
 import { useDisableConfig } from "../../utils/dissableConfigContext.js";

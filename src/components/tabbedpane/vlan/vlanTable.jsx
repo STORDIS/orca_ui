@@ -8,7 +8,7 @@ import {
     getVlansURL,
     getAllInterfacesOfDeviceURL,
     deleteVlanMembersURL,
-} from "../../../backend_rest_urls";
+} from "../../../utils/backend_rest_urls";
 import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
 import interceptor from "../../../utils/interceptor";

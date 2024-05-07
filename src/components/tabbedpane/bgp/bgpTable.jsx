@@ -4,7 +4,7 @@ import { bgpColumns, defaultColDef } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllBGPOfDeviceURL } from "../../../backend_rest_urls";
+import { getAllBGPOfDeviceURL } from "../../../utils/backend_rest_urls";
 
 import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";

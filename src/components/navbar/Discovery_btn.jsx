@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getDiscoveryUrl } from "../../backend_rest_urls";
+import { getDiscoveryUrl } from "../../utils/backend_rest_urls";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 import { useLog } from "../../utils/logpannelContext";

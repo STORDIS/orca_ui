@@ -8,7 +8,7 @@ import { AgGridReact } from "ag-grid-react";
 
 import interceptor from "../../utils/interceptor";
 
-import { logPanelURL, logPanelDeleteURL } from "../../backend_rest_urls";
+import { logPanelURL, logPanelDeleteURL } from "../../utils/backend_rest_urls";
 
 import { useLog } from "../../utils/logpannelContext";
 

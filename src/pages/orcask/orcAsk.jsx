@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 
 import interceptor from "../../utils/interceptor";
-import { gptCompletionsURL } from "../../backend_rest_urls";
+import { gptCompletionsURL } from "../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";

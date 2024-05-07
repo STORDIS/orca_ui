@@ -7,7 +7,7 @@ import { portChannelColumns } from "../datatablesourse";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
-} from "../../../backend_rest_urls";
+} from "../../../utils/backend_rest_urls";
 import PortChannelForm from "./PortChannelForm";
 import Modal from "../../modal/Modal";
 import MembersSelection from "./MembersSelection";

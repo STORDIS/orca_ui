@@ -8,7 +8,7 @@ import PortChDataTable from "../../components/tabbedpane/portchannel/portChDataT
 import McLagDataTable from "../../components/tabbedpane/mclag/mclagDataTable";
 import BGPTable from "../../components/tabbedpane/bgp/bgpTable";
 import { useParams } from "react-router-dom";
-import { getAllDevicesURL } from "../../backend_rest_urls";
+import { getAllDevicesURL } from "../../utils/backend_rest_urls";
 import { useState, useEffect } from "react";
 import PortGroupTable from "./portgroup/portGroupTable";
 import VlanTable from "./vlan/vlanTable";
