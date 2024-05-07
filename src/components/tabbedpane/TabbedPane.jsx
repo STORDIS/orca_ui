@@ -5,7 +5,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Deviceinfo from "../../components/tabbedpane/Deviceinfo";
 import InterfaceDataTable from "../../components/tabbedpane/interfaceDataTable";
-import PortChDataTable from "../../components/tabbedpane/portChDataTable";
+import PortChDataTable from "../../components/tabbedpane/portchannel/portChDataTable";
 import McLagDataTable from "../../components/tabbedpane/mclag/mclagDataTable";
 import BGPTable from "../../components/tabbedpane/bgp/bgpTable";
 import { useParams } from "react-router-dom";

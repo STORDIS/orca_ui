@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import "./tabbedpane/Form.scss";
-import { getAllInterfacesOfDeviceURL } from "../backend_rest_urls";
-import interceptor from "../interceptor";
-import { useDisableConfig } from "../utils/dissableConfigContext";
+import "../Form.scss";
+import { getAllInterfacesOfDeviceURL } from "../../../backend_rest_urls";
+import interceptor from "../../../interceptor";
+import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const PortChannelForm = ({
     onSubmit,

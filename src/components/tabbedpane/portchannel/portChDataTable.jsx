@@ -1,19 +1,19 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import "./tabbedPaneTable.scss";
+import "../tabbedPaneTable.scss";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { portChannelColumns } from "./datatablesourse";
+import { portChannelColumns } from "../datatablesourse";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
-} from "../../backend_rest_urls";
-import PortChannelForm from "../PortChannelForm";
-import Modal from "../modal/Modal";
-import MembersSelection from "./MembersSelection";
-import interceptor from "../../interceptor";
-import { useLog } from "../../utils/logpannelContext";
-import { useDisableConfig } from "../../utils/dissableConfigContext";
+} from "../../../backend_rest_urls";
+import PortChannelForm from "./PortChannelForm";
+import Modal from "../../modal/Modal";
+import MembersSelection from "../MembersSelection";
+import interceptor from "../../../interceptor";
+import { useLog } from "../../../utils/logpannelContext";
+import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
