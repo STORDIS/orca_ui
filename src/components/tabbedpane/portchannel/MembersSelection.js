@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDisableConfig } from "../../utils/dissableConfigContext";
+import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const MembersSelection = ({
     interfaceNames,

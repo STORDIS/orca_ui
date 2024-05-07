@@ -10,7 +10,7 @@ import {
 } from "../../../backend_rest_urls";
 import PortChannelForm from "./PortChannelForm";
 import Modal from "../../modal/Modal";
-import MembersSelection from "../MembersSelection";
+import MembersSelection from "./MembersSelection";
 import interceptor from "../../../interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
