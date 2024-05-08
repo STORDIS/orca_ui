@@ -10,11 +10,12 @@ import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 import { Chart } from "react-google-charts";
 
 import "./orcAsk.scss";
+import CustomGraph from "./../../components/graph/CustomGraph";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [viewType, setViewType] = useState("Table");
+    const [viewType, setViewType] = useState("Graph"); // table
     const textAreaRef = useRef(null);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
@@ -76,18 +77,37 @@ export const AskOrca = () => {
                                 cols: temp.cols,
                                 rows: temp.rows,
                             };
+                            // console.log(data);
 
                             updatedHistory[updatedHistory.length - 1].message =
                                 data;
                             updatedHistory[updatedHistory.length - 1].type =
-                                "json";
+                                "chart";
                             return updatedHistory;
                         } catch {
-                            updatedHistory[updatedHistory.length - 1].message =
-                                JSON.stringify(response?.data[0], null, 2);
-                            updatedHistory[updatedHistory.length - 1].type =
-                                "string";
-                            return updatedHistory;
+                            if (Array.isArray(response?.data[0])) {
+                                // console.log(response.data[0]);
+
+                                updatedHistory[
+                                    updatedHistory.length - 1
+                                ].message = response?.data[0];
+                                updatedHistory[updatedHistory.length - 1].type =
+                                    "string";
+                                return updatedHistory;
+                            } else {
+                                // console.log(response.data[0]);
+
+                                updatedHistory[
+                                    updatedHistory.length - 1
+                                ].message = JSON.stringify(
+                                    response?.data[0],
+                                    null,
+                                    2
+                                );
+                                updatedHistory[updatedHistory.length - 1].type =
+                                    "string";
+                                return updatedHistory;
+                            }
                         }
                     } else {
                         const updatedHistory = [...prevChatHistory];
@@ -108,7 +128,6 @@ export const AskOrca = () => {
     };
 
     const handleInputChange = (event) => {
-        console.log("handle");
         setQuestionPrompt({ prompt: event.target.value });
     };
 
@@ -179,7 +198,8 @@ export const AskOrca = () => {
                                                     {item.message}
                                                 </SyntaxHighlighter>
                                             ) : null}
-                                            {item.type === "json" ? (
+
+                                            {item.type === "chart" ? (
                                                 <div className="content">
                                                     <div className="selectView">
                                                         <select
@@ -197,16 +217,29 @@ export const AskOrca = () => {
                                                             <option value="Bar">
                                                                 Bar
                                                             </option>
+                                                            <option value="Graph">
+                                                                Graph
+                                                            </option>
                                                         </select>
                                                     </div>
 
-                                                    <Chart
-                                                        chartType={viewType}
-                                                        data={item.message}
-                                                        width="100%"
-                                                        height="-webkit-fill-available"
-                                                        legendToggle
-                                                    />
+                                                    {viewType !== "Graph" ? (
+                                                        <Chart
+                                                            chartType={viewType}
+                                                            data={item.message}
+                                                            width="100%"
+                                                            height="-webkit-fill-available"
+                                                            legendToggle
+                                                        />
+                                                    ) : null}
+
+                                                    {viewType === "Graph" ? (
+                                                        <CustomGraph
+                                                            message={
+                                                                item.message
+                                                            }
+                                                        />
+                                                    ) : null}
                                                 </div>
                                             ) : null}
 

@@ -45,11 +45,15 @@ export function deleteVlanMembersURL(device_ip) {
 }
 
 export function gptCompletionsURL() {
+    // return (
+    //     host_addr +
+    //     "/orcask/completions?response_format=json"
+    // );
     return (
         host_addr +
         "/orcask/completions?response_format=google chart json for table"
     );
-}
+}  
 
 export function logPanelURL() {
     return host_addr + "/logs/all/1?size=1000";

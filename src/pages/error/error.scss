@@ -1,19 +1,24 @@
-
 .widgets {
     display: flex;
     padding: 20px;
-  }
+}
 
-  .listContainer {
+.listContainer {
     padding: 15px;
     -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
     box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
     margin: 10px;
 
     .listTitle {
-      font-weight: 500;
-      color: gray;
-      margin-bottom: 15px;
+        font-weight: 500;
+        color: gray;
+        margin-bottom: 15px;
     }
-  }
 
+    .graph {
+        border: 1px solid gray;
+        width: 100% !important;
+        height: 300px !important;
+        position: relative;
+    }
+}
