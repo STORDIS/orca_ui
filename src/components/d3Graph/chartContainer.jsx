@@ -1,32 +1,79 @@
 // ChartContainer.js
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as d3 from "d3";
 
-const ChartContainer = () => {
+const ChartContainer = (props) => {
     useEffect(() => {
-        // Sample data for links and nodes
-        const data = {
-            nodes: [
-                { id: "A", color: "Red", label: "Node A" },
-                { id: "B", color: "Green", label: "Node B" },
-                { id: "C", color: "Green", label: "Node C" },
-                { id: "D", color: "Blue", label: "Node D" },
-                { id: "E", color: "Blue", label: "Node E" },
-            ],
-            links: [
-                { source: "A", target: "B", value: 1, name: "Link AB" },
-                { source: "B", target: "C", value: 1, name: "Link BC" },
-                { source: "C", target: "D", value: 1, name: "Link CD" },
-                { source: "D", target: "E", value: 1, name: "Link DE" },
-            ],
-        };
+        let tempNodes = [];
+        let tempEdges = [];
 
-        const color = d3.scaleOrdinal(d3.schemeCategory10);
+        props.message.rows.forEach((element) => {
+            tempNodes.push({
+                id: "",
+                label: "",
+                color: "Green",
+            });
+            tempEdges.push({
+                source: "0",
+                target: "",
+                value: 1,
+                name: "",
+            });
+        });
+
+        let found = false;
+        let labelToUse;
+
+        props.message.cols.forEach((col, i) => {
+            if (
+                col.label.toLowerCase().includes("name") &&
+                col.label.toLowerCase() !== "name"
+            ) {
+                found = true;
+                labelToUse = col.label;
+                return;
+            } else if (col.label.toLowerCase() === "name" && !found) {
+                labelToUse = col.label;
+                return;
+            } else if (
+                col.label.toLowerCase().includes("id") &&
+                col.label.toLowerCase() !== "id" &&
+                !found
+            ) {
+                labelToUse = col.label;
+            }
+        });
+
+        console.log("Label to use:", labelToUse);
+
+        props.message.cols.forEach((col, i) => {
+            if (col.label.toLowerCase() === "id") {
+                props.message.rows.forEach((row, j) => {
+                    tempEdges[j].target = row.c[i].v.toString();
+                    tempNodes[j].id = row.c[i].v.toString();
+                });
+            } else {
+                props.message.rows.forEach((row, j) => {
+                    tempEdges[j].target = (j + 1).toString();
+                    tempNodes[j].id = (j + 1).toString();
+                });
+            }
+            if (col.label.toLowerCase() === labelToUse.toLowerCase()) {
+                props.message.rows.forEach((row, j) => {
+                    tempNodes[j].label = row.c[i].v.toString();
+                    tempEdges[j].name = row.c[i].v + "-has";
+                });
+            }
+        });
+
+        tempNodes.push({ id: "0", label: "Device", color: "Red" });
+        console.log("-----", tempNodes);
+        console.log("-----", tempEdges);
 
         // The force simulation mutates links and nodes, so create a copy
         // so that re-evaluating this cell produces the same result.
-        const links = data.links.map((d) => ({ ...d }));
-        const nodes = data.nodes.map((d) => ({ ...d }));
+        const links = tempEdges.map((d) => ({ ...d }));
+        const nodes = tempNodes.map((d) => ({ ...d }));
 
         // Get dimensions of the container
         const containerWidth =
@@ -48,7 +95,7 @@ const ChartContainer = () => {
             .force(
                 "center",
                 d3.forceCenter(containerWidth / 2, containerHeight / 2)
-            ) // Center the simulation with container's dimensions
+            )
             .on("tick", ticked);
 
         // Create the SVG container.
@@ -64,7 +111,7 @@ const ChartContainer = () => {
             .append("g")
             .attr("stroke", "#999")
             .attr("stroke-opacity", 0.6)
-            .attr("stroke-width", 2) // Increase stroke width
+            .attr("stroke-width", 2)
             .selectAll()
             .data(links)
             .join("line")
@@ -77,8 +124,8 @@ const ChartContainer = () => {
             .data(links)
             .enter()
             .append("text")
-            .attr("dy", "-0.2em") // Offset label slightly above the line
-            .attr("text-anchor", "middle") // Center the text horizontally
+            .attr("dy", "-0.2em")
+            .attr("text-anchor", "middle")
             .attr("fill", "black")
             .text((d) => d.name);
 
@@ -90,7 +137,6 @@ const ChartContainer = () => {
             .data(nodes)
             .join("circle")
             .attr("r", 20)
-            // .attr("fill", "steelblue")
             .attr("fill", (d) => d.color)
             .call(
                 d3
@@ -107,8 +153,8 @@ const ChartContainer = () => {
             .data(nodes)
             .enter()
             .append("text")
-            .attr("dy", "3em") // Offset label slightly below the node
-            .attr("text-anchor", "middle") // Center the text horizontally
+            .attr("dy", "3em")
+            .attr("text-anchor", "middle")
             .attr("fill", "black")
             .text((d) => d.label);
 

@@ -13,7 +13,7 @@ const CustomGraph = (props) => {
         setEdges([]);
         setNodes([]);
         // get_chart_from_google();
-        console.log(get_chart_data());
+        // console.log(get_chart_data());
         setNodes(get_chart_data()[0]);
         setEdges(get_chart_data()[1]);
     }, [props]);

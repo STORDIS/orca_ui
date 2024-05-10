@@ -1,31 +1,15 @@
+// ChartContainer.js
 import React, { useRef, useEffect } from "react";
 import * as d3 from "d3";
 
-const ChartContainer = () => {
+const ChartContainer = (props) => {
     useEffect(() => {
         // Sample data for links and nodes
-        const data = {
-            nodes: [
-                { id: "A", color: "Red", label: "Node A" },
-                { id: "B", color: "Green", label: "Node B" },
-                { id: "C", color: "Green", label: "Node C" },
-                { id: "D", color: "Blue", label: "Node D" },
-                { id: "E", color: "Blue", label: "Node E" },
-            ],
-            links: [
-                { source: "A", target: "B", value: 1, name: "Link AB" },
-                { source: "B", target: "C", value: 1, name: "Link BC" },
-                { source: "C", target: "D", value: 1, name: "Link CD" },
-                { source: "D", target: "E", value: 1, name: "Link DE" },
-            ],
-        };
-
-        const color = d3.scaleOrdinal(d3.schemeCategory10);
 
         // The force simulation mutates links and nodes, so create a copy
         // so that re-evaluating this cell produces the same result.
-        const links = data.links.map((d) => ({ ...d }));
-        const nodes = data.nodes.map((d) => ({ ...d }));
+        const links = props.message.links.map((d) => ({ ...d }));
+        const nodes = props.message.nodes.map((d) => ({ ...d }));
 
         // Get dimensions of the container
         const containerWidth =
@@ -58,18 +42,6 @@ const ChartContainer = () => {
             .attr("viewBox", `0 0 ${containerWidth} ${containerHeight}`) // Set viewBox with container's dimensions
             .attr("style", "width: 100%; height: 100%;");
 
-        // Add arrowhead marker definition
-        svg.append("defs").append("marker")
-            .attr("id", "arrowhead")
-            .attr("viewBox", "0 0 10 10")
-            .attr("refX", 8)
-            .attr("refY", 5)
-            .attr("markerWidth", 6)
-            .attr("markerHeight", 6)
-            .attr("orient", "auto")
-            .append("path")
-            .attr("d", "M 0 0 L 10 5 L 0 10 Z");
-
         // Add a line for each link, and a circle for each node.
         const link = svg
             .append("g")
@@ -79,8 +51,19 @@ const ChartContainer = () => {
             .selectAll()
             .data(links)
             .join("line")
-            .attr("stroke-width", (d) => Math.sqrt(d.value))
-            .attr("marker-end", "url(#arrowhead)"); // Add arrowhead to the end of the line
+            .attr("stroke-width", (d) => Math.sqrt(d.value));
+
+        // Add labels for each link
+        const linkLabels = svg
+            .append("g")
+            .selectAll("text")
+            .data(links)
+            .enter()
+            .append("text")
+            .attr("dy", "-0.2em") // Offset label slightly above the line
+            .attr("text-anchor", "middle") // Center the text horizontally
+            .attr("fill", "black")
+            .text((d) => d.name);
 
         const node = svg
             .append("g")
@@ -100,6 +83,18 @@ const ChartContainer = () => {
                     .on("end", dragended)
             );
 
+        // Add labels for each node
+        const nodeLabels = svg
+            .append("g")
+            .selectAll("text")
+            .data(nodes)
+            .enter()
+            .append("text")
+            .attr("dy", "3em") // Offset label slightly below the node
+            .attr("text-anchor", "middle") // Center the text horizontally
+            .attr("fill", "black")
+            .text((d) => d.label);
+
         // Set the position attributes of links, nodes, and linkText each time the simulation ticks.
         function ticked() {
             link.attr("x1", (d) => d.source.x)
@@ -107,7 +102,13 @@ const ChartContainer = () => {
                 .attr("x2", (d) => d.target.x)
                 .attr("y2", (d) => d.target.y);
 
+            linkLabels
+                .attr("x", (d) => (d.source.x + d.target.x) / 2)
+                .attr("y", (d) => (d.source.y + d.target.y) / 2);
+
             node.attr("cx", (d) => d.x).attr("cy", (d) => d.y);
+
+            nodeLabels.attr("x", (d) => d.x).attr("y", (d) => d.y);
         }
 
         // Drag functions

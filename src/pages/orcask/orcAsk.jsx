@@ -12,6 +12,8 @@ import { Chart } from "react-google-charts";
 import "./orcAsk.scss";
 import CustomGraph from "./../../components/graph/CustomGraph";
 
+import ChartContainer from "../../components/d3Graph/chartContainer";
+
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
@@ -77,7 +79,7 @@ export const AskOrca = () => {
                                 cols: temp.cols,
                                 rows: temp.rows,
                             };
-                            // console.log(data);
+                            console.log(data);
 
                             updatedHistory[updatedHistory.length - 1].message =
                                 data;
@@ -234,11 +236,19 @@ export const AskOrca = () => {
                                                     ) : null}
 
                                                     {viewType === "Graph" ? (
-                                                        <CustomGraph
-                                                            message={
-                                                                item.message
-                                                            }
-                                                        />
+                                                        // <CustomGraph
+                                                        //     message={
+                                                        //         item.message
+                                                        //     }
+                                                        // />
+
+                                                        <div className="graph">
+                                                            <ChartContainer
+                                                                message={
+                                                                    item.message
+                                                                }
+                                                            />
+                                                        </div>
                                                     ) : null}
                                                 </div>
                                             ) : null}
