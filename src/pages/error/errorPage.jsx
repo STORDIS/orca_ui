@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import * as d3 from "d3";
 
 // import ChartContainer from "./../../components/d3Graph/temp";
-import ChartContainer from "./../../components/d3Graph/chartContainer";
+// import ChartContainer from "./../../components/d3Graph/chartContainer";
+import SigmaGraph from "../../components/sigmaGraph/sigmaGraph";
 
 const ErrorPage = () => {
     const data = {
@@ -186,12 +187,9 @@ const ErrorPage = () => {
             <div className="listContainer">
                 <div className="listTitle">Page Not Found</div>
                 <div className="graph">
-                    <ChartContainer message={data} />
+                    {/* <ChartContainer message={data} /> */}
 
-                    {/* <div
-                        id="chart-container"
-                        style={{ width: "100%", height: "100%" }}
-                    ></div> */}
+                    <SigmaGraph message={data} />
                 </div>
             </div>
         </div>

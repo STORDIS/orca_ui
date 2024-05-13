@@ -11,8 +11,7 @@ import { Chart } from "react-google-charts";
 
 import "./orcAsk.scss";
 import CustomGraph from "./../../components/graph/CustomGraph";
-
-import ChartContainer from "../../components/d3Graph/chartContainer";
+import SigmaGraph from "./../../components/sigmaGraph/sigmaGraph";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
@@ -241,9 +240,8 @@ export const AskOrca = () => {
                                                         //         item.message
                                                         //     }
                                                         // />
-
-                                                        <div className="graph">
-                                                            <ChartContainer
+                                                        <div className="graph" >
+                                                            <SigmaGraph
                                                                 message={
                                                                     item.message
                                                                 }
