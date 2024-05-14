@@ -4,6 +4,7 @@ import ForceSupervisor from "graphology-layout-force/worker";
 import Sigma from "sigma";
 import { v4 as uuid } from "uuid";
 import React, { useRef, useEffect, useState } from "react";
+import { color } from "d3";
 
 const SigmaGraph = (props) => {
     // Retrieve the html document for sigma container
@@ -25,34 +26,35 @@ const SigmaGraph = (props) => {
                 source: "0",
                 target: "",
                 name: "",
+                color: "Grey",
             });
         });
 
         let found = false;
         let labelToUse;
 
-        props.message.cols.forEach((col, i) => {
+        props?.message?.cols.forEach((col, i) => {
             if (
-                col.label.toLowerCase().includes("name") &&
-                col.label.toLowerCase() !== "name"
+                col?.label.toLowerCase().includes("name") &&
+                col?.label.toLowerCase() !== "name"
             ) {
                 found = true;
-                labelToUse = col.label;
+                labelToUse = col?.label;
                 return;
-            } else if (col.label.toLowerCase() === "name" && !found) {
-                labelToUse = col.label;
+            } else if (col?.label.toLowerCase() === "name" && !found) {
+                labelToUse = col?.label;
                 return;
             } else if (
-                col.label.toLowerCase().includes("id") &&
-                col.label.toLowerCase() !== "id" &&
+                col?.label.toLowerCase().includes("id") &&
+                col?.label.toLowerCase() !== "id" &&
                 !found
             ) {
-                labelToUse = col.label;
+                labelToUse = col?.label;
             }
         });
 
-        props.message.cols.forEach((col, i) => {
-            if (col.label.toLowerCase() === "id") {
+        props?.message?.cols.forEach((col, i) => {
+            if (col?.label.toLowerCase() === "id") {
                 props.message.rows.forEach((row, j) => {
                     tempEdges[j].target = row.c[i].v.toString();
                     tempNodes[j].id = row.c[i].v.toString();
@@ -63,15 +65,37 @@ const SigmaGraph = (props) => {
                     tempNodes[j].id = (j + 1).toString();
                 });
             }
-            if (col.label.toLowerCase() === labelToUse.toLowerCase()) {
+            if (col?.label?.toLowerCase() === labelToUse?.toLowerCase()) {
                 props.message.rows.forEach((row, j) => {
                     tempNodes[j].label = row.c[i].v.toString();
                     tempEdges[j].name = row.c[i].v + "-has";
                 });
+            } else {
+                // tempNodes[0].label = "No data found";
+                // tempEdges[0].name = "No data found";
             }
         });
 
-        tempNodes.push({ id: "0", label: "Device", size: 20, color: "Red" });
+        console.log("====", labelToUse);
+
+        if (labelToUse === undefined) {
+            tempNodes = [
+                {
+                    id: "0",
+                    label: "No Data Found",
+                    size: 40,
+                    color: "Red",
+                },
+            ];
+            tempEdges = [];
+        } else {
+            tempNodes.push({
+                id: "0",
+                label: "Device",
+                size: 20,
+                color: "Blue",
+            });
+        }
 
         const container = document.getElementById(container_id);
 
@@ -90,7 +114,8 @@ const SigmaGraph = (props) => {
             graph.addEdge(edge.source, edge.target, {
                 type: "arrow",
                 label: edge.name,
-                size: 10,
+                size: 2,
+                color: edge.color,
             });
         });
 
@@ -99,8 +124,9 @@ const SigmaGraph = (props) => {
         });
         layout.start();
 
-        const renderer = new Sigma(graph, container, {
+        let renderer = new Sigma(graph, container, {
             renderEdgeLabels: true,
+            enableEdgeEvents: true,
         });
 
         let draggedNode = null;
@@ -129,6 +155,7 @@ const SigmaGraph = (props) => {
             if (draggedNode) {
                 graph.removeNodeAttribute(draggedNode, "highlighted");
             }
+
             isDragging = false;
             draggedNode = null;
         });
@@ -138,37 +165,56 @@ const SigmaGraph = (props) => {
                 renderer.setCustomBBox(renderer.getBBox());
         });
 
-        renderer.on("clickStage", (event) => {
-            const coordForGraph = renderer.viewportToGraph({
-                x: event.x,
-                y: event.y,
-            });
+        // graph.addNode(id, node);
+        // graph.getNodeAttributes(nodeId)
+        let hoveredEdge = null;
 
-            const node = {
-                ...coordForGraph,
-                size: 10,
-                color: chroma.random().hex(),
-            };
+        const nodeEvents = [
+            // "enterNode",
+            // "leaveNode",
+            // "downNode",
+            "clickNode",
+            "rightClickNode",
+            "doubleClickNode",
+            // "wheelNode",
+        ];
+        const edgeEvents = [
+            // "downEdge",
+            "clickEdge",
+            "rightClickEdge",
+            "doubleClickEdge",
+            // "wheelEdge",
+        ];
 
-            const closestNodes = graph
-                .nodes()
-                .map((nodeId) => {
-                    const attrs = graph.getNodeAttributes(nodeId);
-                    const distance =
-                        Math.pow(node.x - attrs.x, 2) +
-                        Math.pow(node.y - attrs.y, 2);
-                    return { nodeId, distance };
-                })
-                .sort((a, b) => a.distance - b.distance)
-                .slice(0, 2);
+        //         res.color = "#cc0000"
 
-            const id = uuid();
-            
-            graph.addNode(id, node);
-            closestNodes.forEach((e) => graph.addEdge(id, e.nodeId));
+        nodeEvents.forEach((eventType) =>
+            renderer.on(eventType, ({ node }) =>
+                console.log(eventType, "node", node)
+            )
+        );
+
+        edgeEvents.forEach((eventType) =>
+            renderer.on(eventType, ({ edge }) =>
+                console.log(eventType, "edge", edge)
+            )
+        );
+
+        renderer.on("enterEdge", ({ edge }) => {
+            console.log("enterEdge", "edge", edge.split("_")[2]);
+            hoveredEdge = edge;
+            console.log(graph.getEdgeAttribute(edge, "color"));
+
+            graph.setEdgeAttribute(edge, "color", "Black");
+            renderer.refresh();
         });
+        renderer.on("leaveEdge", ({ edge }) => {
+            console.log("leaveEdge", "edge", edge);
+            hoveredEdge = null;
+            graph.setEdgeAttribute(edge, "color", "Grey");
 
-        
+            renderer.refresh();
+        });
 
         return () => {
             renderer.kill();
@@ -179,7 +225,7 @@ const SigmaGraph = (props) => {
     return (
         <div
             id={container_id}
-            style={{ width: "-webkit-fill-available", height: "100%" }}
+            style={{ width: "-webkit-fill-available", height: "100%", backgroundColor: "white" }}
         ></div>
     );
 };

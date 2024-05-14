@@ -68,49 +68,22 @@ export const AskOrca = () => {
             .post(gptCompletionsURL(), questionPrompt)
             .then((response) => {
                 setCurrentChatHistory((prevChatHistory) => {
-                    if (Array.isArray(response?.data)) {
-                        const updatedHistory = [...prevChatHistory];
-
-                        try {
-                            let temp = JSON.parse(response?.data[0]);
-
-                            let data = {
-                                cols: temp.cols,
-                                rows: temp.rows,
-                            };
-                            console.log(data);
-
-                            updatedHistory[updatedHistory.length - 1].message =
-                                data;
-                            updatedHistory[updatedHistory.length - 1].type =
-                                "chart";
-                            return updatedHistory;
-                        } catch {
-                            if (Array.isArray(response?.data[0])) {
-                                // console.log(response.data[0]);
-
-                                updatedHistory[
-                                    updatedHistory.length - 1
-                                ].message = response?.data[0];
-                                updatedHistory[updatedHistory.length - 1].type =
-                                    "string";
-                                return updatedHistory;
-                            } else {
-                                // console.log(response.data[0]);
-
-                                updatedHistory[
-                                    updatedHistory.length - 1
-                                ].message = JSON.stringify(
-                                    response?.data[0],
-                                    null,
-                                    2
-                                );
-                                updatedHistory[updatedHistory.length - 1].type =
-                                    "string";
-                                return updatedHistory;
-                            }
-                        }
-                    } else {
+                    const updatedHistory = [...prevChatHistory];
+                    try {
+                        console.log("try");
+                        let temp = JSON.parse(response?.data?.message);
+                        let data = {
+                            cols: temp.cols,
+                            rows: temp.rows,
+                        };
+                        console.log(data);
+                        updatedHistory[updatedHistory.length - 1].message =
+                            data;
+                        updatedHistory[updatedHistory.length - 1].type =
+                            "chart";
+                        return updatedHistory;
+                    } catch {
+                        console.log("catch");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
@@ -240,7 +213,7 @@ export const AskOrca = () => {
                                                         //         item.message
                                                         //     }
                                                         // />
-                                                        <div className="graph" >
+                                                        <div className="graph">
                                                             <SigmaGraph
                                                                 message={
                                                                     item.message
