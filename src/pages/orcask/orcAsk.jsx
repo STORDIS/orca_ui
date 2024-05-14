@@ -10,12 +10,14 @@ import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 import { Chart } from "react-google-charts";
 
 import "./orcAsk.scss";
-import CustomGraph from "./../../components/graph/CustomGraph";
-import SigmaGraph from "./../../components/sigmaGraph/sigmaGraph";
+import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
+
+import GoogleChart from "../graphsNcharts/googleChart/googleChart";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [isDisabled, setIsDisabled] = useState(false);
     const [viewType, setViewType] = useState("Graph"); // table
     const textAreaRef = useRef(null);
 
@@ -65,7 +67,7 @@ export const AskOrca = () => {
         textAreaRef.current.value = "";
 
         instance
-            .post(gptCompletionsURL(), questionPrompt)
+            .post(gptCompletionsURL("json"), questionPrompt)
             .then((response) => {
                 setCurrentChatHistory((prevChatHistory) => {
                     const updatedHistory = [...prevChatHistory];
@@ -123,14 +125,12 @@ export const AskOrca = () => {
             chatContainerRef.current.scrollTop =
                 chatContainerRef.current.scrollHeight;
         }
-    }, [isLoading]);
+    }, []);
 
-    useEffect(() => {
-        if (!isLoading && chatContainerRef.current) {
-            chatContainerRef.current.scrollTop =
-                chatContainerRef.current.scrollHeight;
-        }
-    }, [isLoading]);
+    const receiveChildData = (dataFromChild) => {
+        console.log("Data received from child:", dataFromChild);
+        setIsDisabled(dataFromChild);
+    };
 
     return (
         <div className="flexContainer">
@@ -198,21 +198,20 @@ export const AskOrca = () => {
                                                     </div>
 
                                                     {viewType !== "Graph" ? (
-                                                        <Chart
-                                                            chartType={viewType}
-                                                            data={item.message}
-                                                            width="100%"
-                                                            height="-webkit-fill-available"
-                                                            legendToggle
+                                                        <GoogleChart
+                                                            message={
+                                                                currentChatHistory[
+                                                                    index - 1
+                                                                ]
+                                                            }
+                                                            viewType={viewType}
+                                                            sendDataToParent={
+                                                                receiveChildData
+                                                            }
                                                         />
                                                     ) : null}
 
                                                     {viewType === "Graph" ? (
-                                                        // <CustomGraph
-                                                        //     message={
-                                                        //         item.message
-                                                        //     }
-                                                        // />
                                                         <div className="graph">
                                                             <SigmaGraph
                                                                 message={
@@ -274,16 +273,16 @@ export const AskOrca = () => {
                         placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                     ></textarea>
                     <button
-                        disabled={isLoading}
+                        disabled={isLoading || isDisabled}
                         onClick={gptCompletions}
                         className="btnStyle ml-10"
                     >
-                        {!isLoading ? (
+                        {!isLoading || isDisabled ? (
                             <span className="material-symbols-outlined">
                                 arrow_upward
                             </span>
                         ) : null}
-                        {isLoading ? (
+                        {isLoading || isDisabled ? (
                             <span className="material-symbols-outlined">
                                 pending
                             </span>

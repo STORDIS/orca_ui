@@ -44,14 +44,14 @@ export function deleteVlanMembersURL(device_ip) {
     return host_addr + "/vlans_mem_delete?mgt_ip=" + device_ip;
 }
 
-export function gptCompletionsURL() {
+export function gptCompletionsURL(formate) {
     // return (
     //     host_addr +
     //     "/orcask/completions?response_format=json"
     // );
     return (
         host_addr +
-        "/orcask/completions?response_format=google chart json for table"
+        "/orcask/completions?response_format=" + formate
     );
 }  
 

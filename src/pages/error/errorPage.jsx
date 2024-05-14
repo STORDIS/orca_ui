@@ -3,183 +3,60 @@ import * as d3 from "d3";
 
 // import ChartContainer from "./../../components/d3Graph/temp";
 // import ChartContainer from "./../../components/d3Graph/chartContainer";
-import SigmaGraph from "../../components/sigmaGraph/sigmaGraph";
+import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
+
+// import GoogleChart from "../graphsNcharts/googleChart/googleChart";
 
 const ErrorPage = () => {
     const data = {
-        cols: [
+        content: [
             {
-                id: "vlanid",
-                label: "VLAN ID",
-                type: "number",
+                vlanid: 3,
+                name: "Vlan3",
+                mtu: 9100,
+                oper_status: "down",
+                autostate: "enable",
+                ip_address: null,
+                sag_ip_address: null,
+                enabled: null,
+                description: null,
+                id: 156,
+                members: [],
             },
             {
-                id: "name",
-                label: "Name",
-                type: "string",
+                vlanid: 2,
+                name: "Vlan2",
+                mtu: 9100,
+                oper_status: "down",
+                autostate: "enable",
+                ip_address: null,
+                sag_ip_address: null,
+                enabled: null,
+                description: null,
+                id: 155,
+                members: [],
             },
             {
-                id: "mtu",
-                label: "MTU",
-                type: "number",
-            },
-            {
-                id: "admin_status",
-                label: "Admin Status",
-                type: "string",
-            },
-            {
-                id: "oper_status",
-                label: "Operational Status",
-                type: "string",
-            },
-            {
-                id: "autostate",
-                label: "Autostate",
-                type: "string",
-            },
-            {
-                id: "id",
-                label: "ID",
-                type: "number",
-            },
-            {
-                id: "members",
-                label: "Members",
-                type: "string",
-            },
-        ],
-        rows: [
-            {
-                c: [
-                    {
-                        v: 3,
-                    },
-                    {
-                        v: "Vlan3",
-                    },
-                    {
-                        v: 9100,
-                    },
-                    {
-                        v: "up",
-                    },
-                    {
-                        v: "down",
-                    },
-                    {
-                        v: "enable",
-                    },
-                    {
-                        v: 156,
-                    },
-                    {
-                        v: "",
-                    },
-                ],
-            },
-            {
-                c: [
-                    {
-                        v: 2,
-                    },
-                    {
-                        v: "Vlan2",
-                    },
-                    {
-                        v: 9100,
-                    },
-                    {
-                        v: "up",
-                    },
-                    {
-                        v: "down",
-                    },
-                    {
-                        v: "enable",
-                    },
-                    {
-                        v: 155,
-                    },
-                    {
-                        v: "",
-                    },
-                ],
-            },
-            {
-                c: [
-                    {
-                        v: 1,
-                    },
-                    {
-                        v: "Vlan1",
-                    },
-                    {
-                        v: 9100,
-                    },
-                    {
-                        v: "up",
-                    },
-                    {
-                        v: "down",
-                    },
-                    {
-                        v: "enable",
-                    },
-                    {
-                        v: 154,
-                    },
-                    {
-                        v: "",
-                    },
-                ],
+                vlanid: 1,
+                name: "Vlan1",
+                mtu: 9100,
+                oper_status: "down",
+                autostate: "enable",
+                ip_address: null,
+                sag_ip_address: null,
+                enabled: null,
+                description: null,
+                id: 154,
+                members: [],
             },
         ],
+        function_call: true,
     };
 
-    const data1 = {
-        nodes: [
-            {
-                id: "1",
-                label: "Vlan3",
-                color: "Green",
-            },
-            {
-                id: "2",
-                label: "Vlan2",
-                color: "Green",
-            },
-            {
-                id: "3",
-                label: "Vlan1",
-                color: "Green",
-            },
-            {
-                id: "0",
-                label: "Device",
-                color: "Red",
-            },
-        ],
-        links: [
-            {
-                source: "0",
-                target: "1",
-                value: 1,
-                name: "Vlan3-has",
-            },
-            {
-                source: "0",
-                target: "2",
-                value: 1,
-                name: "Vlan2-has",
-            },
-            {
-                source: "0",
-                target: "3",
-                value: 1,
-                name: "Vlan1-has",
-            },
-        ],
+
+
+    const receiveChildData = (dataFromChild) => {
+        console.log("Data received from child:", dataFromChild);
     };
 
     return (
@@ -190,6 +67,12 @@ const ErrorPage = () => {
                     {/* <ChartContainer message={data} /> */}
 
                     <SigmaGraph message={data} />
+
+                    {/* <GoogleChart
+                        message={"get vlans for ip 10.10.229.58"}
+                        viewType={"Table"}
+                        sendDataToParent={receiveChildData}
+                    /> */}
                 </div>
             </div>
         </div>
