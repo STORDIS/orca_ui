@@ -1,13 +1,9 @@
-import chroma from "chroma-js";
 import Graph from "graphology";
 import ForceSupervisor from "graphology-layout-force/worker";
 import Sigma from "sigma";
-import { v4 as uuid } from "uuid";
-import React, { useRef, useEffect, useState } from "react";
-import { color } from "d3";
+import React, { useEffect } from "react";
 
 const SigmaGraph = (props) => {
-    // Retrieve the html document for sigma container
 
     let container_id = "check" + Math.random();
 
@@ -136,8 +132,6 @@ const SigmaGraph = (props) => {
                 renderer.setCustomBBox(renderer.getBBox());
         });
 
-        // graph.addNode(id, node);
-        // graph.getNodeAttributes(nodeId)
         let hoveredEdge = null;
 
         const nodeEvents = [
@@ -157,7 +151,6 @@ const SigmaGraph = (props) => {
             // "wheelEdge",
         ];
 
-        //         res.color = "#cc0000"
 
         nodeEvents.forEach((eventType) =>
             renderer.on(eventType, ({ node }) =>

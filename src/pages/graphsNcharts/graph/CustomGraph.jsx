@@ -12,8 +12,6 @@ const CustomGraph = (props) => {
         console.log(props.message);
         setEdges([]);
         setNodes([]);
-        // get_chart_from_google();
-        // console.log(get_chart_data());
         setNodes(get_chart_data()[0]);
         setEdges(get_chart_data()[1]);
     }, [props]);
@@ -113,43 +111,6 @@ const CustomGraph = (props) => {
         return [tempNodes, tempEdges];
     };
 
-    // const get_chart_from_google = () => {
-    //     let tempNodes = [];
-    //     let tempEdges = [];
-    //     props.message.rows.forEach((element) => {
-    //         tempNodes.push({
-    //             id: "",
-    //             label: "",
-    //         });
-    //         tempEdges.push({
-    //             source: "0",
-    //             target: "",
-    //             id: "",
-    //             label: "",
-    //         });
-    //     });
-    //     props.message.cols.forEach((col, i) => {
-    //         if (col.label.toLowerCase() === "id") {
-    //             props.message.rows.forEach((row, j) => {
-    //                 // console.log(row.c[i].v);
-    //                 tempNodes[j].id = row.c[i].v.toString();
-    //                 tempEdges[j].target = row.c[i].v.toString();
-    //                 tempEdges[j].id = row.c[i].v + "-0";
-    //             });
-    //         }
-    //         if (col.label.toLowerCase() === "name") {
-    //             props.message.rows.forEach((row, j) => {
-    //                 // console.log(row.c[i].v);
-    //                 tempNodes[j].label = row.c[i].v;
-    //                 tempEdges[j].label = row.c[i].v + "-has";
-    //             });
-    //         }
-    //     });
-    //     tempNodes.push({ id: "0", label: "Device", fill: "Red" });
-    //     setNodes(tempNodes);
-    //     setEdges(tempEdges);
-    //     console.log(tempNodes);
-    // };
 
     return (
         <div className="graph">

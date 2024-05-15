@@ -5,8 +5,6 @@ import interceptor from "../../../utils/interceptor";
 
 const GoogleChart = (props) => {
     const instance = interceptor();
-    const viewType = props.viewType;
-    // const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
     const [data, setData] = useState({});
