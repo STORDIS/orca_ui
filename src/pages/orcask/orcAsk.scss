@@ -56,7 +56,7 @@
 
                     .graph {
                         border: 1px solid gray;
-                        width: 300px;
+                        width: -webkit-fill-available;
                         height: 300px !important;
                         position: relative;
                     }

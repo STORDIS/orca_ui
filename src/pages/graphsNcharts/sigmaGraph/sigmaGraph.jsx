@@ -15,87 +15,58 @@ const SigmaGraph = (props) => {
         let tempNodes = [];
         let tempEdges = [];
 
-        props.message.rows.forEach((element) => {
+        let found = false;
+        let labelToUse;
+
+        console.log(Object.keys(props.message.content[0]));
+
+        Object.keys(props.message.content[0]).forEach((key) => {
+            if (
+                key.toLowerCase().includes("name") &&
+                key.toLowerCase() !== "name"
+            ) {
+                found = true;
+                labelToUse = key;
+                return;
+            } else if (key.toLowerCase() === "name" && !found) {
+                labelToUse = key;
+                return;
+            } else if (
+                key.toLowerCase().includes("id") &&
+                key.toLowerCase() !== "id" &&
+                !found
+            ) {
+                labelToUse = key;
+            }
+        });
+
+        props.message.content.forEach((element) => {
+            console.log(element);
+
             tempNodes.push({
-                id: "",
-                label: "",
+                id: element.id.toString(),
+                label: element[labelToUse],
                 color: "Green",
                 size: 10,
             });
+
             tempEdges.push({
                 source: "0",
-                target: "",
-                name: "",
+                target: element.id.toString(),
+                label: "relation",
                 color: "Grey",
             });
         });
 
-        let found = false;
-        let labelToUse;
-
-        props?.message?.cols.forEach((col, i) => {
-            if (
-                col?.label.toLowerCase().includes("name") &&
-                col?.label.toLowerCase() !== "name"
-            ) {
-                found = true;
-                labelToUse = col?.label;
-                return;
-            } else if (col?.label.toLowerCase() === "name" && !found) {
-                labelToUse = col?.label;
-                return;
-            } else if (
-                col?.label.toLowerCase().includes("id") &&
-                col?.label.toLowerCase() !== "id" &&
-                !found
-            ) {
-                labelToUse = col?.label;
-            }
+        tempNodes.push({
+            id: "0",
+            label: "Device",
+            size: 20,
+            color: "Blue",
         });
-
-        props?.message?.cols.forEach((col, i) => {
-            if (col?.label.toLowerCase() === "id") {
-                props.message.rows.forEach((row, j) => {
-                    tempEdges[j].target = row.c[i].v.toString();
-                    tempNodes[j].id = row.c[i].v.toString();
-                });
-            } else {
-                props.message.rows.forEach((row, j) => {
-                    tempEdges[j].target = (j + 1).toString();
-                    tempNodes[j].id = (j + 1).toString();
-                });
-            }
-            if (col?.label?.toLowerCase() === labelToUse?.toLowerCase()) {
-                props.message.rows.forEach((row, j) => {
-                    tempNodes[j].label = row.c[i].v.toString();
-                    tempEdges[j].name = row.c[i].v + "-has";
-                });
-            } else {
-                // tempNodes[0].label = "No data found";
-                // tempEdges[0].name = "No data found";
-            }
-        });
-
         console.log("====", labelToUse);
-
-        if (labelToUse === undefined) {
-            tempNodes = [
-                {
-                    id: "0",
-                    label: "No Data Found",
-                    size: 40,
-                    color: "Red",
-                },
-            ];
-            tempEdges = [];
-        } else {
-            tempNodes.push({
-                id: "0",
-                label: "Device",
-                size: 20,
-                color: "Blue",
-            });
-        }
+        console.log("====", tempNodes);
+        console.log("====", tempEdges);
 
         const container = document.getElementById(container_id);
 
@@ -113,7 +84,7 @@ const SigmaGraph = (props) => {
         tempEdges.forEach((edge, index) => {
             graph.addEdge(edge.source, edge.target, {
                 type: "arrow",
-                label: edge.name,
+                label: edge.label,
                 size: 2,
                 color: edge.color,
             });
@@ -225,7 +196,11 @@ const SigmaGraph = (props) => {
     return (
         <div
             id={container_id}
-            style={{ width: "-webkit-fill-available", height: "100%", backgroundColor: "white" }}
+            style={{
+                width: "-webkit-fill-available",
+                height: "100%",
+                backgroundColor: "white",
+            }}
         ></div>
     );
 };

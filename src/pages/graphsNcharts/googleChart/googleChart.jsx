@@ -6,139 +6,139 @@ import interceptor from "../../../utils/interceptor";
 const GoogleChart = (props) => {
     const instance = interceptor();
     const viewType = props.viewType;
-    const [data, setData] = useState({});
+    // const [data, setData] = useState({});
     const [isLoading, setIsLoading] = useState(false);
 
-    // const data = {
-    //     cols: [
-    //         {
-    //             id: "vlanid",
-    //             label: "VLAN ID",
-    //             type: "number",
-    //         },
-    //         {
-    //             id: "name",
-    //             label: "Name",
-    //             type: "string",
-    //         },
-    //         {
-    //             id: "mtu",
-    //             label: "MTU",
-    //             type: "number",
-    //         },
-    //         {
-    //             id: "admin_status",
-    //             label: "Admin Status",
-    //             type: "string",
-    //         },
-    //         {
-    //             id: "oper_status",
-    //             label: "Operational Status",
-    //             type: "string",
-    //         },
-    //         {
-    //             id: "autostate",
-    //             label: "Autostate",
-    //             type: "string",
-    //         },
-    //         {
-    //             id: "id",
-    //             label: "ID",
-    //             type: "number",
-    //         },
-    //         {
-    //             id: "members",
-    //             label: "Members",
-    //             type: "string",
-    //         },
-    //     ],
-    //     rows: [
-    //         {
-    //             c: [
-    //                 {
-    //                     v: 3,
-    //                 },
-    //                 {
-    //                     v: "Vlan3",
-    //                 },
-    //                 {
-    //                     v: 9100,
-    //                 },
-    //                 {
-    //                     v: "up",
-    //                 },
-    //                 {
-    //                     v: "down",
-    //                 },
-    //                 {
-    //                     v: "enable",
-    //                 },
-    //                 {
-    //                     v: 156,
-    //                 },
-    //                 {
-    //                     v: "",
-    //                 },
-    //             ],
-    //         },
-    //         {
-    //             c: [
-    //                 {
-    //                     v: 2,
-    //                 },
-    //                 {
-    //                     v: "Vlan2",
-    //                 },
-    //                 {
-    //                     v: 9100,
-    //                 },
-    //                 {
-    //                     v: "up",
-    //                 },
-    //                 {
-    //                     v: "down",
-    //                 },
-    //                 {
-    //                     v: "enable",
-    //                 },
-    //                 {
-    //                     v: 155,
-    //                 },
-    //                 {
-    //                     v: "",
-    //                 },
-    //             ],
-    //         },
-    //         {
-    //             c: [
-    //                 {
-    //                     v: 1,
-    //                 },
-    //                 {
-    //                     v: "Vlan1",
-    //                 },
-    //                 {
-    //                     v: 9100,
-    //                 },
-    //                 {
-    //                     v: "up",
-    //                 },
-    //                 {
-    //                     v: "down",
-    //                 },
-    //                 {
-    //                     v: "enable",
-    //                 },
-    //                 {
-    //                     v: 154,
-    //                 },
-    //                 {
-    //                     v: "",
-    //                 },
-    //             ],
-    //         },
-    //     ],
-    // };
+    const [data, setData] = useState({
+        // cols: [
+        //     {
+        //         id: "vlanid",
+        //         label: "VLAN ID",
+        //         type: "number",
+        //     },
+        //     {
+        //         id: "name",
+        //         label: "Name",
+        //         type: "string",
+        //     },
+        //     {
+        //         id: "mtu",
+        //         label: "MTU",
+        //         type: "number",
+        //     },
+        //     {
+        //         id: "admin_status",
+        //         label: "Admin Status",
+        //         type: "string",
+        //     },
+        //     {
+        //         id: "oper_status",
+        //         label: "Operational Status",
+        //         type: "string",
+        //     },
+        //     {
+        //         id: "autostate",
+        //         label: "Autostate",
+        //         type: "string",
+        //     },
+        //     {
+        //         id: "id",
+        //         label: "ID",
+        //         type: "number",
+        //     },
+        //     {
+        //         id: "members",
+        //         label: "Members",
+        //         type: "string",
+        //     },
+        // ],
+        // rows: [
+        //     {
+        //         c: [
+        //             {
+        //                 v: 3,
+        //             },
+        //             {
+        //                 v: "Vlan3",
+        //             },
+        //             {
+        //                 v: 9100,
+        //             },
+        //             {
+        //                 v: "up",
+        //             },
+        //             {
+        //                 v: "down",
+        //             },
+        //             {
+        //                 v: "enable",
+        //             },
+        //             {
+        //                 v: 156,
+        //             },
+        //             {
+        //                 v: "",
+        //             },
+        //         ],
+        //     },
+        //     {
+        //         c: [
+        //             {
+        //                 v: 2,
+        //             },
+        //             {
+        //                 v: "Vlan2",
+        //             },
+        //             {
+        //                 v: 9100,
+        //             },
+        //             {
+        //                 v: "up",
+        //             },
+        //             {
+        //                 v: "down",
+        //             },
+        //             {
+        //                 v: "enable",
+        //             },
+        //             {
+        //                 v: 155,
+        //             },
+        //             {
+        //                 v: "",
+        //             },
+        //         ],
+        //     },
+        //     {
+        //         c: [
+        //             {
+        //                 v: 1,
+        //             },
+        //             {
+        //                 v: "Vlan1",
+        //             },
+        //             {
+        //                 v: 9100,
+        //             },
+        //             {
+        //                 v: "up",
+        //             },
+        //             {
+        //                 v: "down",
+        //             },
+        //             {
+        //                 v: "enable",
+        //             },
+        //             {
+        //                 v: 154,
+        //             },
+        //             {
+        //                 v: "",
+        //             },
+        //         ],
+        //     },
+        // ],
+    });
 
     useEffect(() => {
         setIsLoading(true);
@@ -150,7 +150,7 @@ const GoogleChart = (props) => {
                 prompt: props.message,
             })
             .then((response) => {
-                console.log(response.data.message);
+                console.log(JSON.parse(response.data.message));
                 setData(JSON.parse(response.data.message));
                 setIsLoading(false);
                 props.sendDataToParent(false);
@@ -160,7 +160,7 @@ const GoogleChart = (props) => {
                 setIsLoading(false);
                 props.sendDataToParent(false);
             });
-    }, []);
+    }, [props.message.prompt]);
 
     return (
         <div>
@@ -172,15 +172,13 @@ const GoogleChart = (props) => {
                 </span>
             ) : null}
 
-            {!isLoading ? (
-                <Chart
-                    chartType={viewType}
-                    data={data}
-                    width="100%"
-                    height="-webkit-fill-available"
-                    legendToggle
-                />
-            ) : null}
+            <Chart
+                chartType={props.viewType}
+                data={data}
+                width="100%"
+                height="-webkit-fill-available"
+                legendToggle
+            />
         </div>
     );
 };

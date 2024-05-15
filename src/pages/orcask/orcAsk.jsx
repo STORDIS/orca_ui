@@ -71,20 +71,25 @@ export const AskOrca = () => {
             .then((response) => {
                 setCurrentChatHistory((prevChatHistory) => {
                     const updatedHistory = [...prevChatHistory];
-                    try {
-                        console.log("try");
-                        let temp = JSON.parse(response?.data?.message);
-                        let data = {
-                            cols: temp.cols,
-                            rows: temp.rows,
-                        };
-                        console.log(data);
+
+                    console.log(typeof response?.data?.message.content);
+                    console.log(response?.data?.message.content);
+
+                    if (typeof response?.data?.message.content === "string") {
+                        console.log("catch");
+                        const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
-                            data;
+                            JSON.stringify(response?.data?.message.content, null, 2);
+                        updatedHistory[updatedHistory.length - 1].type =
+                            "string";
+                        return updatedHistory;
+                    } else if (Array.isArray(response?.data?.message.content)) {
+                        updatedHistory[updatedHistory.length - 1].message =
+                            response?.data?.message;
                         updatedHistory[updatedHistory.length - 1].type =
                             "chart";
                         return updatedHistory;
-                    } catch {
+                    } else {
                         console.log("catch");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
@@ -93,6 +98,24 @@ export const AskOrca = () => {
                             "string";
                         return updatedHistory;
                     }
+
+                    // try {
+                    //     let temp = response?.data?.message.content;
+
+                    //     updatedHistory[updatedHistory.length - 1].message =
+                    //         response?.data?.message;
+                    //     updatedHistory[updatedHistory.length - 1].type =
+                    //         "chart";
+                    //     return updatedHistory;
+                    // } catch {
+                    //     console.log("catch");
+                    //     const updatedHistory = [...prevChatHistory];
+                    //     updatedHistory[updatedHistory.length - 1].message =
+                    //         JSON.stringify(response?.data?.message, null, 2);
+                    //     updatedHistory[updatedHistory.length - 1].type =
+                    //         "string";
+                    //     return updatedHistory;
+                    // }
                 });
 
                 setIsLoading(false);
@@ -125,7 +148,7 @@ export const AskOrca = () => {
             chatContainerRef.current.scrollTop =
                 chatContainerRef.current.scrollHeight;
         }
-    }, []);
+    }, [isLoading]);
 
     const receiveChildData = (dataFromChild) => {
         console.log("Data received from child:", dataFromChild);
@@ -277,12 +300,12 @@ export const AskOrca = () => {
                         onClick={gptCompletions}
                         className="btnStyle ml-10"
                     >
-                        {!isLoading || isDisabled ? (
+                        {!isLoading || !isDisabled ? (
                             <span className="material-symbols-outlined">
                                 arrow_upward
                             </span>
                         ) : null}
-                        {isLoading || isDisabled ? (
+                        {isLoading && isDisabled ? (
                             <span className="material-symbols-outlined">
                                 pending
                             </span>
