@@ -7,8 +7,6 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 
-import { Chart } from "react-google-charts";
-
 import "./orcAsk.scss";
 import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
 
@@ -76,10 +74,13 @@ export const AskOrca = () => {
                     console.log(response?.data?.message.content);
 
                     if (typeof response?.data?.message.content === "string") {
-                        console.log("catch");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
-                            JSON.stringify(response?.data?.message.content, null, 2);
+                            JSON.stringify(
+                                response?.data?.message.content,
+                                null,
+                                2
+                            );
                         updatedHistory[updatedHistory.length - 1].type =
                             "string";
                         return updatedHistory;
@@ -90,7 +91,6 @@ export const AskOrca = () => {
                             "chart";
                         return updatedHistory;
                     } else {
-                        console.log("catch");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
@@ -98,24 +98,6 @@ export const AskOrca = () => {
                             "string";
                         return updatedHistory;
                     }
-
-                    // try {
-                    //     let temp = response?.data?.message.content;
-
-                    //     updatedHistory[updatedHistory.length - 1].message =
-                    //         response?.data?.message;
-                    //     updatedHistory[updatedHistory.length - 1].type =
-                    //         "chart";
-                    //     return updatedHistory;
-                    // } catch {
-                    //     console.log("catch");
-                    //     const updatedHistory = [...prevChatHistory];
-                    //     updatedHistory[updatedHistory.length - 1].message =
-                    //         JSON.stringify(response?.data?.message, null, 2);
-                    //     updatedHistory[updatedHistory.length - 1].type =
-                    //         "string";
-                    //     return updatedHistory;
-                    // }
                 });
 
                 setIsLoading(false);
@@ -145,6 +127,13 @@ export const AskOrca = () => {
 
     useEffect(() => {
         if (isLoading && chatContainerRef.current) {
+            chatContainerRef.current.scrollTop =
+                chatContainerRef.current.scrollHeight;
+        }
+    }, [isLoading]);
+
+    useEffect(() => {
+        if (!isLoading && chatContainerRef.current) {
             chatContainerRef.current.scrollTop =
                 chatContainerRef.current.scrollHeight;
         }
