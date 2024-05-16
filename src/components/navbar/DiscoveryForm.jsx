@@ -36,14 +36,10 @@ const DiscoveryForm = ({ handleSubmit, onCancel }) => {
                     type="text"
                     name="address"
                     onChange={handleChange}
-                    placeholder="Network Address or Device Ip."
+                    placeholder="Network Address or Device IP."
                 />
             </div>
             <div className="">
-                <p>
-                    If submitted with no address, discovery from server config
-                    will be triggered.
-                </p>
                 <button className="btnStyle mt-10 mr-10" type="submit">
                     Submit
                 </button>

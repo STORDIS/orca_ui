@@ -47,7 +47,7 @@ const DiscoverButton = () => {
             <Modal
                 show={showForm}
                 onClose={() => setShowForm(false)}
-                title="Discover"
+                title="Discover Devices"
             >
                 <DiscoveryForm
                     handleSubmit={start_discovery}
