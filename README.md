@@ -1,4 +1,12 @@
 # ORCA_UI
+
+- [ORCA\_UI](#orca_ui)
+  - [Install Dependencies](#install-dependencies)
+  - [Configure Server](#configure-server)
+  - [Run UI](#run-ui)
+  - [Run orca\_ui in docker container](#run-orca_ui-in-docker-container)
+    - [Create docker image](#create-docker-image)
+
 ## Install Dependencies
     sudo apt-get install npm
     git clone https://github.com/STORDIS/orca_ui.git
@@ -11,3 +19,23 @@ To do this either create a `.env` file (check `.env.sample` for an example) or [
 
 ## Run UI
     npm start
+
+## Run orca_ui in docker container
+Docker image of orca_ui can be created and container can be started as follows:
+### Create docker image
+First create the docker image as follows:
+
+        cd orca_ui
+        docker build -t orca_ui .
+
+If docker image is to be transferred to other machine to run there, first save the image locally, transfer to desired machine and load there as follows:
+
+        docker save -o orca_ui.tar.gz orca_ui:latest
+        scp orca_ui.tar.gz <user_name>@host:<path to copy the image>
+        ssh <user_name>@host
+        cd <path to copy the image>
+        docker load -i orca_ui.tar.gz
+
+Docker container can be started as follows:
+
+        docker run --net="host" orca_ui
