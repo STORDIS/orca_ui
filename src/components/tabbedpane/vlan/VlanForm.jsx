@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import "./tabbedpane/Form.scss";
-import { useDisableConfig } from "../utils/dissableConfigContext";
+import "../Form.scss";
+import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const VlanForm = ({
     onSubmit,

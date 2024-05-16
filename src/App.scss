@@ -23,6 +23,52 @@
     }
 }
 
+.loader {
+    display: inline-block;
+    background-color: rgb(245, 242, 240);
+    border-radius: 25px;
+    border-bottom-left-radius: 0px;
+    padding: 12px;
+    margin-left: 10px;
+}
+
+.loader {
+    display: inline-block;
+    background-color: rgb(245, 242, 240);
+    border-radius: 25px;
+    border-bottom-left-radius: 0px;
+    padding: 12px;
+    margin-left: 10px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: black;
+    border-radius: 50%;
+    display: inline-block;
+    animation: dance 1.5s infinite ease-in-out;
+    margin-left: 10px;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes dance {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
 .mt-10 {
     margin-top: 10px !important;
 }
@@ -37,4 +83,8 @@
 }
 .m-10 {
     margin: 10px 10px 10px 10px !important;
+}
+
+.sigma-mouse {
+    position: relative !important;
 }

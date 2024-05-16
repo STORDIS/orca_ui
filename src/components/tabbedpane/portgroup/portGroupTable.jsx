@@ -1,15 +1,14 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import "./tabbedPaneTable.scss";
-import { portGroupColumns, defaultColDef } from "./datatablesourse";
+import "../tabbedPaneTable.scss";
+import { portGroupColumns, defaultColDef } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import axios from "axios";
-import { getPortGroupsURL } from "../../backend_rest_urls";
-import "../../pages/home/home.scss";
-import interceptor from "../../interceptor";
-import { useLog } from "../../utils/logpannelContext";
-import { useDisableConfig } from "../../utils/dissableConfigContext";
+import { getPortGroupsURL } from "../../../utils/backend_rest_urls";
+import interceptor from "../../../utils/interceptor";
+import { useLog } from "../../../utils/logpannelContext";
+import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();

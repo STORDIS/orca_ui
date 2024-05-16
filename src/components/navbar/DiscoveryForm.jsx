@@ -1,4 +1,3 @@
-//import '../tabbedpane/PortChannelForm.scss';
 import { useState } from "react";
 
 const DiscoveryForm = ({ handleSubmit, onCancel }) => {

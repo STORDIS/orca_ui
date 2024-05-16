@@ -3,8 +3,8 @@ import "./tabbedPaneTable.scss";
 import { deviceUserColumns } from "./datatablesourse";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllDevicesURL } from "../../backend_rest_urls.js";
-import interceptor from "../../interceptor.js";
+import { getAllDevicesURL } from "../../utils/backend_rest_urls.js";
+import interceptor from "../../utils/interceptor.js";
 
 const Deviceinfo = (props) => {
   const {

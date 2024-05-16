@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import interceptor from "../../interceptor";
-import { gptCompletionsURL } from "../../backend_rest_urls";
+import interceptor from "../../utils/interceptor";
+import { gptCompletionsURL } from "../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
 import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
 
-import { Chart } from "react-google-charts";
-
 import "./orcAsk.scss";
+import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
+
+import GoogleChart from "../graphsNcharts/googleChart/googleChart";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [viewType, setViewType] = useState("Table");
+    const [isDisabled, setIsDisabled] = useState(false);
+    const [viewType, setViewType] = useState("Graph"); // table
     const textAreaRef = useRef(null);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
@@ -63,32 +65,31 @@ export const AskOrca = () => {
         textAreaRef.current.value = "";
 
         instance
-            .post(gptCompletionsURL(), questionPrompt)
+            .post(gptCompletionsURL("json"), questionPrompt)
             .then((response) => {
                 setCurrentChatHistory((prevChatHistory) => {
-                    if (Array.isArray(response?.data)) {
+                    const updatedHistory = [...prevChatHistory];
+
+                    console.log(typeof response?.data?.message.content);
+                    console.log(response?.data?.message.content);
+
+                    if (typeof response?.data?.message.content === "string") {
                         const updatedHistory = [...prevChatHistory];
-
-                        try {
-                            let temp = JSON.parse(response?.data[0]);
-
-                            let data = {
-                                cols: temp.cols,
-                                rows: temp.rows,
-                            };
-
-                            updatedHistory[updatedHistory.length - 1].message =
-                                data;
-                            updatedHistory[updatedHistory.length - 1].type =
-                                "json";
-                            return updatedHistory;
-                        } catch {
-                            updatedHistory[updatedHistory.length - 1].message =
-                                JSON.stringify(response?.data[0], null, 2);
-                            updatedHistory[updatedHistory.length - 1].type =
-                                "string";
-                            return updatedHistory;
-                        }
+                        updatedHistory[updatedHistory.length - 1].message =
+                            JSON.stringify(
+                                response?.data?.message.content,
+                                null,
+                                2
+                            );
+                        updatedHistory[updatedHistory.length - 1].type =
+                            "string";
+                        return updatedHistory;
+                    } else if (Array.isArray(response?.data?.message.content)) {
+                        updatedHistory[updatedHistory.length - 1].message =
+                            response?.data?.message;
+                        updatedHistory[updatedHistory.length - 1].type =
+                            "chart";
+                        return updatedHistory;
                     } else {
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
@@ -108,7 +109,6 @@ export const AskOrca = () => {
     };
 
     const handleInputChange = (event) => {
-        console.log("handle");
         setQuestionPrompt({ prompt: event.target.value });
     };
 
@@ -138,6 +138,11 @@ export const AskOrca = () => {
                 chatContainerRef.current.scrollHeight;
         }
     }, [isLoading]);
+
+    const receiveChildData = (dataFromChild) => {
+        console.log("Data received from child:", dataFromChild);
+        setIsDisabled(dataFromChild);
+    };
 
     return (
         <div className="flexContainer">
@@ -179,7 +184,8 @@ export const AskOrca = () => {
                                                     {item.message}
                                                 </SyntaxHighlighter>
                                             ) : null}
-                                            {item.type === "json" ? (
+
+                                            {item.type === "chart" ? (
                                                 <div className="content">
                                                     <div className="selectView">
                                                         <select
@@ -197,16 +203,35 @@ export const AskOrca = () => {
                                                             <option value="Bar">
                                                                 Bar
                                                             </option>
+                                                            <option value="Graph">
+                                                                Graph
+                                                            </option>
                                                         </select>
                                                     </div>
 
-                                                    <Chart
-                                                        chartType={viewType}
-                                                        data={item.message}
-                                                        width="100%"
-                                                        height="-webkit-fill-available"
-                                                        legendToggle
-                                                    />
+                                                    {viewType !== "Graph" ? (
+                                                        <GoogleChart
+                                                            message={
+                                                                currentChatHistory[
+                                                                    index - 1
+                                                                ]
+                                                            }
+                                                            viewType={viewType}
+                                                            sendDataToParent={
+                                                                receiveChildData
+                                                            }
+                                                        />
+                                                    ) : null}
+
+                                                    {viewType === "Graph" ? (
+                                                        <div className="graph">
+                                                            <SigmaGraph
+                                                                message={
+                                                                    item.message
+                                                                }
+                                                            />
+                                                        </div>
+                                                    ) : null}
                                                 </div>
                                             ) : null}
 
@@ -260,16 +285,16 @@ export const AskOrca = () => {
                         placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                     ></textarea>
                     <button
-                        disabled={isLoading}
+                        disabled={isLoading || isDisabled}
                         onClick={gptCompletions}
                         className="btnStyle ml-10"
                     >
-                        {!isLoading ? (
+                        {!isLoading || !isDisabled ? (
                             <span className="material-symbols-outlined">
                                 arrow_upward
                             </span>
                         ) : null}
-                        {isLoading ? (
+                        {isLoading && isDisabled ? (
                             <span className="material-symbols-outlined">
                                 pending
                             </span>

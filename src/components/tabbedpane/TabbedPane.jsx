@@ -1,22 +1,21 @@
 import React from "react";
-import "./tabbedPane.scss";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import Deviceinfo from "../../components/tabbedpane/Deviceinfo";
-import InterfaceDataTable from "../../components/tabbedpane/interfaceDataTable";
-import PortChDataTable from "../../components/tabbedpane/portChDataTable";
+import InterfaceDataTable from "../../components/tabbedpane/interfaces/interfaceDataTable";
+import PortChDataTable from "../../components/tabbedpane/portchannel/portChDataTable";
 import McLagDataTable from "../../components/tabbedpane/mclag/mclagDataTable";
 import BGPTable from "../../components/tabbedpane/bgp/bgpTable";
 import { useParams } from "react-router-dom";
-import { getAllDevicesURL } from "../../backend_rest_urls";
+import { getAllDevicesURL } from "../../utils/backend_rest_urls";
 import { useState, useEffect } from "react";
-import PortGroupTable from "../../components/tabbedpane/portGroupTable";
-import VlanTable from "../../components/tabbedpane/vlanTable";
+import PortGroupTable from "./portgroup/portGroupTable";
+import VlanTable from "./vlan/vlanTable";
 import "../../pages/home/home.scss";
 import { useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
-import interceptor from "../../interceptor";
+import interceptor from "../../utils/interceptor";
 import { useDisableConfig } from "../../utils/dissableConfigContext";
 
 const TabbedPane = () => {
