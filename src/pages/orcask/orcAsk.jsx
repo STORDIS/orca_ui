@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useRef } from "react";
-
-import interceptor from "../../utils/interceptor";
 import { gptCompletionsURL } from "../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter";
-import prism from "react-syntax-highlighter/dist/esm/styles/prism/prism";
+import { FaRobot } from "react-icons/fa6";
+import { FaRegCopy } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
+import { FaArrowUp } from "react-icons/fa";
+import { FaRotateLeft } from "react-icons/fa6";
+import { FaSpinner } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
+import { FaLink } from "react-icons/fa";
 
 import "./orcAsk.scss";
-import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
 
+import interceptor from "../../utils/interceptor";
+import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
 import GoogleChart from "../graphsNcharts/googleChart/googleChart";
 
 export const AskOrca = () => {
@@ -88,7 +94,7 @@ export const AskOrca = () => {
                         updatedHistory[updatedHistory.length - 1].message =
                             response?.data?.message;
                         updatedHistory[updatedHistory.length - 1].type =
-                            "chart";
+                            "resData";
                         return updatedHistory;
                     } else {
                         const updatedHistory = [...prevChatHistory];
@@ -152,8 +158,8 @@ export const AskOrca = () => {
                         <>
                             {item.message ? (
                                 <div key={item.index} className="aiStyle">
-                                    <span className="material-symbols-outlined icon">
-                                        smart_toy
+                                    <span className="icon">
+                                        <FaRobot />
                                     </span>
                                     {index === currentChatHistory.length - 1 &&
                                     isLoading ? (
@@ -167,25 +173,12 @@ export const AskOrca = () => {
                                     index !== currentChatHistory.length - 1 ? (
                                         <>
                                             {item.type === "string" ? (
-                                                <SyntaxHighlighter
-                                                    customStyle={{
-                                                        borderRadius: "25px",
-                                                        borderBottomLeftRadius:
-                                                            "0px",
-                                                        padding:
-                                                            "10px 15px 10px 15px",
-                                                        margin: "0px 0px 0px 10px",
-                                                    }}
-                                                    language="javascript"
-                                                    style={prism}
-                                                    wrapLines={true}
-                                                    wrapLongLines={true}
-                                                >
+                                                <div className="content">
                                                     {item.message}
-                                                </SyntaxHighlighter>
+                                                </div>
                                             ) : null}
 
-                                            {item.type === "chart" ? (
+                                            {item.type === "resData" ? (
                                                 <div className="content">
                                                     <div className="selectView">
                                                         <select
@@ -239,9 +232,7 @@ export const AskOrca = () => {
                                                 <CopyToClipboard
                                                     text={item.message}
                                                 >
-                                                    <span className="material-symbols-outlined">
-                                                        content_copy
-                                                    </span>
+                                                    <FaRegCopy />
                                                 </CopyToClipboard>
                                             </span>
                                         </>
@@ -259,14 +250,13 @@ export const AskOrca = () => {
                                                 })
                                             }
                                         >
-                                            <span className="material-symbols-outlined">
-                                                content_copy
-                                            </span>
+                                            <FaRegCopy />
                                         </CopyToClipboard>
                                     </span>
                                     <span className="text">{item.prompt}</span>
-                                    <span className="material-symbols-outlined icon">
-                                        person
+
+                                    <span className="icon">
+                                        <FaUser />
                                     </span>
                                 </div>
                             ) : null}
@@ -289,24 +279,14 @@ export const AskOrca = () => {
                         onClick={gptCompletions}
                         className="btnStyle ml-10"
                     >
-                        {!isLoading || !isDisabled ? (
-                            <span className="material-symbols-outlined">
-                                arrow_upward
-                            </span>
-                        ) : null}
-                        {isLoading && isDisabled ? (
-                            <span className="material-symbols-outlined">
-                                pending
-                            </span>
-                        ) : null}
+                        {!isLoading && !isDisabled ? <FaArrowUp /> : null}
+                        {isLoading || isDisabled ? <FaSpinner /> : null}
                     </button>
                     <button
                         onClick={resetCurrentChat}
                         className="btnStyle ml-10"
                     >
-                        <span className="material-symbols-outlined">
-                            restart_alt
-                        </span>
+                        <FaRotateLeft />
                     </button>
                 </div>
             </div>
@@ -320,8 +300,8 @@ export const AskOrca = () => {
                                 : "tabButtonDeSelected"
                         }
                     >
-                        <span className="material-symbols-outlined mr-10">
-                            bookmark
+                        <span className=" mr-10">
+                            <FaBookmark />
                         </span>
                         Bookmark
                     </div>
@@ -333,10 +313,8 @@ export const AskOrca = () => {
                                 : "tabButtonDeSelected"
                         }
                     >
-                        <span className="material-symbols-outlined mr-10">
-                            <span className="material-symbols-outlined">
-                                history
-                            </span>
+                        <span className=" mr-10">
+                            <FaHistory />
                         </span>
                         History
                     </div>
@@ -345,17 +323,13 @@ export const AskOrca = () => {
                 {isBookMark ? (
                     <>
                         <div className="bookmark">
-                            <span className="material-symbols-outlined">
-                                bookmark
-                            </span>
+                            <FaBookmark />
                             <div className="title">
                                 some text which is heading
                             </div>
                         </div>
                         <div className="bookmark">
-                            <span className="material-symbols-outlined">
-                                bookmark
-                            </span>
+                            <FaBookmark />
                             <div className="title">
                                 some text which is heading
                             </div>
@@ -366,15 +340,11 @@ export const AskOrca = () => {
                 {!isBookMark ? (
                     <>
                         <a href="default" target="_blank" className="links">
-                            <span className="material-symbols-outlined">
-                                link
-                            </span>
+                            <FaLink />
                             <div className="title">Link 1</div>
                         </a>
                         <a href="default" target="_blank" className="links">
-                            <span className="material-symbols-outlined">
-                                link
-                            </span>
+                            <FaLink />
                             <div className="title">Link 2</div>
                         </a>
                     </>

@@ -15,6 +15,7 @@ const VlanForm = ({
         mgt_ip: selectedDeviceIp || "",
         vlanid: 0,
         name: "",
+        ip_address: "",
         admin_sts: "",
         mtu: 9100,
     });

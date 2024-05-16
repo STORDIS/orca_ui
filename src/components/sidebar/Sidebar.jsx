@@ -1,9 +1,9 @@
 import "./sidebar.scss";
-import StorageIcon from "@mui/icons-material/Storage";
 import { Link } from "react-router-dom";
 import logo from "../../assets/orca.png";
 import { useNavigate } from "react-router-dom";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
+import { FaRobot } from "react-icons/fa";
+import { FaList  } from "react-icons/fa";
 
 const Sidebar = () => {
     const navigate = useNavigate();
@@ -18,11 +18,11 @@ const Sidebar = () => {
             <hr />
             <div className="center">
                 <Link className="navLink" to="/home">
-                    <StorageIcon className="icon" />
+                    <FaList  className="icon" />
                     <span>Devices</span>
                 </Link>
                 <Link className="navLink" to="/ORCAsk">
-                    <SmartToyIcon className="icon" />
+                    <FaRobot  className="icon" />
                     <span>ORCAsk</span>
                 </Link>
             </div>

@@ -1,10 +1,9 @@
 import "./navbar.scss";
-import SearchIcon from "@mui/icons-material/Search";
+import { FaSearch } from "react-icons/fa";
 import Discovery from "./Discovery_btn";
 import { useAuth } from "../../utils/auth";
 
 const Navbar = () => {
-
     const auth = useAuth();
 
     const handleLogout = () => {
@@ -16,7 +15,7 @@ const Navbar = () => {
             <div className="wrapper">
                 <div className="search">
                     <input type="text" placeholder="Search..." />
-                    <SearchIcon />
+                    <FaSearch />
                 </div>
                 <div className="items">
                     <div className="item">
@@ -24,7 +23,7 @@ const Navbar = () => {
                     </div>
 
                     <div className="items" onClick={handleLogout}>
-                        <button className="btnStyle" >Logout</button>
+                        <button className="btnStyle">Logout</button>
                     </div>
                 </div>
             </div>

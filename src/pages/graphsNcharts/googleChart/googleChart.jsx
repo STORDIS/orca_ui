@@ -13,11 +13,8 @@ const GoogleChart = (props) => {
         console.log(props.message.index);
 
         if (Object.keys(data).length === 0) {
-            console.log("If");
-
             setIsLoading(true);
             props.sendDataToParent(true);
-            console.log(props.message.prompt);
 
             instance
                 .post(gptCompletionsURL("google chart json for table"), {
@@ -48,7 +45,7 @@ const GoogleChart = (props) => {
                     <div className="dot"></div>
                 </span>
             ) : null}
-
+            check
             {!isLoading ? (
                 <Chart
                     chartType={props.viewType}
