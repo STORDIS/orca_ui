@@ -1,6 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { gptCompletionsURL } from "../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-alpine.css";
+import { AgGridReact } from "ag-grid-react";
 
 import { FaRobot } from "react-icons/fa6";
 import { FaRegCopy } from "react-icons/fa";
@@ -90,7 +93,7 @@ export const AskOrca = () => {
                         updatedHistory[updatedHistory.length - 1].type =
                             "string";
                         return updatedHistory;
-                    } else if (Array.isArray(response?.data?.message.content)) {
+                    } else if (response?.data?.message.content.length > 0) {
                         updatedHistory[updatedHistory.length - 1].message =
                             response?.data?.message;
                         updatedHistory[updatedHistory.length - 1].type =
@@ -150,6 +153,22 @@ export const AskOrca = () => {
         setIsDisabled(dataFromChild);
     };
 
+    const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
+
+    const generateColumnDefs = (data) => {
+        if (data.length > 0) {
+            return Object.keys(data[0]).map((key) => ({
+                headerName: key.replace(/_/g, " ").toUpperCase(),
+                field: key,
+                resizable: true,
+                filter: true,
+                sortable: true,
+                width: 130,
+            }));
+        }
+        return [];
+    };
+
     return (
         <div className="flexContainer">
             <div className="leftColumn">
@@ -202,7 +221,7 @@ export const AskOrca = () => {
                                                         </select>
                                                     </div>
 
-                                                    {viewType !== "Graph" ? (
+                                                    {viewType === "Bar" ? (
                                                         <GoogleChart
                                                             message={
                                                                 currentChatHistory[
@@ -214,6 +233,23 @@ export const AskOrca = () => {
                                                                 receiveChildData
                                                             }
                                                         />
+                                                    ) : null}
+                                                    {viewType === "Table" ? (
+                                                        <div
+                                                            style={gridStyle}
+                                                            className="ag-theme-alpine"
+                                                        >
+                                                            <AgGridReact
+                                                                rowData={
+                                                                    item.message
+                                                                        .content
+                                                                }
+                                                                columnDefs={generateColumnDefs(
+                                                                    item.message
+                                                                        .content
+                                                                )}
+                                                            />
+                                                        </div>
                                                     ) : null}
 
                                                     {viewType === "Graph" ? (
