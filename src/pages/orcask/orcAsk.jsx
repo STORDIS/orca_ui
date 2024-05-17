@@ -25,7 +25,7 @@ export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
-    const [viewType, setViewType] = useState("Graph"); // table
+    const [viewType, setViewType] = useState("Table"); // table
     const textAreaRef = useRef(null);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
