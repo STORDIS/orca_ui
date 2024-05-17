@@ -533,6 +533,7 @@ const VlanTable = (props) => {
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}
+                        stopEditingWhenCellsLoseFocus={true}
                     ></AgGridReact>
                 </div>
                 {isDeleteConfirmationModalOpen && (

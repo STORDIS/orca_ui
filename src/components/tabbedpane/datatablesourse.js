@@ -167,6 +167,14 @@ export const vlanColumns = (interfaceNames) => [
         headerComponent: EditableHeaderComponent,
     },
     {
+        field: "autostate",
+        headerName: "Autostate",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
+    {
         field: "ip_address",
         headerName: "IP Address",
         width: 130,
@@ -191,8 +199,8 @@ export const vlanColumns = (interfaceNames) => [
         headerComponent: EditableHeaderComponent,
     },
     {
-        field: "admin_status",
-        headerName: "Admin Status",
+        field: "enabled",
+        headerName: "Status",
         type: "boolean",
         width: 150,
         editable: true,

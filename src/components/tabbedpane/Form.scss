@@ -1,16 +1,16 @@
 .form-wrapper {
-    max-width: 500px;
-    margin: auto;
-    padding: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    border-radius: 4px;
+    display: flex;
+    gap: 10px;
 }
 
 .form-field {
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
+}
+
+.w-50 {
+    width: 50% !important;
 }
 
 .form-field label {
@@ -41,9 +41,3 @@
     opacity: 0.9;
 }
 
-@media (max-width: 640px) {
-    .form-wrapper {
-        padding: 10px;
-        max-width: 100%;
-    }
-}
