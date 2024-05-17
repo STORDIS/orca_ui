@@ -143,7 +143,7 @@ export const portGroupColumns = [
     },
 ];
 
-export const vlanColumns = (interfaceNames) => [
+export const vlanColumns =  [
     {
         headerCheckboxSelection: true,
         checkboxSelection: true,
@@ -222,7 +222,7 @@ export const vlanColumns = (interfaceNames) => [
         headerName: "Member IFs",
         width: 130,
         editable: true,
-        cellEditorParams: { values: interfaceNames },
+        // cellEditorParams: { values: interfaceNames },
         headerComponent: EditableHeaderComponent,
     },
 ];

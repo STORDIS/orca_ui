@@ -16,47 +16,32 @@ import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
 const VlanTable = (props) => {
+    const instance = interceptor();
+
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
-    const [changes, setChanges] = useState([]);
-    const [originalData, setOriginalData] = useState([]);
+
+    const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-    const [messageModalContent, setMessageModalContent] = useState("");
-    const [isLoading, setIsLoading] = useState(false);
-    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
-        useState(false);
-    const [showForm, setShowForm] = useState(false);
-    const [modalType, setModalType] = useState("success");
-    const [modalTitle, setModalTitle] = useState("");
-    const [isDeleteButtonEnabled, setIsDeleteButtonEnabled] = useState(false);
-    const [interfaceNames, setInterfaceNames] = useState([]);
-    const [selectedMembers, setSelectedMembers] = useState([]);
-    const [isMemberSelectionModalOpen, setIsMemberSelectionModalOpen] =
-        useState(false);
-    const [currentEditingVlan, setCurrentEditingVlan] = useState(null);
-    const [member, setMember] = useState("");
-    const [showCheckbox, setCheckboxVisible] = useState(false);
-    const [isCheckboxChecked, setCheckboxChecked] = useState(false);
-    const [memberFinalObj, setMemberFinalObj] = useState({});
-    const [membersSelectedForRemoval, setMembersSelectedForRemoval] = useState(
-        []
-    );
-    const instance = interceptor();
-    const [disableSubmit, setDisableSubmit] = useState(false);
-
+    const [changes, setChanges] = useState({});
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState("null");
+    const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     useEffect(() => {
+        getVlans();
+    }, [selectedDeviceIp]);
+
+    const getVlans = () => {
+        setDataTable([]);
         const apiMUrl = getVlansURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
             .then((res) => {
-                //iterate the json array res.data and convert the value of key "members" in each element to string
                 res?.data?.forEach((element) => {
                     element.members = JSON.stringify(element.members);
                 });
@@ -66,21 +51,21 @@ const VlanTable = (props) => {
                 console.log(err);
                 setDataTable([]);
             });
-    }, [selectedDeviceIp]);
+    };
 
-    useEffect(() => {
-        instance
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const fetchedInterfaceNames = response.data.map(
-                    (item) => item.name
-                );
-                setInterfaceNames(fetchedInterfaceNames);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
-            });
-    }, []);
+    // useEffect(() => {
+    //     instance
+    //         .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+    //         .then((response) => {
+    //             const fetchedInterfaceNames = response.data.map(
+    //                 (item) => item.name
+    //             );
+    //             setInterfaceNames(fetchedInterfaceNames);
+    //         })
+    //         .catch((error) => {
+    //             console.error("Error fetching interface names", error);
+    //         });
+    // }, []);
 
     const defaultColDef = {
         tooltipValueGetter: (params) => {
@@ -89,57 +74,7 @@ const VlanTable = (props) => {
         resizable: true,
     };
 
-    const refreshData = () => {
-        const apiMUrl = getVlansURL(selectedDeviceIp);
-        instance
-            .get(apiMUrl)
-            .then((res) => {
-                console.log("refresh", res);
-                if (res.data !== "") {
-                    res.data.forEach((element) => {
-                        element.members = JSON.stringify(element.members);
-                    });
-                    setDataTable(res.data);
-                    setOriginalData(JSON.parse(JSON.stringify(res.data)));
-                }
-            })
-            .catch((err) => {
-                console.error("Error fetching data:", err);
-                setMessageModalContent("Error fetching data: " + err.message);
-                setIsMessageModalOpen(true);
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    };
-
-    const resetConfigStatus = () => {
-        setConfigStatus("");
-        setChanges([]);
-        gridRef.current.api.deselectAll();
-        setSelectedRows([]);
-    };
-
-    const handleOkClick = () => {
-        setIsMessageModalOpen(false);
-        refreshData();
-    };
-
-    const promptDeleteConfirmation = () => {
-        setMessageModalContent(getDeleteConfirmationMessage());
-        setIsDeleteConfirmationModalOpen(true);
-    };
-
-    const handleDeleteConfirmation = () => {
-        setIsDeleteConfirmationModalOpen(false);
-        handleDelete();
-    };
-
-    const handleDeleteCancellation = () => {
-        setIsDeleteConfirmationModalOpen(false);
-    };
-
-    const handleDelete = () => {
+    const deleteVlan = () => {
         setDisableConfig(true);
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -160,314 +95,80 @@ const VlanTable = (props) => {
                     setDataTable(updatedDataTable);
                 }
                 setSelectedRows([]);
-                setMessageModalContent("Vlan Delete Successfully.");
-                setIsMessageModalOpen(true);
+                setModalContent("Vlan Delete Successfully.");
+                setConfigStatus("Config Successful");
             })
             .catch((err) => {
-                setMessageModalContent("Error in Deleting Vlan.");
+                setModalContent("Error in Deleting Vlan.");
             })
             .finally(() => {
+                setShowForm(false);
+                setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
+                setSelectedRows([]);
+                setTimeout(resetConfigStatus, 5000);
             });
     };
 
-    const onSelectionChanged = () => {
-        const selectedNodes = gridRef.current.api.getSelectedNodes();
-        const selectedData = selectedNodes.map((node) => node.data);
-        setSelectedRows(selectedData);
-        const isAnyRowSelected = selectedNodes.length > 0;
-        setIsDeleteButtonEnabled(isAnyRowSelected);
+    const resetConfigStatus = () => {
+        setConfigStatus("");
+    };
+
+    const handleFormSubmit = (formData, status) => {
+        setDisableConfig(true);
+
+        const apiMUrl = getVlansURL(selectedDeviceIp);
+        instance
+            .put(apiMUrl, formData)
+            .then(() => {
+                setIsMessageModalOpen("message");
+                setModalContent("Valn " + status + "ed Successfully");
+                setConfigStatus("Config Successful");
+            })
+            .catch(() => {
+                setIsMessageModalOpen("message");
+                setModalContent("Error in " + status + "ing Vlan");
+            })
+            .finally(() => {
+                setShowForm(false);
+                // getVlans();
+                setLog(true);
+                setDisableConfig(false);
+                setSelectedRows([]);
+                setTimeout(resetConfigStatus, 5000);
+            });
+    };
+
+    const handleDelete = () => {
+        setIsMessageModalOpen("delete");
+
+        selectedRows.forEach((element) => {
+            console.log(element);
+            setModalContent(
+                "Do you want to delete Vlan with id " + element.name
+            );
+        });
+    };
+
+    const refreshData = () => {
+        getVlans();
+        setIsMessageModalOpen("null");
+    };
+
+    const openAddModal = () => {
+        setShowForm(true);
     };
 
     const handleCancel = () => {
         setShowForm(false);
     };
 
-    const getDeleteConfirmationMessage = () => {
-        if (selectedRows.length === 1) {
-            return `Are you sure you want to delete ${selectedRows[0].name}?`;
-        } else if (selectedRows.length > 1) {
-            const names = selectedRows.map((row) => row.name).join(", ");
-            return `Are you sure you want to delete these Vlan: ${names}?`;
-        } else {
-            return "No Vlan selected.";
-        }
-    };
-
-    const handleFormSubmit = (formData) => {
-        setDisableConfig(true);
-
-        const apiMUrl = getVlansURL(selectedDeviceIp);
-        instance
-            .put(apiMUrl, formData)
-            .then((response) => {
-                setMessageModalContent("Vlan added successfully");
-            })
-            .catch((err) => {
-                setMessageModalContent("Error in adding Vlan");
-            })
-            .finally(() => {
-                setShowForm(false);
-                refreshData();
-                setIsMessageModalOpen(true);
-                setLog(true);
-                setDisableConfig(false);
-            });
-    };
-
-    const openAddModal = () => {
-        setModalTitle("Add Vlan");
-        setShowForm(true);
-    };
-
-    const openDeleteModal = () => {
-        setModalTitle("Delete Vlan");
-        promptDeleteConfirmation();
-    };
-
-    const handleCellValueChanged = useCallback(
-        (params) => {
-            if (params.newValue !== params.oldValue) {
-                setChanges((prev) => {
-                    if (!Array.isArray(prev)) {
-                        console.error("Expected array but got:", prev);
-                        return [];
-                    }
-                    let lastestChanges;
-                    let isNameExists = prev.filter(
-                        (val) => val.name === params.data.name
-                    );
-                    if (isNameExists.length > 0) {
-                        let existedIndex = prev.findIndex(
-                            (val) => val.name === params.data.name
-                        );
-                        prev[existedIndex][params.colDef.field] =
-                            params.newValue;
-                        lastestChanges = [...prev];
-                    } else {
-                        lastestChanges = [
-                            ...prev,
-                            {
-                                name: params.data.name,
-                                [params.colDef.field]: params.newValue,
-                            },
-                        ];
-                    }
-                    return lastestChanges;
-                });
-            }
-        },
-        [dataTable]
-    );
-
-    useEffect(() => {
-        if (props.refresh) {
-            props.setRefresh(!props.refresh);
-            const apiMUrl = getVlansURL(selectedDeviceIp);
-            instance.get(apiMUrl).then((res) => {
-                setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
-            });
-            setDataTable();
-            setChanges([]);
-        }
-    }, [props.refresh]);
-
-    const createJSONOutput = useCallback(() => {
-        const output = changes
-            .map((change) => {
-                const originalItem = dataTable.find(
-                    (item) => item.name === change.name
-                );
-                if (!originalItem) {
-                    console.error(
-                        "Original item not found for change:",
-                        change
-                    );
-                    return null;
-                }
-                return {
-                    mgt_ip: selectedDeviceIp,
-                    name: change.name,
-                    vlanid: originalItem.vlanid,
-                    ...change,
-                };
-            })
-            .filter(Boolean);
-        return output;
-    }, [selectedDeviceIp, changes, dataTable]);
-
-    const sendUpdates = useCallback(() => {
-        setDisableConfig(true);
-
-        if (changes.length === 0) {
-            return;
-        }
-        setConfigStatus("Config In Progress...");
-
-        const output = createJSONOutput();
-        const apiMUrl = getVlansURL(selectedDeviceIp);
-        instance
-            .put(apiMUrl, output)
-            .then((res) => {
-                setConfigStatus("Config Successful");
-                setTimeout(resetConfigStatus, 5000);
-            })
-            .catch((err) => {
-                setConfigStatus("Config Failed");
-                setTimeout(resetConfigStatus, 5000);
-            })
-            .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
-            });
-    }, [createJSONOutput, selectedDeviceIp, changes]);
-
-    const openMemberSelectionModal = (vlanData) => {
-        setCurrentEditingVlan(vlanData);
-        const existingMembers = vlanData.members
-            ? JSON.parse(vlanData.members)
-            : {};
-        setMemberFinalObj(existingMembers);
-        setIsMemberSelectionModalOpen(true);
-    };
-
-    const onCellClicked = useCallback((params) => {
-        if (params.colDef.field === "members") {
-            const members = JSON.parse(params.data.members);
-            openMemberSelectionModal(params.data);
-            setSelectedMembers(members);
-            setIsMemberSelectionModalOpen(true);
-        }
-    }, []);
-
-    const handleDropdownChange = (e) => {
-        if (e.target.value !== "") {
-            setMember(e.target.value);
-            setCheckboxVisible(true);
-            const currentStatus = memberFinalObj[e.target.value];
-            setCheckboxChecked(currentStatus === "tagged");
-        } else {
-            setMember("");
-            setCheckboxVisible(false);
-        }
-    };
-
-    const handleCheckbox = (e) => {
-        setCheckboxChecked(e.target.checked);
-    };
-
-    const handleBtnClicked = (e) => {
-        e.preventDefault();
-        setDisableConfig(false);
-        if (member) {
-            const newStatus = isCheckboxChecked ? "tagged" : "untagged";
-            setMemberFinalObj((prev) => ({
-                ...prev,
-                [member]: newStatus,
-            }));
-
-            setMember("");
-            setCheckboxVisible(false);
-            setCheckboxChecked(false);
-        } else {
-            alert("Please select a member interface before adding.");
-        }
-    };
-
-    const resetMemberSelectionModal = () => {
-        setMemberFinalObj({});
-        setMember("");
-        setCheckboxVisible(false);
-        setCheckboxChecked(false);
-    };
-
-    const convertToObject = (array) => {
-        return array.reduce((acc, [key, value]) => {
-            acc[key] = value;
-            return acc;
-        }, {});
-    };
-
-    const handleSaveMemberSelection = () => {
-        setDisableConfig(true);
-
-        const memberSelectionObject = convertToObject(
-            Object.entries(memberFinalObj)
-        );
-        const updatedVlans = dataTable.map((vlan) => {
-            if (vlan.name === currentEditingVlan.name) {
-                return {
-                    ...vlan,
-                    members: JSON.stringify(memberSelectionObject),
-                };
-            }
-            return vlan;
-        });
-
-        setDataTable(updatedVlans);
-        resetMemberSelectionModal();
-        setIsMemberSelectionModalOpen(false);
-
-        const output = {
-            vlanid: currentEditingVlan.vlanid,
-            mgt_ip: selectedDeviceIp,
-            name: currentEditingVlan.name,
-            members: memberSelectionObject,
-        };
-
-        const apiMUrl = getVlansURL(selectedDeviceIp);
-        instance
-            .put(apiMUrl, output)
-            .then((res) => {
-                setConfigStatus("Config Successful");
-            })
-            .catch((err) => {
-                setConfigStatus("Config Failed");
-            })
-            .finally(() => {
-                setTimeout(resetConfigStatus, 5000);
-                setLog(true);
-                setDisableConfig(false);
-            });
-    };
-
-    const handleModalClose = () => {
-        resetMemberSelectionModal();
-        setIsMemberSelectionModalOpen(false);
-    };
-
-    const deleteVlanMembers = async () => {
-        setDisableConfig(true);
-
-        if (!currentEditingVlan || membersSelectedForRemoval.length === 0)
-            return;
-        const updatedMembersObj = { ...memberFinalObj };
-        membersSelectedForRemoval.forEach((member) => {
-            delete updatedMembersObj[member];
-        });
-
-        const payload = {
-            mgt_ip: selectedDeviceIp,
-            name: currentEditingVlan.name,
-            members: updatedMembersObj,
-        };
-
-        instance
-            .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
-            .then((res) => {
-                setMemberFinalObj(updatedMembersObj);
-                setMembersSelectedForRemoval([]);
-                refreshData();
-            })
-            .catch((err) => {
-                console.error("Failed to update VLAN members", err);
-            })
-            .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
-            });
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        console.log("====", selectedData);
+        setSelectedRows(selectedData);
     };
 
     return (
@@ -475,11 +176,7 @@ const VlanTable = (props) => {
             <div className="datatable">
                 <div className="button-group">
                     <div className="button-column">
-                        <button
-                            onClick={sendUpdates}
-                            disabled={disableConfig}
-                            className="btnStyle"
-                        >
+                        <button disabled={disableConfig} className="btnStyle">
                             Apply Config
                         </button>
                         <span
@@ -498,88 +195,44 @@ const VlanTable = (props) => {
                     <button className="btnStyle" onClick={openAddModal}>
                         Add Vlan
                     </button>
-                    <button
-                        className="btnStyle"
-                        onClick={openDeleteModal}
-                        disabled={!isDeleteButtonEnabled}
-                    >
+                    <button className="btnStyle" onClick={handleDelete}>
                         Delete selected Vlan
                     </button>
                 </div>
-
-                <p>&nbsp;</p>
-                <Modal
-                    show={showForm}
-                    onClose={() => setShowForm(false)}
-                    title={modalTitle}
-                >
-                    <VlanForm
-                        onSubmit={handleFormSubmit}
-                        selectedDeviceIp={selectedDeviceIp}
-                        onCancel={handleCancel}
-                        handelSubmitButton={disableSubmit}
-                    />
-                </Modal>
 
                 <div style={gridStyle} className="ag-theme-alpine">
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
-                        columnDefs={vlanColumns(interfaceNames)}
+                        columnDefs={vlanColumns}
                         defaultColDef={defaultColDef}
-                        onCellValueChanged={handleCellValueChanged}
+                        // onCellValueChanged={handleCellValueChanged}
                         rowSelection="multiple"
                         checkboxSelection
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
-                        onCellClicked={onCellClicked}
+                        // onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
                     ></AgGridReact>
                 </div>
-                {isDeleteConfirmationModalOpen && (
-                    <Modal
-                        show={isDeleteConfirmationModalOpen}
-                        onClose={handleDeleteCancellation}
-                    >
-                        <div>
-                            <p>{messageModalContent}</p> &nbsp;
-                            <button
-                                className="btnStyle mt-10 mr-10"
-                                onClick={handleDeleteConfirmation}
-                            >
-                                Yes
-                            </button>
-                            &ensp;
-                            <button
-                                className="btnStyle mt-10 "
-                                onClick={handleDeleteCancellation}
-                            >
-                                No
-                            </button>
-                        </div>
-                    </Modal>
-                )}
 
-                {isMessageModalOpen && (
-                    <Modal
-                        show={isMessageModalOpen}
-                        onClose={() => setIsMessageModalOpen(false)}
-                    >
+                <Modal
+                    show={showForm}
+                    onClose={() => setShowForm(false)}
+                    title={"Add Vlan"}
+                >
+                    <VlanForm
+                        onSubmit={(e) => handleFormSubmit(e, "Add")}
+                        selectedDeviceIp={selectedDeviceIp}
+                        onCancel={handleCancel}
+                        handelSubmitButton={disableConfig}
+                    />
+                </Modal>
+
+                {isMessageModalOpen === "delete" && (
+                    <Modal show={true}>
                         <div>
-                            {messageModalContent}
-                            <button
-                                className="btnStyle"
-                                onClick={() => setIsMessageModalOpen(false)}
-                            >
-                                Ok
-                            </button>
-                        </div>
-                    </Modal>
-                )}
-                {isMessageModalOpen && (
-                    <Modal show={isMessageModalOpen}>
-                        <div>
-                            {messageModalContent}
+                            {modalContent}
                             <div
                                 style={{
                                     marginTop: "10px",
@@ -588,29 +241,47 @@ const VlanTable = (props) => {
                                     gap: "10px",
                                 }}
                             >
-                                {modalType === "success" ? (
-                                    <button
-                                        className="btnStyle"
-                                        onClick={handleOkClick}
-                                    >
-                                        OK
-                                    </button>
-                                ) : (
-                                    <button
-                                        className="btnStyle"
-                                        onClick={() =>
-                                            setIsMessageModalOpen(false)
-                                        }
-                                    >
-                                        Close
-                                    </button>
-                                )}
+                                <button
+                                    className="btnStyle"
+                                    onClick={deleteVlan}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    className="btnStyle"
+                                    onClick={refreshData}
+                                >
+                                    No
+                                </button>
                             </div>
                         </div>
                     </Modal>
                 )}
 
-                {isMemberSelectionModalOpen && (
+                {isMessageModalOpen === "message" && (
+                    <Modal show={true}>
+                        <div>
+                            {modalContent}
+                            <div
+                                style={{
+                                    marginTop: "10px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: "10px",
+                                }}
+                            >
+                                <button
+                                    className="btnStyle"
+                                    onClick={refreshData}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                        </div>
+                    </Modal>
+                )}
+
+                {/* {isMemberSelectionModalOpen && (
                     <Modal
                         show={isMemberSelectionModalOpen}
                         onClose={handleModalClose}
@@ -705,7 +376,7 @@ const VlanTable = (props) => {
                             </div>
                         </div>
                     </Modal>
-                )}
+                )} */}
             </div>
         </div>
     );

@@ -19,7 +19,7 @@ const McLagDataTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { rows, columns, selectedDeviceIp = "" } = props;
+    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
@@ -76,7 +76,6 @@ const McLagDataTable = (props) => {
             })
             .finally(() => {
                 setShowForm(false);
-
                 setLog(true);
                 setDisableConfig(false);
                 setIsMessageModalOpen("message");
@@ -102,10 +101,12 @@ const McLagDataTable = (props) => {
         instance
             .delete(apiPUrl, { data: output })
             .then((res) => {
+                setIsMessageModalOpen("message");
                 setModalContent("Mclag Deleted Successfully");
                 setConfigStatus("Config Successful");
             })
             .catch((err) => {
+                setIsMessageModalOpen("message");
                 setModalContent("Error Deleting Mclag");
                 setConfigStatus("Config Failed");
             })
@@ -262,6 +263,7 @@ const McLagDataTable = (props) => {
                     </div>
                 </Modal>
             )}
+
             {isMessageModalOpen === "delete" && (
                 <Modal show={true}>
                     <div>
@@ -274,8 +276,8 @@ const McLagDataTable = (props) => {
                                 gap: "10px",
                             }}
                         >
-                            {/*  onClick={deleteMclag} */}
-                            <button className="btnStyle">Yes</button>
+                            
+                            <button className="btnStyle" onClick={deleteMclag} >Yes</button>
                             <button className="btnStyle" onClick={refreshData}>
                                 No
                             </button>
