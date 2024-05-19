@@ -12,18 +12,13 @@ const VlanForm = ({
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
-        // Regular expression to match IPv4 address (0-255 in each octet)
         const ipv4Regex =
             /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
-        // Regular expression to match CIDR notation (0-32)
         const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
 
-        // Split the input into IP address and CIDR part
         const [ip, cidr] = ipWithCidr.split("/");
 
-        // Check if the IP address part is valid
         if (ipv4Regex.test(ip)) {
-            // If CIDR part exists, check it
             if (cidr === undefined || cidrRegex.test(cidr)) {
                 return true;
             }
@@ -42,12 +37,10 @@ const VlanForm = ({
         sag_ip_address: "",
         autostate: "",
     });
-    const [selectedInterfaces, setSelectedInterfaces] = useState([]);
+    // const [selectedInterfaces, setSelectedInterfaces] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        console.log(name, value);
 
         if (name === "vlanid") {
             const vlanName = `Vlan${value}`;
@@ -67,7 +60,6 @@ const VlanForm = ({
                 [name]: value,
             }));
         }
-        console.log(formData);
     };
 
     const handleSubmit = (e) => {
@@ -78,10 +70,6 @@ const VlanForm = ({
             alert("VLAN ID cannot be Negative.");
             return;
         }
-        console.log(
-            formData.ip_address,
-            isValidIPv4WithCIDR(formData.ip_address)
-        );
         if (
             !isValidIPv4WithCIDR(formData.ip_address) &&
             formData.ip_address !== ""
@@ -107,26 +95,24 @@ const VlanForm = ({
             // members: selectedInterfaces.join(", "),
         };
 
-        console.log(dataToSubmit);
-
         setDisableConfig(true);
         onSubmit(dataToSubmit);
     };
 
-    const handleInterfaceSelect = (event) => {
-        const selectedOptions = Array.from(
-            event.target.selectedOptions,
-            (option) => option.value
-        );
-        setSelectedInterfaces(selectedOptions);
-    };
+    // const handleInterfaceSelect = (event) => {
+    //     const selectedOptions = Array.from(
+    //         event.target.selectedOptions,
+    //         (option) => option.value
+    //     );
+    //     setSelectedInterfaces(selectedOptions);
+    // };
 
     useEffect(() => {
         setFormData((prevFormData) => ({
             ...prevFormData,
-            members: selectedInterfaces.join(", "),
+            // members: selectedInterfaces.join(", "),
         }));
-    }, [handelSubmitButton, selectedInterfaces]);
+    }, [handelSubmitButton]);
 
     return (
         <form onSubmit={handleSubmit}>

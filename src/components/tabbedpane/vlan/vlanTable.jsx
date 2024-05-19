@@ -11,6 +11,7 @@ import {
 } from "../../../utils/backend_rest_urls";
 import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
+import VlanMemberForm from "./vlanMemberForm";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
@@ -23,7 +24,7 @@ const VlanTable = (props) => {
     const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
 
-    const [showForm, setShowForm] = useState(false);
+    // const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
@@ -102,7 +103,6 @@ const VlanTable = (props) => {
                 setModalContent("Error in Deleting Vlan.");
             })
             .finally(() => {
-                setShowForm(false);
                 setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
@@ -131,7 +131,6 @@ const VlanTable = (props) => {
                 setModalContent("Error in " + status + "ing Vlan");
             })
             .finally(() => {
-                setShowForm(false);
                 // getVlans();
                 setLog(true);
                 setDisableConfig(false);
@@ -143,12 +142,11 @@ const VlanTable = (props) => {
     const handleDelete = () => {
         setIsMessageModalOpen("delete");
 
+        let nameArray = [];
         selectedRows.forEach((element) => {
-            console.log(element);
-            setModalContent(
-                "Do you want to delete Vlan with id " + element.name
-            );
+            nameArray.push(element.name + " ");
         });
+        setModalContent("Do you want to delete Vlan with id " + nameArray);
     };
 
     const refreshData = () => {
@@ -156,27 +154,103 @@ const VlanTable = (props) => {
         setIsMessageModalOpen("null");
     };
 
-    const openAddModal = () => {
-        setShowForm(true);
+    const openAddFormModal = () => {
+        setIsMessageModalOpen("add");
     };
 
-    const handleCancel = () => {
-        setShowForm(false);
+    const handleAddFormCancel = () => {
+        setIsMessageModalOpen("null");
     };
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data);
-        console.log("====", selectedData);
         setSelectedRows(selectedData);
     };
+
+    const isValidIPv4WithCIDR = (ipWithCidr) => {
+        if (ipWithCidr) {
+            const ipv4Regex =
+                /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
+            const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
+
+            console.log("check", ipWithCidr);
+            const [ip, cidr] = ipWithCidr.split("/");
+
+            if (ipv4Regex.test(ip)) {
+                if (cidr === undefined || cidrRegex.test(cidr)) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return false;
+        }
+    };
+
+    const handleCellValueChanged = useCallback((params) => {
+        if (
+            !isValidIPv4WithCIDR(params.data.ip_address) &&
+            params.data.ip_address !== "" &&
+            params.data.ip_address !== null
+        ) {
+            alert("ip_address is not valid");
+            setSelectedRows([]);
+            return;
+        }
+        if (
+            !isValidIPv4WithCIDR(params.data.sag_ip_address) &&
+            params.data.sag_ip_address !== "" &&
+            params.data.sag_ip_address !== null
+        ) {
+            alert("sag_ip_address is not valid");
+            setSelectedRows([]);
+            return;
+        }
+        if (params.data.sag_ip_address && params.data.ip_address) {
+            alert("ip_address or sag_ip_address any one must be added");
+            setSelectedRows([]);
+            return;
+        }
+        if (params.newValue !== params.oldValue) {
+            let payload = {
+                mgt_ip: selectedDeviceIp,
+                members: getMembers(params.data.members),
+                ...params.data,
+            };
+            console.log("---", payload);
+            setChanges(payload);
+        }
+    }, []);
+
+    const getMembers = (params) => {
+        console.log(params);
+        if (params) {
+            return JSON.parse(params);
+        } else {
+            return {};
+        }
+    };
+
+    const onCellClicked = useCallback((params) => {
+        if (params?.colDef?.field === "members") {
+            setIsMessageModalOpen("addMember");
+        }
+    }, []);
 
     return (
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group">
                     <div className="button-column">
-                        <button disabled={disableConfig} className="btnStyle">
+                        <button
+                            disabled={
+                                disableConfig ||
+                                Object.keys(changes).length === 0
+                            }
+                            className="btnStyle"
+                            onClick={() => handleFormSubmit(changes, "Updat")}
+                        >
                             Apply Config
                         </button>
                         <span
@@ -192,7 +266,7 @@ const VlanTable = (props) => {
                         </span>
                     </div>
 
-                    <button className="btnStyle" onClick={openAddModal}>
+                    <button className="btnStyle" onClick={openAddFormModal}>
                         Add Vlan
                     </button>
                     <button className="btnStyle" onClick={handleDelete}>
@@ -206,29 +280,49 @@ const VlanTable = (props) => {
                         rowData={dataTable}
                         columnDefs={vlanColumns}
                         defaultColDef={defaultColDef}
-                        // onCellValueChanged={handleCellValueChanged}
+                        onCellValueChanged={handleCellValueChanged}
                         rowSelection="multiple"
                         checkboxSelection
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
-                        // onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
+                        onCellClicked={onCellClicked}
                     ></AgGridReact>
                 </div>
 
-                <Modal
-                    show={showForm}
-                    onClose={() => setShowForm(false)}
-                    title={"Add Vlan"}
-                >
-                    <VlanForm
-                        onSubmit={(e) => handleFormSubmit(e, "Add")}
-                        selectedDeviceIp={selectedDeviceIp}
-                        onCancel={handleCancel}
-                        handelSubmitButton={disableConfig}
-                    />
-                </Modal>
+                {/* model for adding vlan */}
+                {isMessageModalOpen === "add" && (
+                    <Modal
+                        show={true}
+                        onClose={handleAddFormCancel}
+                        title={"Add Vlan"}
+                    >
+                        <VlanForm
+                            onSubmit={(e) => handleFormSubmit(e, "Add")}
+                            selectedDeviceIp={selectedDeviceIp}
+                            onCancel={handleAddFormCancel}
+                            handelSubmitButton={disableConfig}
+                        />
+                    </Modal>
+                )}
 
+                {isMessageModalOpen === "addMember" && (
+                    <Modal
+                        show={true}
+                        onClose={handleAddFormCancel}
+                        title="Select Interfaces"
+                    >
+                        <VlanMemberForm
+                            // onSubmit={(e) => handleFormSubmit(e, "Add")}
+                            selectedDeviceIp={selectedDeviceIp}
+                            inputData={selectedRows}
+                            onCancel={handleAddFormCancel}
+                            handelSubmitButton={disableConfig}
+                        />
+                    </Modal>
+                )}
+
+                {/* model for delete confirmation message */}
                 {isMessageModalOpen === "delete" && (
                     <Modal show={true}>
                         <div>
@@ -258,6 +352,7 @@ const VlanTable = (props) => {
                     </Modal>
                 )}
 
+                {/* model for showing messages*/}
                 {isMessageModalOpen === "message" && (
                     <Modal show={true}>
                         <div>
