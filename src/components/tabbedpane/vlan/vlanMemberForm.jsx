@@ -15,23 +15,12 @@ const VlanMemberForm = ({
     handelSubmitButton,
 }) => {
     const instance = interceptor();
-
     const { disableConfig, setDisableConfig } = useDisableConfig();
-
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const [interfaceNames, setInterfaceNames] = useState([]);
 
-    const handleDropdownChange = (event) => {
-        const selectedValue = {
-            [event.target.value]: "ACCESS",
-        };
-
-        setSelectedInterfaces((prev) => [...prev, selectedValue]);
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(selectedInterfaces);
 
         let dataToSubmit = {
             mgt_ip: selectedDeviceIp,
@@ -44,8 +33,6 @@ const VlanMemberForm = ({
         setDisableConfig(true);
         onSubmit(dataToSubmit);
     };
-
-
 
     const getInterfaces = () => {
         instance
@@ -83,6 +70,14 @@ const VlanMemberForm = ({
         getInterfaces();
         getPortchannel();
     }, []);
+
+    const handleDropdownChange = (event) => {
+        const selectedValue = {
+            [event.target.value]: "ACCESS",
+        };
+
+        setSelectedInterfaces((prev) => [...prev, selectedValue]);
+    };
 
     const handleCheckbox = (index, value) => {
         setSelectedInterfaces((prevState) => {

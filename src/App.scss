@@ -75,9 +75,7 @@
 .mb-10 {
     margin-bottom: 10px !important;
 }
-.mb-25 {
-    margin-bottom: 25px !important;
-}
+
 .mr-10 {
     margin-right: 10px !important;
 }
@@ -88,6 +86,18 @@
     margin: 10px 10px 10px 10px !important;
 }
 
+.mt-25 {
+    margin-top: 25px !important;
+}
+.mb-25 {
+    margin-bottom: 25px !important;
+}
+
 .sigma-mouse {
     position: relative !important;
+}
+
+.modal-body {
+    overflow-y: auto !important;
+    max-height: 70vh;
 }

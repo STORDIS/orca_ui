@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import {
+    getAllInterfacesOfDeviceURL,
+    getAllPortChnlsOfDeviceURL,
+} from "../../../utils/backend_rest_urls";
+import interceptor from "../../../utils/interceptor";
 
 const VlanForm = ({
     onSubmit,
@@ -8,8 +13,10 @@ const VlanForm = ({
     onCancel,
     handelSubmitButton,
 }) => {
-    // const [disableSubmit, setDisableSubmit] = useState(handelSubmitButton);
+    const instance = interceptor();
     const { disableConfig, setDisableConfig } = useDisableConfig();
+    const [selectedInterfaces, setSelectedInterfaces] = useState([]);
+    const [interfaceNames, setInterfaceNames] = useState([]);
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
         const ipv4Regex =
@@ -36,8 +43,8 @@ const VlanForm = ({
         ip_address: "",
         sag_ip_address: "",
         autostate: "",
+        members: "",
     });
-    // const [selectedInterfaces, setSelectedInterfaces] = useState([]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -89,30 +96,87 @@ const VlanForm = ({
             return;
         }
 
-        const dataToSubmit = {
+        let dataToSubmit = {
             ...formData,
             vlanid,
-            // members: selectedInterfaces.join(", "),
         };
 
+        if (selectedInterfaces.length > 0) {
+            dataToSubmit.members = selectedInterfaces;
+        }
+        // console.log(dataToSubmit);
         setDisableConfig(true);
         onSubmit(dataToSubmit);
     };
 
-    // const handleInterfaceSelect = (event) => {
-    //     const selectedOptions = Array.from(
-    //         event.target.selectedOptions,
-    //         (option) => option.value
-    //     );
-    //     setSelectedInterfaces(selectedOptions);
-    // };
-
     useEffect(() => {
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            // members: selectedInterfaces.join(", "),
-        }));
-    }, [handelSubmitButton]);
+        setInterfaceNames([]);
+        getInterfaces();
+        getPortchannel();
+    }, []);
+
+    const getInterfaces = () => {
+        instance
+            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+            .then((response) => {
+                const ethernetInterfaces = response.data
+                    .filter((element) => element.name.includes("Ethernet"))
+                    .map((element) => element.name);
+
+                setInterfaceNames((prev) => [...prev, ...ethernetInterfaces]);
+            })
+            .catch((error) => {
+                console.error("Error fetching interface names", error);
+            })
+            .finally(() => {});
+    };
+
+    const getPortchannel = () => {
+        instance
+            .get(getAllPortChnlsOfDeviceURL(selectedDeviceIp))
+            .then((response) => {
+                const portchannel = response.data.map(
+                    (element) => element.lag_name
+                );
+
+                setInterfaceNames((prev) => [...prev, ...portchannel]);
+            })
+            .catch((error) => {
+                console.error("Error fetching interface names", error);
+            });
+    };
+
+    const handleDropdownChange = (event) => {
+        const selectedValue = {
+            [event.target.value]: "ACCESS",
+        };
+
+        setSelectedInterfaces((prev) => [...prev, selectedValue]);
+    };
+
+    const handleCheckbox = (index, value) => {
+        setSelectedInterfaces((prevState) => {
+            const newInterfaces = [...prevState];
+
+            if (Object.values(value)[0] === "ACCESS") {
+                newInterfaces[index] = {
+                    [Object.keys(value)[0]]: "TRUNK",
+                };
+            } else {
+                newInterfaces[index] = {
+                    [Object.keys(value)[0]]: "ACCESS",
+                };
+            }
+
+            return newInterfaces;
+        });
+    };
+
+    const handleRemove = (index) => {
+        setSelectedInterfaces((prevState) =>
+            prevState.filter((_, i) => i !== index)
+        );
+    };
 
     return (
         <form onSubmit={handleSubmit}>
@@ -120,7 +184,6 @@ const VlanForm = ({
                 <div className="form-field w-50">
                     <label>Device IP:</label>
                     <input type="text" value={selectedDeviceIp} disabled />
-                    {/* <span>{selectedDeviceIp}</span> */}
                 </div>
 
                 <div className="form-field w-50">
@@ -202,6 +265,50 @@ const VlanForm = ({
                         onChange={handleChange}
                     />
                 </div>
+            </div>
+
+            <div className="form-wrapper">
+                <div className="form-field w-75">
+                    <label>Select Member Interface </label>
+                    <select onChange={handleDropdownChange}>
+                        <option value="" disabled>
+                            Select Member Interface
+                        </option>
+                        {interfaceNames.map((val, index) => (
+                            <option key={index} value={val}>
+                                {val}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="form-field mt-25">
+                    {selectedInterfaces.length} selected
+                </div>
+            </div>
+
+            <div className="selected-interface-wrap mb-10 w-100">
+                {selectedInterfaces.map((val, index) => (
+                    <div className="selected-interface-list mb-10">
+                        <div className=" w-50">
+                            {index + 1} &nbsp; {Object.keys(val)[0]}
+                        </div>
+                        <div className=" w-50">
+                            <input
+                                type="checkbox"
+                                checked={Object.values(val)[0] === "TRUNK"}
+                                onChange={() => handleCheckbox(index, val)}
+                            />
+                            <span className="ml-10">Tagged</span>
+
+                            <button
+                                className="btnStyle ml-10"
+                                onClick={() => handleRemove(index, val)}
+                            >
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             <div className="form-field">

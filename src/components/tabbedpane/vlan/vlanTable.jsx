@@ -4,11 +4,7 @@ import { vlanColumns } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import {
-    getVlansURL,
-    getAllInterfacesOfDeviceURL,
-    deleteVlanMembersURL,
-} from "../../../utils/backend_rest_urls";
+import { getVlansURL } from "../../../utils/backend_rest_urls";
 import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
 import VlanMemberForm from "./vlanMemberForm";
@@ -24,7 +20,6 @@ const VlanTable = (props) => {
     const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
 
-    // const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
@@ -53,20 +48,6 @@ const VlanTable = (props) => {
                 setDataTable([]);
             });
     };
-
-    // useEffect(() => {
-    //     instance
-    //         .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-    //         .then((response) => {
-    //             const fetchedInterfaceNames = response.data.map(
-    //                 (item) => item.name
-    //             );
-    //             setInterfaceNames(fetchedInterfaceNames);
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error fetching interface names", error);
-    //         });
-    // }, []);
 
     const defaultColDef = {
         tooltipValueGetter: (params) => {
@@ -123,7 +104,6 @@ const VlanTable = (props) => {
             .put(apiMUrl, formData)
             .then(() => {
                 setIsMessageModalOpen("message");
-                // setModalContent("Valn " + status + "ed Successfully");
                 getMessageForApi(status + " Success");
                 setConfigStatus("Config Successful");
             })
@@ -200,7 +180,6 @@ const VlanTable = (props) => {
                 /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
             const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
 
-            console.log("check", ipWithCidr);
             const [ip, cidr] = ipWithCidr.split("/");
 
             if (ipv4Regex.test(ip)) {
@@ -244,8 +223,6 @@ const VlanTable = (props) => {
                 mgt_ip: selectedDeviceIp,
                 members: getMembers(params.data.members),
             };
-            console.log("---", getMembers(params.data.members));
-            console.log("---", payload.members);
             setChanges(payload);
         }
     }, []);
@@ -253,7 +230,6 @@ const VlanTable = (props) => {
     const getMembers = (params) => {
         let temp = JSON.parse(params);
 
-        console.log(Object.keys(temp).length);
         if (Object.keys(temp).length > 0) {
             return temp;
         } else {
@@ -298,7 +274,11 @@ const VlanTable = (props) => {
                     <button className="btnStyle" onClick={openAddFormModal}>
                         Add Vlan
                     </button>
-                    <button className="btnStyle" onClick={handleDelete}>
+                    <button
+                        className="btnStyle"
+                        onClick={handleDelete}
+                        disabled={selectedRows.length === 0}
+                    >
                         Delete selected Vlan
                     </button>
                 </div>
@@ -334,7 +314,7 @@ const VlanTable = (props) => {
                         />
                     </Modal>
                 )}
-
+                {/* model for adding interfaces */}
                 {isMessageModalOpen === "addMember" && (
                     <Modal
                         show={true}
@@ -404,103 +384,6 @@ const VlanTable = (props) => {
                         </div>
                     </Modal>
                 )}
-
-                {/* {isMemberSelectionModalOpen && (
-                    <Modal
-                        show={isMemberSelectionModalOpen}
-                        onClose={handleModalClose}
-                        title="Select Member Interfaces"
-                    >
-                        <div>
-                            <div className="selection-container">
-                                <select
-                                    id="memberDropdown"
-                                    onChange={handleDropdownChange}
-                                    value={member}
-                                >
-                                    <option value="" disabled>
-                                        Select Member Interface
-                                    </option>
-                                    {interfaceNames.map((val, index) => (
-                                        <option key={index} value={val}>
-                                            {val}
-                                        </option>
-                                    ))}
-                                </select>
-                                {showCheckbox && (
-                                    <label className="checkbox-label">
-                                        <input
-                                            type="checkbox"
-                                            checked={isCheckboxChecked}
-                                            onChange={handleCheckbox}
-                                        />
-                                        Tagged
-                                    </label>
-                                )}
-                                <button onClick={handleBtnClicked}>
-                                    Add Member Interface
-                                </button>
-                            </div>
-                            <div
-                                className="remove-selection-container"
-                                style={{ marginTop: "20px" }}
-                            >
-                                <label>Select Members to Remove:</label>
-                                <select
-                                    multiple
-                                    value={membersSelectedForRemoval}
-                                    onChange={(e) =>
-                                        setMembersSelectedForRemoval(
-                                            Array.from(
-                                                e.target.selectedOptions,
-                                                (option) => option.value
-                                            )
-                                        )
-                                    }
-                                    size="5"
-                                    style={{ width: "100%" }}
-                                >
-                                    {Object.keys(memberFinalObj).map(
-                                        (member) => (
-                                            <option key={member} value={member}>
-                                                {member}
-                                            </option>
-                                        )
-                                    )}
-                                </select>
-                            </div>
-                            <div
-                                style={{
-                                    marginTop: "10px",
-                                    display: "flex",
-                                    gap: "10px",
-                                }}
-                            >
-                                <button
-                                    className="btnStyle"
-                                    onClick={handleSaveMemberSelection}
-                                >
-                                    Ok
-                                </button>
-                                <button
-                                    className="btnStyle"
-                                    onClick={handleModalClose}
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={deleteVlanMembers}
-                                    disabled={
-                                        membersSelectedForRemoval.length === 0
-                                    }
-                                    className="btnStyle"
-                                >
-                                    Delete Selected Members
-                                </button>
-                            </div>
-                        </div>
-                    </Modal>
-                )} */}
             </div>
         </div>
     );
