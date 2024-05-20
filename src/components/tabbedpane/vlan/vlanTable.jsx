@@ -123,12 +123,13 @@ const VlanTable = (props) => {
             .put(apiMUrl, formData)
             .then(() => {
                 setIsMessageModalOpen("message");
-                setModalContent("Valn " + status + "ed Successfully");
+                // setModalContent("Valn " + status + "ed Successfully");
+                getMessageForApi(status + " Success");
                 setConfigStatus("Config Successful");
             })
             .catch(() => {
                 setIsMessageModalOpen("message");
-                setModalContent("Error in " + status + "ing Vlan");
+                getMessageForApi(status + " Error");
             })
             .finally(() => {
                 // getVlans();
@@ -137,6 +138,31 @@ const VlanTable = (props) => {
                 setSelectedRows([]);
                 setTimeout(resetConfigStatus, 5000);
             });
+    };
+
+    const getMessageForApi = (status) => {
+        switch (status) {
+            case "Add Success":
+                setModalContent("Vlan Added Successfully");
+                return;
+            case "Update Success":
+                setModalContent("Vlan Updated Successfully");
+                return;
+            case "Member Success":
+                setModalContent("Vlan Member Added Successfully");
+                return;
+            case "Add Error":
+                setModalContent("Error in Adding Vlan");
+                return;
+            case "Update Error":
+                setModalContent("Error in Updating Vlan");
+                return;
+            case "Member Error":
+                setModalContent("Error in Adding Vlan Member");
+                return;
+            default:
+                return "";
+        }
     };
 
     const handleDelete = () => {
@@ -214,19 +240,22 @@ const VlanTable = (props) => {
         }
         if (params.newValue !== params.oldValue) {
             let payload = {
+                ...params.data,
                 mgt_ip: selectedDeviceIp,
                 members: getMembers(params.data.members),
-                ...params.data,
             };
-            console.log("---", payload);
+            console.log("---", getMembers(params.data.members));
+            console.log("---", payload.members);
             setChanges(payload);
         }
     }, []);
 
     const getMembers = (params) => {
-        console.log(params);
-        if (params) {
-            return JSON.parse(params);
+        let temp = JSON.parse(params);
+
+        console.log(Object.keys(temp).length);
+        if (Object.keys(temp).length > 0) {
+            return temp;
         } else {
             return {};
         }
@@ -249,7 +278,7 @@ const VlanTable = (props) => {
                                 Object.keys(changes).length === 0
                             }
                             className="btnStyle"
-                            onClick={() => handleFormSubmit(changes, "Updat")}
+                            onClick={() => handleFormSubmit(changes, "Update")}
                         >
                             Apply Config
                         </button>
@@ -313,7 +342,7 @@ const VlanTable = (props) => {
                         title="Select Interfaces"
                     >
                         <VlanMemberForm
-                            // onSubmit={(e) => handleFormSubmit(e, "Add")}
+                            onSubmit={(e) => handleFormSubmit(e, "Member")}
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
                             onCancel={handleAddFormCancel}
