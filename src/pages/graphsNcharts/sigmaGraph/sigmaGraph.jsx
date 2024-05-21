@@ -4,15 +4,17 @@ import Sigma from "sigma";
 import React, { useEffect } from "react";
 
 const SigmaGraph = (props) => {
-
     let container_id = "check" + Math.random();
 
     useEffect(() => {
         let tempNodes = [];
         let tempEdges = [];
 
-        let found = false;
+        let lableFound = false;
         let labelToUse;
+
+        let idFound = false;
+        let idToUse;
 
         console.log(Object.keys(props.message[0]));
 
@@ -21,26 +23,48 @@ const SigmaGraph = (props) => {
                 key.toLowerCase().includes("name") &&
                 key.toLowerCase() !== "name"
             ) {
-                found = true;
+                lableFound = true;
                 labelToUse = key;
                 return;
-            } else if (key.toLowerCase() === "name" && !found) {
+            } else if (key.toLowerCase() === "name" && !lableFound) {
                 labelToUse = key;
                 return;
             } else if (
                 key.toLowerCase().includes("id") &&
                 key.toLowerCase() !== "id" &&
-                !found
+                !lableFound
             ) {
                 labelToUse = key;
             }
         });
 
+        Object.keys(props.message[0]).forEach((key) => {
+            if (
+                key.toLowerCase().includes("id") &&
+                key.toLowerCase() !== "id"
+            ) {
+                idFound = true;
+                idToUse = key;
+                return;
+            } else if (key.toLowerCase() === "id" && !idFound) {
+                idToUse = key;
+                return;
+            } else if (
+                key.toLowerCase().includes("id") &&
+                key.toLowerCase() !== "id" &&
+                !idFound
+            ) {
+                idToUse = key;
+            }
+        });
+
+        console.log(idToUse)
+
         props.message.forEach((element) => {
             console.log(element);
 
             tempNodes.push({
-                id: element.id.toString(),
+                id: element?.[idToUse].toString(),
                 label: element[labelToUse],
                 color: "Green",
                 size: 10,
@@ -48,7 +72,7 @@ const SigmaGraph = (props) => {
 
             tempEdges.push({
                 source: "0",
-                target: element.id.toString(),
+                target: element?.[idToUse].toString(),
                 label: "relation",
                 color: "Grey",
             });
@@ -150,7 +174,6 @@ const SigmaGraph = (props) => {
             "doubleClickEdge",
             // "wheelEdge",
         ];
-
 
         nodeEvents.forEach((eventType) =>
             renderer.on(eventType, ({ node }) =>
