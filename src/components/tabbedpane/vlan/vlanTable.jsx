@@ -38,6 +38,7 @@ const VlanTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
+                console.log(res.data)
                 res?.data?.forEach((element) => {
                     element.members = JSON.stringify(element.members);
                 });

@@ -126,7 +126,7 @@ const VlanMemberForm = ({
             <div className="selected-interface-wrap mb-10 w-100">
                 {selectedInterfaces.map((val, index) => (
                     <div className="selected-interface-list mb-10">
-                        <div className=" w-50">
+                        <div className="ml-10 w-50">
                             {index + 1} &nbsp; {Object.keys(val)[0]}
                         </div>
                         <div className=" w-50">
@@ -138,7 +138,7 @@ const VlanMemberForm = ({
                             <span className="ml-10">Tagged</span>
 
                             <button
-                                className="btnStyle ml-10"
+                                className="btnStyle ml-25"
                                 onClick={() => handleRemove(index, val)}
                             >
                                 Remove
