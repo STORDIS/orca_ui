@@ -29,6 +29,7 @@
 
                 .icon {
                     width: 25px;
+                    font-size: 25px;
                     background-color: rgb(245, 242, 240);
                     border-radius: 25px;
                     padding: 10px;
@@ -41,7 +42,7 @@
                     padding: 12px 15px 12px 15px;
                     margin-left: 10px;
                     width: 80%;
-                    text-align: center;
+                    // text-align: center;
 
                     .selectView {
                         width: 100%;
@@ -61,8 +62,6 @@
                         position: relative;
                     }
                 }
-
-
             }
 
             .aiStyle:hover .copy {
@@ -76,7 +75,7 @@
                 border-radius: 25px;
                 padding: 5px;
                 margin: 0px 10px 0px 10px;
-                font-size: 5px;
+                font-size: 15px;
                 visibility: hidden;
             }
 
@@ -97,6 +96,8 @@
                     background-color: white;
                     border-radius: 25px;
                     padding: 10px;
+                    font-size: 25px;
+                    width: 25px;
                 }
 
                 .text {
