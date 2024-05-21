@@ -9,13 +9,36 @@ const GoogleChart = (props) => {
     const [isErrorChart, setIsErrorChart] = useState(false);
 
     const [data, setData] = useState({
-       
+        cols: [
+            {
+                id: "",
+                label: "No data",
+                type: "string",
+            },
+            {
+                id: "",
+                label: "No data",
+                type: "string",
+            },
+        ],
+        rows: [
+            {
+                c: [
+                    {
+                        v: "No data",
+                    },
+                    {
+                        v: "No data",
+                    },
+                ],
+            },
+        ],
     });
 
     useEffect(() => {
         console.log(props.message.index);
 
-        if (Object.keys(data).length === 0) {
+        // if (Object.keys(data).length === 0) {
             setIsLoading(true);
             props.sendDataToParent(true);
 
@@ -46,9 +69,9 @@ const GoogleChart = (props) => {
                     setIsLoading(false);
                     props.sendDataToParent(false);
                 });
-        } else {
-            console.log("Else");
-        }
+        // } else {
+        //     console.log("Else");
+        // }
     }, [props.message.prompt]);
 
     return (
