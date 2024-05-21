@@ -26,8 +26,10 @@ export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
-    const [viewType, setViewType] = useState("Table"); // Table / Graph / Bar
+    // const [viewType, setViewType] = useState("Table"); // Table / Graph / Bar
     const textAreaRef = useRef(null);
+
+    const [changeId, setChangeId] = useState(0);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
     const [currentChatHistory, setCurrentChatHistory] = useState([
@@ -68,6 +70,7 @@ export const AskOrca = () => {
             {
                 index: prevChatHistory.length + 1,
                 message: [],
+                viewType: "Table",
             },
         ]);
 
@@ -131,7 +134,17 @@ export const AskOrca = () => {
     const chatContainerRef = useRef(null);
 
     const handleOptionChange = (e) => {
-        setViewType(e.target.value);
+        let index = parseInt(e.target.id);
+
+        setCurrentChatHistory((prevChatHistory) => {
+            const updatedChatHistory = [...prevChatHistory];
+
+            if (index >= 0 && index < updatedChatHistory.length) {
+                updatedChatHistory[index].viewType = e.target.value;
+            }
+
+            return updatedChatHistory;
+        });
     };
 
     useEffect(() => {
@@ -169,6 +182,15 @@ export const AskOrca = () => {
         return [];
     };
 
+    // const check = (index) => {
+    //     console.log(changeId === index.toString());
+    //     if (changeId === index.toString()) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // };
+
     return (
         <div className="flexContainer">
             <div className="leftColumn">
@@ -203,8 +225,10 @@ export const AskOrca = () => {
                                                         <select
                                                             className="selectView"
                                                             name=""
-                                                            id=""
-                                                            value={viewType}
+                                                            id={index}
+                                                            value={
+                                                                item.viewType
+                                                            }
                                                             onChange={
                                                                 handleOptionChange
                                                             }
@@ -221,20 +245,23 @@ export const AskOrca = () => {
                                                         </select>
                                                     </div>
 
-                                                    {viewType === "Bar" ? (
+                                                    {item.viewType === "Bar" ? (
                                                         <GoogleChart
                                                             message={
                                                                 currentChatHistory[
                                                                     index - 1
                                                                 ]
                                                             }
-                                                            viewType={viewType}
+                                                            viewType={
+                                                                item.viewType
+                                                            }
                                                             sendDataToParent={
                                                                 receiveChildData
                                                             }
                                                         />
                                                     ) : null}
-                                                    {viewType === "Table" ? (
+                                                    {item.viewType ===
+                                                    "Table" ? (
                                                         <div
                                                             style={gridStyle}
                                                             className="ag-theme-alpine"
@@ -250,7 +277,8 @@ export const AskOrca = () => {
                                                         </div>
                                                     ) : null}
 
-                                                    {viewType === "Graph" ? (
+                                                    {item.viewType ===
+                                                    "Graph" ? (
                                                         <div className="graph">
                                                             <SigmaGraph
                                                                 message={
