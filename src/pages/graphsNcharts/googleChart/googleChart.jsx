@@ -8,7 +8,9 @@ const GoogleChart = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isErrorChart, setIsErrorChart] = useState(false);
 
-    const [data, setData] = useState({});
+    const [data, setData] = useState({
+       
+    });
 
     useEffect(() => {
         console.log(props.message.index);

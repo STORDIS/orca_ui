@@ -14,9 +14,9 @@ const SigmaGraph = (props) => {
         let found = false;
         let labelToUse;
 
-        console.log(Object.keys(props.message.content[0]));
+        console.log(Object.keys(props.message[0]));
 
-        Object.keys(props.message.content[0]).forEach((key) => {
+        Object.keys(props.message[0]).forEach((key) => {
             if (
                 key.toLowerCase().includes("name") &&
                 key.toLowerCase() !== "name"
@@ -36,7 +36,7 @@ const SigmaGraph = (props) => {
             }
         });
 
-        props.message.content.forEach((element) => {
+        props.message.forEach((element) => {
             console.log(element);
 
             tempNodes.push({
