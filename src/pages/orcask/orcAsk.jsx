@@ -80,27 +80,26 @@ export const AskOrca = () => {
                 setCurrentChatHistory((prevChatHistory) => {
                     const updatedHistory = [...prevChatHistory];
 
-                    console.log(typeof response?.data?.message.content);
-                    console.log(response?.data?.message.content);
+                    console.log(typeof response?.data?.message);
+                    console.log(response?.data?.message);
 
-                    if (typeof response?.data?.message.content === "string") {
+                    if (typeof response?.data?.message === "string") {
+                        console.log("1");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
-                            JSON.stringify(
-                                response?.data?.message.content,
-                                null,
-                                2
-                            );
+                            JSON.stringify(response?.data?.message, null, 2);
                         updatedHistory[updatedHistory.length - 1].type =
                             "string";
                         return updatedHistory;
-                    } else if (response?.data?.message.content.length > 0) {
+                    } else if (response?.data?.message.length > 0) {
+                        console.log("2");
                         updatedHistory[updatedHistory.length - 1].message =
                             response?.data?.message;
                         updatedHistory[updatedHistory.length - 1].type =
                             "resData";
                         return updatedHistory;
                     } else {
+                        console.log("3");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
@@ -243,11 +242,9 @@ export const AskOrca = () => {
                                                             <AgGridReact
                                                                 rowData={
                                                                     item.message
-                                                                        .content
                                                                 }
                                                                 columnDefs={generateColumnDefs(
                                                                     item.message
-                                                                        .content
                                                                 )}
                                                             />
                                                         </div>
