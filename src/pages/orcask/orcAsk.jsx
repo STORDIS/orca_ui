@@ -20,16 +20,14 @@ import "./orcAsk.scss";
 
 import interceptor from "../../utils/interceptor";
 import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
-import GoogleChart from "../graphsNcharts/googleChart/googleChart";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [isDisabled, setIsDisabled] = useState(false);
     // const [viewType, setViewType] = useState("Table"); // Table / Graph / Bar
     const textAreaRef = useRef(null);
 
-    const [changeId, setChangeId] = useState(0);
+    const [googleChartData, setGoogleChartData] = useState([]);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
     const [currentChatHistory, setCurrentChatHistory] = useState([
@@ -145,6 +143,52 @@ export const AskOrca = () => {
 
             return updatedChatHistory;
         });
+
+        if (e.target.value === "Bar") {
+            getGoogleChart(e.target.id);
+        }
+    };
+
+    const getGoogleChart = (index) => {
+        console.log("google chart", googleChartData[index]);
+
+        if (
+            !googleChartData[index]?.cols?.length !== 0 &&
+            !googleChartData[index]
+        ) {
+            setIsLoading(true);
+
+            instance
+                .post(gptCompletionsURL("google chart json for table"), {
+                    prompt: currentChatHistory[index - 1],
+                })
+                .then((response) => {
+                    console.log(JSON.parse(response.data.message));
+
+                    let tempData = JSON.parse(response.data.message);
+
+                    if (tempData.cols.length > 0 && tempData.rows.length > 0) {
+                        setGoogleChartData((prevChatHistory) => {
+                            const updatedChatHistory = [...prevChatHistory];
+
+                            updatedChatHistory[index] = {
+                                cols: tempData.cols,
+                                rows: tempData.rows,
+                            };
+                            return updatedChatHistory;
+                        });
+                        setIsLoading(false);
+                    } else {
+                        setIsLoading(false);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error ", error);
+                    setIsLoading(false);
+                });
+        } else {
+            console.log("else", googleChartData[index]);
+        }
     };
 
     useEffect(() => {
@@ -161,11 +205,6 @@ export const AskOrca = () => {
         }
     }, [isLoading]);
 
-    const receiveChildData = (dataFromChild) => {
-        console.log("Data received from child:", dataFromChild);
-        setIsDisabled(dataFromChild);
-    };
-
     const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
 
     const generateColumnDefs = (data) => {
@@ -181,15 +220,6 @@ export const AskOrca = () => {
         }
         return [];
     };
-
-    // const check = (index) => {
-    //     console.log(changeId === index.toString());
-    //     if (changeId === index.toString()) {
-    //         return true;
-    //     } else {
-    //         return false;
-    //     }
-    // };
 
     return (
         <div className="flexContainer">
@@ -246,19 +276,19 @@ export const AskOrca = () => {
                                                     </div>
 
                                                     {item.viewType === "Bar" ? (
-                                                        <GoogleChart
-                                                            message={
-                                                                currentChatHistory[
-                                                                    index - 1
-                                                                ]
-                                                            }
-                                                            viewType={
-                                                                item.viewType
-                                                            }
-                                                            sendDataToParent={
-                                                                receiveChildData
-                                                            }
-                                                        />
+                                                        <div>
+                                                            <Chart
+                                                                chartType="Bar"
+                                                                data={
+                                                                    googleChartData[
+                                                                        index
+                                                                    ]
+                                                                }
+                                                                width="100%"
+                                                                height="100%"
+                                                                legendToggle
+                                                            />
+                                                        </div>
                                                     ) : null}
                                                     {item.viewType ===
                                                     "Table" ? (
@@ -337,12 +367,12 @@ export const AskOrca = () => {
                         placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                     ></textarea>
                     <button
-                        disabled={isLoading || isDisabled}
+                        disabled={isLoading}
                         onClick={gptCompletions}
                         className="btnStyle ml-10"
                     >
-                        {!isLoading && !isDisabled ? <FaArrowUp /> : null}
-                        {isLoading || isDisabled ? <FaSpinner /> : null}
+                        {!isLoading ? <FaArrowUp /> : null}
+                        {isLoading ? <FaSpinner /> : null}
                     </button>
                     <button
                         onClick={resetCurrentChat}
