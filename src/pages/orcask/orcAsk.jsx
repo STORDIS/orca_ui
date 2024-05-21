@@ -14,6 +14,7 @@ import { FaSpinner } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { FaHistory } from "react-icons/fa";
 import { FaLink } from "react-icons/fa";
+import { Chart } from "react-google-charts";
 
 import "./orcAsk.scss";
 
@@ -25,7 +26,7 @@ export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [isDisabled, setIsDisabled] = useState(false);
-    const [viewType, setViewType] = useState("Table"); // table
+    const [viewType, setViewType] = useState("Table"); // Table / Graph / Bar
     const textAreaRef = useRef(null);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
