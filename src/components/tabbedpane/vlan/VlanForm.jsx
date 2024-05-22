@@ -15,7 +15,7 @@ const VlanForm = ({
 }) => {
     const instance = interceptor();
     const { disableConfig, setDisableConfig } = useDisableConfig();
-    const [selectedInterfaces, setSelectedInterfaces] = useState([]);
+    const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
@@ -43,7 +43,7 @@ const VlanForm = ({
         ip_address: "",
         sag_ip_address: "",
         autostate: "",
-        members: "",
+        mem_ifs: "",
     });
 
     const handleChange = (e) => {
@@ -101,10 +101,12 @@ const VlanForm = ({
             vlanid,
         };
 
-        if (selectedInterfaces.length > 0) {
-            dataToSubmit.members = selectedInterfaces;
+        if (Object.keys(selectedInterfaces).length > 0) {
+            dataToSubmit.mem_ifs = selectedInterfaces;
         }
-        // console.log(dataToSubmit);
+
+        console.log(dataToSubmit);
+
         setDisableConfig(true);
         onSubmit(dataToSubmit);
     };
@@ -147,35 +149,27 @@ const VlanForm = ({
     };
 
     const handleDropdownChange = (event) => {
-        const selectedValue = {
-            [event.target.value]: "ACCESS",
-        };
+        console.log(event);
 
-        setSelectedInterfaces((prev) => [...prev, selectedValue]);
+        setSelectedInterfaces((prev) => ({
+            ...prev,
+            [event.target.value]: "ACCESS",
+        }));
     };
 
-    const handleCheckbox = (index, value) => {
-        setSelectedInterfaces((prevState) => {
-            const newInterfaces = [...prevState];
+    const handleCheckbox = (key, value) => {
+        setSelectedInterfaces((prevInterfaces) => ({
+            ...prevInterfaces,
+            [key]: value === "TRUNK" ? "ACCESS" : "TRUNK",
+        }));
+    };
 
-            if (Object.values(value)[0] === "ACCESS") {
-                newInterfaces[index] = {
-                    [Object.keys(value)[0]]: "TRUNK",
-                };
-            } else {
-                newInterfaces[index] = {
-                    [Object.keys(value)[0]]: "ACCESS",
-                };
-            }
-
+    const handleRemove = (key) => {
+        setSelectedInterfaces((prevInterfaces) => {
+            const newInterfaces = { ...prevInterfaces };
+            delete newInterfaces[key];
             return newInterfaces;
         });
-    };
-
-    const handleRemove = (index) => {
-        setSelectedInterfaces((prevState) =>
-            prevState.filter((_, i) => i !== index)
-        );
     };
 
     return (
@@ -282,33 +276,35 @@ const VlanForm = ({
                     </select>
                 </div>
                 <div className="form-field mt-25">
-                    {selectedInterfaces.length} selected
+                    {Object.keys(selectedInterfaces).length} selected
                 </div>
             </div>
 
             <div className="selected-interface-wrap mb-10 w-100">
-                {selectedInterfaces.map((val, index) => (
-                    <div className="selected-interface-list mb-10">
-                        <div className="ml-10 w-50">
-                            {index + 1} &nbsp; {Object.keys(val)[0]}
-                        </div>
-                        <div className=" w-50">
-                            <input
-                                type="checkbox"
-                                checked={Object.values(val)[0] === "TRUNK"}
-                                onChange={() => handleCheckbox(index, val)}
-                            />
-                            <span className="ml-10">Tagged</span>
+                {Object.entries(selectedInterfaces).map(
+                    ([key, value], index) => (
+                        <div className="selected-interface-list mb-10">
+                            <div key={key} className="ml-10 w-50">
+                                {index + 1} &nbsp; {key}
+                            </div>
+                            <div className=" w-50">
+                                <input
+                                    type="checkbox"
+                                    checked={value === "TRUNK"}
+                                    onChange={() => handleCheckbox(key, value)}
+                                />
+                                <span className="ml-10">Tagged</span>
 
-                            <button
-                                className="btnStyle ml-25"
-                                onClick={() => handleRemove(index, val)}
-                            >
-                                Remove
-                            </button>
+                                <button
+                                    className="btnStyle ml-25"
+                                    onClick={() => handleRemove(key)}
+                                >
+                                    Remove
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    )
+                )}
             </div>
 
             <div className="form-field">

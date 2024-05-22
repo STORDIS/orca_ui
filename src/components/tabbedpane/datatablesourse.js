@@ -218,7 +218,7 @@ export const vlanColumns =  [
         sortable: true,
     },
     {
-        field: "members",
+        field: "mem_ifs",
         headerName: "Member IFs",
         width: 130,
         editable: true,

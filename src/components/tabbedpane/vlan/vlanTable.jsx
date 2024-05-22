@@ -40,7 +40,7 @@ const VlanTable = (props) => {
             .then((res) => {
                 console.log(res.data)
                 res?.data?.forEach((element) => {
-                    element.members = JSON.stringify(element.members);
+                    element.mem_ifs = JSON.stringify(element.mem_ifs);
                 });
                 setDataTable(res?.data);
             })
@@ -222,7 +222,7 @@ const VlanTable = (props) => {
             let payload = {
                 ...params.data,
                 mgt_ip: selectedDeviceIp,
-                members: getMembers(params.data.members),
+                mem_ifs: getMembers(params.data.mem_ifs),
             };
             setChanges(payload);
         }
@@ -239,7 +239,7 @@ const VlanTable = (props) => {
     };
 
     const onCellClicked = useCallback((params) => {
-        if (params?.colDef?.field === "members") {
+        if (params?.colDef?.field === "mem_ifs") {
             setIsMessageModalOpen("addMember");
         }
     }, []);
