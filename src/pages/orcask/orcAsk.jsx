@@ -20,14 +20,14 @@ import "./orcAsk.scss";
 
 import interceptor from "../../utils/interceptor";
 import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
-import GoogleChart from "../graphsNcharts/googleChart/googleChart";
 
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [isDisabled, setIsDisabled] = useState(false);
-    const [viewType, setViewType] = useState("Table"); // Table / Graph / Bar
+    // const [viewType, setViewType] = useState("Table"); // Table / Graph / Bar
     const textAreaRef = useRef(null);
+
+    const [googleChartData, setGoogleChartData] = useState([]);
 
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
     const [currentChatHistory, setCurrentChatHistory] = useState([
@@ -68,6 +68,7 @@ export const AskOrca = () => {
             {
                 index: prevChatHistory.length + 1,
                 message: [],
+                viewType: "Table",
             },
         ]);
 
@@ -131,7 +132,63 @@ export const AskOrca = () => {
     const chatContainerRef = useRef(null);
 
     const handleOptionChange = (e) => {
-        setViewType(e.target.value);
+        let index = parseInt(e.target.id);
+
+        setCurrentChatHistory((prevChatHistory) => {
+            const updatedChatHistory = [...prevChatHistory];
+
+            if (index >= 0 && index < updatedChatHistory.length) {
+                updatedChatHistory[index].viewType = e.target.value;
+            }
+
+            return updatedChatHistory;
+        });
+
+        if (e.target.value === "Bar") {
+            getGoogleChart(e.target.id);
+        }
+    };
+
+    const getGoogleChart = (index) => {
+        console.log("google chart", googleChartData[index]);
+
+        if (
+            !googleChartData[index]?.cols?.length !== 0 &&
+            !googleChartData[index]
+        ) {
+            setIsLoading(true);
+
+            instance
+                .post(gptCompletionsURL("google chart json for table"), {
+                    prompt: currentChatHistory[index - 1],
+                })
+                .then((response) => {
+                    console.log(JSON.parse(response.data.message));
+
+                    let tempData = JSON.parse(response.data.message);
+
+                    if (tempData.cols.length > 0 && tempData.rows.length > 0) {
+                        setGoogleChartData((prevChatHistory) => {
+                            const updatedChatHistory = [...prevChatHistory];
+
+                            updatedChatHistory[index] = {
+                                cols: tempData.cols,
+                                rows: tempData.rows,
+                            };
+                            return updatedChatHistory;
+                        });
+                        setIsLoading(false);
+                    } else {
+                        setIsLoading(false);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error ", error);
+                    setIsLoading(false);
+                });
+        } else {
+            console.log("else", googleChartData[index]);
+        }
     };
 
     useEffect(() => {
@@ -147,11 +204,6 @@ export const AskOrca = () => {
                 chatContainerRef.current.scrollHeight;
         }
     }, [isLoading]);
-
-    const receiveChildData = (dataFromChild) => {
-        console.log("Data received from child:", dataFromChild);
-        setIsDisabled(dataFromChild);
-    };
 
     const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
 
@@ -203,8 +255,10 @@ export const AskOrca = () => {
                                                         <select
                                                             className="selectView"
                                                             name=""
-                                                            id=""
-                                                            value={viewType}
+                                                            id={index}
+                                                            value={
+                                                                item.viewType
+                                                            }
                                                             onChange={
                                                                 handleOptionChange
                                                             }
@@ -221,20 +275,23 @@ export const AskOrca = () => {
                                                         </select>
                                                     </div>
 
-                                                    {viewType === "Bar" ? (
-                                                        <GoogleChart
-                                                            message={
-                                                                currentChatHistory[
-                                                                    index - 1
-                                                                ]
-                                                            }
-                                                            viewType={viewType}
-                                                            sendDataToParent={
-                                                                receiveChildData
-                                                            }
-                                                        />
+                                                    {item.viewType === "Bar" ? (
+                                                        <div>
+                                                            <Chart
+                                                                chartType="Bar"
+                                                                data={
+                                                                    googleChartData[
+                                                                        index
+                                                                    ]
+                                                                }
+                                                                width="100%"
+                                                                height="100%"
+                                                                legendToggle
+                                                            />
+                                                        </div>
                                                     ) : null}
-                                                    {viewType === "Table" ? (
+                                                    {item.viewType ===
+                                                    "Table" ? (
                                                         <div
                                                             style={gridStyle}
                                                             className="ag-theme-alpine"
@@ -250,7 +307,8 @@ export const AskOrca = () => {
                                                         </div>
                                                     ) : null}
 
-                                                    {viewType === "Graph" ? (
+                                                    {item.viewType ===
+                                                    "Graph" ? (
                                                         <div className="graph">
                                                             <SigmaGraph
                                                                 message={
@@ -309,12 +367,12 @@ export const AskOrca = () => {
                         placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                     ></textarea>
                     <button
-                        disabled={isLoading || isDisabled}
+                        disabled={isLoading}
                         onClick={gptCompletions}
                         className="btnStyle ml-10"
                     >
-                        {!isLoading && !isDisabled ? <FaArrowUp /> : null}
-                        {isLoading || isDisabled ? <FaSpinner /> : null}
+                        {!isLoading ? <FaArrowUp /> : null}
+                        {isLoading ? <FaSpinner /> : null}
                     </button>
                     <button
                         onClick={resetCurrentChat}
