@@ -18,6 +18,8 @@ import { FaLink } from "react-icons/fa";
 import "./orcAsk.scss";
 
 import interceptor from "../../utils/interceptor";
+
+import interceptor from "../../utils/interceptor";
 import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
 import GoogleChart from "../graphsNcharts/googleChart/googleChart";
 
@@ -79,17 +81,14 @@ export const AskOrca = () => {
                 setCurrentChatHistory((prevChatHistory) => {
                     const updatedHistory = [...prevChatHistory];
 
-                    console.log(typeof response?.data?.message.content);
-                    console.log(response?.data?.message.content);
+                    console.log(typeof response?.data?.message);
+                    console.log(response?.data?.message);
 
-                    if (typeof response?.data?.message.content === "string") {
+                    if (typeof response?.data?.message === "string") {
+                        console.log("1");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
-                            JSON.stringify(
-                                response?.data?.message.content,
-                                null,
-                                2
-                            );
+                            JSON.stringify(response?.data?.message, null, 2);
                         updatedHistory[updatedHistory.length - 1].type =
                             "string";
                         return updatedHistory;
@@ -98,8 +97,10 @@ export const AskOrca = () => {
                             response?.data?.message;
                         updatedHistory[updatedHistory.length - 1].type =
                             "resData";
+                            "resData";
                         return updatedHistory;
                     } else {
+                        console.log("3");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
@@ -169,6 +170,22 @@ export const AskOrca = () => {
         return [];
     };
 
+    const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
+
+    const generateColumnDefs = (data) => {
+        if (data.length > 0) {
+            return Object.keys(data[0]).map((key) => ({
+                headerName: key.replace(/_/g, " ").toUpperCase(),
+                field: key,
+                resizable: true,
+                filter: true,
+                sortable: true,
+                width: 130,
+            }));
+        }
+        return [];
+    };
+
     return (
         <div className="flexContainer">
             <div className="leftColumn">
@@ -177,6 +194,8 @@ export const AskOrca = () => {
                         <>
                             {item.message ? (
                                 <div key={item.index} className="aiStyle">
+                                    <span className="icon">
+                                        <FaRobot />
                                     <span className="icon">
                                         <FaRobot />
                                     </span>
@@ -193,10 +212,13 @@ export const AskOrca = () => {
                                         <>
                                             {item.type === "string" ? (
                                                 <div className="content">
+                                                <div className="content">
                                                     {item.message}
+                                                </div>
                                                 </div>
                                             ) : null}
 
+                                            {item.type === "resData" ? (
                                             {item.type === "resData" ? (
                                                 <div className="content">
                                                     <div className="selectView">
@@ -242,11 +264,9 @@ export const AskOrca = () => {
                                                             <AgGridReact
                                                                 rowData={
                                                                     item.message
-                                                                        .content
                                                                 }
                                                                 columnDefs={generateColumnDefs(
                                                                     item.message
-                                                                        .content
                                                                 )}
                                                             />
                                                         </div>
@@ -269,6 +289,7 @@ export const AskOrca = () => {
                                                     text={item.message}
                                                 >
                                                     <FaRegCopy />
+                                                    <FaRegCopy />
                                                 </CopyToClipboard>
                                             </span>
                                         </>
@@ -287,9 +308,13 @@ export const AskOrca = () => {
                                             }
                                         >
                                             <FaRegCopy />
+                                            <FaRegCopy />
                                         </CopyToClipboard>
                                     </span>
                                     <span className="text">{item.prompt}</span>
+
+                                    <span className="icon">
+                                        <FaUser />
 
                                     <span className="icon">
                                         <FaUser />
@@ -317,11 +342,14 @@ export const AskOrca = () => {
                     >
                         {!isLoading && !isDisabled ? <FaArrowUp /> : null}
                         {isLoading || isDisabled ? <FaSpinner /> : null}
+                        {!isLoading && !isDisabled ? <FaArrowUp /> : null}
+                        {isLoading || isDisabled ? <FaSpinner /> : null}
                     </button>
                     <button
                         onClick={resetCurrentChat}
                         className="btnStyle ml-10"
                     >
+                        <FaRotateLeft />
                         <FaRotateLeft />
                     </button>
                 </div>
@@ -338,6 +366,8 @@ export const AskOrca = () => {
                     >
                         <span className=" mr-10">
                             <FaBookmark />
+                        <span className=" mr-10">
+                            <FaBookmark />
                         </span>
                         Bookmark
                     </div>
@@ -351,6 +381,8 @@ export const AskOrca = () => {
                     >
                         <span className=" mr-10">
                             <FaHistory />
+                        <span className=" mr-10">
+                            <FaHistory />
                         </span>
                         History
                     </div>
@@ -360,11 +392,13 @@ export const AskOrca = () => {
                     <>
                         <div className="bookmark">
                             <FaBookmark />
+                            <FaBookmark />
                             <div className="title">
                                 some text which is heading
                             </div>
                         </div>
                         <div className="bookmark">
+                            <FaBookmark />
                             <FaBookmark />
                             <div className="title">
                                 some text which is heading
@@ -377,9 +411,11 @@ export const AskOrca = () => {
                     <>
                         <a href="default" target="_blank" className="links">
                             <FaLink />
+                            <FaLink />
                             <div className="title">Link 1</div>
                         </a>
                         <a href="default" target="_blank" className="links">
+                            <FaLink />
                             <FaLink />
                             <div className="title">Link 2</div>
                         </a>
