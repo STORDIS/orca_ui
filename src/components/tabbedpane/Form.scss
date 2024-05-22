@@ -1,16 +1,23 @@
 .form-wrapper {
-    max-width: 500px;
-    margin: auto;
-    padding: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: #fff;
-    border-radius: 4px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
 }
 
 .form-field {
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
+}
+
+.w-50 {
+    width: 50% !important;
+}
+.w-75 {
+    width: 75% !important;
+}
+.w-100 {
+    width: 100% !important;
 }
 
 .form-field label {
@@ -26,24 +33,33 @@
     border-radius: 4px;
 }
 
-.form-field input[type="submit"],
-.form-field button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-}
+// .form-field input[type="submit"],
+// .form-field button {
+//     padding: 8px 15px;
+//     border: none;
+//     border-radius: 4px;
+//     cursor: pointer;
+//     width: 100%;
+//     margin-top: 10px;
+// }
 
 .form-field input[type="submit"]:hover,
 .form-field button:hover {
     opacity: 0.9;
 }
 
-@media (max-width: 640px) {
-    .form-wrapper {
-        padding: 10px;
-        max-width: 100%;
-    }
+.selected-interface-list {
+    display: flex;
+    width: 100%;
+    // flex-direction: column;
+    gap: 10px;
+}
+
+.selected-interface-wrap {
+    min-height: 100px;
+    max-height: 250px;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }

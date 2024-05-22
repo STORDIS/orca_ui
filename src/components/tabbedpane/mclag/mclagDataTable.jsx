@@ -19,13 +19,13 @@ const McLagDataTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { rows, columns, selectedDeviceIp = "" } = props;
+    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -45,7 +45,7 @@ const McLagDataTable = (props) => {
 
     const refreshData = () => {
         getMclag();
-        setIsMessageModalOpen(false);
+        setIsMessageModalOpen("null");
     };
 
     const openAddModal = () => {
@@ -76,10 +76,9 @@ const McLagDataTable = (props) => {
             })
             .finally(() => {
                 setShowForm(false);
-                setIsMessageModalOpen(true);
                 setLog(true);
                 setDisableConfig(false);
-                setIsMessageModalOpen(true);
+                setIsMessageModalOpen("message");
                 setTimeout(resetConfigStatus, 5000);
             });
     };
@@ -102,16 +101,18 @@ const McLagDataTable = (props) => {
         instance
             .delete(apiPUrl, { data: output })
             .then((res) => {
+                setIsMessageModalOpen("message");
                 setModalContent("Mclag Deleted Successfully");
                 setConfigStatus("Config Successful");
             })
             .catch((err) => {
+                setIsMessageModalOpen("message");
                 setModalContent("Error Deleting Mclag");
                 setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
-                setIsMessageModalOpen(true);
+                setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
@@ -161,6 +162,17 @@ const McLagDataTable = (props) => {
 
     const onColumnResized = useCallback((params) => {}, []);
 
+    const handleDelete = () => {
+        setIsMessageModalOpen("delete");
+
+        selectedRows.forEach((element) => {
+            console.log(element.domain_id);
+            setModalContent(
+                "Do you want to delete Mclag with id " + element.domain_id
+            );
+        });
+    };
+
     return (
         <div className="datatable">
             <div className="button-group">
@@ -195,7 +207,8 @@ const McLagDataTable = (props) => {
                     <button
                         className="ml-10 btnStyle"
                         disabled={selectedRows.length === 0}
-                        onClick={deleteMclag}
+                        // onClick={deleteMclag}
+                        onClick={handleDelete}
                     >
                         Delete Mclag
                     </button>
@@ -231,8 +244,8 @@ const McLagDataTable = (props) => {
                 />
             </Modal>
 
-            {isMessageModalOpen && (
-                <Modal show={isMessageModalOpen}>
+            {isMessageModalOpen === "message" && (
+                <Modal show={true}>
                     <div>
                         {modalContent}
                         <div
@@ -245,6 +258,28 @@ const McLagDataTable = (props) => {
                         >
                             <button className="btnStyle" onClick={refreshData}>
                                 Close
+                            </button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {isMessageModalOpen === "delete" && (
+                <Modal show={true}>
+                    <div>
+                        {modalContent}
+                        <div
+                            style={{
+                                marginTop: "10px",
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: "10px",
+                            }}
+                        >
+                            
+                            <button className="btnStyle" onClick={deleteMclag} >Yes</button>
+                            <button className="btnStyle" onClick={refreshData}>
+                                No
                             </button>
                         </div>
                     </div>

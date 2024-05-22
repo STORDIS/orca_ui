@@ -143,7 +143,7 @@ export const portGroupColumns = [
     },
 ];
 
-export const vlanColumns = (interfaceNames) => [
+export const vlanColumns =  [
     {
         headerCheckboxSelection: true,
         checkboxSelection: true,
@@ -152,12 +152,44 @@ export const vlanColumns = (interfaceNames) => [
     },
     {
         field: "vlanid",
-        headerName: "VLAN_ID",
+        headerName: "Vlan ID",
         type: "number",
-        width: 130,
+        width: 90,
         sortable: true,
     },
     { field: "name", headerName: "Name", width: 130, sortable: true },
+    {
+        field: "description",
+        headerName: "Description",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "autostate",
+        headerName: "Autostate",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "ip_address",
+        headerName: "IP Address",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "sag_ip_address",
+        headerName: "Anycast Address",
+        width: 130,
+        sortable: true,
+        editable: true,
+        headerComponent: EditableHeaderComponent,
+    },
     {
         field: "mtu",
         headerName: "MTU",
@@ -167,8 +199,8 @@ export const vlanColumns = (interfaceNames) => [
         headerComponent: EditableHeaderComponent,
     },
     {
-        field: "admin_status",
-        headerName: "Admin Status",
+        field: "enabled",
+        headerName: "Status",
         type: "boolean",
         width: 150,
         editable: true,
@@ -186,11 +218,11 @@ export const vlanColumns = (interfaceNames) => [
         sortable: true,
     },
     {
-        field: "members",
+        field: "mem_ifs",
         headerName: "Member IFs",
         width: 130,
         editable: true,
-        cellEditorParams: { values: interfaceNames },
+        // cellEditorParams: { values: interfaceNames },
         headerComponent: EditableHeaderComponent,
     },
 ];
