@@ -4,6 +4,7 @@ import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
+    deleteVlanMembersURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 
@@ -31,8 +32,8 @@ const VlanMemberForm = ({
 
         console.log(dataToSubmit);
 
-        // setDisableConfig(true);
-        // onSubmit(dataToSubmit);
+        setDisableConfig(true);
+        onSubmit(dataToSubmit);
     };
 
     const getInterfaces = () => {
@@ -66,21 +67,52 @@ const VlanMemberForm = ({
             });
     };
 
-    useEffect(() => {
+    const deleteMembers = (payload, key) => {
+        setDisableConfig(true);
+
+        instance
+            .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
+            .then((response) => {
+                console.log("--", response);
+
+                setSelectedInterfaces((prevInterfaces) => {
+                    const newInterfaces = { ...prevInterfaces };
+                    delete newInterfaces[key];
+                    return newInterfaces;
+                });
+                setDisableConfig(false);
+            })
+            .catch((error) => {
+                console.error("Error fetching interface names", error);
+                setDisableConfig(false);
+            });
+    };
+
+    const handleRemove = (key) => {
+        setDisableConfig(true);
+
         let input_mem_if = JSON.parse(inputData[0].mem_ifs);
 
-        if (Object.keys(input_mem_if).length !== 0) {
-            setSelectedInterfaces(input_mem_if);
-        }
+        if (input_mem_if.hasOwnProperty(key)) {
+            let dataToSubmit = {
+                mgt_ip: selectedDeviceIp,
+                name: inputData[0].name,
+                vlanid: inputData[0].vlanid,
+                mem_ifs: { [key]: selectedInterfaces[key] },
+            };
 
-        setInterfaceNames([]);
-        getInterfaces();
-        getPortchannel();
-    }, [inputData]);
+            deleteMembers(dataToSubmit, key);
+        } else {
+            setSelectedInterfaces((prevInterfaces) => {
+                const newInterfaces = { ...prevInterfaces };
+                delete newInterfaces[key];
+                return newInterfaces;
+            });
+            setDisableConfig(false);
+        }
+    };
 
     const handleDropdownChange = (event) => {
-        console.log(event);
-
         setSelectedInterfaces((prev) => ({
             ...prev,
             [event.target.value]: "ACCESS",
@@ -94,16 +126,20 @@ const VlanMemberForm = ({
         }));
     };
 
-    const handleRemove = (key) => {
-        setSelectedInterfaces((prevInterfaces) => {
-            const newInterfaces = { ...prevInterfaces };
-            delete newInterfaces[key];
-            return newInterfaces;
-        });
-    };
+    useEffect(() => {
+        let input_mem_if = JSON.parse(inputData[0].mem_ifs);
+
+        if (Object.keys(input_mem_if).length !== 0) {
+            setSelectedInterfaces(input_mem_if);
+        }
+
+        setInterfaceNames([]);
+        getInterfaces();
+        getPortchannel();
+    }, []);
 
     return (
-        <form onSubmit={handleSubmit}>
+        <div>
             <div className="form-wrapper">
                 <div className="form-field w-75">
                     <label>Select Member Interface </label>
@@ -140,6 +176,7 @@ const VlanMemberForm = ({
 
                                 <button
                                     className="btnStyle ml-25"
+                                    disabled={disableConfig}
                                     onClick={() => handleRemove(key)}
                                 >
                                     Remove
@@ -155,6 +192,7 @@ const VlanMemberForm = ({
                     type="submit"
                     className="btnStyle mr-10"
                     disabled={disableConfig}
+                    onClick={handleSubmit}
                 >
                     Apply Config
                 </button>
@@ -163,7 +201,7 @@ const VlanMemberForm = ({
                     Cancel
                 </button>
             </div>
-        </form>
+        </div>
     );
 };
 

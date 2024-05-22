@@ -165,9 +165,7 @@ const VlanTable = (props) => {
         setIsMessageModalOpen("add");
     };
 
-    const handleAddFormCancel = () => {
-        setIsMessageModalOpen("null");
-    };
+ 
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
@@ -304,13 +302,13 @@ const VlanTable = (props) => {
                 {isMessageModalOpen === "add" && (
                     <Modal
                         show={true}
-                        onClose={handleAddFormCancel}
+                        onClose={refreshData}
                         title={"Add Vlan"}
                     >
                         <VlanForm
                             onSubmit={(e) => handleFormSubmit(e, "Add")}
                             selectedDeviceIp={selectedDeviceIp}
-                            onCancel={handleAddFormCancel}
+                            onCancel={refreshData}
                             handelSubmitButton={disableConfig}
                         />
                     </Modal>
@@ -319,14 +317,14 @@ const VlanTable = (props) => {
                 {isMessageModalOpen === "addMember" && (
                     <Modal
                         show={true}
-                        onClose={handleAddFormCancel}
+                        onClose={refreshData}
                         title="Select Interfaces"
                     >
                         <VlanMemberForm
                             onSubmit={(e) => handleFormSubmit(e, "Member")}
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
-                            onCancel={handleAddFormCancel}
+                            onCancel={refreshData}
                             handelSubmitButton={disableConfig}
                         />
                     </Modal>
