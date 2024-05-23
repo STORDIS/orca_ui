@@ -24,7 +24,7 @@ import SigmaGraph from "../graphsNcharts/sigmaGraph/sigmaGraph";
 export const AskOrca = () => {
     const [isBookMark, setIsBookMark] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    // const [viewType, setViewType] = useState("Table"); // Table / Graph / Bar
+    const [isLoadingChart, setIsLoadingChart] = useState(false);
     const textAreaRef = useRef(null);
 
     const [googleChartData, setGoogleChartData] = useState([]);
@@ -46,6 +46,7 @@ export const AskOrca = () => {
     };
 
     const resetCurrentChat = () => {
+        setGoogleChartData([]);
         setCurrentChatHistory([
             {
                 index: 0,
@@ -156,7 +157,7 @@ export const AskOrca = () => {
             !googleChartData[index]?.cols?.length !== 0 &&
             !googleChartData[index]
         ) {
-            setIsLoading(true);
+            setIsLoadingChart(true);
 
             instance
                 .post(gptCompletionsURL("google chart json for table"), {
@@ -177,14 +178,14 @@ export const AskOrca = () => {
                             };
                             return updatedChatHistory;
                         });
-                        setIsLoading(false);
+                        setIsLoadingChart(false);
                     } else {
-                        setIsLoading(false);
+                        setIsLoadingChart(false);
                     }
                 })
                 .catch((error) => {
                     console.error("Error ", error);
-                    setIsLoading(false);
+                    setIsLoadingChart(false);
                 });
         } else {
             console.log("else", googleChartData[index]);
@@ -275,7 +276,8 @@ export const AskOrca = () => {
                                                         </select>
                                                     </div>
 
-                                                    {item.viewType === "Bar" ? (
+                                                    {item.viewType === "Bar" &&
+                                                    !isLoadingChart ? (
                                                         <div>
                                                             <Chart
                                                                 chartType="Bar"
@@ -288,6 +290,14 @@ export const AskOrca = () => {
                                                                 height="100%"
                                                                 legendToggle
                                                             />
+                                                        </div>
+                                                    ) : null}
+                                                    {item.viewType === "Bar" &&
+                                                    isLoadingChart ? (
+                                                        <div className="loader">
+                                                            <div className="dot"></div>
+                                                            <div className="dot"></div>
+                                                            <div className="dot"></div>
                                                         </div>
                                                     ) : null}
                                                     {item.viewType ===
@@ -367,12 +377,12 @@ export const AskOrca = () => {
                         placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                     ></textarea>
                     <button
-                        disabled={isLoading}
+                        disabled={isLoading || isLoadingChart}
                         onClick={gptCompletions}
                         className="btnStyle ml-10"
                     >
-                        {!isLoading ? <FaArrowUp /> : null}
-                        {isLoading ? <FaSpinner /> : null}
+                        {!isLoading && !isLoadingChart ? <FaArrowUp /> : null}
+                        {isLoading || isLoadingChart ? <FaSpinner /> : null}
                     </button>
                     <button
                         onClick={resetCurrentChat}
