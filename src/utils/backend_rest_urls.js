@@ -60,6 +60,9 @@ export function deleteDevicesURL(device_ip) {
     return host_addr + "/del_db?mgt_ip=" + device_ip;
 }
 
-export function getHistory() {
-    return host_addr + "/orcask/history ";
+export function getOrcAskHistory() {
+    return host_addr + "/orcask/history";
+}
+export function deleteOrcAskHistory() {
+    return host_addr + "/orcask/history/delete";
 }

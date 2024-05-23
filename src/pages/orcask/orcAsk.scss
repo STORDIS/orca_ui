@@ -4,7 +4,7 @@
     margin: 10px;
 
     .leftColumn {
-        width: 56vw;
+        width: 50vw;
         // flex-direction: column;
 
         padding: 10px;
@@ -21,7 +21,6 @@
             .aiStyle {
                 max-width: 85%;
                 height: max-content;
-                align-items: center;
                 margin-left: 5px;
                 display: flex;
                 margin: 10px auto 10px 5px;
@@ -136,11 +135,11 @@
     }
 
     .rightColumn {
-        width: 20vw;
-        padding: 15px;
-        min-height: 100%;
+        width: 27vw;
+        height: 83vh;
         -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
         box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+        // background-color: #dfdfdf;
 
         .tab {
             display: flex;
@@ -188,17 +187,47 @@
             }
         }
 
-        .links {
-            display: flex;
-            align-items: center;
-            background-color: #e7dbdb;
-            padding: 10px;
-            margin-bottom: 10px;
-            text-decoration: none;
+        .tabBody {
+            padding: 0px 15px 0px 15px;
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 70vh;
+            align-items: end;
 
-            .title {
-                font-size: 16px;
-                margin-left: 10px;
+            .userMessage {
+                width: 80%;
+                margin-bottom: 10px;
+                background-color: rgb(255, 255, 255);
+                border: 1px solid black;
+                border-radius: 25px;
+                border-bottom-right-radius: 0px;
+                padding: 12px 15px 12px 15px;
+
+                margin-left: auto;
+            }
+
+            .aiMessage {
+                width: 80%;
+                margin-bottom: 10px;
+                background-color: rgb(245, 242, 240);
+                border: 1px solid black;
+                border-radius: 25px;
+                border-bottom-left-radius: 0px;
+                padding: 12px 15px 12px 15px;
+                height: fit-content;
+
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                cursor: pointer;
+            }
+
+            .aiMessage.expanded {
+                white-space: normal;
+                height: 100%;
+
+                cursor: auto;
             }
         }
     }
