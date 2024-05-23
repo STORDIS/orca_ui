@@ -59,3 +59,7 @@ export function logPanelDeleteURL() {
 export function deleteDevicesURL(device_ip) {
     return host_addr + "/del_db?mgt_ip=" + device_ip;
 }
+
+export function getHistory() {
+    return host_addr + "/orcask/history ";
+}
