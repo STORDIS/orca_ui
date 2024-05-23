@@ -19,7 +19,7 @@ import "../orcAsk.scss";
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
-export const ChatSection = ({props}) => {
+export const ChatSection = ({sendDataToParent}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isLoadingChart, setIsLoadingChart] = useState(false);
     const textAreaRef = useRef(null);
@@ -102,12 +102,12 @@ export const ChatSection = ({props}) => {
                 });
 
                 setIsLoading(false);
-                props.chatRes(true);
+                sendDataToParent(true);
             })
             .catch((error) => {
                 console.error("Error ", error);
                 setIsLoading(false);
-                props.chatRes(true);
+                sendDataToParent(true);
             });
     };
 
@@ -171,10 +171,10 @@ export const ChatSection = ({props}) => {
                             return updatedChatHistory;
                         });
                         setIsLoadingChart(false);
-                        props.chatRes(true);
+                        sendDataToParent(true);
                     } else {
                         setIsLoadingChart(false);
-                        props.chatRes(true);
+                        sendDataToParent(true);
                     }
                 })
                 .catch((error) => {

@@ -33,6 +33,10 @@ export const AskOrca = () => {
         getChatHistory();
     }, [chatRes]);
 
+    const recivedData = (e) => {
+        setChatRes(e);
+    };
+
     const getChatHistory = () => {
         setChatHistory([]);
         instance
@@ -101,7 +105,7 @@ export const AskOrca = () => {
     return (
         <div className="flexContainer">
             <div className="leftColumn">
-                <ChatSection chatRes={chatRes} />
+                <ChatSection sendDataToParent={recivedData} />
             </div>
             <div className=" rightColumn">
                 <div className="tab">
