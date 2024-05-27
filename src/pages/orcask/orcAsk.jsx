@@ -17,20 +17,16 @@ import {
     deleteOrcAskHistory,
 } from "../../utils/backend_rest_urls";
 
+import HistoryChatSection from "./components/historyChatSection";
+
 export const AskOrca = () => {
-    const [isBookMark, setIsBookMark] = useState(false);
     const [chatHistory, setChatHistory] = useState([]);
-    const [isExpanded, setIsExpanded] = useState(false);
     const [chatRes, setChatRes] = useState(false);
     const instance = interceptor();
 
-    const handelTabChanage = (e) => {
-        setIsBookMark(e);
-        deleteHistory();
-    };
-
     useEffect(() => {
         getChatHistory();
+        // deleteHistory();
     }, [chatRes]);
 
     const recivedData = (e) => {
@@ -42,13 +38,15 @@ export const AskOrca = () => {
         instance
             .get(getOrcAskHistory())
             .then((response) => {
-                // console.log(response.data);
+                console.log(response.data);
 
                 const newChatHistory = response.data.map((chat) => ({
                     id: chat.id,
                     final_message: chat.final_message,
                     user_message: chat.user_message,
                 }));
+
+                // console.log(newChatHistory)
 
                 setChatHistory((prevChatHistory) => [
                     ...prevChatHistory,
@@ -62,118 +60,41 @@ export const AskOrca = () => {
             });
     };
 
+    console.log(chatHistory);
+
     const deleteHistory = () => {
-        // instance
-        //     .delete(deleteOrcAskHistory())
-        //     .then((response) => {
-        //         console.log(response);
-        //     })
-        //     .catch((error) => {
-        //         console.error("Error ", error);
-        //     });
-    };
-
-    // console.log(chatHistory);
-
-    const getJson = (item) => {
-        // console.log(item.replace('"', ''));
-        // return JSON.parse(item)
-
-        let jsonString = item.replace(/'/g, '"');
-        jsonString = jsonString
-            .replace(/True/g, "true")
-            .replace(/False/g, "false");
-        jsonString = jsonString.replace(/None/g, "none");
-
-        console.log(JSON.parse(jsonString));
-        return JSON.parse(jsonString);
-
-        // let parsedJson = JSON.parse(jsonString);
-        // console.log(parsedJson)
-        // try {
-        //     let parsedJson = JSON.parse(jsonString);
-        //     return parsedJson;
-        // } catch (error) {
-        //     console.error("Invalid JSON string:", error);
-        // }
-    };
-
-    const toggleExpansion = () => {
-        setIsExpanded(!isExpanded);
+        instance
+            .delete(deleteOrcAskHistory())
+            .then((response) => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.error("Error ", error);
+            });
     };
 
     return (
         <div className="flexContainer">
             <div className="leftColumn">
-                <ChatSection sendDataToParent={recivedData} />
+                <HistoryChatSection />
             </div>
             <div className=" rightColumn">
-                <div className="tab">
-                    <div
-                        onClick={() => handelTabChanage(true)}
-                        className={
-                            !isBookMark
-                                ? "tabButtonSelected"
-                                : "tabButtonDeSelected"
-                        }
-                    >
-                        <span className=" mr-10">
-                            <FaBookmark />
-                        </span>
-                        Bookmark
-                    </div>
-                    <div
-                        onClick={() => handelTabChanage(false)}
-                        className={
-                            isBookMark
-                                ? "tabButtonSelected"
-                                : "tabButtonDeSelected"
-                        }
-                    >
-                        <span className=" mr-10">
-                            <FaHistory />
-                        </span>
-                        History
-                    </div>
+                <div className="heading">
+                    <span className="mr-10">
+                        <FaBookmark />
+                    </span>
+                    Bookmark
                 </div>
 
                 <div className="tabBody">
-                    {isBookMark ? (
-                        <>
-                            <div className="bookmark">
-                                <FaBookmark />
-                                <div className="title">
-                                    some text which is heading
-                                </div>
-                            </div>
-                            <div className="bookmark">
-                                <FaBookmark />
-                                <div className="title">
-                                    some text which is heading
-                                </div>
-                            </div>
-                        </>
-                    ) : null}
-
-                    {!isBookMark ? (
-                        <>
-                            {chatHistory.map((item, index) => (
-                                <div key={item.id} className="history">
-                                    <div className=" userMessage">
-                                        {item.id} . {item.user_message}
-                                    </div>
-                                    <div
-                                        className={`aiMessage ${
-                                            isExpanded ? "expanded" : ""
-                                        }`}
-                                        onClick={toggleExpansion}
-                                    >
-                                        {item.final_message}
-                                    </div>
-                                </div>
-                            ))}
-                        </>
-                    ) : null}
+                    <div className="bookmarkTitle">
+                        <FaBookmark />
+                        <div className="ml-10">some text which is heading</div>
+                    </div>
+                    <div className="bookmarkTitle">
+                        <FaBookmark />
+                        <div className="ml-10">some text which is heading</div>
+                    </div>
                 </div>
             </div>
         </div>

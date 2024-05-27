@@ -13,7 +13,7 @@
         box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
 
         .chatSection {
-            background-color: #a7a7a7;
+            background-color: #c0c0c0;
             overflow-y: auto;
             width: -webkit-fill-available;
             height: calc(100% - 90px);
@@ -141,50 +141,13 @@
         box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
         // background-color: #dfdfdf;
 
-        .tab {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            margin-bottom: 20px;
+        .heading {
+            padding: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid black;
             -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
             box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
-
-            .tabButtonDeSelected {
-                padding: 10px;
-                border-bottom: 1px solid gray;
-                width: 50%;
-                text-align: center;
-                background-color: white;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-            .tabButtonSelected {
-                padding: 10px;
-                border-bottom: 1px solid gray;
-                width: 50%;
-                text-align: center;
-                background-color: lightgray;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                // box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 10px 0px inset;
-            }
-        }
-
-        .bookmark {
-            display: flex;
-            align-items: center;
-            background-color: #e7dbdb;
-            padding: 10px;
-            margin-bottom: 10px;
-
-            .title {
-                font-size: 16px;
-                margin-left: 10px;
-            }
         }
 
         .tabBody {
@@ -194,40 +157,12 @@
             height: 70vh;
             align-items: end;
 
-            .userMessage {
-                width: 80%;
+            .bookmarkTitle {
+                display: flex;
+                align-items: center;
+                background-color: #e7dbdb;
+                padding: 10px;
                 margin-bottom: 10px;
-                background-color: rgb(255, 255, 255);
-                border: 1px solid black;
-                border-radius: 25px;
-                border-bottom-right-radius: 0px;
-                padding: 12px 15px 12px 15px;
-
-                margin-left: auto;
-            }
-
-            .aiMessage {
-                width: 80%;
-                margin-bottom: 10px;
-                background-color: rgb(245, 242, 240);
-                border: 1px solid black;
-                border-radius: 25px;
-                border-bottom-left-radius: 0px;
-                padding: 12px 15px 12px 15px;
-                height: fit-content;
-
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-
-                cursor: pointer;
-            }
-
-            .aiMessage.expanded {
-                white-space: normal;
-                height: 100%;
-
-                cursor: auto;
             }
         }
     }
