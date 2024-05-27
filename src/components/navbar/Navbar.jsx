@@ -25,7 +25,6 @@ const Navbar = () => {
         try {
             setShowForm(false);
             const response = await instance.put(getDiscoveryUrl(), formData);
-
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
             setLog(true);
@@ -33,6 +32,7 @@ const Navbar = () => {
             window.location.reload();
         } catch (error) {
             console.log(error);
+            window.location.reload();
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
             setLog(true);

@@ -37,8 +37,14 @@ const DiscoveryForm = ({ handleSubmit, onCancel }) => {
         }
 
         if (areAllIPAddressesValid(formData.address)) {
-            // handleSubmit(formData);
-            console.log(formData);
+
+            
+            let payload = {
+                address: formData.address.split(",").map((ip) => ip.trim()),
+                discover_from_config: formData.discover_from_config,
+            }
+            console.log(payload);
+            handleSubmit(payload);
         } else {
             alert("Invalid IP Address");
             return;
