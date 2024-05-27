@@ -41,12 +41,13 @@ export const HistoryChatSection = () => {
     };
 
     useEffect(() => {
+        setIsLoading(true);
         getChatHistory();
     }, []);
 
     useEffect(() => {
         scrollToBottom();
-    }, [chatHistory, isLoading]);
+    }, [ isLoading]);
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
