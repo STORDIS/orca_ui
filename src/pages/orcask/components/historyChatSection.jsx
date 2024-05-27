@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-
 import { gptCompletionsURL } from "../../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { AgGridReact } from "ag-grid-react";
-
 import { FaRobot } from "react-icons/fa6";
 import { FaRegCopy } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
@@ -13,23 +11,18 @@ import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { Chart } from "react-google-charts";
-
 import "../orcAsk.scss";
-
 import {
     getOrcAskHistory,
     deleteOrcAskHistory,
-} from "../,,/../../../utils/backend_rest_urls";
-
+} from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
 export const HistoryChatSection = () => {
     const instance = interceptor();
-
     const [isLoading, setIsLoading] = useState(false);
     const textAreaRef = useRef(null);
-
     const [chatHistory, setChatHistory] = useState([
         {
             id: 0,
@@ -39,11 +32,8 @@ export const HistoryChatSection = () => {
             viewType: "string",
         },
     ]);
-
     const chatContainerRef = useRef(null);
-
     const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
-
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
 
     const handleInputChange = (event) => {
@@ -52,37 +42,33 @@ export const HistoryChatSection = () => {
 
     useEffect(() => {
         getChatHistory();
-        // deleteHistory();
     }, []);
 
     useEffect(() => {
-        if (!isLoading && chatContainerRef.current) {
-            chatContainerRef.current.scrollTop =
-                chatContainerRef.current.scrollHeight;
-        } else if (isLoading && chatContainerRef.current) {
+        scrollToBottom();
+    }, [chatHistory, isLoading]);
+
+    const scrollToBottom = () => {
+        if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop =
                 chatContainerRef.current.scrollHeight;
         }
-    }, [isLoading]);
+    };
 
     const getChatHistory = (index) => {
         instance
             .get(getOrcAskHistory())
             .then((response) => {
-                console.log(response.data);
-
                 const newChatHistory = response.data.map((chat) => ({
                     id: chat.id,
                     final_message: chat.final_message,
                     user_message: chat.user_message,
                     viewType: getChartType(chat.final_message), // table / graph / string
                 }));
-
                 setChatHistory((prevChatHistory) => [
                     ...prevChatHistory,
                     ...newChatHistory,
                 ]);
-
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -103,7 +89,15 @@ export const HistoryChatSection = () => {
         instance
             .delete(deleteOrcAskHistory())
             .then((response) => {
-                setChatHistory([]);
+                setChatHistory([
+                    {
+                        id: 0,
+                        final_message:
+                            "I am, ORCAsk AI developed to assist you. How can I help you?",
+                        user_message: "",
+                        viewType: "string",
+                    },
+                ]);
                 getChatHistory();
             })
             .catch((error) => {
@@ -112,7 +106,6 @@ export const HistoryChatSection = () => {
     };
 
     const gptCompletions = () => {
-        console.log(questionPrompt);
         setIsLoading(true);
         instance
             .post(gptCompletionsURL("json"), questionPrompt)
@@ -131,14 +124,11 @@ export const HistoryChatSection = () => {
 
     const handleOptionChange = (e) => {
         let index = parseInt(e.target.id);
-
         setChatHistory((prevChatHistory) => {
             const updatedChatHistory = [...prevChatHistory];
-
             if (index >= 0 && index < updatedChatHistory.length) {
                 updatedChatHistory[index].viewType = e.target.value;
             }
-
             return updatedChatHistory;
         });
     };
@@ -164,17 +154,15 @@ export const HistoryChatSection = () => {
         }
     };
 
-    console.log(chatHistory);
-
     return (
         <>
             <div className="chatSection" ref={chatContainerRef}>
                 {chatHistory
                     .sort((a, b) => a.id - b.id)
                     .map((item, index) => (
-                        <>
+                        <React.Fragment key={item.id}>
                             {item.user_message ? (
-                                <div className=" promptStyle">
+                                <div className="promptStyle">
                                     <span className="copy">
                                         <CopyToClipboard
                                             text={item.user_message}
@@ -190,33 +178,28 @@ export const HistoryChatSection = () => {
                                     <span className="text">
                                         {item.user_message}
                                     </span>
-
                                     <span className="icon">
                                         <FaUser />
                                     </span>
                                 </div>
                             ) : null}
                             {item.final_message ? (
-                                <div key={item.id} className="aiStyle">
+                                <div className="aiStyle">
                                     <span className="icon">
                                         <FaRobot />
                                     </span>
-
-                                    {/* shows normal message / string type from ai res */}
                                     {item.viewType === "string" ? (
                                         <div className="content">
                                             {item.final_message}
                                         </div>
                                     ) : null}
-
-                                    {/* shows normal other than string type from ai res */}
                                     {item.viewType !== "string" ? (
                                         <div className="content">
                                             <div className="selectView">
                                                 <select
                                                     className="selectView"
                                                     name=""
-                                                    id={index}
+                                                    id={index.toString()}
                                                     value={item.viewType}
                                                     onChange={
                                                         handleOptionChange
@@ -230,7 +213,6 @@ export const HistoryChatSection = () => {
                                                     </option>
                                                 </select>
                                             </div>
-
                                             {item.viewType === "table" ? (
                                                 <div
                                                     style={gridStyle}
@@ -246,7 +228,6 @@ export const HistoryChatSection = () => {
                                                     />
                                                 </div>
                                             ) : null}
-
                                             {item.viewType === "graph" ? (
                                                 <div className="graph">
                                                     <SigmaGraph
@@ -258,19 +239,20 @@ export const HistoryChatSection = () => {
                                             ) : null}
                                         </div>
                                     ) : null}
-
                                     <span className="copy">
-                                        <CopyToClipboard text={item.message}>
+                                        <CopyToClipboard
+                                            text={item.final_message}
+                                        >
                                             <FaRegCopy />
                                         </CopyToClipboard>
                                     </span>
                                 </div>
                             ) : null}
-                        </>
+                        </React.Fragment>
                     ))}
                 {isLoading ? (
                     <>
-                        <div className=" promptStyle">
+                        <div className="promptStyle">
                             <span className="copy">
                                 <CopyToClipboard
                                     text={questionPrompt.prompt}
@@ -286,7 +268,6 @@ export const HistoryChatSection = () => {
                             <span className="text">
                                 {questionPrompt.prompt}
                             </span>
-
                             <span className="icon">
                                 <FaUser />
                             </span>
@@ -313,17 +294,18 @@ export const HistoryChatSection = () => {
                     className="textArea"
                     name=""
                     ref={textAreaRef}
+                    disabled={isLoading}
                     placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                 ></textarea>
                 <button
                     disabled={isLoading}
                     onClick={gptCompletions}
-                    className="btnStyle ml-10"
+                    className="btnStyle ml-10 "
                 >
                     {!isLoading ? <FaArrowUp /> : null}
                     {isLoading ? <FaSpinner /> : null}
                 </button>
-                <button onClick={deleteHistory} className="btnStyle ml-10">
+                <button onClick={deleteHistory} className="btnStyle ml-10 ">
                     <FaRotateLeft />
                 </button>
             </div>
