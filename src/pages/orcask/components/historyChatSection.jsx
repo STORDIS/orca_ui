@@ -10,7 +10,8 @@ import { FaUser } from "react-icons/fa";
 import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
-import { Chart } from "react-google-charts";
+import { FaBookmark } from "react-icons/fa";
+
 import "../orcAsk.scss";
 import {
     getOrcAskHistory,
@@ -47,7 +48,7 @@ export const HistoryChatSection = () => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [ isLoading]);
+    }, [isLoading]);
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
@@ -164,6 +165,9 @@ export const HistoryChatSection = () => {
                         <React.Fragment key={item.id}>
                             {item.user_message ? (
                                 <div className="promptStyle">
+                                    <span className="bookmark">
+                                        <FaBookmark />
+                                    </span>
                                     <span className="copy">
                                         <CopyToClipboard
                                             text={item.user_message}
@@ -247,6 +251,9 @@ export const HistoryChatSection = () => {
                                             <FaRegCopy />
                                         </CopyToClipboard>
                                     </span>
+                                    {/* <span className="bookmark">
+                                        <FaBookmark />
+                                    </span> */}
                                 </div>
                             ) : null}
                         </React.Fragment>
@@ -255,6 +262,9 @@ export const HistoryChatSection = () => {
                     <>
                         <div className="promptStyle">
                             <span className="copy">
+                                <span className="bookmark">
+                                    <FaBookmark />
+                                </span>
                                 <CopyToClipboard
                                     text={questionPrompt.prompt}
                                     onCopy={() =>
@@ -266,6 +276,7 @@ export const HistoryChatSection = () => {
                                     <FaRegCopy />
                                 </CopyToClipboard>
                             </span>
+
                             <span className="text">
                                 {questionPrompt.prompt}
                             </span>
