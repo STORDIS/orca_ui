@@ -182,6 +182,12 @@
                 background-color: #e7dbdb;
                 padding: 10px;
                 margin-bottom: 10px;
+
+                .deleteIcon {
+                    color: red;
+                    margin-left: auto;
+                    cursor: pointer;
+                }
             }
         }
     }

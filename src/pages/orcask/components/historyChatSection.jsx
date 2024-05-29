@@ -14,13 +14,16 @@ import { FaBookmark } from "react-icons/fa";
 
 import "../orcAsk.scss";
 import {
-    getOrcAskHistory,
-    deleteOrcAskHistory,
+    getOrcAskHistoryURL,
+    deleteOrcAskHistoryURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
-export const HistoryChatSection = () => {
+export const HistoryChatSection = ({
+    sendBookmarkDataToParent,
+    copiedBookmark,
+}) => {
     const instance = interceptor();
     const [isLoading, setIsLoading] = useState(false);
     const textAreaRef = useRef(null);
@@ -50,6 +53,14 @@ export const HistoryChatSection = () => {
         scrollToBottom();
     }, [isLoading]);
 
+    useEffect(() => {
+        if (copiedBookmark !== "") {
+            setQuestionPrompt({
+                prompt: copiedBookmark,
+            });
+        }
+    }, [copiedBookmark]);
+
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
             chatContainerRef.current.scrollTop =
@@ -59,7 +70,7 @@ export const HistoryChatSection = () => {
 
     const getChatHistory = (index) => {
         instance
-            .get(getOrcAskHistory())
+            .get(getOrcAskHistoryURL())
             .then((response) => {
                 const newChatHistory = response.data.map((chat) => ({
                     id: chat.id,
@@ -89,7 +100,7 @@ export const HistoryChatSection = () => {
 
     const deleteHistory = () => {
         instance
-            .delete(deleteOrcAskHistory())
+            .delete(deleteOrcAskHistoryURL())
             .then((response) => {
                 setChatHistory([
                     {
@@ -156,6 +167,15 @@ export const HistoryChatSection = () => {
         }
     };
 
+    const sendBookMarks = (user_message, final_meesage) => {
+        let dataToParent = {
+            prompt: user_message.trim(),
+            message: final_meesage,
+        };
+
+        sendBookmarkDataToParent(dataToParent);
+    };
+
     return (
         <>
             <div className="chatSection" ref={chatContainerRef}>
@@ -165,7 +185,15 @@ export const HistoryChatSection = () => {
                         <React.Fragment key={item.id}>
                             {item.user_message ? (
                                 <div className="promptStyle">
-                                    <span className="bookmark">
+                                    <span
+                                        className="bookmark"
+                                        onClick={() =>
+                                            sendBookMarks(
+                                                item.user_message,
+                                                item.final_message
+                                            )
+                                        }
+                                    >
                                         <FaBookmark />
                                     </span>
                                     <span className="copy">
