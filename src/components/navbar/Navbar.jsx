@@ -19,43 +19,23 @@ const Navbar = () => {
 
     const instance = interceptor();
 
-    const isValidIPv4WithCIDR = (ipWithCidr) => {
-        const ipv4Regex =
-            /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
-        const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
-
-        const [ip, cidr] = ipWithCidr.split("/");
-
-        if (ipv4Regex.test(ip)) {
-            if (cidr === undefined || cidrRegex.test(cidr)) {
-                return true;
-            }
-        }
-        return false;
-    };
-
     const start_discovery = async (formData) => {
-        if (isValidIPv4WithCIDR(formData.address)) {
-            console.log(formData.address);
-            setDiscBtnText("Discovery In Progress");
-            disableDiscBtn(true);
-            try {
-                setShowForm(false);
-                const response = await instance.put(getDiscoveryUrl(), formData);
+        setDiscBtnText("Discovery In Progress");
+        disableDiscBtn(true);
+        try {
+            setShowForm(false);
+            const response = await instance.put(getDiscoveryUrl(), formData);
+            setDiscBtnText("Discover Network");
+            disableDiscBtn(false);
+            setLog(true);
 
-                setDiscBtnText("Discover Network");
-                disableDiscBtn(false);
-                setLog(true);
-
-                window.location.reload();
-            } catch (error) {
-                console.log(error);
-                setDiscBtnText("Discover Network");
-                disableDiscBtn(false);
-                setLog(true);
-            }
-        } else {
-            alert("ip_address is not valid");
+            window.location.reload();
+        } catch (error) {
+            console.log(error);
+            window.location.reload();
+            setDiscBtnText("Discover Network");
+            disableDiscBtn(false);
+            setLog(true);
         }
     };
 
