@@ -107,13 +107,13 @@ export const LogViewer = () => {
             },
         },
         {
-            field: "status_code",
+            field: "status",
             headerName: "Status",
             width: 400,
             resizable: true,
             sortable: true,
             cellRenderer: (params) => {
-                if (params.value === 200) {
+                if (params.value === "success") {
                     return (
                         <div className="icon">
                             <FaRegCheckCircle style={{ fontSize: "24px" }} />
@@ -123,19 +123,19 @@ export const LogViewer = () => {
                     return (
                         <div className="icon">
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
-                            &nbsp; {params.data.status} &nbsp;
+                            &nbsp; {params.data.response} &nbsp;
                         </div>
                     );
                 }
             },
             cellStyle: (params) => {
-                if (params.value === 200) {
+                if (params.value === "success") {
                     return { color: "green", display: "flex" };
                 } else {
                     return { color: "red", display: "flex" };
                 }
             },
-            tooltipValueGetter: (params) => {
+            tooltipValueGetter: (params) => { 
                 return params.data.response;
             },
         },
