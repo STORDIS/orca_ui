@@ -6,7 +6,10 @@ import { FaTrashAlt } from "react-icons/fa";
 import { FaRegCopy } from "react-icons/fa";
 
 import "./orcAsk.scss";
-import { bookmarkURL } from "../../utils/backend_rest_urls";
+import {
+    bookmarkURL,
+    bookmarkDeleteAllURL,
+} from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 
 import HistoryChatSection from "./components/historyChatSection";
@@ -34,8 +37,6 @@ export const AskOrca = () => {
     };
 
     const addBookmark = (e) => {
-        // console.log(e);
-
         instance
             .put(bookmarkURL(), e)
             .then((response) => {
@@ -49,6 +50,17 @@ export const AskOrca = () => {
     const deleteBookmark = (e) => {
         instance
             .delete(bookmarkURL(), { data: { bookmark_id: e } })
+            .then((response) => {
+                getBookmark();
+            })
+            .catch((error) => {
+                console.error("Error ", error);
+            });
+    };
+
+    const deleteAllBookMark = () => {
+        instance
+            .delete(bookmarkDeleteAllURL())
             .then((response) => {
                 getBookmark();
             })
@@ -78,6 +90,9 @@ export const AskOrca = () => {
                         <FaBookmark />
                     </span>
                     Bookmark
+                    <span onClick={deleteAllBookMark} className="deleteIcon">
+                        <FaTrashAlt />
+                    </span>
                 </div>
 
                 <div className="tabBody">

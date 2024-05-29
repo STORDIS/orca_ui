@@ -70,3 +70,7 @@ export function deleteOrcAskHistoryURL() {
 export function bookmarkURL() {
     return host_addr + "/orcask/bookmark";
 }
+
+export function bookmarkDeleteAllURL() {
+    return host_addr + "/orcask/bookmark/delete-all";
+}

@@ -163,6 +163,7 @@
         .heading {
             padding: 10px;
             margin-bottom: 15px;
+            display: flex;
             text-align: center;
             border-bottom: 1px solid black;
             -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
@@ -182,13 +183,13 @@
                 background-color: #e7dbdb;
                 padding: 10px;
                 margin-bottom: 10px;
-
-                .deleteIcon {
-                    color: red;
-                    margin-left: auto;
-                    cursor: pointer;
-                }
             }
+        }
+
+        .deleteIcon {
+            color: red;
+            margin-left: auto !important;
+            cursor: pointer;
         }
     }
 }
