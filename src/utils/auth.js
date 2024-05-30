@@ -15,6 +15,7 @@ export const AuthProvider = ({ children }) => {
             .post(postLogin(), credential)
             .then((response) => {
                 secureLocalStorage.setItem("token", response.data.token);
+                secureLocalStorage.setItem("is_staff", true);
                 setAccessToken(credential);
                 window.location.href = redirectUrl;
             })

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
+import secureLocalStorage from "react-secure-storage";
 
 export const defaultColDef = {
     tooltipValueGetter: (params) => {
@@ -31,7 +32,7 @@ export const interfaceColumns = [
         width: 130,
         cellRenderer: "agCheckboxCellRenderer",
         cellEditor: "agCheckboxCellEditor",
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         suppressKeyboardEvent: (params) => params.event.key === " ",
         headerComponent: EditableHeaderComponent,
     },
@@ -40,14 +41,14 @@ export const interfaceColumns = [
         headerName: "MTU",
         type: "number",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
         field: "fec",
         headerName: "FEC",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,
         stopEditingWhenCellsLoseFocus: true,
@@ -61,7 +62,7 @@ export const interfaceColumns = [
         field: "speed",
         headerName: "Speed",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
             values: [
@@ -86,7 +87,7 @@ export const interfaceColumns = [
         field: "description",
         headerName: "Description",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -106,7 +107,7 @@ export const portGroupColumns = [
         width: 130,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
+            if (regex.test(params.data.name) || !secureLocalStorage.getItem("is_staff") ) {
                 return false;
             } else {
                 return true;
@@ -143,7 +144,7 @@ export const portGroupColumns = [
     },
 ];
 
-export const vlanColumns =  [
+export const vlanColumns = [
     {
         headerCheckboxSelection: true,
         checkboxSelection: true,
@@ -163,7 +164,7 @@ export const vlanColumns =  [
         headerName: "Description",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -171,7 +172,7 @@ export const vlanColumns =  [
         headerName: "Autostate",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -179,7 +180,7 @@ export const vlanColumns =  [
         headerName: "IP Address",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -187,7 +188,7 @@ export const vlanColumns =  [
         headerName: "Anycast Address",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -195,7 +196,7 @@ export const vlanColumns =  [
         headerName: "MTU",
         type: "number",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -203,7 +204,7 @@ export const vlanColumns =  [
         headerName: "Status",
         type: "boolean",
         width: 150,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
             values: ["up", "down"],
@@ -221,7 +222,7 @@ export const vlanColumns =  [
         field: "mem_ifs",
         headerName: "Member IFs",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         // cellEditorParams: { values: interfaceNames },
         headerComponent: EditableHeaderComponent,
     },
@@ -253,9 +254,10 @@ export const portChannelColumns = [
         width: 150,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
+            if (regex.test(params.data.name) || !secureLocalStorage.getItem("is_staff") ) {
                 return false;
-            } else {
+            } 
+            else {
                 return true;
             }
         },
@@ -272,7 +274,7 @@ export const portChannelColumns = [
         width: 130,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
+            if (regex.test(params.data.name) || !secureLocalStorage.getItem("is_staff") ) {
                 return false;
             } else {
                 return true;
@@ -305,7 +307,7 @@ export const portChannelColumns = [
         field: "members",
         headerName: "Members",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
 ];
@@ -324,7 +326,7 @@ export const mclagColumns = [
         headerName: "Keepalive Interval",
         type: "number",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -334,7 +336,7 @@ export const mclagColumns = [
         headerName: "MCLAG Sys MAC",
 
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -344,7 +346,7 @@ export const mclagColumns = [
         headerName: "Peer Address",
 
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -352,7 +354,7 @@ export const mclagColumns = [
         field: "peer_link",
         headerName: "Peer Link",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -361,7 +363,7 @@ export const mclagColumns = [
         headerName: "Session Timeout",
         type: "number",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -371,7 +373,7 @@ export const mclagColumns = [
         headerName: "Source Address",
 
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
 
         sortable: true,
@@ -386,7 +388,7 @@ export const mclagColumns = [
         field: "role",
         headerName: "Role",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -396,7 +398,7 @@ export const mclagColumns = [
         headerName: "Gateway MAC",
 
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
 
         sortable: true,
@@ -406,7 +408,7 @@ export const mclagColumns = [
         headerName: "Delay Restore",
         type: "number",
         width: 130,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -419,7 +421,7 @@ export const bgpColumns = [
         headerName: "ASN",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -427,7 +429,7 @@ export const bgpColumns = [
         headerName: "VRF",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -435,7 +437,7 @@ export const bgpColumns = [
         headerName: "Router ID",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: secureLocalStorage.getItem("is_staff"),
         headerComponent: EditableHeaderComponent,
     },
     {
