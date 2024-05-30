@@ -74,3 +74,7 @@ export function bookmarkURL() {
 export function bookmarkDeleteAllURL() {
     return host_addr + "/orcask/bookmark/delete-all";
 }
+
+export function getUserDetailsURL(user) {
+    return host_addr + "/auth/user/" + user;
+}

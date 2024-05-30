@@ -1,7 +1,7 @@
 import { useState, createContext, useContext } from "react";
 import secureLocalStorage from "react-secure-storage";
 import interceptor from "./interceptor";
-import { postLogin } from "./backend_rest_urls";
+import { postLogin, getUserDetailsURL } from "./backend_rest_urls";
 
 const AuthContext = createContext(null);
 
@@ -15,14 +15,29 @@ export const AuthProvider = ({ children }) => {
             .post(postLogin(), credential)
             .then((response) => {
                 secureLocalStorage.setItem("token", response.data.token);
-                secureLocalStorage.setItem("is_staff", true);
                 setAccessToken(credential);
-                window.location.href = redirectUrl;
+                getUser(credential.username, redirectUrl)
             })
             .catch((error) => {
                 console.error("Error:", error);
                 secureLocalStorage.clear();
                 alert("Invalid credential");
+            });
+    };
+
+    const getUser = async (userName, redirectUrl) => {
+        console.log(userName);
+        await instance
+            .get(getUserDetailsURL(userName))
+            .then((response) => {
+                console.log(response);
+                secureLocalStorage.setItem("user_details", response.data);
+                window.location.href = redirectUrl;
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                secureLocalStorage.clear();
+                alert("error");
             });
     };
 

@@ -6,7 +6,7 @@ const EditableHeaderComponent = (props) => {
   const { displayName, column } = props;
   return (
     <span>
-      {column.colDef.editable &&  secureLocalStorage.getItem("is_staff") &&  <FaEdit style={{ marginRight: '5px' }} />} 
+      {column.colDef.editable &&  secureLocalStorage.getItem("user_details").is_staff &&  <FaEdit style={{ marginRight: '5px' }} />} 
       {displayName} 
     </span>
   );
