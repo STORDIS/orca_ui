@@ -13,6 +13,7 @@ import Modal from "../../modal/Modal";
 
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import { getIsStaff } from "../datatablesourse";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -200,7 +201,11 @@ const McLagDataTable = (props) => {
                 </div>
 
                 <div className="">
-                    <button className="btnStyle" onClick={openAddModal}>
+                    <button
+                        className="btnStyle"
+                        disabled={!getIsStaff()}
+                        onClick={openAddModal}
+                    >
                         Add Mclag
                     </button>
 
@@ -276,8 +281,9 @@ const McLagDataTable = (props) => {
                                 gap: "10px",
                             }}
                         >
-                            
-                            <button className="btnStyle" onClick={deleteMclag} >Yes</button>
+                            <button className="btnStyle" onClick={deleteMclag}>
+                                Yes
+                            </button>
                             <button className="btnStyle" onClick={refreshData}>
                                 No
                             </button>

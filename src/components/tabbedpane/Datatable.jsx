@@ -67,7 +67,6 @@ const Datatable = (props) => {
 
     const handleDeleteConfirmation = () => {
         console.log("Delete", selectedDeviceToDelete);
-
         setDisableConfig(true);
         const apiPUrl = deleteDevicesURL(selectedDeviceToDelete);
         instance

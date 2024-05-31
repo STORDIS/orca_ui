@@ -4,7 +4,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { FaBookmark } from "react-icons/fa";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaRegCopy } from "react-icons/fa";
-
+import { getIsStaff } from "../../components/tabbedpane/datatablesourse";
 import "./orcAsk.scss";
 import {
     bookmarkURL,
@@ -90,9 +90,13 @@ export const AskOrca = () => {
                         <FaBookmark />
                     </span>
                     Bookmark
-                    <span onClick={deleteAllBookMark} className="deleteIcon">
+                    <button
+                        disabled={!getIsStaff()}
+                        onClick={deleteAllBookMark}
+                        className="deleteIcon"
+                    >
                         <FaTrashAlt />
-                    </span>
+                    </button>
                 </div>
 
                 <div className="tabBody">
@@ -105,12 +109,13 @@ export const AskOrca = () => {
                                 <FaRegCopy />
                             </span>
                             <div className="ml-10">{item.prompt}</div>
-                            <span
+                            <button
                                 onClick={() => deleteBookmark(item.bookmark_id)}
-                                className="deleteIcon"
+                                disabled={!getIsStaff()}
+                                className="deleteIcon "
                             >
                                 <FaTrashAlt />
-                            </span>
+                            </button>
                         </div>
                     ))}
 

@@ -11,6 +11,7 @@ import VlanMemberForm from "./vlanMemberForm";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import { getIsStaff } from "../datatablesourse";
 
 const VlanTable = (props) => {
     const instance = interceptor();
@@ -38,7 +39,7 @@ const VlanTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
-                console.log(res.data)
+                console.log(res.data);
                 res?.data?.forEach((element) => {
                     element.mem_ifs = JSON.stringify(element.mem_ifs);
                 });
@@ -165,8 +166,6 @@ const VlanTable = (props) => {
         setIsMessageModalOpen("add");
     };
 
- 
-
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data);
@@ -270,7 +269,11 @@ const VlanTable = (props) => {
                         </span>
                     </div>
 
-                    <button className="btnStyle" onClick={openAddFormModal}>
+                    <button
+                        className="btnStyle"
+                        disabled={!getIsStaff()}
+                        onClick={openAddFormModal}
+                    >
                         Add Vlan
                     </button>
                     <button
@@ -290,7 +293,6 @@ const VlanTable = (props) => {
                         defaultColDef={defaultColDef}
                         onCellValueChanged={handleCellValueChanged}
                         rowSelection="multiple"
-                        checkboxSelection
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         stopEditingWhenCellsLoseFocus={true}
@@ -300,11 +302,7 @@ const VlanTable = (props) => {
 
                 {/* model for adding vlan */}
                 {isMessageModalOpen === "add" && (
-                    <Modal
-                        show={true}
-                        onClose={refreshData}
-                        title={"Add Vlan"}
-                    >
+                    <Modal show={true} onClose={refreshData} title={"Add Vlan"}>
                         <VlanForm
                             onSubmit={(e) => handleFormSubmit(e, "Add")}
                             selectedDeviceIp={selectedDeviceIp}

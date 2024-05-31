@@ -14,6 +14,7 @@ import MembersSelection from "./MembersSelection";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import { getIsStaff } from "../datatablesourse";
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -384,7 +385,10 @@ const PortChDataTable = (props) => {
                     <div className="button-column">
                         <button
                             onClick={sendUpdates}
-                            disabled={disableConfig}
+                            disabled={
+                                disableConfig ||
+                                Object.keys(changes).length === 0
+                            }
                             className="btnStyle"
                         >
                             Apply Config
@@ -402,7 +406,11 @@ const PortChDataTable = (props) => {
                         </span>
                     </div>
 
-                    <button className="btnStyle" onClick={openAddModal}>
+                    <button
+                        className="btnStyle"
+                        disabled={!getIsStaff()}
+                        onClick={openAddModal}
+                    >
                         Add Port Channel
                     </button>
                     <button

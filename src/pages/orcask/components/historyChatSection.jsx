@@ -11,6 +11,7 @@ import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
+import { getIsStaff } from "../../../components/tabbedpane/datatablesourse";
 
 import "../orcAsk.scss";
 import {
@@ -185,7 +186,8 @@ export const HistoryChatSection = ({
                         <React.Fragment key={item.id}>
                             {item.user_message ? (
                                 <div className="promptStyle">
-                                    <span
+                                    <button
+                                        disabled={!getIsStaff()}
                                         className="bookmark"
                                         onClick={() =>
                                             sendBookMarks(
@@ -195,7 +197,7 @@ export const HistoryChatSection = ({
                                         }
                                     >
                                         <FaBookmark />
-                                    </span>
+                                    </button>
                                     <span className="copy">
                                         <CopyToClipboard
                                             text={item.user_message}
@@ -290,9 +292,12 @@ export const HistoryChatSection = ({
                     <>
                         <div className="promptStyle">
                             <span className="copy">
-                                <span className="bookmark">
+                                <button
+                                    disabled={!getIsStaff()}
+                                    className="bookmark"
+                                >
                                     <FaBookmark />
-                                </span>
+                                </button>
                                 <CopyToClipboard
                                     text={questionPrompt.prompt}
                                     onCopy={() =>
@@ -334,18 +339,22 @@ export const HistoryChatSection = ({
                     className="textArea"
                     name=""
                     ref={textAreaRef}
-                    disabled={isLoading}
+                    disabled={isLoading || !getIsStaff() }
                     placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                 ></textarea>
                 <button
-                    disabled={isLoading}
+                    disabled={isLoading || !getIsStaff()}
                     onClick={gptCompletions}
                     className="btnStyle ml-10 "
                 >
                     {!isLoading ? <FaArrowUp /> : null}
                     {isLoading ? <FaSpinner /> : null}
                 </button>
-                <button onClick={deleteHistory} className="btnStyle ml-10 ">
+                <button
+                    disabled={!getIsStaff()}
+                    onClick={deleteHistory}
+                    className="btnStyle ml-10 "
+                >
                     <FaRotateLeft />
                 </button>
             </div>

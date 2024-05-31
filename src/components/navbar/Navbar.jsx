@@ -7,12 +7,13 @@ import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 import { useLog } from "../../utils/logpannelContext";
 import interceptor from "../../utils/interceptor";
+import { getIsStaff } from "../tabbedpane/datatablesourse";
 
 const Navbar = () => {
     const auth = useAuth();
     const { setLog } = useLog();
 
-    const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(false);
+    const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(!getIsStaff());
     const [discBtnText, setDiscBtnText] = useState("Discover Network");
 
     const [showForm, setShowForm] = useState(false);
