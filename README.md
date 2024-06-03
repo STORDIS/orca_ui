@@ -6,6 +6,8 @@
   - [Run UI](#run-ui)
   - [Run orca\_ui in docker container](#run-orca_ui-in-docker-container)
     - [Create docker image](#create-docker-image)
+  - [User Configuration](#user-configuration)
+    - [Create user](#create-user)
 
 ## Install Dependencies
 orca_ui can be started on different OSs, Followign is the example to install it on Linux:
@@ -54,11 +56,6 @@ Docker container can be started as follows:
 
 ### Create user
 
-To create a user there are apis in backend which can be used to create and also to manage the user.
-User can also be assigned as staff or not staff using the those api.
+To login to ORCA_UI, create a user in orca_backend using command `python manage.py createsuperuser`. For more on user configuration in orca_backend refer README file of [orca_backend](https://github.com/STORDIS/orca_backend).
 
-More information about usage of api is provided in the readme file of [orca_backend](https://github.com/STORDIS/orca_backend)
-
-"is_staff" is the flag which is used by the frontend to give admin access. Basically admin access will alow the user to do CRUD operations and also access ORCAsk.
-If is_staff is false all the buttons will be disabled and user can not access the ORCAsk functionality. User will only be able to view the devices, its details and interfaces like Portchannel, vlans, Portgroup, etc.
-
+When logged in as a non-admin user any device config will be disabled including the ORCASK. A non-admin user will have a view only access to the ORCA_UI.
