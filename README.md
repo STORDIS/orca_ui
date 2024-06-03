@@ -50,3 +50,15 @@ Docker container can be started as follows:
 ```bash
     docker run --net="host" orca_ui
 ```
+## User Configuration
+
+### Create user
+
+To create a user there are apis in backend which can be used to create and also to manage the user.
+User can also be assigned as staff or not staff using the those api.
+
+More information about usage of api is provided in the readme file of [orca_backend](https://github.com/STORDIS/orca_backend)
+
+"is_staff" is the flag which is used by the frontend to give admin access. Basically admin access will alow the user to do CRUD operations and also access ORCAsk.
+If is_staff is false all the buttons will be disabled and user can not access the ORCAsk functionality. User will only be able to view the devices, its details and interfaces like Portchannel, vlans, Portgroup, etc.
+
