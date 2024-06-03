@@ -9,6 +9,7 @@ import { logPanelURL, logPanelDeleteURL } from "../../utils/backend_rest_urls";
 import { useLog } from "../../utils/logpannelContext";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCircleXmark } from "react-icons/fa6";
+import { getIsStaff } from "../tabbedpane/datatablesourse";
 
 export const LogViewer = () => {
     const [logEntries, setLogEntries] = useState([]);
@@ -157,6 +158,7 @@ export const LogViewer = () => {
                 <button
                     className="clearLogBtn btnStyle"
                     onClick={handelClearLog}
+                    disabled={!getIsStaff()}
                 >
                     Clear Log
                 </button>

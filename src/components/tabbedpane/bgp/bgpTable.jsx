@@ -11,6 +11,7 @@ import Modal from "../../modal/Modal";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import BgpForm from "./bgpForm";
+import { getIsStaff } from "../datatablesourse";
 
 const BGPTable = (props) => {
     const instance = interceptor();
@@ -167,7 +168,7 @@ const BGPTable = (props) => {
                 </div>
 
                 <div className="">
-                    <button className="btnStyle" onClick={openAddModal}>
+                    <button className="btnStyle" disabled={!getIsStaff()} onClick={openAddModal}>
                         Add BGP
                     </button>
 

@@ -67,6 +67,10 @@
                 visibility: visible !important;
             }
 
+            .aiStyle:hover .bookmark {
+                visibility: visible !important;
+            }
+
             .copy {
                 cursor: pointer;
                 display: flex;
@@ -76,6 +80,22 @@
                 margin: 0px 10px 0px 10px;
                 font-size: 15px;
                 visibility: hidden;
+            }
+
+            .bookmark {
+                cursor: pointer;
+                display: flex;
+                background-color: white;
+                border-radius: 25px;
+                padding: 5px;
+                margin: 0px 10px 0px 10px;
+                font-size: 15px;
+                visibility: hidden;
+                border: none;
+            }
+
+            .promptStyle:hover .bookmark {
+                visibility: visible !important;
             }
 
             .promptStyle:hover .copy {
@@ -95,8 +115,8 @@
                     background-color: white;
                     border-radius: 25px;
                     padding: 10px;
-                    font-size: 25px;
-                    width: 25px;
+                    font-size: 20px;
+                    width: 20px;
                 }
 
                 .text {
@@ -144,6 +164,7 @@
         .heading {
             padding: 10px;
             margin-bottom: 15px;
+            display: flex;
             text-align: center;
             border-bottom: 1px solid black;
             -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
@@ -163,6 +184,26 @@
                 background-color: #e7dbdb;
                 padding: 10px;
                 margin-bottom: 10px;
+            }
+        }
+
+        .deleteIcon {
+            color: red;
+            margin-left: auto !important;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+
+            &:disabled {
+                color: #a4a3a3;
+                cursor: not-allowed;
+            }
+
+            &.button-disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+
+                color: #a4a3a3;
             }
         }
     }

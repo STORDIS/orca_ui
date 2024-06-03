@@ -1,6 +1,15 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
+import secureLocalStorage from "react-secure-storage";
+
+export const getIsStaff = () => {
+    if (secureLocalStorage.getItem("user_details")?.is_staff) {
+        return secureLocalStorage.getItem("user_details")?.is_staff;
+    } else {
+        return false;
+    }
+};
 
 export const defaultColDef = {
     tooltipValueGetter: (params) => {
@@ -31,7 +40,7 @@ export const interfaceColumns = [
         width: 130,
         cellRenderer: "agCheckboxCellRenderer",
         cellEditor: "agCheckboxCellEditor",
-        editable: true,
+        editable: getIsStaff(),
         suppressKeyboardEvent: (params) => params.event.key === " ",
         headerComponent: EditableHeaderComponent,
     },
@@ -40,14 +49,14 @@ export const interfaceColumns = [
         headerName: "MTU",
         type: "number",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
         field: "fec",
         headerName: "FEC",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,
         stopEditingWhenCellsLoseFocus: true,
@@ -61,7 +70,7 @@ export const interfaceColumns = [
         field: "speed",
         headerName: "Speed",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
             values: [
@@ -86,7 +95,7 @@ export const interfaceColumns = [
         field: "description",
         headerName: "Description",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -106,7 +115,7 @@ export const portGroupColumns = [
         width: 130,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
+            if (regex.test(params.data.name) || !getIsStaff()) {
                 return false;
             } else {
                 return true;
@@ -143,10 +152,10 @@ export const portGroupColumns = [
     },
 ];
 
-export const vlanColumns =  [
+export const vlanColumns = [
     {
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
+        headerCheckboxSelection: getIsStaff(),
+        checkboxSelection: getIsStaff(),
         width: 50,
         sortable: true,
     },
@@ -163,7 +172,7 @@ export const vlanColumns =  [
         headerName: "Description",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -171,7 +180,7 @@ export const vlanColumns =  [
         headerName: "Autostate",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -179,7 +188,7 @@ export const vlanColumns =  [
         headerName: "IP Address",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -187,7 +196,7 @@ export const vlanColumns =  [
         headerName: "Anycast Address",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -195,7 +204,7 @@ export const vlanColumns =  [
         headerName: "MTU",
         type: "number",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -203,7 +212,7 @@ export const vlanColumns =  [
         headerName: "Status",
         type: "boolean",
         width: 150,
-        editable: true,
+        editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
             values: ["up", "down"],
@@ -221,7 +230,7 @@ export const vlanColumns =  [
         field: "mem_ifs",
         headerName: "Member IFs",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         // cellEditorParams: { values: interfaceNames },
         headerComponent: EditableHeaderComponent,
     },
@@ -229,8 +238,8 @@ export const vlanColumns =  [
 
 export const portChannelColumns = [
     {
-        headerCheckboxSelection: true,
-        checkboxSelection: true,
+        headerCheckboxSelection: getIsStaff(),
+        checkboxSelection: getIsStaff(),
         width: 50,
         sortable: true,
     },
@@ -253,7 +262,7 @@ export const portChannelColumns = [
         width: 150,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
+            if (regex.test(params.data.name) || !getIsStaff()) {
                 return false;
             } else {
                 return true;
@@ -272,7 +281,7 @@ export const portChannelColumns = [
         width: 130,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name)) {
+            if (regex.test(params.data.name) || !getIsStaff()) {
                 return false;
             } else {
                 return true;
@@ -305,13 +314,17 @@ export const portChannelColumns = [
         field: "members",
         headerName: "Members",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
 ];
 
 export const mclagColumns = [
-    { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
+    {
+        headerCheckboxSelection: getIsStaff(),
+        checkboxSelection: getIsStaff(),
+        width: 50,
+    },
     {
         field: "domain_id",
         headerName: "Domain_ID",
@@ -324,7 +337,7 @@ export const mclagColumns = [
         headerName: "Keepalive Interval",
         type: "number",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -334,7 +347,7 @@ export const mclagColumns = [
         headerName: "MCLAG Sys MAC",
 
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -344,7 +357,7 @@ export const mclagColumns = [
         headerName: "Peer Address",
 
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -352,7 +365,7 @@ export const mclagColumns = [
         field: "peer_link",
         headerName: "Peer Link",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -361,7 +374,7 @@ export const mclagColumns = [
         headerName: "Session Timeout",
         type: "number",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -371,7 +384,7 @@ export const mclagColumns = [
         headerName: "Source Address",
 
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
 
         sortable: true,
@@ -386,7 +399,7 @@ export const mclagColumns = [
         field: "role",
         headerName: "Role",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
@@ -396,7 +409,7 @@ export const mclagColumns = [
         headerName: "Gateway MAC",
 
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
 
         sortable: true,
@@ -406,20 +419,24 @@ export const mclagColumns = [
         headerName: "Delay Restore",
         type: "number",
         width: 130,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
 ];
 
 export const bgpColumns = [
-    { headerCheckboxSelection: true, checkboxSelection: true, width: 50 },
+    {
+        headerCheckboxSelection: getIsStaff(),
+        checkboxSelection: getIsStaff(),
+        width: 50,
+    },
     {
         field: "local_asn",
         headerName: "ASN",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -427,7 +444,7 @@ export const bgpColumns = [
         headerName: "VRF",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -435,7 +452,7 @@ export const bgpColumns = [
         headerName: "Router ID",
         width: 130,
         sortable: true,
-        editable: true,
+        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -501,7 +518,12 @@ export const deviceUserColumns = (isTabbedPane = true) => {
                         <Link to={`/devices/${params.data.mgt_ip}`}>
                             <button className="btnStyle">Details</button>
                         </Link>
-                        <button className=" ml-10 btnStyle">Remove</button>
+                        <button
+                            disabled={!getIsStaff()}
+                            className="ml-10 btnStyle"
+                        >
+                            Remove
+                        </button>
                     </>
                 );
             },

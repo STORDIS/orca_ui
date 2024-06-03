@@ -38,6 +38,8 @@ const Layout = () => {
             setIsAI(true);
         }
 
+        console.log("--", secureLocalStorage.getItem("user_details")?.is_staff);
+
         setToken(secureLocalStorage.getItem("token"));
     }, [location.pathname, token]);
 
@@ -48,7 +50,7 @@ const Layout = () => {
             <DataProviderLog>
                 <div className="container">
                     <DataProviderConfig>
-                    {token ? <Navbar /> : null}
+                        {token ? <Navbar /> : null}
                         <Routes>
                             <Route path="/login" element={<Login />} />
                             <Route
@@ -96,7 +98,6 @@ function Redirect() {
     const navigate = useNavigate();
 
     useEffect(() => {
-
         if (secureLocalStorage.getItem("token")) {
             navigate("/home");
         } else {

@@ -10,16 +10,21 @@ import { FaUser } from "react-icons/fa";
 import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
-import { Chart } from "react-google-charts";
+import { FaBookmark } from "react-icons/fa";
+import { getIsStaff } from "../../../components/tabbedpane/datatablesourse";
+
 import "../orcAsk.scss";
 import {
-    getOrcAskHistory,
-    deleteOrcAskHistory,
+    getOrcAskHistoryURL,
+    deleteOrcAskHistoryURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
-export const HistoryChatSection = () => {
+export const HistoryChatSection = ({
+    sendBookmarkDataToParent,
+    copiedBookmark,
+}) => {
     const instance = interceptor();
     const [isLoading, setIsLoading] = useState(false);
     const textAreaRef = useRef(null);
@@ -47,7 +52,15 @@ export const HistoryChatSection = () => {
 
     useEffect(() => {
         scrollToBottom();
-    }, [ isLoading]);
+    }, [isLoading]);
+
+    useEffect(() => {
+        if (copiedBookmark !== "") {
+            setQuestionPrompt({
+                prompt: copiedBookmark,
+            });
+        }
+    }, [copiedBookmark]);
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
@@ -58,7 +71,7 @@ export const HistoryChatSection = () => {
 
     const getChatHistory = (index) => {
         instance
-            .get(getOrcAskHistory())
+            .get(getOrcAskHistoryURL())
             .then((response) => {
                 const newChatHistory = response.data.map((chat) => ({
                     id: chat.id,
@@ -88,7 +101,7 @@ export const HistoryChatSection = () => {
 
     const deleteHistory = () => {
         instance
-            .delete(deleteOrcAskHistory())
+            .delete(deleteOrcAskHistoryURL())
             .then((response) => {
                 setChatHistory([
                     {
@@ -155,6 +168,15 @@ export const HistoryChatSection = () => {
         }
     };
 
+    const sendBookMarks = (user_message, final_meesage) => {
+        let dataToParent = {
+            prompt: user_message.trim(),
+            message: final_meesage,
+        };
+
+        sendBookmarkDataToParent(dataToParent);
+    };
+
     return (
         <>
             <div className="chatSection" ref={chatContainerRef}>
@@ -164,6 +186,18 @@ export const HistoryChatSection = () => {
                         <React.Fragment key={item.id}>
                             {item.user_message ? (
                                 <div className="promptStyle">
+                                    <button
+                                        disabled={!getIsStaff()}
+                                        className="bookmark"
+                                        onClick={() =>
+                                            sendBookMarks(
+                                                item.user_message,
+                                                item.final_message
+                                            )
+                                        }
+                                    >
+                                        <FaBookmark />
+                                    </button>
                                     <span className="copy">
                                         <CopyToClipboard
                                             text={item.user_message}
@@ -247,6 +281,9 @@ export const HistoryChatSection = () => {
                                             <FaRegCopy />
                                         </CopyToClipboard>
                                     </span>
+                                    {/* <span className="bookmark">
+                                        <FaBookmark />
+                                    </span> */}
                                 </div>
                             ) : null}
                         </React.Fragment>
@@ -255,6 +292,12 @@ export const HistoryChatSection = () => {
                     <>
                         <div className="promptStyle">
                             <span className="copy">
+                                <button
+                                    disabled={!getIsStaff()}
+                                    className="bookmark"
+                                >
+                                    <FaBookmark />
+                                </button>
                                 <CopyToClipboard
                                     text={questionPrompt.prompt}
                                     onCopy={() =>
@@ -266,6 +309,7 @@ export const HistoryChatSection = () => {
                                     <FaRegCopy />
                                 </CopyToClipboard>
                             </span>
+
                             <span className="text">
                                 {questionPrompt.prompt}
                             </span>
@@ -295,18 +339,22 @@ export const HistoryChatSection = () => {
                     className="textArea"
                     name=""
                     ref={textAreaRef}
-                    disabled={isLoading}
+                    disabled={isLoading || !getIsStaff() }
                     placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                 ></textarea>
                 <button
-                    disabled={isLoading}
+                    disabled={isLoading || !getIsStaff()}
                     onClick={gptCompletions}
                     className="btnStyle ml-10 "
                 >
                     {!isLoading ? <FaArrowUp /> : null}
                     {isLoading ? <FaSpinner /> : null}
                 </button>
-                <button onClick={deleteHistory} className="btnStyle ml-10 ">
+                <button
+                    disabled={!getIsStaff()}
+                    onClick={deleteHistory}
+                    className="btnStyle ml-10 "
+                >
                     <FaRotateLeft />
                 </button>
             </div>
