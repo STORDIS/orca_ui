@@ -1,3 +1,15 @@
+<p align="center">
+<a href="https://github.com/stordis/orca_ui/issues">
+      <img alt="Issues" src="https://img.shields.io/github/issues/stordis/orca_ui?color=0088ff" />
+</a>
+<a href="https://github.com/stordis/orca_ui/graphs/contributors">
+      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/stordis/orca_ui" />
+</a>
+<a href="https://github.com/stordis/orca_ui/pulls?q=">
+      <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/stordis/orca_ui?color=0088ff" />
+</a>
+</p>
+
 # ORCA_UI
 
 - [ORCA\_UI](#orca_ui)
