@@ -11,6 +11,7 @@ import {
     bookmarkDeleteAllURL,
 } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import HistoryChatSection from "./components/historyChatSection";
 
@@ -91,11 +92,17 @@ export const AskOrca = () => {
                     </span>
                     Bookmark
                     <button
+                        data-tooltip-id="deleteAllBookmark"
                         disabled={!getIsStaff()}
                         onClick={deleteAllBookMark}
                         className="deleteIcon"
                     >
                         <FaTrashAlt />
+                        <ReactTooltip
+                            id="deleteAllBookmark"
+                            place="bottom"
+                            content="Delete All Bookmark"
+                        />
                     </button>
                 </div>
 
@@ -110,11 +117,17 @@ export const AskOrca = () => {
                             </span>
                             <div className="ml-10">{item.prompt}</div>
                             <button
+                                data-tooltip-id="deleteBookmark"
                                 onClick={() => deleteBookmark(item.bookmark_id)}
                                 disabled={!getIsStaff()}
                                 className="deleteIcon "
                             >
                                 <FaTrashAlt />
+                                <ReactTooltip
+                                    id="deleteBookmark"
+                                    place="bottom"
+                                    content="Delete This Bookmark"
+                                />
                             </button>
                         </div>
                     ))}
