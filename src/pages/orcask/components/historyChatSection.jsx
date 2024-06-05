@@ -12,6 +12,7 @@ import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { getIsStaff } from "../../../components/tabbedpane/datatablesourse";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import "../orcAsk.scss";
 import {
@@ -46,7 +47,6 @@ export const HistoryChatSection = ({
     };
 
     useEffect(() => {
-        setIsLoading(true);
         getChatHistory();
     }, []);
 
@@ -55,6 +55,8 @@ export const HistoryChatSection = ({
     }, [isLoading]);
 
     useEffect(() => {
+        console.log("copiedBookmark", copiedBookmark);
+
         if (copiedBookmark !== "") {
             setQuestionPrompt({
                 prompt: copiedBookmark,
@@ -79,10 +81,19 @@ export const HistoryChatSection = ({
                     user_message: chat.user_message,
                     viewType: getChartType(chat.final_message), // table / graph / string
                 }));
-                setChatHistory((prevChatHistory) => [
-                    ...prevChatHistory,
-                    ...newChatHistory,
-                ]);
+
+                setChatHistory((prevChatHistory) => {
+                    const existingIds = new Set(
+                        prevChatHistory.map((chat) => chat.id)
+                    );
+
+                    const filteredNewChatHistory = newChatHistory.filter(
+                        (chat) => !existingIds.has(chat.id)
+                    );
+
+                    return [...prevChatHistory, ...filteredNewChatHistory];
+                });
+
                 setIsLoading(false);
             })
             .catch((error) => {
@@ -176,6 +187,8 @@ export const HistoryChatSection = ({
 
         sendBookmarkDataToParent(dataToParent);
     };
+
+    console.log(chatHistory);
 
     return (
         <>
@@ -339,23 +352,40 @@ export const HistoryChatSection = ({
                     className="textArea"
                     name=""
                     ref={textAreaRef}
-                    disabled={isLoading || !getIsStaff() }
+                    disabled={isLoading || !getIsStaff()}
                     placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                 ></textarea>
                 <button
-                    disabled={isLoading || !getIsStaff()}
+                    data-tooltip-id="SendChat"
+                    disabled={
+                        isLoading ||
+                        !getIsStaff() ||
+                        questionPrompt.prompt === ""
+                    }
                     onClick={gptCompletions}
                     className="btnStyle ml-10 "
                 >
                     {!isLoading ? <FaArrowUp /> : null}
                     {isLoading ? <FaSpinner /> : null}
+                    <ReactTooltip
+                        id="SendChat"
+                        place="bottom"
+                        content="Send Message"
+                    />
                 </button>
                 <button
-                    disabled={!getIsStaff()}
+                    data-tooltip-id="clearChat"
+                    disabled={!getIsStaff() || chatHistory.length === 1}
                     onClick={deleteHistory}
                     className="btnStyle ml-10 "
                 >
                     <FaRotateLeft />
+
+                    <ReactTooltip
+                        id="clearChat"
+                        place="bottom"
+                        content="Clear Chat"
+                    />
                 </button>
             </div>
         </>
