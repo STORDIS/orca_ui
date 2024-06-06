@@ -1,5 +1,5 @@
 const host_addr =
-    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
+    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://10.10.130.202:8000";
 
 export function getAllDevicesURL() {
     return host_addr + "/devices";
@@ -56,8 +56,8 @@ export function logPanelDeleteURL() {
     return host_addr + "/logs/delete";
 }
 
-export function deleteDevicesURL(device_ip) {
-    return host_addr + "/del_db?mgt_ip=" + device_ip;
+export function deleteDevicesURL() {
+    return host_addr + "/del_db_for_ip";
 }
 
 export function getOrcAskHistoryURL() {
