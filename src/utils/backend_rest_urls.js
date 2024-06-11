@@ -56,8 +56,8 @@ export function logPanelDeleteURL() {
     return host_addr + "/logs/delete";
 }
 
-export function deleteDevicesURL(device_ip) {
-    return host_addr + "/del_db?mgt_ip=" + device_ip;
+export function deleteDevicesURL() {
+    return host_addr + "/del_db";
 }
 
 export function getOrcAskHistoryURL() {

@@ -66,11 +66,11 @@ const Datatable = (props) => {
     };
 
     const handleDeleteConfirmation = () => {
-        console.log("Delete", selectedDeviceToDelete);
+        console.log("Delete", );
         setDisableConfig(true);
-        const apiPUrl = deleteDevicesURL(selectedDeviceToDelete);
+        const apiPUrl = deleteDevicesURL();
         instance
-            .delete(apiPUrl)
+            .delete(apiPUrl, { data: { mgt_ip: selectedDeviceToDelete } })
             .then((res) => {
                 console.log(res);
             })

@@ -22,6 +22,22 @@ export const defaultColDef = {
     stopEditingWhenCellsLoseFocus: "true",
 };
 
+export const getCellEditorParamsInterfaceSpeed = (params) => {
+    let valid_speeds = params.data.valid_speeds.split(",");
+    let result = [];
+    valid_speeds.forEach((element) => {
+        const bytesInGB = 1000;
+        let converted_value = element / bytesInGB;
+        converted_value = "SPEED_" + converted_value + "GB";
+        console.log(converted_value);
+        result.push(converted_value);
+    });
+
+    return {
+        values: result,
+    };
+};
+
 export const interfaceColumns = [
     {
         field: "name",
@@ -72,17 +88,7 @@ export const interfaceColumns = [
         width: 130,
         editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
-        cellEditorParams: {
-            values: [
-                "SPEED_1GB",
-                "SPEED_5GB",
-                "SPEED_10GB",
-                "SPEED_25GB",
-                "SPEED_40GB",
-                "SPEED_50GB",
-                "SPEED_100GB",
-            ],
-        },
+        cellEditorParams: getCellEditorParamsInterfaceSpeed,
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -105,6 +111,49 @@ export const interfaceColumns = [
         sortable: true,
     },
     { field: "mac_addr", headerName: "MAC ADDR", width: 130, sortable: true },
+    { field: "alias", headerName: "Alias", width: 130, sortable: true },
+    { field: "lanes", headerName: "Lanes", width: 130, sortable: true },
+    // {
+    //     field: "valid_speeds",
+    //     headerName: "Valid Speeds",
+    //     width: 130,
+    //     sortable: true,
+
+    //     cellRenderer: (params) => {
+    //         let valid_speeds = params.data.valid_speeds.split(",");
+    //         let result = [];
+    //         valid_speeds.forEach((element) => {
+    //             const bytesInGB = 1000;
+    //             console.log(element / bytesInGB);
+    //             result.push(element / bytesInGB);
+    //         });
+    //         return (
+    //             <>
+    //                 {result.map((item, index) => (
+    //                     <span>{item}GB &nbsp; </span>
+    //                 ))}
+    //             </>
+    //         );
+    //     },
+    // },
+    {
+        field: "adv_speeds",
+        headerName: "Adv Speeds",
+        width: 130,
+        sortable: true,
+    },
+    {
+        field: "link_training",
+        headerName: "Link Training",
+        width: 130,
+        sortable: true,
+    },
+    {
+        field: "autoneg",
+        headerName: "autoneg",
+        width: 130,
+        sortable: true,
+    },
 ];
 
 export const portGroupColumns = [
