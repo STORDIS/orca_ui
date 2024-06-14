@@ -18,31 +18,9 @@ const InterfaceDataTable = (props) => {
     const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
-    const [originalData, setOriginalData] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
-    const [interfaceNames, setInterfaceNames] = useState([]);
 
     const instance = interceptor();
-
-    const setInterfaceData = () => {
-        setDataTable([]);
-        setOriginalData([]);
-        setChanges([]);
-
-        const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiUrl)
-            .then((res) => {
-                setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
-                const names = res.data.map((item) => item.name);
-                setInterfaceNames(names);
-            })
-            .catch((err) => {
-                console.log(err);
-                setDataTable([]);
-            });
-    };
 
     useEffect(() => {
         if (selectedDeviceIp) {
@@ -50,76 +28,72 @@ const InterfaceDataTable = (props) => {
         }
     }, [selectedDeviceIp]);
 
+    const setInterfaceData = () => {
+        setDataTable([]);
+        setChanges([]);
+
+        const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
+        instance
+            .get(apiUrl)
+            .then((res) => {
+                let items = res.data.map((item) => {
+                    if (item.adv_speeds !== "all" && item.adv_speeds !== "") {
+                        item.adv_speeds =
+                            "SPEED_" + parseInt(item.adv_speeds) / 1000 + "GB";
+                    } else {
+                        item.adv_speeds = "all";
+                    }
+
+                    return item;
+                });
+
+                setDataTable(items);
+            })
+            .catch((err) => {
+                console.log(err);
+                setDataTable([]);
+            });
+    };
+
     const resetConfigStatus = () => {
         setConfigStatus("");
         setChanges([]);
     };
 
-    const handleCellValueChanged = useCallback(
-        (params) => {
-            if (params.newValue !== params.oldValue) {
-                setChanges((prev) => {
-                    if (!Array.isArray(prev)) {
-                        console.error("Expected array but got:", prev);
-                        return [];
-                    }
-                    let latestChanges;
-                    let isNameExsits = prev.filter(
-                        (val) => val.name === params.data.name
-                    );
-                    if (isNameExsits.length > 0) {
-                        let existedIndex = prev.findIndex(
-                            (val) => val.name === params.data.name
-                        );
-                        prev[existedIndex][params.colDef.field] =
-                            params.newValue;
-                        latestChanges = [...prev];
-                    } else {
-                        latestChanges = [
-                            ...prev,
-                            {
-                                name: params.data.name,
-                                [params.colDef.field]: params.newValue,
-                            },
-                        ];
-                    }
-                    return latestChanges;
-                });
-            }
-        },
-        [dataTable]
-    );
+    const getAdvSpeed = (params) => {
+        let result = "all";
 
-    useEffect(() => {
-        setDataTable(JSON.parse(JSON.stringify(originalData)));
-        setChanges([]);
-    }, [selectedDeviceIp]);
-
-    const createJsonOutput = useCallback(() => {
-        return changes.map((change) => ({
-            mgt_ip: selectedDeviceIp,
-            name: change.name,
-            ...change,
-        }));
-    }, [selectedDeviceIp, changes]);
-
-    useEffect(() => {
-        if (changes.length) {
-            const output = createJsonOutput();
-            console.log(JSON.stringify(output));
+        if (params.includes("SPEED_")) {
+            let numericalPart = params.split("_")[1].slice(0, -2);
+            result = parseInt(numericalPart) * 1000;
+            result = result.toString();
+        } else {
+            result = "all";
         }
-    }, [changes, createJsonOutput]);
+        return result;
+    };
 
-    const sendUpdates = useCallback(() => {
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            let payload = {
+                ...params.data,
+                adv_speeds: getAdvSpeed(params.data.adv_speeds),
+                mgt_ip: selectedDeviceIp,
+            };
+            setChanges(payload);
+            console.log(payload);
+        }
+    }, []);
+
+    const sendUpdates = () => {
         if (changes.length === 0) {
             return;
         }
         setDisableConfig(true);
         setConfigStatus("Config In Progress....");
-        const output = createJsonOutput();
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
-            .put(apiUrl, output)
+            .put(apiUrl, changes)
             .then((res) => {
                 setConfigStatus("Config Successful");
                 setTimeout(resetConfigStatus, 5000);
@@ -131,17 +105,11 @@ const InterfaceDataTable = (props) => {
             })
             .finally(() => {
                 setChanges([]);
+                setDataTable([]);
+                setInterfaceData();
                 setLog(true);
                 setDisableConfig(false);
             });
-    }, [createJsonOutput, selectedDeviceIp, changes]);
-
-    const defaultFilterModel = {
-        country: {
-            filterType: "text",
-            type: "includes",
-            filter: "Ethernet",
-        },
     };
 
     return (
@@ -165,9 +133,6 @@ const InterfaceDataTable = (props) => {
                 {configStatus}
             </span>
             <p>&nbsp;</p>
-            {/* .filter((row) =>
-                        row.name.includes("Ethernet")
-                    ) */}
 
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
