@@ -29,7 +29,21 @@ export const getCellEditorParamsInterfaceSpeed = (params) => {
         const bytesInGB = 1000;
         let converted_value = element / bytesInGB;
         converted_value = "SPEED_" + converted_value + "GB";
-        console.log(converted_value);
+        result.push(converted_value);
+    });
+
+    return {
+        values: result,
+    };
+};
+
+export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
+    let valid_speeds = params.data.valid_speeds.split(",");
+    let result = ['all'];
+    valid_speeds.forEach((element) => {
+        const bytesInGB = 1000;
+        let converted_value = element / bytesInGB;
+        converted_value = "SPEED_" + converted_value + "GB";
         result.push(converted_value);
     });
 
@@ -133,12 +147,24 @@ export const interfaceColumns = [
         headerName: "Adv Speeds",
         width: 130,
         sortable: true,
+        editable: getIsStaff(),
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: getCellEditorParamsInterfaceAdvSpeed,
+        headerComponent: EditableHeaderComponent,
     },
     {
         field: "link_training",
         headerName: "Link Training",
         width: 130,
         sortable: true,
+        editable: getIsStaff(),
+        cellEditor: "agSelectCellEditor",
+        singleClickEdit: true,
+        stopEditingWhenCellsLoseFocus: true,
+        cellEditorParams: {
+            values: ["off", "on"],
+        },
+        headerComponent: EditableHeaderComponent,
     },
 ];
 
