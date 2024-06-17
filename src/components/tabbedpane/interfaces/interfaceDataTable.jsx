@@ -116,7 +116,7 @@ const InterfaceDataTable = (props) => {
         <div className="datatable">
             <button
                 onClick={sendUpdates}
-                disabled={disableConfig}
+                disabled={disableConfig || Object.keys(changes).length === 0}
                 className="btnStyle"
             >
                 Apply Config
