@@ -151,7 +151,7 @@ const BGPTable = (props) => {
 
     return (
         <div className="datatable">
-            <div className="button-group">
+            <div className="button-group stickyButton">
                 <div className="button-column">
                     <button
                         disabled={
@@ -194,7 +194,7 @@ const BGPTable = (props) => {
                 </div>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div style={gridStyle} className="ag-theme-alpine pt-60">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -207,6 +207,7 @@ const BGPTable = (props) => {
                     rowSelection="single"
                     onSelectionChanged={onSelectionChanged}
                     onCellValueChanged={handleCellValueChanged}
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 

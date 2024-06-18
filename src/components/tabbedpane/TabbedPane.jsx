@@ -2,6 +2,7 @@ import React from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+
 import Deviceinfo from "../../components/tabbedpane/Deviceinfo";
 import InterfaceDataTable from "../../components/tabbedpane/interfaces/interfaceDataTable";
 import PortChDataTable from "../../components/tabbedpane/portchannel/portChDataTable";
@@ -67,7 +68,7 @@ const TabbedPane = () => {
     return (
         <div>
             <div className="listContainer">
-                Device :{" "}
+                Device :
                 <select value={deviceIP} onChange={handleDeviceChange}>
                     {dropdownOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -80,77 +81,89 @@ const TabbedPane = () => {
                     Undo Changes
                 </button>
             </div>
-            <div className="listContainer">
-                <Box sx={{ width: "100%" }}>
-                    <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                        <Tabs value={tabValue} onChange={handleTabs}>
-                            <Tab label="Device Info" />
-                            <Tab label="Interfaces" />
-                            <Tab label="PortChannels" />
-                            <Tab label="MCLAGs" />
-                            <Tab label="BGP" />
-                            <Tab label="Port Groups" />
-                            <Tab label="VLANs" />
-                        </Tabs>
-                    </Box>
-                    <TabPanel tabValue={tabValue} index={0}>
+            <div className="listContainer ">
+                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                    <Tabs value={tabValue} onChange={handleTabs}>
+                        <Tab label="Device Info" />
+                        <Tab label="Interfaces" />
+                        <Tab label="PortChannels" />
+                        <Tab label="MCLAGs" />
+                        <Tab label="BGP" />
+                        <Tab label="Port Groups" />
+                        <Tab label="VLANs" />
+                    </Tabs>
+                </Box>
+                {tabValue === 0 && (
+                    <div className="resizable" tabValue={tabValue} index={0}>
                         <Deviceinfo
                             columns={2}
                             isTabbedPane={true}
                             selectedDeviceIp={deviceIP}
                         />
-                    </TabPanel>
-                    <TabPanel tabValue={tabValue} index={1}>
+                    </div>
+                )}
+                {tabValue === 1 && (
+                    <div className="resizable" tabValue={tabValue} index={1}>
                         <InterfaceDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
                             reset={() => setUndoChanges(false)}
                         />
-                    </TabPanel>
-                    <TabPanel tabValue={tabValue} index={2}>
+                    </div>
+                )}
+                {tabValue === 2 && (
+                    <div className="resizable" tabValue={tabValue} index={2}>
                         <PortChDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
                             reset={() => setUndoChanges(false)}
                         />
-                    </TabPanel>
-                    <TabPanel tabValue={tabValue} index={3}>
+                    </div>
+                )}
+                {tabValue === 3 && (
+                    <div className="resizable" tabValue={tabValue} index={3}>
                         <McLagDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
                             reset={() => setUndoChanges(false)}
                         />
-                    </TabPanel>
-                    <TabPanel tabValue={tabValue} index={4}>
+                    </div>
+                )}
+                {tabValue === 4 && (
+                    <div className="resizable" tabValue={tabValue} index={4}>
                         <BGPTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
                             reset={() => setUndoChanges(false)}
                         />
-                    </TabPanel>
-                    <TabPanel tabValue={tabValue} index={5}>
+                    </div>
+                )}
+                {tabValue === 5 && (
+                    <div className="resizable" tabValue={tabValue} index={5}>
                         <PortGroupTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
                             reset={() => setUndoChanges(false)}
                         />
-                    </TabPanel>
-                    <TabPanel tabValue={tabValue} index={6}>
+                    </div>
+                )}
+                {tabValue === 6 && (
+                    <div className="resizable" tabValue={tabValue} index={6}>
                         <VlanTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
                             reset={() => setUndoChanges(false)}
                         />
-                    </TabPanel>
-                </Box>
+                    </div>
+                )}
             </div>
         </div>
     );
 };
 
-const TabPanel = (props) => {
-    const { children, tabValue, index } = props;
-    return <div>{tabValue === index && <h5>{children}</h5>}</div>;
-};
+// const div = (props) => {
+//     const { children, tabValue, index } = props;
+//     return <div className="">{tabValue === index && <h5>{children}</h5>}</div>;
+// };
 
 export default TabbedPane;

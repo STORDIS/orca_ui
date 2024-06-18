@@ -136,7 +136,7 @@ export const LogViewer = () => {
                     return { color: "red", display: "flex" };
                 }
             },
-            tooltipValueGetter: (params) => { 
+            tooltipValueGetter: (params) => {
                 return params.data.response;
             },
         },
@@ -145,16 +145,8 @@ export const LogViewer = () => {
     const gridStyle = useMemo(() => ({ height: "440px", width: "100%" }), []);
 
     return (
-        <div style={{ width: "100%", height: "470px" }}>
-            <div style={gridStyle} className="ag-theme-alpine">
-                <AgGridReact
-                    rowData={logEntries}
-                    columnDefs={colDefs}
-                    pagination={true}
-                    paginationPageSize={50}
-                    paginationPageSizeSelector={[50, 100, 150, 200]}
-                />
-
+        <div  className="logPanel" >
+            <div className="stickyButton">
                 <button
                     className="clearLogBtn btnStyle"
                     onClick={handelClearLog}
@@ -162,6 +154,16 @@ export const LogViewer = () => {
                 >
                     Clear Log
                 </button>
+            </div>
+            <div style={gridStyle} className="ag-theme-alpine table">
+                <AgGridReact
+                    rowData={logEntries}
+                    columnDefs={colDefs}
+                    pagination={true}
+                    paginationPageSize={50}
+                    paginationPageSizeSelector={[50, 100, 150, 200]}
+                    domLayout={"autoHeight"}
+                />
             </div>
         </div>
     );

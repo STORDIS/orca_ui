@@ -82,7 +82,7 @@ const Layout = () => {
                     </DataProviderConfig>
 
                     {token && isAI ? (
-                        <div className="listContainer mb">
+                        <div className="listContainer mb resizable">
                             <LogViewer />
                         </div>
                     ) : null}
