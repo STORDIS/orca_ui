@@ -15,7 +15,6 @@ const PortGroupTable = (props) => {
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const { selectedDeviceIp = "" } = props;
     const [changes, setChanges] = useState([]);
-    const [originalData, setOriginalData] = useState([]);
     const [dataTable, setDataTable] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
 
@@ -24,90 +23,69 @@ const PortGroupTable = (props) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     useEffect(() => {
+        getPortGroups();
+    }, [selectedDeviceIp]);
+
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getPortGroups();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
+    const getPortGroups = () => {
         setChanges([]);
         setDataTable([]);
-        setOriginalData([]);
-
         const apiMUrl = getPortGroupsURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
             .then((res) => {
                 setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
             .catch((err) => console.log(err));
-    }, [selectedDeviceIp]);
+    };
 
     const onColumnResized = useCallback((params) => {}, []);
 
-    const handleCellValueChanged = useCallback(
-        (params) => {
-            if (params.newValue !== params.oldValue) {
-                setChanges((prev) => {
-                    if (!Array.isArray(prev)) {
-                        console.error("Expected array but got:", prev);
-                        return [];
-                    }
-                    let latestChanges;
-                    let isNameExsits = prev.filter(
-                        (val) => val.port_group_id === params.data.port_group_id
-                    );
-                    if (isNameExsits.length > 0) {
-                        let existedIndex = prev.findIndex(
-                            (val) =>
-                                val.port_group_id === params.data.port_group_id
-                        );
-                        prev[existedIndex][params.colDef.field] =
-                            params.newValue;
-                        latestChanges = [...prev];
-                    } else {
-                        latestChanges = [
-                            ...prev,
-                            {
-                                port_group_id: params.data.port_group_id,
-                                [params.colDef.field]: params.newValue,
-                            },
-                        ];
-                    }
-                    return latestChanges;
-                });
-            }
-        },
-        [dataTable]
-    );
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            let payload = {
+                ...params.data,
+                mgt_ip: selectedDeviceIp,
+            };
+            setChanges(payload);
+        }
+    }, []);
 
-    const createReqJson = useCallback(() => {
-        return changes.map((change) => ({
-            mgt_ip: selectedDeviceIp,
-            port_group_id: change.port_group_id,
-            ...change,
-        }));
-    }, [selectedDeviceIp, changes]);
+    const resetConfigStatus = () => {
+        setConfigStatus("");
+    };
 
-    const sendUpdates = useCallback(() => {
+    const sendUpdates = () => {
         if (changes.length === 0) {
             return;
         }
         setDisableConfig(true);
         setConfigStatus("Config In Progress....");
 
-        const req_json = createReqJson();
-        console.log(JSON.stringify(req_json));
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         instance
-            .put(apiUrl, req_json)
+            .put(apiUrl, changes)
             .then((res) => {
                 setConfigStatus("Config Successful");
+                setTimeout(resetConfigStatus, 5000);
             })
             .catch((err) => {
                 setConfigStatus("Config Failed");
+                setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setChanges([]);
                 setLog(true);
                 setDisableConfig(false);
             });
-    }, [createReqJson, selectedDeviceIp, changes]);
+    };
 
     return (
         <div className="datatable">

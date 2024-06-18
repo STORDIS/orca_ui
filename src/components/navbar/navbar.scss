@@ -1,10 +1,13 @@
 .navbar {
     height: 50px;
-    border-bottom: 0.5px solid rgb(231, 228, 228);
+    // border-bottom: 0.5px solid rgb(231, 228, 228);
     display: flex;
     align-items: center;
     font-size: 14px;
     color: #888;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    margin: 10px;
 
     .wrapper {
         width: 100%;

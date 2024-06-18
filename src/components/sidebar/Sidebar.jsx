@@ -15,7 +15,6 @@ const Sidebar = () => {
                     <img src={logo} className="logo" alt="logo.png" />
                 </Link>
             </div>
-            <hr />
             <div className="center">
                 <Link className="navLink" to="/home">
                     <FaList  className="icon" />

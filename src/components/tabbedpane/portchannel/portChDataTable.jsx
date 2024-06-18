@@ -25,7 +25,6 @@ const PortChDataTable = (props) => {
     const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
-    const [originalData, setOriginalData] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
     const [showForm, setShowForm] = useState(false);
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
@@ -59,9 +58,27 @@ const PortChDataTable = (props) => {
         getAllPortChanalData();
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+
+            instance
+                .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
+                .then((res) => {
+                    const names = res.data.map((item) => item.name);
+                    setInterfaceNames(names);
+                })
+                .catch((error) =>
+                    console.error("Failed to fetch interface names:", error)
+                );
+            getAllPortChanalData();
+
+            props.reset(false);
+        }
+    }, [props.refresh]);
+
     const getAllPortChanalData = () => {
         setDataTable([]);
-        setOriginalData([]);
         setChanges([]);
 
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
@@ -75,7 +92,6 @@ const PortChDataTable = (props) => {
                         (val) => (val["members"] = val["members"].toString())
                     );
                 setDataTable(data);
-                setOriginalData(JSON.parse(JSON.stringify(data)));
             })
             .catch((err) => {
                 console.log(err);
@@ -95,14 +111,12 @@ const PortChDataTable = (props) => {
             .get(apiPUrl)
             .then((res) => {
                 setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
             .catch((err) => {
                 console.error("Error fetching data:", err);
                 setMessageModalContent("Error fetching data: " + err.message);
                 setIsMessageModalOpen(true);
                 setDataTable([]);
-                setOriginalData([]);
             })
             .finally(() => {});
     };

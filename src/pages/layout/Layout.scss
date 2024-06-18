@@ -1,6 +1,6 @@
 .mainContainer {
     display: flex;
-
+    zoom: 0.75;
     .container {
         flex: 6;
 
@@ -15,10 +15,6 @@
                 color: gray;
                 margin-bottom: 15px;
             }
-        }
-
-        .mb {
-            margin-bottom: 50px !important;
         }
     }
 }

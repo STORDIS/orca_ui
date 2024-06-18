@@ -34,8 +34,16 @@ const BGPTable = (props) => {
         getBgp();
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            console.log("check");
+            setChanges([]);
+            getBgp();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
     const getBgp = () => {
-        console.log("-----");
         setDataTable([]);
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
@@ -124,13 +132,11 @@ const BGPTable = (props) => {
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data);
-        console.log("====", selectedData);
         setSelectedRows(selectedData);
     };
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
-            console.log(params.data);
             let payload = {
                 mgt_ip: selectedDeviceIp,
                 vrf_name: params.data.vrf_name,
@@ -148,7 +154,9 @@ const BGPTable = (props) => {
             <div className="button-group">
                 <div className="button-column">
                     <button
-                        disabled={disableConfig || Object.keys(changes).length === 0  }
+                        disabled={
+                            disableConfig || Object.keys(changes).length === 0
+                        }
                         className="btnStyle"
                         onClick={() => handleFormSubmit(changes, "Updat")}
                     >
@@ -168,7 +176,11 @@ const BGPTable = (props) => {
                 </div>
 
                 <div className="">
-                    <button className="btnStyle" disabled={!getIsStaff()} onClick={openAddModal}>
+                    <button
+                        className="btnStyle"
+                        disabled={!getIsStaff()}
+                        onClick={openAddModal}
+                    >
                         Add BGP
                     </button>
 

@@ -148,9 +148,7 @@ const VlanMemberForm = ({
                             Select Member Interface
                         </option>
                         {interfaceNames.map((val, index) => (
-                            <option key={index} value={val}>
-                                {val}
-                            </option>
+                            <option value={val}>{val}</option>
                         ))}
                     </select>
                 </div>

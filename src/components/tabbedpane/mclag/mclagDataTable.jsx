@@ -35,6 +35,14 @@ const McLagDataTable = (props) => {
         getMclag();
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getMclag();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
     const getMclag = () => {
         setDataTable([]);
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);

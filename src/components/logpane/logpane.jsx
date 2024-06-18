@@ -63,7 +63,7 @@ export const LogViewer = () => {
         {
             field: "timestamp",
             headerName: "Time",
-            width: 150,
+            width: 170,
             resizable: true,
             filter: true,
             sortable: true,
@@ -96,7 +96,7 @@ export const LogViewer = () => {
         {
             field: "request_json",
             headerName: "Task",
-            width: 400,
+            width: 700,
             resizable: true,
             filter: true,
             sortable: true,

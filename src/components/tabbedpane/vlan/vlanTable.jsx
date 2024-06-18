@@ -33,6 +33,14 @@ const VlanTable = (props) => {
         getVlans();
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getVlans();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
     const getVlans = () => {
         setDataTable([]);
         const apiMUrl = getVlansURL(selectedDeviceIp);

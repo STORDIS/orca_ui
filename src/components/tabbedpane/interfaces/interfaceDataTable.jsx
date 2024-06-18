@@ -8,14 +8,17 @@ import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
+// { selectedDeviceIp, refresh, reset }
+
 const InterfaceDataTable = (props) => {
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
-    // setDisableConfig(true);
+
+    const selectedDeviceIp = props.selectedDeviceIp;
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { selectedDeviceIp = "" } = props;
+
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
@@ -23,12 +26,19 @@ const InterfaceDataTable = (props) => {
     const instance = interceptor();
 
     useEffect(() => {
-        if (selectedDeviceIp) {
-            setInterfaceData();
-        }
+        getInterfaceData();
     }, [selectedDeviceIp]);
 
-    const setInterfaceData = () => {
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getInterfaceData();
+            console.log("check");
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
+    const getInterfaceData = () => {
         setDataTable([]);
         setChanges([]);
 
@@ -57,7 +67,6 @@ const InterfaceDataTable = (props) => {
 
     const resetConfigStatus = () => {
         setConfigStatus("");
-        setChanges([]);
     };
 
     const getAdvSpeed = (params) => {
@@ -81,7 +90,6 @@ const InterfaceDataTable = (props) => {
                 mgt_ip: selectedDeviceIp,
             };
             setChanges(payload);
-            console.log(payload);
         }
     }, []);
 
@@ -100,13 +108,13 @@ const InterfaceDataTable = (props) => {
             })
             .catch((err) => {
                 setConfigStatus("Config Failed");
-                setInterfaceData();
+                getInterfaceData();
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setChanges([]);
                 setDataTable([]);
-                setInterfaceData();
+                getInterfaceData();
                 setLog(true);
                 setDisableConfig(false);
             });

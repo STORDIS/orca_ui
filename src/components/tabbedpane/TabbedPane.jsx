@@ -28,7 +28,7 @@ const TabbedPane = () => {
             : 0
     );
     const [dropdownOptions, setDropdownOptions] = useState([]);
-    const [refresh, setRefresh] = useState(false);
+    const [undoChanges, setUndoChanges] = useState(false);
 
     const { disableConfig } = useDisableConfig();
 
@@ -54,15 +54,14 @@ const TabbedPane = () => {
     };
 
     const onUndo = (event) => {
-        console.log("onundo", tabValue);
-        setRefresh(true);
+        setUndoChanges(true);
     };
 
     const navigate = useNavigate();
 
     const handleDeviceChange = (event) => {
         navigate("/devices/" + event.target.value);
-        setRefresh(true);
+        setUndoChanges(true);
     };
 
     return (
@@ -102,22 +101,46 @@ const TabbedPane = () => {
                         />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={1}>
-                        <InterfaceDataTable selectedDeviceIp={deviceIP} />
+                        <InterfaceDataTable
+                            selectedDeviceIp={deviceIP}
+                            refresh={undoChanges}
+                            reset={() => setUndoChanges(false)}
+                        />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={2}>
-                        <PortChDataTable selectedDeviceIp={deviceIP} />
+                        <PortChDataTable
+                            selectedDeviceIp={deviceIP}
+                            refresh={undoChanges}
+                            reset={() => setUndoChanges(false)}
+                        />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={3}>
-                        <McLagDataTable selectedDeviceIp={deviceIP} />
+                        <McLagDataTable
+                            selectedDeviceIp={deviceIP}
+                            refresh={undoChanges}
+                            reset={() => setUndoChanges(false)}
+                        />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={4}>
-                        <BGPTable selectedDeviceIp={deviceIP} />
+                        <BGPTable
+                            selectedDeviceIp={deviceIP}
+                            refresh={undoChanges}
+                            reset={() => setUndoChanges(false)}
+                        />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={5}>
-                        <PortGroupTable selectedDeviceIp={deviceIP} />
+                        <PortGroupTable
+                            selectedDeviceIp={deviceIP}
+                            refresh={undoChanges}
+                            reset={() => setUndoChanges(false)}
+                        />
                     </TabPanel>
                     <TabPanel tabValue={tabValue} index={6}>
-                        <VlanTable selectedDeviceIp={deviceIP} />
+                        <VlanTable
+                            selectedDeviceIp={deviceIP}
+                            refresh={undoChanges}
+                            reset={() => setUndoChanges(false)}
+                        />
                     </TabPanel>
                 </Box>
             </div>
