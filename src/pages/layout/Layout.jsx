@@ -23,6 +23,7 @@ import OrcAsk from "../orcask/orcAsk.jsx";
 
 import { DataProviderLog } from "../../utils/logpannelContext.js";
 import { DataProviderConfig } from "../../utils/dissableConfigContext.js";
+import { DataProviderTable } from "../../utils/dissableTableContext.js";
 
 import "./Layout.scss";
 
@@ -38,6 +39,12 @@ const Layout = () => {
             setIsAI(true);
         }
 
+        console.log(secureLocalStorage.getItem("user_details"));
+
+        let temp = secureLocalStorage.getItem("user_details");
+        temp.is_staff = false;
+        secureLocalStorage.setItem("user_details", temp);
+
         setToken(secureLocalStorage.getItem("token"));
     }, [location.pathname, token]);
 
@@ -48,37 +55,39 @@ const Layout = () => {
             <DataProviderLog>
                 <div className="container">
                     <DataProviderConfig>
-                        {token ? <Navbar /> : null}
-                        <Routes>
-                            <Route path="/login" element={<Login />} />
-                            <Route
-                                path="/home"
-                                element={
-                                    <RequireAuth>
-                                        <Home />
-                                    </RequireAuth>
-                                }
-                            />
-                            <Route
-                                path="/orcAsk"
-                                element={
-                                    <RequireAuth>
-                                        <OrcAsk />
-                                    </RequireAuth>
-                                }
-                            />
-                            <Route
-                                path="devices/:deviceIP"
-                                element={
-                                    <RequireAuth>
-                                        <TabbedPane />
-                                    </RequireAuth>
-                                }
-                            />
-                            <Route path="/" element={<Redirect />} />
+                        <DataProviderTable>
+                            {token ? <Navbar /> : null}
+                            <Routes>
+                                <Route path="/login" element={<Login />} />
+                                <Route
+                                    path="/home"
+                                    element={
+                                        <RequireAuth>
+                                            <Home />
+                                        </RequireAuth>
+                                    }
+                                />
+                                <Route
+                                    path="/orcAsk"
+                                    element={
+                                        <RequireAuth>
+                                            <OrcAsk />
+                                        </RequireAuth>
+                                    }
+                                />
+                                <Route
+                                    path="devices/:deviceIP"
+                                    element={
+                                        <RequireAuth>
+                                            <TabbedPane />
+                                        </RequireAuth>
+                                    }
+                                />
+                                <Route path="/" element={<Redirect />} />
 
-                            <Route path="*" element={<ErrorPage />} />
-                        </Routes>
+                                <Route path="*" element={<ErrorPage />} />
+                            </Routes>
+                        </DataProviderTable>
                     </DataProviderConfig>
 
                     {token && isAI ? (

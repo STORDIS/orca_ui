@@ -3,10 +3,8 @@ import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
 import secureLocalStorage from "react-secure-storage";
 
-
 export const getIsStaff = () => {
-
-    if (secureLocalStorage.getItem("user_details")?.is_staff  ) {
+    if (secureLocalStorage.getItem("user_details")?.is_staff) {
         return secureLocalStorage.getItem("user_details")?.is_staff;
     } else {
         return false;
@@ -41,7 +39,7 @@ export const getCellEditorParamsInterfaceSpeed = (params) => {
 
 export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
     let valid_speeds = params.data.valid_speeds.split(",");
-    let result = ['all'];
+    let result = ["all"];
     valid_speeds.forEach((element) => {
         const bytesInGB = 1000;
         let converted_value = element / bytesInGB;
@@ -276,10 +274,7 @@ export const vlanColumns = [
         type: "boolean",
         width: 150,
         editable: getIsStaff(),
-        cellEditor: "agSelectCellEditor",
-        cellEditorParams: {
-            values: ["up", "down"],
-        },
+
         headerComponent: EditableHeaderComponent,
     },
     {

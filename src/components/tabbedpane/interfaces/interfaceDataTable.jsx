@@ -7,8 +7,7 @@ import { getAllInterfacesOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
-
-// { selectedDeviceIp, refresh, reset }
+import { useDisableTable } from "../../../utils/dissableTableContext";
 
 const InterfaceDataTable = (props) => {
     const { setLog } = useLog();
@@ -23,20 +22,35 @@ const InterfaceDataTable = (props) => {
     const [changes, setChanges] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
 
+    const { disableTable, setDisableTable } = useDisableTable();
+    const [columnData, setcolumnData] = useState(interfaceColumns);
+
     const instance = interceptor();
 
     useEffect(() => {
         getInterfaceData();
-    }, [selectedDeviceIp]);
+        setTableData()
+    }, [selectedDeviceIp, disableTable]);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getInterfaceData();
-            console.log("check");
         }
         props.reset(false);
     }, [props.refresh]);
+
+    const setTableData = () => {
+        columnData.forEach((element) => {
+            element.editable = !disableTable;
+
+            if (element.headerCheckboxSelection) {
+                element.checkboxSelection = !disableTable;
+            }
+        });
+
+        setcolumnData(columnData);
+    };
 
     const getInterfaceData = () => {
         setDataTable([]);
@@ -98,6 +112,7 @@ const InterfaceDataTable = (props) => {
             return;
         }
         setDisableConfig(true);
+        setDisableTable(true);
         setConfigStatus("Config In Progress....");
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
@@ -117,6 +132,7 @@ const InterfaceDataTable = (props) => {
                 getInterfaceData();
                 setLog(true);
                 setDisableConfig(false);
+                setDisableTable(false);
             });
     };
 
@@ -149,7 +165,7 @@ const InterfaceDataTable = (props) => {
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
-                    columnDefs={interfaceColumns}
+                    columnDefs={columnData}
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}

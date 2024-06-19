@@ -13,6 +13,8 @@ import Modal from "../../modal/Modal";
 
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import { useDisableTable } from "../../../utils/dissableTableContext";
+
 import { getIsStaff } from "../datatablesourse";
 
 const McLagDataTable = (props) => {
@@ -31,8 +33,12 @@ const McLagDataTable = (props) => {
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
+    const { disableTable, setDisableTable } = useDisableTable();
+    const [columnData, setcolumnData] = useState(mclagColumns);
+
     useEffect(() => {
-        getMclag();
+        getMclag();        setTableData()
+
     }, [selectedDeviceIp]);
 
     useEffect(() => {
@@ -42,6 +48,18 @@ const McLagDataTable = (props) => {
         }
         props.reset(false);
     }, [props.refresh]);
+
+    const setTableData = () => {
+        columnData.forEach((element) => {
+            element.editable = !disableTable;
+
+            if (element.headerCheckboxSelection) {
+                element.checkboxSelection = !disableTable;
+            }
+        });
+
+        setcolumnData(columnData);
+    };
 
     const getMclag = () => {
         setDataTable([]);
@@ -72,6 +90,7 @@ const McLagDataTable = (props) => {
     const handleFormSubmit = (formData, status) => {
         console.log(formData, status);
         setDisableConfig(true);
+        setDisableTable(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
@@ -87,6 +106,7 @@ const McLagDataTable = (props) => {
                 setShowForm(false);
                 setLog(true);
                 setDisableConfig(false);
+                setDisableTable(false);
                 setIsMessageModalOpen("message");
                 setTimeout(resetConfigStatus, 5000);
             });
@@ -101,6 +121,7 @@ const McLagDataTable = (props) => {
 
     const deleteMclag = () => {
         setDisableConfig(true);
+        setDisableTable(true);
 
         const output = {
             mgt_ip: selectedDeviceIp,
@@ -124,6 +145,7 @@ const McLagDataTable = (props) => {
                 setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
+                setDisableTable(false);
                 setSelectedRows([]);
                 setTimeout(resetConfigStatus, 5000);
             });
@@ -232,7 +254,7 @@ const McLagDataTable = (props) => {
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
-                    columnDefs={mclagColumns}
+                    columnDefs={columnData}
                     defaultColDef={defaultColDef}
                     onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
