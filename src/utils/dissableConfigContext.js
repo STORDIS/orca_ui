@@ -8,7 +8,6 @@ export const useDisableConfig = () => useContext(DisableConfigContext);
 export const DataProviderConfig = ({ children }) => {
     const [disableConfig, setDisableConfig] = useState(!getIsStaff());
 
-
     return (
         <DisableConfigContext.Provider
             value={{ disableConfig, setDisableConfig }}

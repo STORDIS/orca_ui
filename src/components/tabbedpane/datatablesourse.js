@@ -3,8 +3,10 @@ import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
 import secureLocalStorage from "react-secure-storage";
 
+
 export const getIsStaff = () => {
-    if (secureLocalStorage.getItem("user_details")?.is_staff) {
+
+    if (secureLocalStorage.getItem("user_details")?.is_staff  ) {
         return secureLocalStorage.getItem("user_details")?.is_staff;
     } else {
         return false;
