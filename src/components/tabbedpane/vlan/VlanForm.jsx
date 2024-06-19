@@ -17,6 +17,8 @@ const VlanForm = ({
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
+    const [disabledIp, setDisabledIp] = useState(false);
+    const [disabledSagIp, setDisabledSagIp] = useState(false);
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
         const ipv4Regex =
@@ -66,6 +68,15 @@ const VlanForm = ({
                 ...prevFormData,
                 [name]: value,
             }));
+        }
+
+        if(name === 'ip_address' && value) {
+            setDisabledSagIp(true);
+        }else if(name ==='sag_ip_address' && value) {
+            setDisabledIp(true);
+        }else{
+            setDisabledIp(false);
+            setDisabledSagIp(false);
         }
     };
 
@@ -226,12 +237,6 @@ const VlanForm = ({
                         <option value="enable">Enable</option>
                         <option value="disable">Disable</option>
                     </select>
-                    {/* <input
-                        type="text"
-                        name="autostate"
-                        value={formData.autostate}
-                        onChange={handleChange}
-                    /> */}
                 </div>
 
                 <div className="form-field w-50">
@@ -251,6 +256,7 @@ const VlanForm = ({
                 <div className="form-field w-50">
                     <label> IP address</label>
                     <input
+                        disabled={disabledIp}
                         type="text"
                         name="ip_address"
                         value={formData.ip_address}
@@ -261,6 +267,7 @@ const VlanForm = ({
                 <div className="form-field w-50">
                     <label>Anycast Address</label>
                     <input
+                        disabled={disabledSagIp}
                         type="text"
                         name="sag_ip_address"
                         value={formData.sag_ip_address}
