@@ -39,11 +39,16 @@ const VlanTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
-                console.log(res.data);
                 res?.data?.forEach((element) => {
                     element.mem_ifs = JSON.stringify(element.mem_ifs);
                 });
-                setDataTable(res?.data);
+
+                let temp = res.data.map((row) => {
+                    row.autostate = row.autostate ? "enable" : "disable";
+                    return row;
+                });
+                setDataTable(temp);
+                // setDataTable(res.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -220,7 +225,9 @@ const VlanTable = (props) => {
                 ...params.data,
                 mgt_ip: selectedDeviceIp,
                 mem_ifs: getMembers(params.data.mem_ifs),
+                // autostate: params.data.autostate === "enable" ? true : false,
             };
+            console.log(payload.autostate);
             setChanges(payload);
         }
     }, []);

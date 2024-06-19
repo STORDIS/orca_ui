@@ -242,6 +242,10 @@ export const vlanColumns = [
         width: 130,
         sortable: true,
         editable: getIsStaff(),
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: ["enable", "disable"],
+        },
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -270,7 +274,7 @@ export const vlanColumns = [
     },
     {
         field: "enabled",
-        headerName: "Status",
+        headerName: "Admin Status",
         type: "boolean",
         width: 150,
         editable: getIsStaff(),

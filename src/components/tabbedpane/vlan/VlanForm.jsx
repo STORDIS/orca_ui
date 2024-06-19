@@ -218,16 +218,24 @@ const VlanForm = ({
             <div className="form-wrapper">
                 <div className="form-field w-50">
                     <label>Autostate </label>
-                    <input
+                    <select
+                        name="autostate"
+                        value={formData.enabled}
+                        onChange={handleChange}
+                    >
+                        <option value="true">Enable</option>
+                        <option value="false">Disable</option>
+                    </select>
+                    {/* <input
                         type="text"
                         name="autostate"
                         value={formData.autostate}
                         onChange={handleChange}
-                    />
+                    /> */}
                 </div>
 
                 <div className="form-field w-50">
-                    <label> Status:</label>
+                    <label> Admin Status:</label>
                     <select
                         name="enabled"
                         value={formData.enabled}
@@ -264,8 +272,11 @@ const VlanForm = ({
             <div className="form-wrapper">
                 <div className="form-field w-75">
                     <label>Select Member Interface </label>
-                    <select onChange={handleDropdownChange}>
-                        <option value="" disabled>
+                    <select
+                        onChange={handleDropdownChange}
+                        defaultValue={"DEFAULT"}
+                    >
+                        <option value="DEFAULT" disabled>
                             Select Member Interface
                         </option>
                         {interfaceNames.map((val, index) => (
