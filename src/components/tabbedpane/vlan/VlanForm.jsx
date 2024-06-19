@@ -223,8 +223,8 @@ const VlanForm = ({
                         value={formData.enabled}
                         onChange={handleChange}
                     >
-                        <option value="true">Enable</option>
-                        <option value="false">Disable</option>
+                        <option value="enable">Enable</option>
+                        <option value="disable">Disable</option>
                     </select>
                     {/* <input
                         type="text"
