@@ -9,7 +9,7 @@ const Sidebar = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="sidebar">
+        <div className="sidebar zoom">
             <div className="top">
                 <Link to="/home" style={{ textDecoration: "none" }}>
                     <img src={logo} className="logo" alt="logo.png" />

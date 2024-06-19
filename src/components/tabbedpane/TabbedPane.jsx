@@ -66,7 +66,7 @@ const TabbedPane = () => {
     };
 
     return (
-        <div>
+        <div className="zoom" >
             <div className="listContainer">
                 Device :
                 <select value={deviceIP} onChange={handleDeviceChange}>

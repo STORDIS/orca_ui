@@ -198,7 +198,7 @@ export const HistoryChatSection = ({
                     .map((item, index) => (
                         <React.Fragment key={item.id}>
                             {item.user_message ? (
-                                <div className="promptStyle">
+                                <div className="promptStyle zoom">
                                     <button
                                         disabled={!getIsStaff()}
                                         className="bookmark"
@@ -233,17 +233,17 @@ export const HistoryChatSection = ({
                             ) : null}
                             {item.final_message ? (
                                 <div className="aiStyle">
-                                    <span className="icon">
+                                    <span className="icon zoom">
                                         <FaRobot />
                                     </span>
                                     {item.viewType === "string" ? (
-                                        <div className="content">
+                                        <div className="content zoom"  >
                                             {item.final_message}
                                         </div>
                                     ) : null}
                                     {item.viewType !== "string" ? (
                                         <div className="content">
-                                            <div className="selectView">
+                                            <div className="selectView ">
                                                 <select
                                                     className="selectView"
                                                     name=""
@@ -264,7 +264,7 @@ export const HistoryChatSection = ({
                                             {item.viewType === "table" ? (
                                                 <div
                                                     style={gridStyle}
-                                                    className="ag-theme-alpine"
+                                                    className="ag-theme-alpine zoom"
                                                 >
                                                     <AgGridReact
                                                         rowData={
@@ -287,7 +287,7 @@ export const HistoryChatSection = ({
                                             ) : null}
                                         </div>
                                     ) : null}
-                                    <span className="copy">
+                                    <span className="copy zoom">
                                         <CopyToClipboard
                                             text={item.final_message}
                                         >
@@ -303,7 +303,7 @@ export const HistoryChatSection = ({
                     ))}
                 {isLoading ? (
                     <>
-                        <div className="promptStyle">
+                        <div className="promptStyle zoom">
                             <span className="copy">
                                 <button
                                     disabled={!getIsStaff()}
@@ -330,7 +330,7 @@ export const HistoryChatSection = ({
                                 <FaUser />
                             </span>
                         </div>
-                        <div className="aiStyle">
+                        <div className="aiStyle zoom">
                             <span className="icon">
                                 <FaRobot />
                             </span>
@@ -344,7 +344,7 @@ export const HistoryChatSection = ({
                 ) : null}
             </div>
 
-            <div className="promptArea">
+            <div className="promptArea zoom">
                 <textarea
                     value={questionPrompt.prompt}
                     onChange={handleInputChange}

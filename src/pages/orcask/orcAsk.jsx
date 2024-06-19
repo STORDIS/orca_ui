@@ -85,7 +85,7 @@ export const AskOrca = () => {
                     copiedBookmark={copiedBookmark}
                 />
             </div>
-            <div className=" rightColumn">
+            <div className="zoom rightColumn">
                 <div className="heading">
                     <span className="mr-10">
                         <FaBookmark />
