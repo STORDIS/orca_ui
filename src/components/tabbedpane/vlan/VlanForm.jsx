@@ -17,6 +17,8 @@ const VlanForm = ({
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
+    const [disabledIp, setDisabledIp] = useState(false);
+    const [disabledSagIp, setDisabledSagIp] = useState(false);
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
         const ipv4Regex =
@@ -66,6 +68,15 @@ const VlanForm = ({
                 ...prevFormData,
                 [name]: value,
             }));
+        }
+
+        if(name === 'ip_address' && value) {
+            setDisabledSagIp(true);
+        }else if(name ==='sag_ip_address' && value) {
+            setDisabledIp(true);
+        }else{
+            setDisabledIp(false);
+            setDisabledSagIp(false);
         }
     };
 
@@ -218,16 +229,18 @@ const VlanForm = ({
             <div className="form-wrapper">
                 <div className="form-field w-50">
                     <label>Autostate </label>
-                    <input
-                        type="text"
+                    <select
                         name="autostate"
-                        value={formData.autostate}
+                        value={formData.enabled}
                         onChange={handleChange}
-                    />
+                    >
+                        <option value="enable">Enable</option>
+                        <option value="disable">Disable</option>
+                    </select>
                 </div>
 
                 <div className="form-field w-50">
-                    <label> Status:</label>
+                    <label> Admin Status:</label>
                     <select
                         name="enabled"
                         value={formData.enabled}
@@ -243,6 +256,7 @@ const VlanForm = ({
                 <div className="form-field w-50">
                     <label> IP address</label>
                     <input
+                        disabled={disabledIp}
                         type="text"
                         name="ip_address"
                         value={formData.ip_address}
@@ -253,6 +267,7 @@ const VlanForm = ({
                 <div className="form-field w-50">
                     <label>Anycast Address</label>
                     <input
+                        disabled={disabledSagIp}
                         type="text"
                         name="sag_ip_address"
                         value={formData.sag_ip_address}
@@ -264,8 +279,11 @@ const VlanForm = ({
             <div className="form-wrapper">
                 <div className="form-field w-75">
                     <label>Select Member Interface </label>
-                    <select onChange={handleDropdownChange}>
-                        <option value="" disabled>
+                    <select
+                        onChange={handleDropdownChange}
+                        defaultValue={"DEFAULT"}
+                    >
+                        <option value="DEFAULT" disabled>
                             Select Member Interface
                         </option>
                         {interfaceNames.map((val, index) => (

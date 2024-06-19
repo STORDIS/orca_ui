@@ -39,7 +39,7 @@ export const getCellEditorParamsInterfaceSpeed = (params) => {
 
 export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
     let valid_speeds = params.data.valid_speeds.split(",");
-    let result = ['all'];
+    let result = ["all"];
     valid_speeds.forEach((element) => {
         const bytesInGB = 1000;
         let converted_value = element / bytesInGB;
@@ -213,6 +213,21 @@ export const portGroupColumns = [
     },
 ];
 
+export const valnIp = (params) => {
+    if (params.data.sag_ip_address) {
+        return false;
+    } else {
+        return true;
+    }
+};
+export const valnSagIp = (params) => {
+    if (params.data.ip_address) {
+        return false;
+    } else {
+        return true;
+    }
+};
+
 export const vlanColumns = [
     {
         headerCheckboxSelection: getIsStaff(),
@@ -242,6 +257,10 @@ export const vlanColumns = [
         width: 130,
         sortable: true,
         editable: getIsStaff(),
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: ["enable", "disable"],
+        },
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -249,7 +268,8 @@ export const vlanColumns = [
         headerName: "IP Address",
         width: 130,
         sortable: true,
-        editable: getIsStaff(),
+        editable: getIsStaff() && valnIp,
+
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -257,7 +277,7 @@ export const vlanColumns = [
         headerName: "Anycast Address",
         width: 130,
         sortable: true,
-        editable: getIsStaff(),
+        editable: getIsStaff() && valnSagIp,
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -270,7 +290,7 @@ export const vlanColumns = [
     },
     {
         field: "enabled",
-        headerName: "Status",
+        headerName: "Admin Status",
         type: "boolean",
         width: 150,
         editable: getIsStaff(),
