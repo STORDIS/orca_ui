@@ -79,7 +79,7 @@ export const AskOrca = () => {
 
     return (
         <div className="flexContainer">
-            <div className="leftColumn">
+            <div className="leftColumn   ">
                 <HistoryChatSection
                     sendBookmarkDataToParent={addBookmark}
                     copiedBookmark={copiedBookmark}

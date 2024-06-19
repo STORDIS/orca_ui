@@ -83,7 +83,7 @@ const Datatable = (props) => {
     };
 
     return (
-        <div className="datatable">
+        <div className="datatable ">
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
@@ -93,6 +93,7 @@ const Datatable = (props) => {
                     onColumnResized={onColumnResized}
                     enableCellTextSelection="true"
                     onCellClicked={onCellClicked}
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 
