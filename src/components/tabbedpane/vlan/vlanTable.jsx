@@ -48,7 +48,9 @@ const VlanTable = (props) => {
 
     const setTableData = () => {
         columnData.forEach((element) => {
-            element.editable = !disableTable;
+            if (element.editable === true || element.editable === false) {
+                element.editable = !disableTable;
+            }
 
             if (element.headerCheckboxSelection) {
                 element.checkboxSelection = !disableTable;

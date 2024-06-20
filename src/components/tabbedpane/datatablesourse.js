@@ -214,16 +214,24 @@ export const portGroupColumns = [
 ];
 
 export const valnIp = (params) => {
-    if (params.data.sag_ip_address) {
+    if (!getIsStaff()) {
+        return false;
+    } else if (params.data.sag_ip_address) {
+        console.log("ip false");
         return false;
     } else {
+        console.log("ip true");
         return true;
     }
 };
 export const valnSagIp = (params) => {
-    if (params.data.ip_address) {
+    if (!getIsStaff()) {
+        return false;
+    } else if (params.data.ip_address) {
+        console.log("sag ip false");
         return false;
     } else {
+        console.log("sag ip true");
         return true;
     }
 };
@@ -268,8 +276,7 @@ export const vlanColumns = [
         headerName: "IP Address",
         width: 130,
         sortable: true,
-        editable: getIsStaff() && valnIp,
-
+        editable: valnIp,
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -277,7 +284,7 @@ export const vlanColumns = [
         headerName: "Anycast Address",
         width: 130,
         sortable: true,
-        editable: getIsStaff() && valnSagIp,
+        editable: valnSagIp,
         headerComponent: EditableHeaderComponent,
     },
     {
