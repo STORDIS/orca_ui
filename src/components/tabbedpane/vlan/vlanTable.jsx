@@ -326,6 +326,7 @@ const VlanTable = (props) => {
                         stopEditingWhenCellsLoseFocus={true}
                         onCellClicked={onCellClicked}
                         domLayout={"autoHeight"}
+                        suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
 

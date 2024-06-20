@@ -462,6 +462,7 @@ const PortChDataTable = (props) => {
                         onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
                         domLayout={"autoHeight"}
+                        suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
                 {isDeleteConfirmationModalOpen && (

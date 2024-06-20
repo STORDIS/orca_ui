@@ -110,7 +110,7 @@ export const LogViewer = () => {
         {
             field: "status",
             headerName: "Status",
-            width: 400,
+            width: 700,
             resizable: true,
             sortable: true,
             cellRenderer: (params) => {

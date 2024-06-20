@@ -39,11 +39,7 @@ const Layout = () => {
             setIsAI(true);
         }
 
-        console.log(secureLocalStorage.getItem("user_details"));
-
-        let temp = secureLocalStorage.getItem("user_details");
-        temp.is_staff = false;
-        secureLocalStorage.setItem("user_details", temp);
+      
 
         setToken(secureLocalStorage.getItem("token"));
     }, [location.pathname, token]);
