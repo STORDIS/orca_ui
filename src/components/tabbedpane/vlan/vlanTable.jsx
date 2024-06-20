@@ -67,7 +67,8 @@ const VlanTable = (props) => {
                 res?.data?.forEach((element) => {
                     element.mem_ifs = JSON.stringify(element.mem_ifs);
                 });
-                setDataTable(res?.data);
+
+                setDataTable(res.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -227,6 +228,7 @@ const VlanTable = (props) => {
         ) {
             alert("ip_address is not valid");
             setSelectedRows([]);
+            refreshData();
             return;
         }
         if (
@@ -236,11 +238,13 @@ const VlanTable = (props) => {
         ) {
             alert("sag_ip_address is not valid");
             setSelectedRows([]);
+            refreshData();
             return;
         }
         if (params.data.sag_ip_address && params.data.ip_address) {
             alert("ip_address or sag_ip_address any one must be added");
             setSelectedRows([]);
+            refreshData();
             return;
         }
         if (params.newValue !== params.oldValue) {
@@ -249,6 +253,7 @@ const VlanTable = (props) => {
                 mgt_ip: selectedDeviceIp,
                 mem_ifs: getMembers(params.data.mem_ifs),
             };
+            console.log(payload.autostate);
             setChanges(payload);
         }
     }, []);

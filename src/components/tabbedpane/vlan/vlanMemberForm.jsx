@@ -143,8 +143,11 @@ const VlanMemberForm = ({
             <div className="form-wrapper">
                 <div className="form-field w-75">
                     <label>Select Member Interface </label>
-                    <select onChange={handleDropdownChange}>
-                        <option value="" disabled>
+                    <select
+                        onChange={handleDropdownChange}
+                        defaultValue={"DEFAULT"}
+                    >
+                        <option value="DEFAULT" disabled>
                             Select Member Interface
                         </option>
                         {interfaceNames.map((val, index) => (
