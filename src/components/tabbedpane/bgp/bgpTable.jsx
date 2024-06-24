@@ -84,15 +84,14 @@ const BGPTable = (props) => {
 
         setDisableConfig(true);
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
+        setConfigStatus("Config In Progress....");
         instance
             .delete(apiPUrl, { data: output })
             .then((res) => {
                 setModalContent("BGP Deleted Successfully");
-                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error Deleting BGP");
-                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -100,23 +99,22 @@ const BGPTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
     const handleFormSubmit = (formData, status) => {
         console.log(formData, status);
         setDisableConfig(true);
+        setConfigStatus("Config In Progress....");
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
             .then((res) => {
                 setModalContent("Bgp " + status + "ed Successfully");
-                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error in " + status + "ing Bgp");
-                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -124,7 +122,7 @@ const BGPTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setIsMessageModalOpen(true);
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
@@ -163,17 +161,7 @@ const BGPTable = (props) => {
                     >
                         Apply Config
                     </button>
-                    <span
-                        className={`config-status ${
-                            configStatus === "Config Successful"
-                                ? "config-successful"
-                                : configStatus === "Config Failed"
-                                ? "config-failed"
-                                : "config-in-progress"
-                        }`}
-                    >
-                        {configStatus}
-                    </span>
+                    <span className="config-status">{configStatus}</span>
                 </div>
 
                 <div className="">

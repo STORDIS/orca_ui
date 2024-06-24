@@ -104,13 +104,11 @@ const InterfaceDataTable = (props) => {
         instance
             .put(apiUrl, changes)
             .then((res) => {
-                setConfigStatus("Config Successful");
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             })
             .catch((err) => {
-                setConfigStatus("Config Failed");
                 getInterfaceData();
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             })
             .finally(() => {
                 setChanges([]);
@@ -133,17 +131,7 @@ const InterfaceDataTable = (props) => {
                 >
                     Apply Config
                 </button>
-                <span
-                    className={`config-status ${
-                        configStatus === "Config Successful"
-                            ? "config-successful"
-                            : configStatus === "Config Failed"
-                            ? "config-failed"
-                            : "config-in-progress"
-                    }`}
-                >
-                    {configStatus}
-                </span>
+                <span className="config-status">{configStatus}</span>
             </div>
 
             <div style={gridStyle} className="ag-theme-alpine pt-60">

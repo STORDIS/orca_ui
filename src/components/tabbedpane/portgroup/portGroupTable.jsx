@@ -95,6 +95,11 @@ const PortGroupTable = (props) => {
         [dataTable]
     );
 
+    const resetConfigStatus = () => {
+        setConfigStatus("");
+        setChanges([]);
+    };
+
     const createReqJson = useCallback(() => {
         return changes.map((change) => ({
             mgt_ip: selectedDeviceIp,
@@ -115,14 +120,11 @@ const PortGroupTable = (props) => {
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         instance
             .put(apiUrl, req_json)
-            .then((res) => {
-                setConfigStatus("Config Successful");
-            })
-            .catch((err) => {
-                setConfigStatus("Config Failed");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
                 setChanges([]);
+                resetConfigStatus();
                 setLog(true);
                 setDisableConfig(false);
             });
@@ -140,17 +142,7 @@ const PortGroupTable = (props) => {
                 >
                     Apply Config
                 </button>
-                <span
-                    className={`config-status ${
-                        configStatus === "Config Successful"
-                            ? "config-successful"
-                            : configStatus === "Config Failed"
-                            ? "config-failed"
-                            : "config-in-progress"
-                    }`}
-                >
-                    {configStatus}
-                </span>
+                <span className="config-status">{configStatus}</span>
             </div>
 
             <div style={gridStyle} className="ag-theme-alpine pt-60">

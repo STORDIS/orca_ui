@@ -88,7 +88,6 @@ const VlanTable = (props) => {
                 }
                 setSelectedRows([]);
                 setModalContent("Vlan Delete Successfully.");
-                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error in Deleting Vlan.");
@@ -98,7 +97,7 @@ const VlanTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
@@ -115,7 +114,6 @@ const VlanTable = (props) => {
             .then(() => {
                 setIsMessageModalOpen("message");
                 getMessageForApi(status + " Success");
-                setConfigStatus("Config Successful");
             })
             .catch(() => {
                 setIsMessageModalOpen("message");
@@ -126,7 +124,7 @@ const VlanTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
@@ -268,17 +266,7 @@ const VlanTable = (props) => {
                         >
                             Apply Config
                         </button>
-                        <span
-                            className={`config-status ${
-                                configStatus === "Config Successful"
-                                    ? "config-successful"
-                                    : configStatus === "Config Failed"
-                                    ? "config-failed"
-                                    : "config-in-progress"
-                            }`}
-                        >
-                            {configStatus}
-                        </span>
+                        <span className="config-status">{configStatus}</span>
                     </div>
 
                     <button

@@ -34,18 +34,8 @@
         margin-left: 10px;
         font-weight: bold;
 
-        &.config-successful {
-            color: green;
-        }
-
-        &.config-failed {
-            color: red;
-        }
-
-        &.config-in-progress {
-            font-style: italic;
-            color: #999;
-        }
+        font-style: italic;
+        color: #999;
     }
 
     .cellAction {

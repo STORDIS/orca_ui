@@ -79,18 +79,16 @@ const McLagDataTable = (props) => {
             .put(apiPUrl, formData)
             .then((res) => {
                 setModalContent("Mclag " + status + "ed Successfully");
-                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error in " + status + "ing Mclag");
-                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
                 setLog(true);
                 setDisableConfig(false);
                 setIsMessageModalOpen("message");
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
@@ -114,12 +112,10 @@ const McLagDataTable = (props) => {
             .then((res) => {
                 setIsMessageModalOpen("message");
                 setModalContent("Mclag Deleted Successfully");
-                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setIsMessageModalOpen("message");
                 setModalContent("Error Deleting Mclag");
-                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -127,7 +123,7 @@ const McLagDataTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
@@ -197,17 +193,7 @@ const McLagDataTable = (props) => {
                     >
                         Apply Config
                     </button>
-                    <span
-                        className={`config-status ${
-                            configStatus === "Config Successful"
-                                ? "config-successful"
-                                : configStatus === "Config Failed"
-                                ? "config-failed"
-                                : "config-in-progress"
-                        }`}
-                    >
-                        {configStatus}
-                    </span>
+                    <span className="config-status">{configStatus}</span>
                 </div>
 
                 <div className="">
