@@ -18,7 +18,6 @@ const VlanTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
 
     const [configStatus, setConfigStatus] = useState("");
@@ -28,6 +27,15 @@ const VlanTable = (props) => {
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
+
+    const selectedDeviceIp = props.selectedDeviceIp;
+
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            getVlans();
+        }
+        props.reset(false);
+    }, [props.refresh]);
 
     useEffect(() => {
         getVlans();
@@ -300,8 +308,8 @@ const VlanTable = (props) => {
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         stopEditingWhenCellsLoseFocus={true}
-                        onCellClicked={onCellClicked}                        domLayout={"autoHeight"}
-
+                        onCellClicked={onCellClicked}
+                        domLayout={"autoHeight"}
                     ></AgGridReact>
                 </div>
 

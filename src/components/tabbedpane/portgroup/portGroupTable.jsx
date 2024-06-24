@@ -13,7 +13,6 @@ import { useDisableConfig } from "../../../utils/dissableConfigContext";
 const PortGroupTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { selectedDeviceIp = "" } = props;
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [dataTable, setDataTable] = useState([]);
@@ -22,6 +21,26 @@ const PortGroupTable = (props) => {
     const instance = interceptor();
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
+
+    const selectedDeviceIp = props.selectedDeviceIp;
+
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            setDataTable([]);
+            setOriginalData([]);
+
+            const apiMUrl = getPortGroupsURL(selectedDeviceIp);
+            instance
+                .get(apiMUrl)
+                .then((res) => {
+                    setDataTable(res.data);
+                    setOriginalData(JSON.parse(JSON.stringify(res.data)));
+                })
+                .catch((err) => console.log(err));
+        }
+        props.reset(false);
+    }, [props.refresh]);
 
     useEffect(() => {
         setChanges([]);

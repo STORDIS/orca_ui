@@ -18,7 +18,7 @@ const BGPTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { rows, columns, selectedDeviceIp = "" } = props;
+    const selectedDeviceIp = props.selectedDeviceIp;
 
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
@@ -34,8 +34,15 @@ const BGPTable = (props) => {
         getBgp();
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getBgp();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
     const getBgp = () => {
-        console.log("-----");
         setDataTable([]);
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance

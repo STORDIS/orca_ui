@@ -22,7 +22,6 @@ const PortChDataTable = (props) => {
         () => ({ height: "90%", width: "100%", maxWidth: "100%" }),
         []
     );
-    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
@@ -45,7 +44,23 @@ const PortChDataTable = (props) => {
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
+    const selectedDeviceIp = props.selectedDeviceIp;
+
     useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getAllPortChanalData();
+            getInterfaces();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
+    useEffect(() => {
+        getInterfaces();
+        getAllPortChanalData();
+    }, [selectedDeviceIp]);
+
+    const getInterfaces = () => {
         instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((res) => {
@@ -55,9 +70,7 @@ const PortChDataTable = (props) => {
             .catch((error) =>
                 console.error("Failed to fetch interface names:", error)
             );
-
-        getAllPortChanalData();
-    }, [selectedDeviceIp]);
+    };
 
     const getAllPortChanalData = () => {
         setDataTable([]);
@@ -448,7 +461,6 @@ const PortChDataTable = (props) => {
                         onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
                         domLayout={"autoHeight"}
-
                     ></AgGridReact>
                 </div>
                 {isDeleteConfirmationModalOpen && (

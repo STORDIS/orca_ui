@@ -15,7 +15,7 @@ const InterfaceDataTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { selectedDeviceIp = "" } = props;
+    const selectedDeviceIp = props.selectedDeviceIp;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
@@ -24,11 +24,20 @@ const InterfaceDataTable = (props) => {
 
     useEffect(() => {
         if (selectedDeviceIp) {
-            setInterfaceData();
+            getInterfaceData();
         }
     }, [selectedDeviceIp]);
 
-    const setInterfaceData = () => {
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getInterfaceData();
+            console.log("check");
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
+    const getInterfaceData = () => {
         setDataTable([]);
         setChanges([]);
 
@@ -100,13 +109,13 @@ const InterfaceDataTable = (props) => {
             })
             .catch((err) => {
                 setConfigStatus("Config Failed");
-                setInterfaceData();
+                getInterfaceData();
                 setTimeout(resetConfigStatus, 5000);
             })
             .finally(() => {
                 setChanges([]);
                 setDataTable([]);
-                setInterfaceData();
+                getInterfaceData();
                 setLog(true);
                 setDisableConfig(false);
             });

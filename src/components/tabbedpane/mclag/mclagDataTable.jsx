@@ -20,7 +20,6 @@ const McLagDataTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
@@ -30,6 +29,17 @@ const McLagDataTable = (props) => {
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
+
+    const selectedDeviceIp = props.selectedDeviceIp;
+
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getMclag();
+            console.log("check");
+        }
+        props.reset(false);
+    }, [props.refresh]);
 
     useEffect(() => {
         getMclag();
