@@ -132,7 +132,6 @@ export const interfaceColumns = [
         headerName: "autoneg",
         width: 130,
         sortable: true,
-
         editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,

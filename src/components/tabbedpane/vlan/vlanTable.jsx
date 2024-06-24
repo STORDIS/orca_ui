@@ -281,6 +281,7 @@ const VlanTable = (props) => {
                         />
                     </Modal>
                 )}
+                
                 {/* model for adding interfaces */}
                 {isModalOpen === "addMember" && (
                     <Modal
