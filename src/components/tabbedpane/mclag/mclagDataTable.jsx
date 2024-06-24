@@ -176,7 +176,7 @@ const McLagDataTable = (props) => {
 
     return (
         <div className="datatable">
-            <div className="button-group">
+            <div className="button-group stickyButton">
                 <div className="button-column">
                     <button
                         disabled={
@@ -220,7 +220,7 @@ const McLagDataTable = (props) => {
                 </div>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div style={gridStyle} className="ag-theme-alpine pt-60">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -233,6 +233,7 @@ const McLagDataTable = (props) => {
                     enableCellTextSelection="true"
                     rowSelection="single"
                     onSelectionChanged={onSelectionChanged}
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 

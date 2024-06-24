@@ -114,27 +114,30 @@ const InterfaceDataTable = (props) => {
 
     return (
         <div className="datatable">
-            <button
-                onClick={sendUpdates}
-                disabled={disableConfig || Object.keys(changes).length === 0}
-                className="btnStyle"
-            >
-                Apply Config
-            </button>
-            <span
-                className={`config-status ${
-                    configStatus === "Config Successful"
-                        ? "config-successful"
-                        : configStatus === "Config Failed"
-                        ? "config-failed"
-                        : "config-in-progress"
-                }`}
-            >
-                {configStatus}
-            </span>
-            <p>&nbsp;</p>
+            <div className="stickyButton">
+                <button
+                    onClick={sendUpdates}
+                    disabled={
+                        disableConfig || Object.keys(changes).length === 0
+                    }
+                    className="btnStyle "
+                >
+                    Apply Config
+                </button>
+                <span
+                    className={`config-status ${
+                        configStatus === "Config Successful"
+                            ? "config-successful"
+                            : configStatus === "Config Failed"
+                            ? "config-failed"
+                            : "config-in-progress"
+                    }`}
+                >
+                    {configStatus}
+                </span>
+            </div>
 
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div style={gridStyle} className="ag-theme-alpine pt-60">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -143,6 +146,7 @@ const InterfaceDataTable = (props) => {
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
                     quickFilterText="Ethernet"
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
         </div>

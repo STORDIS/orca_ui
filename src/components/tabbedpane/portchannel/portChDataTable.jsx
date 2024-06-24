@@ -381,7 +381,7 @@ const PortChDataTable = (props) => {
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group">
+                <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
                             onClick={sendUpdates}
@@ -434,7 +434,7 @@ const PortChDataTable = (props) => {
                     />
                 </Modal>
 
-                <div style={gridStyle} className="ag-theme-alpine">
+                <div style={gridStyle} className="ag-theme-alpine pt-60">
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
@@ -447,6 +447,8 @@ const PortChDataTable = (props) => {
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
+                        domLayout={"autoHeight"}
+
                     ></AgGridReact>
                 </div>
                 {isDeleteConfirmationModalOpen && (

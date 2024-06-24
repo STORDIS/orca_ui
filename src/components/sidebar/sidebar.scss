@@ -1,15 +1,18 @@
 .sidebar {
-    flex: 1;
-    border-right: 0.5px solid #002f58;
     min-height: 100vh;
-    // background-color: lightcoral;
+    width: 220px;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    position: fixed;
 
     .top {
         height: auto;
         display: flex;
         align-items: center;
         justify-content: center;
-
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+    
         .logo {
             width: 200px;
             margin: 10px;

@@ -248,7 +248,7 @@ const VlanTable = (props) => {
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group">
+                <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
                             disabled={
@@ -289,7 +289,7 @@ const VlanTable = (props) => {
                     </button>
                 </div>
 
-                <div style={gridStyle} className="ag-theme-alpine">
+                <div style={gridStyle} className="ag-theme-alpine pt-60">
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
@@ -300,7 +300,8 @@ const VlanTable = (props) => {
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         stopEditingWhenCellsLoseFocus={true}
-                        onCellClicked={onCellClicked}
+                        onCellClicked={onCellClicked}                        domLayout={"autoHeight"}
+
                     ></AgGridReact>
                 </div>
 

@@ -111,27 +111,30 @@ const PortGroupTable = (props) => {
 
     return (
         <div className="datatable">
-            <button
-                type="button"
-                style={{ marginBottom: "15px" }}
-                onClick={sendUpdates}
-                disabled={disableConfig}
-                className="btnStyle"
-            >
-                Apply Config
-            </button>
-            <span
-                className={`config-status ${
-                    configStatus === "Config Successful"
-                        ? "config-successful"
-                        : configStatus === "Config Failed"
-                        ? "config-failed"
-                        : "config-in-progress"
-                }`}
-            >
-                {configStatus}
-            </span>
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div className="stickyButton">
+                <button
+                    type="button"
+                    style={{ marginBottom: "15px" }}
+                    onClick={sendUpdates}
+                    disabled={disableConfig}
+                    className="btnStyle"
+                >
+                    Apply Config
+                </button>
+                <span
+                    className={`config-status ${
+                        configStatus === "Config Successful"
+                            ? "config-successful"
+                            : configStatus === "Config Failed"
+                            ? "config-failed"
+                            : "config-in-progress"
+                    }`}
+                >
+                    {configStatus}
+                </span>
+            </div>
+
+            <div style={gridStyle} className="ag-theme-alpine pt-60">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -142,6 +145,7 @@ const PortGroupTable = (props) => {
                     checkboxSelection
                     enableCellTextSelection="true"
                     stopEditingWhenCellsLoseFocus={true}
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
         </div>

@@ -45,7 +45,11 @@ const Layout = () => {
 
     return (
         <div className="mainContainer">
-            {token ? <Sidebar /> : null}
+            {token ? (
+                <div className="sideBar" >
+                    <Sidebar />
+                </div>
+            ) : null}
 
             <DataProviderLog>
                 <div className="container">
@@ -84,7 +88,7 @@ const Layout = () => {
                     </DataProviderConfig>
 
                     {token && isAI ? (
-                        <div className="listContainer mb">
+                        <div className="listContainer mb resizable">
                             <LogViewer />
                         </div>
                     ) : null}
