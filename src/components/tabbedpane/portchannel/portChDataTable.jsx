@@ -265,6 +265,7 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 setDisableConfig(false);
                 setLog(true);
+                refreshData();
             });
     }, [changes.length, createJsonOutput, selectedDeviceIp, instance]);
 
@@ -401,6 +402,7 @@ const PortChDataTable = (props) => {
                         onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
                         domLayout={"autoHeight"}
+                        suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
 
