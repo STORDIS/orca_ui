@@ -19,8 +19,6 @@ import secureLocalStorage from "react-secure-storage";
 import interceptor from "../../utils/interceptor";
 import { useDisableConfig } from "../../utils/dissableConfigContext";
 
-import { getIsStaff } from "./datatablesourse";
-
 const TabbedPane = () => {
     const instance = interceptor();
 
@@ -68,7 +66,7 @@ const TabbedPane = () => {
     };
 
     return (
-        <div className="zoom">
+        <div className="zoom" >
             <div className="listContainer">
                 Device :
                 <select value={deviceIP} onChange={handleDeviceChange}>
@@ -79,7 +77,7 @@ const TabbedPane = () => {
                     ))}
                 </select>
                 &nbsp; &nbsp;
-                <button type="button" disabled={!getIsStaff()} onClick={onUndo}>
+                <button type="button" onClick={onUndo}>
                     Undo Changes
                 </button>
             </div>

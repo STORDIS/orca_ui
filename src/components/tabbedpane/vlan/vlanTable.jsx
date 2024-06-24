@@ -11,7 +11,6 @@ import VlanMemberForm from "./vlanMemberForm";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
-import { useDisableTable } from "../../../utils/dissableTableContext";
 import { getIsStaff } from "../datatablesourse";
 
 const VlanTable = (props) => {
@@ -30,13 +29,9 @@ const VlanTable = (props) => {
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
-    const { disableTable, setDisableTable } = useDisableTable();
-    const [columnData, setcolumnData] = useState(vlanColumns);
-
     useEffect(() => {
         getVlans();
-        setTableData();
-    }, [selectedDeviceIp, disableTable]);
+    }, [selectedDeviceIp]);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -66,6 +61,7 @@ const VlanTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
+                console.log(res.data);
                 res?.data?.forEach((element) => {
                     element.mem_ifs = JSON.stringify(element.mem_ifs);
                 });
@@ -116,7 +112,6 @@ const VlanTable = (props) => {
                 setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
-                setDisableTable(false);
                 setSelectedRows([]);
                 setTimeout(resetConfigStatus, 5000);
             });
@@ -128,7 +123,6 @@ const VlanTable = (props) => {
 
     const handleFormSubmit = (formData, status) => {
         setDisableConfig(true);
-        setDisableTable(true);
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
         instance
@@ -146,8 +140,6 @@ const VlanTable = (props) => {
                 // getVlans();
                 setLog(true);
                 setDisableConfig(false);
-                setDisableTable(false);
-
                 setSelectedRows([]);
                 setTimeout(resetConfigStatus, 5000);
             });
@@ -324,7 +316,7 @@ const VlanTable = (props) => {
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
-                        columnDefs={columnData}
+                        columnDefs={vlanColumns}
                         defaultColDef={defaultColDef}
                         onCellValueChanged={handleCellValueChanged}
                         rowSelection="multiple"
