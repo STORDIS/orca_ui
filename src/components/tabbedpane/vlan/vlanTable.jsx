@@ -23,7 +23,7 @@ const VlanTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState("null");
+    const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -59,15 +59,9 @@ const VlanTable = (props) => {
             });
     };
 
-    const defaultColDef = {
-        tooltipValueGetter: (params) => {
-            return params.value;
-        },
-        resizable: true,
-    };
-
     const deleteVlan = () => {
         setDisableConfig(true);
+        setConfigStatus("Config In Progress....");
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
         const deleteData = selectedRows.map((rowData) => ({
@@ -87,74 +81,37 @@ const VlanTable = (props) => {
                     setDataTable(updatedDataTable);
                 }
                 setSelectedRows([]);
-                setModalContent("Vlan Delete Successfully.");
             })
-            .catch((err) => {
-                setModalContent("Error in Deleting Vlan.");
-            })
+            .catch((err) => {})
             .finally(() => {
-                setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
+                refreshData();
             });
-    };
-
-    const resetConfigStatus = () => {
-        setConfigStatus("");
     };
 
     const handleFormSubmit = (formData, status) => {
         setDisableConfig(true);
+        setConfigStatus("Config In Progress....");
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
         instance
             .put(apiMUrl, formData)
-            .then(() => {
-                setIsMessageModalOpen("message");
-                getMessageForApi(status + " Success");
-            })
-            .catch(() => {
-                setIsMessageModalOpen("message");
-                getMessageForApi(status + " Error");
-            })
+            .then(() => {})
+            .catch(() => {})
             .finally(() => {
-                // getVlans();
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
+                refreshData();
             });
     };
 
-    const getMessageForApi = (status) => {
-        switch (status) {
-            case "Add Success":
-                setModalContent("Vlan Added Successfully");
-                return;
-            case "Update Success":
-                setModalContent("Vlan Updated Successfully");
-                return;
-            case "Member Success":
-                setModalContent("Vlan Member Added Successfully");
-                return;
-            case "Add Error":
-                setModalContent("Error in Adding Vlan");
-                return;
-            case "Update Error":
-                setModalContent("Error in Updating Vlan");
-                return;
-            case "Member Error":
-                setModalContent("Error in Adding Vlan Member");
-                return;
-            default:
-                return "";
-        }
-    };
-
     const handleDelete = () => {
-        setIsMessageModalOpen("delete");
+        setIsModalOpen("delete");
 
         let nameArray = [];
         selectedRows.forEach((element) => {
@@ -163,13 +120,24 @@ const VlanTable = (props) => {
         setModalContent("Do you want to delete Vlan with id " + nameArray);
     };
 
+    const resetConfigStatus = () => {
+        setConfigStatus("");
+    };
+
+    const defaultColDef = {
+        tooltipValueGetter: (params) => {
+            return params.value;
+        },
+        resizable: true,
+    };
+
     const refreshData = () => {
         getVlans();
-        setIsMessageModalOpen("null");
+        setIsModalOpen("null");
     };
 
     const openAddFormModal = () => {
-        setIsMessageModalOpen("add");
+        setIsModalOpen("add");
     };
 
     const onSelectionChanged = () => {
@@ -247,7 +215,7 @@ const VlanTable = (props) => {
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mem_ifs") {
-            setIsMessageModalOpen("addMember");
+            setIsModalOpen("addMember");
         }
     }, []);
 
@@ -298,11 +266,12 @@ const VlanTable = (props) => {
                         stopEditingWhenCellsLoseFocus={true}
                         onCellClicked={onCellClicked}
                         domLayout={"autoHeight"}
+                        suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
 
                 {/* model for adding vlan */}
-                {isMessageModalOpen === "add" && (
+                {isModalOpen === "add" && (
                     <Modal show={true} onClose={refreshData} title={"Add Vlan"}>
                         <VlanForm
                             onSubmit={(e) => handleFormSubmit(e, "Add")}
@@ -313,7 +282,7 @@ const VlanTable = (props) => {
                     </Modal>
                 )}
                 {/* model for adding interfaces */}
-                {isMessageModalOpen === "addMember" && (
+                {isModalOpen === "addMember" && (
                     <Modal
                         show={true}
                         onClose={refreshData}
@@ -330,7 +299,7 @@ const VlanTable = (props) => {
                 )}
 
                 {/* model for delete confirmation message */}
-                {isMessageModalOpen === "delete" && (
+                {isModalOpen === "delete" && (
                     <Modal show={true}>
                         <div>
                             {modalContent}
@@ -353,30 +322,6 @@ const VlanTable = (props) => {
                                     onClick={refreshData}
                                 >
                                     No
-                                </button>
-                            </div>
-                        </div>
-                    </Modal>
-                )}
-
-                {/* model for showing messages*/}
-                {isMessageModalOpen === "message" && (
-                    <Modal show={true}>
-                        <div>
-                            {modalContent}
-                            <div
-                                style={{
-                                    marginTop: "10px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    gap: "10px",
-                                }}
-                            >
-                                <button
-                                    className="btnStyle"
-                                    onClick={refreshData}
-                                >
-                                    Close
                                 </button>
                             </div>
                         </div>
