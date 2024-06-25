@@ -22,7 +22,7 @@ const VlanTable = (props) => {
 
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [changes, setChanges] = useState({});
+    const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
@@ -47,11 +47,21 @@ const VlanTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
-                res?.data?.forEach((element) => {
-                    element.mem_ifs = JSON.stringify(element.mem_ifs);
+                let tableData = res.data.map((data) => {
+                    data.mem_ifs = JSON.stringify(data.mem_ifs);
+
+                    if (data.autostate === null) {
+                        data.autostate = "disable";
+                    }
+
+                    return data;
                 });
 
-                setDataTable(res.data);
+                // res?.data?.forEach((element) => {
+                //     element.mem_ifs = JSON.stringify(element.mem_ifs);
+                // });
+
+                setDataTable(tableData);
             })
             .catch((err) => {
                 console.log(err);
@@ -198,8 +208,10 @@ const VlanTable = (props) => {
                 mgt_ip: selectedDeviceIp,
                 mem_ifs: getMembers(params.data.mem_ifs),
             };
-            console.log(payload.autostate);
-            setChanges(payload);
+
+            setChanges((prevChanges) => {
+                return [...prevChanges, payload];
+            });
         }
     }, []);
 
@@ -217,6 +229,7 @@ const VlanTable = (props) => {
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
+        setSelectedRows(params.data);
     }, []);
 
     return (
@@ -281,7 +294,7 @@ const VlanTable = (props) => {
                         />
                     </Modal>
                 )}
-                
+
                 {/* model for adding interfaces */}
                 {isModalOpen === "addMember" && (
                     <Modal

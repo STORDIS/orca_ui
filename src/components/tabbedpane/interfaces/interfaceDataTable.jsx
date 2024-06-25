@@ -89,8 +89,9 @@ const InterfaceDataTable = (props) => {
                 adv_speeds: getAdvSpeed(params.data.adv_speeds),
                 mgt_ip: selectedDeviceIp,
             };
-            setChanges(payload);
-            console.log(payload);
+            setChanges((prevChanges) => {
+                return [...prevChanges, payload];
+            });
         }
     }, []);
 
