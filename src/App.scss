@@ -105,3 +105,9 @@
     overflow-y: auto !important;
     max-height: 70vh;
 }
+
+.resizable {
+    // background-color: red !important;
+    resize: vertical;
+    overflow: auto;
+}

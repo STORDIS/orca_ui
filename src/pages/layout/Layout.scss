@@ -1,9 +1,13 @@
 .mainContainer {
     display: flex;
 
-    .container {
-        flex: 6;
+    .sideBar {
+        width: 220px;
+    }
 
+    .container {
+        width: calc(100% - 200px);
+        
         .listContainer {
             padding: 15px;
             -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);

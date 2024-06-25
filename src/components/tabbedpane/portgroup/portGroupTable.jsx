@@ -13,7 +13,6 @@ import { useDisableConfig } from "../../../utils/dissableConfigContext";
 const PortGroupTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { selectedDeviceIp = "" } = props;
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [dataTable, setDataTable] = useState([]);
@@ -22,6 +21,26 @@ const PortGroupTable = (props) => {
     const instance = interceptor();
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
+
+    const selectedDeviceIp = props.selectedDeviceIp;
+
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            setDataTable([]);
+            setOriginalData([]);
+
+            const apiMUrl = getPortGroupsURL(selectedDeviceIp);
+            instance
+                .get(apiMUrl)
+                .then((res) => {
+                    setDataTable(res.data);
+                    setOriginalData(JSON.parse(JSON.stringify(res.data)));
+                })
+                .catch((err) => console.log(err));
+        }
+        props.reset(false);
+    }, [props.refresh]);
 
     useEffect(() => {
         setChanges([]);
@@ -33,6 +52,7 @@ const PortGroupTable = (props) => {
             .get(apiMUrl)
             .then((res) => {
                 setDataTable(res.data);
+
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
             .catch((err) => console.log(err));
@@ -76,6 +96,11 @@ const PortGroupTable = (props) => {
         [dataTable]
     );
 
+    const resetConfigStatus = () => {
+        setConfigStatus("");
+        setChanges([]);
+    };
+
     const createReqJson = useCallback(() => {
         return changes.map((change) => ({
             mgt_ip: selectedDeviceIp,
@@ -96,14 +121,11 @@ const PortGroupTable = (props) => {
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         instance
             .put(apiUrl, req_json)
-            .then((res) => {
-                setConfigStatus("Config Successful");
-            })
-            .catch((err) => {
-                setConfigStatus("Config Failed");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
                 setChanges([]);
+                resetConfigStatus();
                 setLog(true);
                 setDisableConfig(false);
             });
@@ -111,27 +133,21 @@ const PortGroupTable = (props) => {
 
     return (
         <div className="datatable">
-            <button
-                type="button"
-                style={{ marginBottom: "15px" }}
-                onClick={sendUpdates}
-                disabled={disableConfig}
-                className="btnStyle"
-            >
-                Apply Config
-            </button>
-            <span
-                className={`config-status ${
-                    configStatus === "Config Successful"
-                        ? "config-successful"
-                        : configStatus === "Config Failed"
-                        ? "config-failed"
-                        : "config-in-progress"
-                }`}
-            >
-                {configStatus}
-            </span>
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div className="stickyButton">
+                <button
+                    type="button"
+                    onClick={sendUpdates}
+                    disabled={
+                        disableConfig || Object.keys(changes).length === 0
+                    }
+                    className="btnStyle"
+                >
+                    Apply Config
+                </button>
+                <span className="config-status">{configStatus}</span>
+            </div>
+
+            <div style={gridStyle} className="ag-theme-alpine pt-60">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -142,6 +158,7 @@ const PortGroupTable = (props) => {
                     checkboxSelection
                     enableCellTextSelection="true"
                     stopEditingWhenCellsLoseFocus={true}
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
         </div>

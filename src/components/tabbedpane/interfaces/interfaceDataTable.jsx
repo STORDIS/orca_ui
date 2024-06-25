@@ -15,7 +15,7 @@ const InterfaceDataTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { selectedDeviceIp = "" } = props;
+    const selectedDeviceIp = props.selectedDeviceIp;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
@@ -24,11 +24,20 @@ const InterfaceDataTable = (props) => {
 
     useEffect(() => {
         if (selectedDeviceIp) {
-            setInterfaceData();
+            getInterfaceData();
         }
     }, [selectedDeviceIp]);
 
-    const setInterfaceData = () => {
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getInterfaceData();
+            console.log("check");
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
+    const getInterfaceData = () => {
         setDataTable([]);
         setChanges([]);
 
@@ -95,18 +104,16 @@ const InterfaceDataTable = (props) => {
         instance
             .put(apiUrl, changes)
             .then((res) => {
-                setConfigStatus("Config Successful");
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             })
             .catch((err) => {
-                setConfigStatus("Config Failed");
-                setInterfaceData();
-                setTimeout(resetConfigStatus, 5000);
+                getInterfaceData();
+                resetConfigStatus();
             })
             .finally(() => {
                 setChanges([]);
                 setDataTable([]);
-                setInterfaceData();
+                getInterfaceData();
                 setLog(true);
                 setDisableConfig(false);
             });
@@ -114,27 +121,20 @@ const InterfaceDataTable = (props) => {
 
     return (
         <div className="datatable">
-            <button
-                onClick={sendUpdates}
-                disabled={disableConfig || Object.keys(changes).length === 0}
-                className="btnStyle"
-            >
-                Apply Config
-            </button>
-            <span
-                className={`config-status ${
-                    configStatus === "Config Successful"
-                        ? "config-successful"
-                        : configStatus === "Config Failed"
-                        ? "config-failed"
-                        : "config-in-progress"
-                }`}
-            >
-                {configStatus}
-            </span>
-            <p>&nbsp;</p>
+            <div className="stickyButton">
+                <button
+                    onClick={sendUpdates}
+                    disabled={
+                        disableConfig || Object.keys(changes).length === 0
+                    }
+                    className="btnStyle "
+                >
+                    Apply Config
+                </button>
+                <span className="config-status">{configStatus}</span>
+            </div>
 
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div style={gridStyle} className="ag-theme-alpine pt-60">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -143,6 +143,7 @@ const InterfaceDataTable = (props) => {
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
                     quickFilterText="Ethernet"
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
         </div>

@@ -18,7 +18,7 @@ const BGPTable = (props) => {
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
-    const { rows, columns, selectedDeviceIp = "" } = props;
+    const selectedDeviceIp = props.selectedDeviceIp;
 
     const [dataTable, setDataTable] = useState([]);
     const [showForm, setShowForm] = useState(false);
@@ -34,8 +34,15 @@ const BGPTable = (props) => {
         getBgp();
     }, [selectedDeviceIp]);
 
+    useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getBgp();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
     const getBgp = () => {
-        console.log("-----");
         setDataTable([]);
         const apiMUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
@@ -77,15 +84,14 @@ const BGPTable = (props) => {
 
         setDisableConfig(true);
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
+        setConfigStatus("Config In Progress....");
         instance
             .delete(apiPUrl, { data: output })
             .then((res) => {
                 setModalContent("BGP Deleted Successfully");
-                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error Deleting BGP");
-                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -93,23 +99,22 @@ const BGPTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
     const handleFormSubmit = (formData, status) => {
         console.log(formData, status);
         setDisableConfig(true);
+        setConfigStatus("Config In Progress....");
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
             .then((res) => {
                 setModalContent("Bgp " + status + "ed Successfully");
-                setConfigStatus("Config Successful");
             })
             .catch((err) => {
                 setModalContent("Error in " + status + "ing Bgp");
-                setConfigStatus("Config Failed");
             })
             .finally(() => {
                 setShowForm(false);
@@ -117,7 +122,7 @@ const BGPTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setIsMessageModalOpen(true);
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             });
     };
 
@@ -145,30 +150,26 @@ const BGPTable = (props) => {
 
     return (
         <div className="datatable">
-            <div className="button-group">
+            <div className="button-group stickyButton">
                 <div className="button-column">
                     <button
-                        disabled={disableConfig || Object.keys(changes).length === 0  }
+                        disabled={
+                            disableConfig || Object.keys(changes).length === 0
+                        }
                         className="btnStyle"
                         onClick={() => handleFormSubmit(changes, "Updat")}
                     >
                         Apply Config
                     </button>
-                    <span
-                        className={`config-status ${
-                            configStatus === "Config Successful"
-                                ? "config-successful"
-                                : configStatus === "Config Failed"
-                                ? "config-failed"
-                                : "config-in-progress"
-                        }`}
-                    >
-                        {configStatus}
-                    </span>
+                    <span className="config-status">{configStatus}</span>
                 </div>
 
                 <div className="">
-                    <button className="btnStyle" disabled={!getIsStaff()} onClick={openAddModal}>
+                    <button
+                        className="btnStyle"
+                        disabled={!getIsStaff()}
+                        onClick={openAddModal}
+                    >
                         Add BGP
                     </button>
 
@@ -182,7 +183,7 @@ const BGPTable = (props) => {
                 </div>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine">
+            <div style={gridStyle} className="ag-theme-alpine pt-60">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -195,6 +196,7 @@ const BGPTable = (props) => {
                     rowSelection="single"
                     onSelectionChanged={onSelectionChanged}
                     onCellValueChanged={handleCellValueChanged}
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 

@@ -66,7 +66,7 @@ const Datatable = (props) => {
     };
 
     const handleDeleteConfirmation = () => {
-        console.log("Delete", );
+        console.log("Delete");
         setDisableConfig(true);
         const apiPUrl = deleteDevicesURL();
         instance
@@ -93,6 +93,7 @@ const Datatable = (props) => {
                     onColumnResized={onColumnResized}
                     enableCellTextSelection="true"
                     onCellClicked={onCellClicked}
+                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 

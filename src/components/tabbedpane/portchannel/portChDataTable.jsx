@@ -22,20 +22,15 @@ const PortChDataTable = (props) => {
         () => ({ height: "90%", width: "100%", maxWidth: "100%" }),
         []
     );
-    const { selectedDeviceIp = "" } = props;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
-    const [showForm, setShowForm] = useState(false);
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
-    const [messageModalContent, setMessageModalContent] = useState("");
-    const [selectedRows, setSelectedRows] = useState([]);
 
-    const [isDeleteConfirmationModalOpen, setIsDeleteConfirmationModalOpen] =
-        useState(false);
-    const [modalTitle, setModalTitle] = useState("");
-    const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState("null");
+    const [modalContent, setModalContent] = useState("");
+
+    const [selectedRows, setSelectedRows] = useState([]);
     const [currentRowData, setCurrentRowData] = useState(null);
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [existingMembers, setExistingMembers] = useState([]);
@@ -45,7 +40,23 @@ const PortChDataTable = (props) => {
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
+    const selectedDeviceIp = props.selectedDeviceIp;
+
     useEffect(() => {
+        if (props.refresh && Object.keys(changes).length !== 0) {
+            setChanges([]);
+            getAllPortChanalData();
+            getInterfaces();
+        }
+        props.reset(false);
+    }, [props.refresh]);
+
+    useEffect(() => {
+        getInterfaces();
+        getAllPortChanalData();
+    }, [selectedDeviceIp]);
+
+    const getInterfaces = () => {
         instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((res) => {
@@ -55,9 +66,7 @@ const PortChDataTable = (props) => {
             .catch((error) =>
                 console.error("Failed to fetch interface names:", error)
             );
-
-        getAllPortChanalData();
-    }, [selectedDeviceIp]);
+    };
 
     const getAllPortChanalData = () => {
         setDataTable([]);
@@ -98,32 +107,12 @@ const PortChDataTable = (props) => {
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
             .catch((err) => {
-                console.error("Error fetching data:", err);
-                setMessageModalContent("Error fetching data: " + err.message);
-                setIsMessageModalOpen(true);
                 setDataTable([]);
                 setOriginalData([]);
             })
-            .finally(() => {});
-    };
-
-    const handleOkClick = () => {
-        setIsMessageModalOpen(false);
-        refreshData();
-    };
-
-    const promptDeleteConfirmation = () => {
-        setMessageModalContent(getDeleteConfirmationMessage());
-        setIsDeleteConfirmationModalOpen(true);
-    };
-
-    const handleDeleteConfirmation = () => {
-        setIsDeleteConfirmationModalOpen(false);
-        handleDelete();
-    };
-
-    const handleDeleteCancellation = () => {
-        setIsDeleteConfirmationModalOpen(false);
+            .finally(() => {
+                setIsModalOpen("null");
+            });
     };
 
     const handleFormSubmit = (formData) => {
@@ -132,22 +121,16 @@ const PortChDataTable = (props) => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
-            .then((res) => {
-                setMessageModalContent("Port Channel added Successfully");
-            })
-            .catch((err) => {
-                setMessageModalContent("Error adding port channel");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                setShowForm(false);
-                setIsMessageModalOpen(true);
                 setLog(true);
                 setDisableConfig(false);
                 refreshData();
             });
     };
 
-    const handleDelete = () => {
+    const deletePortchannel = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const deleteData = selectedRows.map((rowData) => ({
             mgt_ip: selectedDeviceIp,
@@ -167,8 +150,6 @@ const PortChDataTable = (props) => {
                     setDataTable(updatedDataTable);
                 }
                 setSelectedRows([]);
-                setMessageModalContent("Port Channel Deleted Successfully.");
-                setIsMessageModalOpen(true);
             })
             .catch((err) => {})
             .finally(() => {
@@ -181,10 +162,6 @@ const PortChDataTable = (props) => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data);
         setSelectedRows(selectedData);
-    };
-
-    const handleCancel = () => {
-        setShowForm(false);
     };
 
     const getDeleteConfirmationMessage = () => {
@@ -204,16 +181,6 @@ const PortChDataTable = (props) => {
 
         gridRef.current.api.deselectAll();
         setSelectedRows([]);
-    };
-
-    const openAddModal = () => {
-        setModalTitle("Add Port Channel");
-        setShowForm(true);
-    };
-
-    const openDeleteModal = () => {
-        setModalTitle("Delete Port Channel");
-        promptDeleteConfirmation();
     };
 
     const handleCellValueChanged = useCallback((params) => {
@@ -290,16 +257,15 @@ const PortChDataTable = (props) => {
         instance
             .put(apiPUrl, output)
             .then((res) => {
-                setConfigStatus("Config Successful");
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             })
             .catch((err) => {
-                setConfigStatus("Config Failed");
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             })
             .finally(() => {
                 setDisableConfig(false);
                 setLog(true);
+                refreshData();
             });
     }, [changes.length, createJsonOutput, selectedDeviceIp, instance]);
 
@@ -307,7 +273,7 @@ const PortChDataTable = (props) => {
         if (params?.colDef?.field === "members") {
             setCurrentRowData(params?.data);
             setExistingMembers(params?.data?.members);
-            setIsMemberModalOpen(true);
+            setIsModalOpen("addPortchannelMembers");
         }
     }, []);
 
@@ -325,26 +291,23 @@ const PortChDataTable = (props) => {
         instance
             .put(apiPUrl, output)
             .then((res) => {
-                setConfigStatus("Config Successful");
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             })
             .catch((err) => {
-                setConfigStatus("Config Failed");
-                setTimeout(resetConfigStatus, 5000);
+                resetConfigStatus();
             })
             .finally(() => {
                 getAllPortChanalData();
                 setLog(true);
                 setDisableConfig(false);
+                setIsModalOpen("null");
             });
-
-        setIsMemberModalOpen(false);
     };
 
     const handelDeleteMemeber = (e) => {
         setDisableConfig(true);
 
-        setIsMemberModalOpen(false);
+        setIsModalOpen("delete");
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const output = {
             mgt_ip: selectedDeviceIp,
@@ -365,23 +328,36 @@ const PortChDataTable = (props) => {
                     setDataTable(updatedDataTable);
                 }
                 setSelectedRows([]);
-                setMessageModalContent(
-                    "Port Channel Member Deleted Successfully."
-                );
-                setIsMessageModalOpen(true);
             })
             .catch((err) => {})
             .finally(() => {
                 refreshData();
                 setLog(true);
                 setDisableConfig(false);
+                setIsModalOpen("null");
             });
+    };
+
+    const openAddFormModal = () => {
+        setIsModalOpen("addPortchannel");
+    };
+
+    const handleDelete = () => {
+        setIsModalOpen("deletePortChannel");
+
+        let nameArray = [];
+        selectedRows.forEach((element) => {
+            nameArray.push(element.lag_name + " ");
+        });
+        setModalContent(
+            "Do you want to delete Portchannel with id " + nameArray
+        );
     };
 
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group">
+                <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
                             onClick={sendUpdates}
@@ -393,48 +369,26 @@ const PortChDataTable = (props) => {
                         >
                             Apply Config
                         </button>
-                        <span
-                            className={`config-status ${
-                                configStatus === "Config Successful"
-                                    ? "config-successful"
-                                    : configStatus === "Config Failed"
-                                    ? "config-failed"
-                                    : "config-in-progress"
-                            }`}
-                        >
-                            {configStatus}
-                        </span>
+                        <span className="config-status">{configStatus}</span>
                     </div>
 
                     <button
                         className="btnStyle"
                         disabled={!getIsStaff()}
-                        onClick={openAddModal}
+                        onClick={openAddFormModal}
                     >
                         Add Port Channel
                     </button>
                     <button
                         className="btnStyle"
-                        onClick={openDeleteModal}
+                        onClick={handleDelete}
                         disabled={selectedRows.length === 0}
                     >
                         Delete Selected Port Channel
                     </button>
                 </div>
-                <Modal
-                    show={showForm}
-                    onClose={() => setShowForm(false)}
-                    title={modalTitle}
-                >
-                    <PortChannelForm
-                        onSubmit={handleFormSubmit}
-                        selectedDeviceIp={selectedDeviceIp}
-                        onCancel={handleCancel}
-                        handelSubmitButton={disableConfig}
-                    />
-                </Modal>
 
-                <div style={gridStyle} className="ag-theme-alpine">
+                <div style={gridStyle} className="ag-theme-alpine pt-60">
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
@@ -447,75 +401,32 @@ const PortChDataTable = (props) => {
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}
                         stopEditingWhenCellsLoseFocus={true}
+                        domLayout={"autoHeight"}
+                        suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
-                {isDeleteConfirmationModalOpen && (
+
+                {/* add port channel */}
+                {isModalOpen === "addPortchannel" && (
                     <Modal
-                        show={isDeleteConfirmationModalOpen}
-                        onClose={handleDeleteCancellation}
+                        show={true}
+                        onClose={refreshData}
+                        title={"Add Port Channel"}
                     >
-                        <div>
-                            <p>{messageModalContent}</p>
-                            <button
-                                className="btnStyle mt-10 mr-10"
-                                onClick={handleDeleteConfirmation}
-                            >
-                                Yes
-                            </button>
-                            <button
-                                className="btnStyle mt-10"
-                                onClick={handleDeleteCancellation}
-                            >
-                                No
-                            </button>
-                        </div>
+                        <PortChannelForm
+                            onSubmit={handleFormSubmit}
+                            selectedDeviceIp={selectedDeviceIp}
+                            onCancel={refreshData}
+                            handelSubmitButton={disableConfig}
+                        />
                     </Modal>
                 )}
 
-                {isMessageModalOpen && (
+                {/* member selection */}
+                {isModalOpen === "addPortchannelMembers" && (
                     <Modal
-                        show={isMessageModalOpen}
-                        onClose={() => setIsMessageModalOpen(false)}
-                    >
-                        <div>
-                            {messageModalContent}
-                            <button
-                                className="btnStyle"
-                                onClick={() => setIsMessageModalOpen(false)}
-                            >
-                                OK
-                            </button>
-                        </div>
-                    </Modal>
-                )}
-                {isMessageModalOpen && (
-                    <Modal show={isMessageModalOpen}>
-                        <div>
-                            {messageModalContent}
-                            <div
-                                style={{
-                                    marginTop: "10px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    gap: "10px",
-                                }}
-                            >
-                                <button onClick={handleOkClick}>OK</button>
-                                <button
-                                    className="btnStyle"
-                                    onClick={() => setIsMessageModalOpen(false)}
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    </Modal>
-                )}
-
-                {isMemberModalOpen && (
-                    <Modal
-                        show={isMemberModalOpen}
-                        onClose={() => setIsMemberModalOpen(false)}
+                        show={true}
+                        onClose={refreshData}
                         title="Select Member Interfaces"
                     >
                         <MembersSelection
@@ -524,10 +435,39 @@ const PortChDataTable = (props) => {
                             onDeleteMember={handelDeleteMemeber}
                             onSave={(selectedMembers) => {
                                 handleMembersSave(selectedMembers);
-                                setIsMemberModalOpen(false);
                             }}
-                            onCancel={() => setIsMemberModalOpen(false)}
+                            onCancel={refreshData}
                         />
+                    </Modal>
+                )}
+
+                {/* model for delete confirmation message */}
+                {isModalOpen === "deletePortChannel" && (
+                    <Modal show={true}>
+                        <div>
+                            {modalContent}
+                            <div
+                                style={{
+                                    marginTop: "10px",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: "10px",
+                                }}
+                            >
+                                <button
+                                    className="btnStyle"
+                                    onClick={deletePortchannel}
+                                >
+                                    Yes
+                                </button>
+                                <button
+                                    className="btnStyle"
+                                    onClick={refreshData}
+                                >
+                                    No
+                                </button>
+                            </div>
+                        </div>
                     </Modal>
                 )}
             </div>
