@@ -52,6 +52,7 @@ const PortGroupTable = (props) => {
             .get(apiMUrl)
             .then((res) => {
                 setDataTable(res.data);
+
                 setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
             .catch((err) => console.log(err));
@@ -135,9 +136,10 @@ const PortGroupTable = (props) => {
             <div className="stickyButton">
                 <button
                     type="button"
-                    style={{ marginBottom: "15px" }}
                     onClick={sendUpdates}
-                    disabled={disableConfig}
+                    disabled={
+                        disableConfig || Object.keys(changes).length === 0
+                    }
                     className="btnStyle"
                 >
                     Apply Config

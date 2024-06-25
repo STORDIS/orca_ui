@@ -168,7 +168,13 @@ export const interfaceColumns = [
 ];
 
 export const portGroupColumns = [
-    { field: "port_group_id", headerName: "ID", width: 130, sortable: true },
+    {
+        field: "port_group_id",
+        headerName: "ID",
+        width: 75,
+        sortable: true,
+        comparator: (valueA, valueB) => valueA - valueB
+    },
     {
         field: "speed",
         headerName: "Speed",
