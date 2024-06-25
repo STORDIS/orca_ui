@@ -57,10 +57,6 @@ const VlanTable = (props) => {
                     return data;
                 });
 
-                // res?.data?.forEach((element) => {
-                //     element.mem_ifs = JSON.stringify(element.mem_ifs);
-                // });
-
                 setDataTable(tableData);
             })
             .catch((err) => {
