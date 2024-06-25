@@ -139,6 +139,7 @@ const VlanTable = (props) => {
 
     const refreshData = () => {
         getVlans();
+        setChanges([]);
         setIsModalOpen("null");
     };
 
@@ -199,17 +200,35 @@ const VlanTable = (props) => {
             return;
         }
         if (params.newValue !== params.oldValue) {
-            let payload = {
-                ...params.data,
-                mgt_ip: selectedDeviceIp,
-                mem_ifs: getMembers(params.data.mem_ifs),
-            };
 
-            setChanges((prevChanges) => {
-                return [...prevChanges, payload];
+            setChanges((prev) => {
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.vlanid === params.data.vlanid
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
+                        (val) => val.vlanid === params.data.vlanid
+                    );
+                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    latestChanges = [...prev];
+                } else {
+                    latestChanges = [
+                        ...prev,
+                        {
+                            mgt_ip: selectedDeviceIp,
+                            name: params.data.name,
+                            vlanid: params.data.vlanid,
+                            [params.colDef.field]: params.newValue || "",
+                        },
+                    ];
+                }
+                return latestChanges;
             });
         }
     }, []);
+
+    console.log(changes);
 
     const getMembers = (params) => {
         let temp = JSON.parse(params);
@@ -234,10 +253,7 @@ const VlanTable = (props) => {
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
-                            disabled={
-                                disableConfig ||
-                                Object.keys(changes).length === 0
-                            }
+                            disabled={disableConfig || changes.length === 0}
                             className="btnStyle"
                             onClick={() => handleFormSubmit(changes, "Update")}
                         >
