@@ -50,7 +50,16 @@ const McLagDataTable = (props) => {
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
-            .then((res) => setDataTable(res.data))
+            .then((res) => { 
+                
+                let tableData = res.data.map((data) => {
+                    if (data.fast_convergence == null){
+                        data.fast_convergence = "disable"
+                    }
+                    return data
+                })
+                setDataTable(tableData)
+            })
             .catch((err) => console.log(err));
     };
 

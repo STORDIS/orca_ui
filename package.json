@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
     "@mui/material": "^5.13.0",
     "ag-grid-community": "^30.0.3",
     "ag-grid-react": "^30.2.1",
@@ -10,6 +12,7 @@
     "chroma-js": "^2.4.2",
     "graphology": "^0.25.4",
     "graphology-layout-force": "^0.2.4",
+    "node-sass": "^9.0.0",
     "react": "^18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
