@@ -200,7 +200,6 @@ const VlanTable = (props) => {
             return;
         }
         if (params.newValue !== params.oldValue) {
-
             setChanges((prev) => {
                 let latestChanges;
                 let isNameExsits = prev.filter(
@@ -229,16 +228,6 @@ const VlanTable = (props) => {
     }, []);
 
     console.log(changes);
-
-    const getMembers = (params) => {
-        let temp = JSON.parse(params);
-
-        if (Object.keys(temp).length > 0) {
-            return temp;
-        } else {
-            return {};
-        }
-    };
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mem_ifs") {

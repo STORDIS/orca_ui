@@ -84,15 +84,6 @@ const InterfaceDataTable = (props) => {
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
-            // let payload = {
-            //     ...params.data,
-            //     adv_speeds: getAdvSpeed(params.data.adv_speeds),
-            //     mgt_ip: selectedDeviceIp,
-            // };
-            // setChanges((prevChanges) => {
-            //     return [...prevChanges, payload];
-            // });
-
             setChanges((prev) => {
                 let latestChanges;
                 let isNameExsits = prev.filter(
@@ -134,7 +125,6 @@ const InterfaceDataTable = (props) => {
                         ];
                     }
                 }
-                console.log(latestChanges);
 
                 return latestChanges;
             });
