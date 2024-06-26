@@ -26,15 +26,12 @@ const PortChDataTable = (props) => {
     );
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
-    const [originalData, setOriginalData] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
 
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
 
     const [selectedRows, setSelectedRows] = useState([]);
-    const [currentRowData, setCurrentRowData] = useState(null);
-    const [existingMembers, setExistingMembers] = useState([]);
 
     const instance = interceptor();
 
@@ -57,7 +54,6 @@ const PortChDataTable = (props) => {
 
     const getAllPortChanalData = () => {
         setDataTable([]);
-        setOriginalData([]);
         setChanges([]);
 
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
@@ -65,12 +61,21 @@ const PortChDataTable = (props) => {
             .get(apiPUrl)
             .then((res) => {
                 let data = res.data;
-                data &&
-                    data.map(
-                        (val) => (val["members"] = val["members"].toString())
-                    );
+                // data &&
+                //     data.map(
+                //         (val) => (val["members"] = val["members"].toString())
+                //     );
+
+                // let data = res.data.map((item) => {
+                //     item.fallback = item.fallback || false;
+                //     item.static = item.static || false;
+                //     item.fallback = item.fallback || false;
+                //     item.fast_rate = item.fast_rate || false;
+                //     return item;
+                // });
+                // console.log(data);
+
                 setDataTable(data);
-                setOriginalData(JSON.parse(JSON.stringify(data)));
             })
             .catch((err) => {
                 console.log(err);
@@ -86,20 +91,8 @@ const PortChDataTable = (props) => {
 
     const refreshData = () => {
         setDataTable([]);
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
-            .then((res) => {
-                setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
-            })
-            .catch((err) => {
-                setDataTable([]);
-                setOriginalData([]);
-            })
-            .finally(() => {
-                setIsModalOpen("null");
-            });
+        getAllPortChanalData();
+        setIsModalOpen("null")
     };
 
     const deletePortchannel = () => {
@@ -174,6 +167,7 @@ const PortChDataTable = (props) => {
                     latestChanges = [
                         ...prev,
                         {
+                            mgt_ip: selectedDeviceIp,
                             lag_name: params.data.lag_name,
                             [params.colDef.field]: params.newValue,
                         },
@@ -194,9 +188,9 @@ const PortChDataTable = (props) => {
     const handleFormSubmit = (formData) => {
         setDisableConfig(true);
 
-        formData.forEach((obj) => {
-            obj.mgt_ip = selectedDeviceIp;
-        });
+        // formData.forEach((obj) => {
+        //     obj.mgt_ip = selectedDeviceIp;
+        // });
 
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
 
