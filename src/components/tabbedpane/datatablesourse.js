@@ -509,6 +509,26 @@ export const mclagColumns = [
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
+    {
+        field: "fast_convergence",
+        headerName: "Fast Convergence",
+        width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: ["enable", "disable"],
+        },
+    },
+    {
+        field: "session_vrf",
+        headerName: "session vrf",
+        width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+    },
 ];
 
 export const bgpColumns = [
