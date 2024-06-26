@@ -521,6 +521,14 @@ export const mclagColumns = [
             values: ["enable", "disable"],
         },
     },
+    {
+        field: "session_vrf",
+        headerName: "session vrf",
+        width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+    },
 ];
 
 export const bgpColumns = [
