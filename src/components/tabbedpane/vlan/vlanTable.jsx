@@ -22,7 +22,7 @@ const VlanTable = (props) => {
 
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [changes, setChanges] = useState({});
+    const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
@@ -47,11 +47,17 @@ const VlanTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
-                res?.data?.forEach((element) => {
-                    element.mem_ifs = JSON.stringify(element.mem_ifs);
+                let tableData = res.data.map((data) => {
+                    data.mem_ifs = JSON.stringify(data.mem_ifs);
+
+                    if (data.autostate === null) {
+                        data.autostate = "disable";
+                    }
+
+                    return data;
                 });
 
-                setDataTable(res.data);
+                setDataTable(tableData);
             })
             .catch((err) => {
                 console.log(err);
@@ -133,6 +139,7 @@ const VlanTable = (props) => {
 
     const refreshData = () => {
         getVlans();
+        setChanges([]);
         setIsModalOpen("null");
     };
 
@@ -193,30 +200,40 @@ const VlanTable = (props) => {
             return;
         }
         if (params.newValue !== params.oldValue) {
-            let payload = {
-                ...params.data,
-                mgt_ip: selectedDeviceIp,
-                mem_ifs: getMembers(params.data.mem_ifs),
-            };
-            console.log(payload.autostate);
-            setChanges(payload);
+            setChanges((prev) => {
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.vlanid === params.data.vlanid
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
+                        (val) => val.vlanid === params.data.vlanid
+                    );
+                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    latestChanges = [...prev];
+                } else {
+                    latestChanges = [
+                        ...prev,
+                        {
+                            mgt_ip: selectedDeviceIp,
+                            name: params.data.name,
+                            vlanid: params.data.vlanid,
+                            [params.colDef.field]: params.newValue || "",
+                        },
+                    ];
+                }
+                return latestChanges;
+            });
         }
     }, []);
 
-    const getMembers = (params) => {
-        let temp = JSON.parse(params);
-
-        if (Object.keys(temp).length > 0) {
-            return temp;
-        } else {
-            return {};
-        }
-    };
+    console.log(changes);
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
+        setSelectedRows(params.data);
     }, []);
 
     return (
@@ -225,10 +242,7 @@ const VlanTable = (props) => {
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
-                            disabled={
-                                disableConfig ||
-                                Object.keys(changes).length === 0
-                            }
+                            disabled={disableConfig || changes.length === 0}
                             className="btnStyle"
                             onClick={() => handleFormSubmit(changes, "Update")}
                         >
@@ -281,7 +295,7 @@ const VlanTable = (props) => {
                         />
                     </Modal>
                 )}
-                
+
                 {/* model for adding interfaces */}
                 {isModalOpen === "addMember" && (
                     <Modal

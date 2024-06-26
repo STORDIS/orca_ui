@@ -25,8 +25,8 @@ const VlanMemberForm = ({
 
         let dataToSubmit = {
             mgt_ip: selectedDeviceIp,
-            name: inputData[0].name,
-            vlanid: inputData[0].vlanid,
+            name: inputData.name,
+            vlanid: inputData.vlanid,
             mem_ifs: selectedInterfaces,
         };
 
@@ -91,13 +91,13 @@ const VlanMemberForm = ({
     const handleRemove = (key) => {
         setDisableConfig(true);
 
-        let input_mem_if = JSON.parse(inputData[0].mem_ifs);
+        let input_mem_if = JSON.parse(inputData.mem_ifs);
 
         if (input_mem_if.hasOwnProperty(key)) {
             let dataToSubmit = {
                 mgt_ip: selectedDeviceIp,
-                name: inputData[0].name,
-                vlanid: inputData[0].vlanid,
+                name: inputData.name,
+                vlanid: inputData.vlanid,
                 mem_ifs: { [key]: selectedInterfaces[key] },
             };
 
@@ -127,7 +127,10 @@ const VlanMemberForm = ({
     };
 
     useEffect(() => {
-        let input_mem_if = JSON.parse(inputData[0].mem_ifs);
+
+        console.log(inputData)
+
+        let input_mem_if = JSON.parse(inputData.mem_ifs);
 
         if (Object.keys(input_mem_if).length !== 0) {
             setSelectedInterfaces(input_mem_if);

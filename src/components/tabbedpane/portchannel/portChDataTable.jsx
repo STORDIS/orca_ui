@@ -99,6 +99,7 @@ const PortChDataTable = (props) => {
     };
 
     const refreshData = () => {
+        setDataTable([]);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiPUrl)
@@ -164,16 +165,7 @@ const PortChDataTable = (props) => {
         setSelectedRows(selectedData);
     };
 
-    const getDeleteConfirmationMessage = () => {
-        if (selectedRows.length === 1) {
-            return `Are you sure you want to delete ${selectedRows[0].lag_name}?`;
-        } else if (selectedRows.length > 1) {
-            const lagNames = selectedRows.map((row) => row.lag_name).join(", ");
-            return `Are you sure you want to delete these port channels: ${lagNames}?`;
-        } else {
-            return "No port channel selected.";
-        }
-    };
+
 
     const resetConfigStatus = () => {
         setConfigStatus("");

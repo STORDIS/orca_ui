@@ -84,13 +84,50 @@ const InterfaceDataTable = (props) => {
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
-            let payload = {
-                ...params.data,
-                adv_speeds: getAdvSpeed(params.data.adv_speeds),
-                mgt_ip: selectedDeviceIp,
-            };
-            setChanges(payload);
-            console.log(payload);
+            setChanges((prev) => {
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.name === params.data.name
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
+                        (val) => val.name === params.data.name
+                    );
+                    if (params.colDef.field === "adv_speeds") {
+                        prev[existedIndex][params.colDef.field] = getAdvSpeed(
+                            params.newValue
+                        );
+                    } else {
+                        prev[existedIndex][params.colDef.field] =
+                            params.newValue;
+                    }
+                    latestChanges = [...prev];
+                } else {
+                    if (params.colDef.field === "adv_speeds") {
+                        latestChanges = [
+                            ...prev,
+                            {
+                                name: params.data.name,
+                                mgt_ip: selectedDeviceIp,
+                                [params.colDef.field]: getAdvSpeed(
+                                    params.data.adv_speeds
+                                ),
+                            },
+                        ];
+                    } else {
+                        latestChanges = [
+                            ...prev,
+                            {
+                                name: params.data.name,
+                                mgt_ip: selectedDeviceIp,
+                                [params.colDef.field]: params.newValue,
+                            },
+                        ];
+                    }
+                }
+
+                return latestChanges;
+            });
         }
     }, []);
 
