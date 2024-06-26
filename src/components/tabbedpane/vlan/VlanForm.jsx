@@ -11,7 +11,6 @@ const VlanForm = ({
     onSubmit,
     selectedDeviceIp,
     onCancel,
-    handelSubmitButton,
 }) => {
     const instance = interceptor();
     const { disableConfig, setDisableConfig } = useDisableConfig();

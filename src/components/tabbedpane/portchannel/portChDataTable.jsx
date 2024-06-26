@@ -1,19 +1,21 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import "../tabbedPaneTable.scss";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import Modal from "../../modal/Modal";
+
 import { portChannelColumns } from "../datatablesourse";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
 } from "../../../utils/backend_rest_urls";
-import PortChannelForm from "./PortChannelForm";
-import Modal from "../../modal/Modal";
-import MembersSelection from "./MembersSelection";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import PortChannelForm from "./PortChannelForm";
+import PortChMemberForm from "./portChMemberForm";
+import "../tabbedPaneTable.scss";
+
 import { getIsStaff } from "../datatablesourse";
 
 const PortChDataTable = (props) => {
@@ -32,7 +34,6 @@ const PortChDataTable = (props) => {
 
     const [selectedRows, setSelectedRows] = useState([]);
     const [currentRowData, setCurrentRowData] = useState(null);
-    const [interfaceNames, setInterfaceNames] = useState([]);
     const [existingMembers, setExistingMembers] = useState([]);
 
     const instance = interceptor();
@@ -46,27 +47,13 @@ const PortChDataTable = (props) => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getAllPortChanalData();
-            getInterfaces();
         }
         props.reset(false);
     }, [props.refresh]);
 
     useEffect(() => {
-        getInterfaces();
         getAllPortChanalData();
     }, [selectedDeviceIp]);
-
-    const getInterfaces = () => {
-        instance
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((res) => {
-                const names = res.data.map((item) => item.name);
-                setInterfaceNames(names);
-            })
-            .catch((error) =>
-                console.error("Failed to fetch interface names:", error)
-            );
-    };
 
     const getAllPortChanalData = () => {
         setDataTable([]);
@@ -78,7 +65,6 @@ const PortChDataTable = (props) => {
             .get(apiPUrl)
             .then((res) => {
                 let data = res.data;
-
                 data &&
                     data.map(
                         (val) => (val["members"] = val["members"].toString())
@@ -116,21 +102,6 @@ const PortChDataTable = (props) => {
             });
     };
 
-    const handleFormSubmit = (formData) => {
-        setDisableConfig(true);
-
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .put(apiPUrl, formData)
-            .then((res) => {})
-            .catch((err) => {})
-            .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
-                refreshData();
-            });
-    };
-
     const deletePortchannel = () => {
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const deleteData = selectedRows.map((rowData) => ({
@@ -164,8 +135,6 @@ const PortChDataTable = (props) => {
         const selectedData = selectedNodes.map((node) => node.data);
         setSelectedRows(selectedData);
     };
-
-
 
     const resetConfigStatus = () => {
         setConfigStatus("");
@@ -215,73 +184,24 @@ const PortChDataTable = (props) => {
         }
     }, []);
 
-    const createJsonOutput = useCallback(() => {
-        let output = changes.map((change) => {
-            let members = change.members;
-            if (
-                Array.isArray(members) &&
-                members.length > 0 &&
-                Array.isArray(members[0])
-            ) {
-                members = members.flat();
-            }
-
-            return {
-                mgt_ip: selectedDeviceIp,
-                lag_name: change.lag_name,
-                ...change,
-                members,
-            };
-        });
-
-        return output;
-    }, [selectedDeviceIp, changes]);
-
-    const sendUpdates = useCallback(() => {
-        if (changes.length === 0) {
-            return;
-        }
-        setDisableConfig(true);
-        setConfigStatus("Config In Progress....");
-
-        const output = createJsonOutput();
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .put(apiPUrl, output)
-            .then((res) => {
-                resetConfigStatus();
-            })
-            .catch((err) => {
-                resetConfigStatus();
-            })
-            .finally(() => {
-                setDisableConfig(false);
-                setLog(true);
-                refreshData();
-            });
-    }, [changes.length, createJsonOutput, selectedDeviceIp, instance]);
-
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "members") {
-            setCurrentRowData(params?.data);
-            setExistingMembers(params?.data?.members);
             setIsModalOpen("addPortchannelMembers");
         }
+        setSelectedRows(params.data);
     }, []);
 
-    const handleMembersSave = (selectedMembers) => {
+    const handleFormSubmit = (formData) => {
         setDisableConfig(true);
 
-        const output = {
-            mgt_ip: selectedDeviceIp,
-            members: selectedMembers,
-            lag_name: currentRowData.lag_name,
-        };
+        formData.forEach((obj) => {
+            obj.mgt_ip = selectedDeviceIp;
+        });
 
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
 
         instance
-            .put(apiPUrl, output)
+            .put(apiPUrl, formData)
             .then((res) => {
                 resetConfigStatus();
             })
@@ -290,40 +210,6 @@ const PortChDataTable = (props) => {
             })
             .finally(() => {
                 getAllPortChanalData();
-                setLog(true);
-                setDisableConfig(false);
-                setIsModalOpen("null");
-            });
-    };
-
-    const handelDeleteMemeber = (e) => {
-        setDisableConfig(true);
-
-        setIsModalOpen("delete");
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        const output = {
-            mgt_ip: selectedDeviceIp,
-            members: e,
-            lag_name: currentRowData.lag_name,
-        };
-        instance
-            .delete(apiPUrl, { data: output })
-            .then((response) => {
-                if (response.data && Array.isArray(response.data.result)) {
-                    const updatedDataTable = dataTable.filter(
-                        (row) =>
-                            !selectedRows.some(
-                                (selectedRow) =>
-                                    selectedRow.lag_name === row.lag_name
-                            )
-                    );
-                    setDataTable(updatedDataTable);
-                }
-                setSelectedRows([]);
-            })
-            .catch((err) => {})
-            .finally(() => {
-                refreshData();
                 setLog(true);
                 setDisableConfig(false);
                 setIsModalOpen("null");
@@ -352,7 +238,7 @@ const PortChDataTable = (props) => {
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
-                            onClick={sendUpdates}
+                            onClick={() => handleFormSubmit(changes)}
                             disabled={
                                 disableConfig ||
                                 Object.keys(changes).length === 0
@@ -421,12 +307,11 @@ const PortChDataTable = (props) => {
                         onClose={refreshData}
                         title="Select Member Interfaces"
                     >
-                        <MembersSelection
-                            interfaceNames={interfaceNames}
-                            existingMembers={existingMembers}
-                            onDeleteMember={handelDeleteMemeber}
-                            onSave={(selectedMembers) => {
-                                handleMembersSave(selectedMembers);
+                        <PortChMemberForm
+                            selectedDeviceIp={selectedDeviceIp}
+                            inputData={selectedRows}
+                            onSubmit={(data) => {
+                                handleFormSubmit(data);
                             }}
                             onCancel={refreshData}
                         />

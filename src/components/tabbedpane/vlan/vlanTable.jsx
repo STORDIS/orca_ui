@@ -98,7 +98,7 @@ const VlanTable = (props) => {
             });
     };
 
-    const handleFormSubmit = (formData, status) => {
+    const handleFormSubmit = (formData) => {
         setDisableConfig(true);
         setConfigStatus("Config In Progress....");
 
@@ -227,7 +227,6 @@ const VlanTable = (props) => {
         }
     }, []);
 
-    console.log(changes);
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mem_ifs") {
@@ -244,7 +243,7 @@ const VlanTable = (props) => {
                         <button
                             disabled={disableConfig || changes.length === 0}
                             className="btnStyle"
-                            onClick={() => handleFormSubmit(changes, "Update")}
+                            onClick={() => handleFormSubmit(changes)}
                         >
                             Apply Config
                         </button>
@@ -288,10 +287,9 @@ const VlanTable = (props) => {
                 {isModalOpen === "add" && (
                     <Modal show={true} onClose={refreshData} title={"Add Vlan"}>
                         <VlanForm
-                            onSubmit={(e) => handleFormSubmit(e, "Add")}
+                            onSubmit={(e) => handleFormSubmit(e)}
                             selectedDeviceIp={selectedDeviceIp}
                             onCancel={refreshData}
-                            handelSubmitButton={disableConfig}
                         />
                     </Modal>
                 )}
@@ -304,11 +302,10 @@ const VlanTable = (props) => {
                         title="Select Interfaces"
                     >
                         <VlanMemberForm
-                            onSubmit={(e) => handleFormSubmit(e, "Member")}
+                            onSubmit={(e) => handleFormSubmit(e)}
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
                             onCancel={refreshData}
-                            handelSubmitButton={disableConfig}
                         />
                     </Modal>
                 )}
