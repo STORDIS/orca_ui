@@ -399,8 +399,8 @@ export const portChannelColumns = [
     },
     { field: "speed", headerName: "Speed", width: 130, sortable: true },
     {
-        field: "min_link",
-        headerName: "Min Link",
+        field: "min_links",
+        headerName: "Min Links",
         width: 130,
         sortable: true,
         cellDataType: "number",
