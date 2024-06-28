@@ -4,22 +4,22 @@
 
     .stickyButton {
         position: absolute;
-        z-index: 2;
+        z-index: 3;
         width: calc(100vw - 301px);
         background-color: white;
         padding-top: 15px;
         padding-bottom: 15px;
-        margin-top: -10px;
+        margin-top: -15px;
     }
-    .clearLogBtn {
-        margin-bottom: 7px;
-    }
+    // .clearLogBtn {
+    //     margin-bottom: 7px;
+    // }
     .icon {
         display: flex;
         align-items: center;
         justify-content: center;
     }
     .table {
-        padding-top: 60px;
+        padding-top: 45px;
     }
 }
