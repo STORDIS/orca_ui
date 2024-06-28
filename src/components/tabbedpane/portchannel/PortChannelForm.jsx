@@ -21,24 +21,69 @@ const PortChannelForm = ({
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         lag_name: "",
-        admin_sts: "",
+        admin_sts: "up",
         mtu: 9100,
         members: "",
+
+        static: true,
+        fallback: true,
+        fast_rate: true,
+        graceful_shutdown_mode: "enable",
+        min_links: "",
+        ip_address: "",
+        description: "",
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        console.log(name, value);
 
         if (name === "mtu" && parseInt(value) < 0) {
             return;
         }
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            [name]: value,
-        }));
+
+        if (value === "true" || value === "false") {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value === "true" ? true : false,
+            }));
+        } else {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: value,
+            }));
+        }
+    };
+
+    const isValidIPv4WithCIDR = (ipWithCidr) => {
+        const ipv4Regex =
+            /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
+        const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
+
+        const [ip, cidr] = ipWithCidr.split("/");
+
+        if (ipv4Regex.test(ip)) {
+            if (cidr === undefined || cidrRegex.test(cidr)) {
+                return true;
+            }
+        }
+        return false;
     };
 
     const handleSubmit = (e) => {
+        if (
+            !isValidIPv4WithCIDR(formData.ip_address) &&
+            formData.ip_address !== ""
+        ) {
+            alert("ip_address is not valid");
+            return;
+        }
+
+        if (formData.min_links < 1 || formData.min_links > 33) {
+            alert("min_links is not valid");
+            return;
+        }
+
         onSubmit(formData);
     };
 
@@ -115,8 +160,11 @@ const PortChannelForm = ({
                         name="admin_sts"
                         value={formData.admin_sts}
                         onChange={handleChange}
+                        defaultValue={"up"}
                     >
-                        <option value="up">up</option>
+                        <option selected value="up">
+                            up
+                        </option>
                         <option value="down">down</option>
                     </select>
                 </div>
@@ -129,6 +177,100 @@ const PortChannelForm = ({
                         onChange={handleChange}
                     />
                 </div>
+            </div>
+
+            <div className="form-wrapper">
+                <div className="form-field w-50">
+                    <label> Static:</label>
+                    <select
+                        name="static"
+                        value={formData.static}
+                        onChange={handleChange}
+                        defaultValue={true}
+                    >
+                        <option selected value={true}>
+                            True
+                        </option>
+                        <option value={false}>False</option>
+                    </select>
+                </div>
+                <div className="form-field w-50">
+                    <label>Fallback:</label>
+                    <select
+                        name="fallback"
+                        value={formData.fallback}
+                        onChange={handleChange}
+                        defaultValue={true}
+                    >
+                        <option selected value={true}>
+                            True
+                        </option>
+                        <option value={false}>False</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="form-wrapper">
+                <div className="form-field w-50">
+                    <label> Fast Rate:</label>
+                    <select
+                        name="fast_rate"
+                        value={formData.fast_rate}
+                        onChange={handleChange}
+                        defaultValue={true}
+                    >
+                        <option selected value={true}>
+                            True
+                        </option>
+                        <option value={false}>False</option>
+                    </select>
+                </div>
+                <div className="form-field w-50">
+                    <label>Graceful Shutdown Mode:</label>
+                    <select
+                        name="graceful_shutdown_mode"
+                        value={formData.graceful_shutdown_mode}
+                        onChange={handleChange}
+                        defaultValue={"enable"}
+                    >
+                        <option selected value="enable">
+                            Enable
+                        </option>
+                        <option value="disable">Disable</option>
+                    </select>
+                </div>
+            </div>
+
+            <div className="form-wrapper">
+                <div className="form-field w-50">
+                    <label> Min Link :</label>
+                    <input
+                        type="number"
+                        name="min_links"
+                        value={formData.min_links}
+                        onChange={handleChange}
+                    />
+                </div>
+                <div className="form-field w-50">
+                    <label>Ip Address:</label>
+                    <input
+                        type="text"
+                        name="ip_address"
+                        value={formData.ip_address}
+                        onChange={handleChange}
+                    />
+                </div>
+            </div>
+
+            <div className="form-field">
+                <label>Description</label>
+                <textarea
+                    type="text"
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    rows="3"
+                ></textarea>
             </div>
 
             <div className="form-wrapper">

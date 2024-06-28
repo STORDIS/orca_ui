@@ -385,6 +385,14 @@ export const portChannelColumns = [
         headerComponent: EditableHeaderComponent,
     },
     {
+        field: "ip_address",
+        headerName: "ip_address",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
         field: "fallback_operational",
         headerName: "Fallback Operation",
         cellDataType: "boolean",
