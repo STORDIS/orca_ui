@@ -61,20 +61,10 @@ const PortChDataTable = (props) => {
         instance
             .get(apiPUrl)
             .then((res) => {
-                let data = res.data;
-                // data &&
-                //     data.map(
-                //         (val) => (val["members"] = val["members"].toString())
-                //     );
-
-                // let data = res.data.map((item) => {
-                //     item.fallback = item.fallback || false;
-                //     item.static = item.static || false;
-                //     item.fallback = item.fallback || false;
-                //     item.fast_rate = item.fast_rate || false;
-                //     return item;
-                // });
-                // console.log(data);
+                let data = res.data.map((data) => {
+                    data.vlan_members = JSON.stringify(data.vlan_members);
+                    return data;
+                });
 
                 setDataTable(data);
             })
@@ -97,6 +87,8 @@ const PortChDataTable = (props) => {
     };
 
     const deletePortchannel = () => {
+        setDisableConfig(true);
+
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const deleteData = selectedRows.map((rowData) => ({
             mgt_ip: selectedDeviceIp,
@@ -120,6 +112,8 @@ const PortChDataTable = (props) => {
             .catch((err) => {})
             .finally(() => {
                 refreshData();
+                setDisableConfig(false);
+
                 setLog(true);
             });
     };
@@ -183,7 +177,7 @@ const PortChDataTable = (props) => {
         if (params?.colDef?.field === "members") {
             setIsModalOpen("addPortchannelMembers");
         }
-        if (params?.colDef?.field === "valn_members") {
+        if (params?.colDef?.field === "vlan_members") {
             setIsModalOpen("addPortchannelVlan");
         }
         setSelectedRows(params.data);
@@ -349,6 +343,7 @@ const PortChDataTable = (props) => {
                             >
                                 <button
                                     className="btnStyle"
+                                    disabled={disableConfig}
                                     onClick={deletePortchannel}
                                 >
                                     Yes

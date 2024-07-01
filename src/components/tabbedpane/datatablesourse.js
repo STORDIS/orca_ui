@@ -468,8 +468,8 @@ export const portChannelColumns = [
         headerComponent: EditableHeaderComponent,
     },
     {
-        field: "valn_members",
-        headerName: "Valn Members",
+        field: "vlan_members",
+        headerName: "Vlan Members",
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,

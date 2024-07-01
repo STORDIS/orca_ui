@@ -30,8 +30,8 @@ const PortChannelForm = ({
         fast_rate: true,
         graceful_shutdown_mode: "enable",
         min_links: "",
-        ip_address: "",
-        description: "",
+        ip_address: null,
+        description: null,
     });
 
     const handleChange = (e) => {
@@ -56,18 +56,22 @@ const PortChannelForm = ({
     };
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
-        const ipv4Regex =
-            /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
-        const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
+        if (ipWithCidr) {
+            const ipv4Regex =
+                /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
+            const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
 
-        const [ip, cidr] = ipWithCidr.split("/");
+            const [ip, cidr] = ipWithCidr.split("/");
 
-        if (ipv4Regex.test(ip)) {
-            if (cidr === undefined || cidrRegex.test(cidr)) {
-                return true;
+            if (ipv4Regex.test(ip)) {
+                if (cidr === undefined || cidrRegex.test(cidr)) {
+                    return true;
+                }
             }
+            return false;
+        } else {
+            return true;
         }
-        return false;
     };
 
     const handleSubmit = (e) => {
@@ -79,10 +83,15 @@ const PortChannelForm = ({
             return;
         }
 
-        if (formData.min_links < 1 || formData.min_links > 33) {
+        if (
+            formData.min_links !== "" &&
+            (formData.min_links < 1 || formData.min_links > 33)
+        ) {
             alert("min_links is not valid");
             return;
         }
+
+        // formData.min_links = parseInt(formData.min_links);
 
         onSubmit(formData);
     };
