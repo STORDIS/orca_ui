@@ -14,6 +14,7 @@ import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import PortChannelForm from "./PortChannelForm";
 import PortChMemberForm from "./portChMemberForm";
+import PortChVlanForm from "./PortChVlanForm";
 import "../tabbedPaneTable.scss";
 
 import { getIsStaff } from "../datatablesourse";
@@ -92,7 +93,7 @@ const PortChDataTable = (props) => {
     const refreshData = () => {
         setDataTable([]);
         getAllPortChanalData();
-        setIsModalOpen("null")
+        setIsModalOpen("null");
     };
 
     const deletePortchannel = () => {
@@ -181,6 +182,9 @@ const PortChDataTable = (props) => {
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "members") {
             setIsModalOpen("addPortchannelMembers");
+        }
+        if (params?.colDef?.field === "valn_members") {
+            setIsModalOpen("addPortchannelVlan");
         }
         setSelectedRows(params.data);
     }, []);
@@ -302,6 +306,24 @@ const PortChDataTable = (props) => {
                         title="Select Member Interfaces"
                     >
                         <PortChMemberForm
+                            selectedDeviceIp={selectedDeviceIp}
+                            inputData={selectedRows}
+                            onSubmit={(data) => {
+                                handleFormSubmit(data);
+                            }}
+                            onCancel={refreshData}
+                        />
+                    </Modal>
+                )}
+
+                {/* member selection */}
+                {isModalOpen === "addPortchannelVlan" && (
+                    <Modal
+                        show={true}
+                        onClose={refreshData}
+                        title="Select Vlan Member"
+                    >
+                        <PortChVlanForm
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
                             onSubmit={(data) => {

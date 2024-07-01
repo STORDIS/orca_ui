@@ -30,6 +30,7 @@ const VlanTable = (props) => {
 
     const selectedDeviceIp = props.selectedDeviceIp;
 
+
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             getVlans();

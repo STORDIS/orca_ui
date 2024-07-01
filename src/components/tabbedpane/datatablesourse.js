@@ -467,6 +467,13 @@ export const portChannelColumns = [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
+    {
+        field: "valn_members",
+        headerName: "Valn Members",
+        width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
 ];
 
 export const mclagColumns = [

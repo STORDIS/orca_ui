@@ -243,9 +243,13 @@ const PortChannelForm = ({
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> Min Link :</label>
+                    <label>
+                        Min Link <span className="note">(1-32)</span> :
+                    </label>
                     <input
                         type="number"
+                        max={32}
+                        min={1}
                         name="min_links"
                         value={formData.min_links}
                         onChange={handleChange}
