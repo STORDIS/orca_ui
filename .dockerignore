@@ -1,0 +1,9 @@
+.vscode
+node_modules
+Dockerfile
+package-lock.json
+.gitignore
+.git
+.dockerignore
+build
+.env.sample
