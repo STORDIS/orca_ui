@@ -50,7 +50,15 @@ const McLagDataTable = (props) => {
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
-            .then((res) => setDataTable(res.data))
+            .then((res) => {
+                let tableData = res.data.map((data) => {
+                    if (data.fast_convergence == null) {
+                        data.fast_convergence = "disable";
+                    }
+                    return data;
+                });
+                setDataTable(tableData);
+            })
             .catch((err) => console.log(err));
     };
 
@@ -167,7 +175,6 @@ const McLagDataTable = (props) => {
         }
     }, []);
 
-    const onColumnResized = useCallback((params) => {}, []);
 
     const handleDelete = () => {
         setIsMessageModalOpen("delete");
@@ -222,13 +229,12 @@ const McLagDataTable = (props) => {
                     rowData={dataTable}
                     columnDefs={mclagColumns}
                     defaultColDef={defaultColDef}
-                    onColumnResized={onColumnResized}
-                    stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
+                    rowSelection="multiple"
                     checkboxSelection
                     enableCellTextSelection="true"
-                    rowSelection="single"
                     onSelectionChanged={onSelectionChanged}
+                    stopEditingWhenCellsLoseFocus={true}
                     domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>

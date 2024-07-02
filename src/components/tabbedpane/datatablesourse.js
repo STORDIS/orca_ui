@@ -173,7 +173,7 @@ export const portGroupColumns = [
         headerName: "ID",
         width: 75,
         sortable: true,
-        comparator: (valueA, valueB) => valueA - valueB
+        comparator: (valueA, valueB) => valueA - valueB,
     },
     {
         field: "speed",
@@ -429,9 +429,7 @@ export const mclagColumns = [
     },
     {
         field: "mclag_sys_mac",
-
         headerName: "MCLAG Sys MAC",
-
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
@@ -439,9 +437,7 @@ export const mclagColumns = [
     },
     {
         field: "peer_addr",
-
         headerName: "Peer Address",
-
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
@@ -466,13 +462,10 @@ export const mclagColumns = [
     },
     {
         field: "source_address",
-
         headerName: "Source Address",
-
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
-
         sortable: true,
     },
     {
@@ -491,19 +484,36 @@ export const mclagColumns = [
     },
     {
         field: "gateway_macs",
-
         headerName: "Gateway MAC",
-
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
-
         sortable: true,
     },
     {
         field: "delay_restore",
         headerName: "Delay Restore",
         type: "number",
+        width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+    },
+    {
+        field: "fast_convergence",
+        headerName: "Fast Convergence",
+        width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: ["enable", "disable"],
+        },
+    },
+    {
+        field: "session_vrf",
+        headerName: "session vrf",
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
