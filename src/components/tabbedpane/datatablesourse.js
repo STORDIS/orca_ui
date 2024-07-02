@@ -519,6 +519,14 @@ export const mclagColumns = [
         headerComponent: EditableHeaderComponent,
         sortable: true,
     },
+    {
+        field: "mclag_members",
+        headerName: "Members",
+        width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        sortable: true,
+    },
 ];
 
 export const bgpColumns = [

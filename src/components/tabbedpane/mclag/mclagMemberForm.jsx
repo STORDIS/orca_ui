@@ -1,112 +1,166 @@
-import React, { useState } from "react";
-import "../Form.scss";
+import React, { useState, useEffect } from "react";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import interceptor from "../../../utils/interceptor";
+
+import {
+    getAllPortChnlsOfDeviceURL,
+} from "../../../utils/backend_rest_urls";
 
 const MclagMemberForm = ({
     onSubmit,
+    inputData,
     selectedDeviceIp,
     onCancel,
-    handelSubmitButton,
 }) => {
+    const [interfaceNames, setInterfaceNames] = useState([]);
+    const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const { disableConfig, setDisableConfig } = useDisableConfig();
+
+    const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         domain_id: "",
-        source_address: "",
-        peer_addr: "",
-        peer_link: "",
-        mclag_sys_mac: "",
         mclag_members: "",
     });
 
-    const handleChange = (e) => {};
+    useEffect(() => {
+        getPortchannel();
+
+        setSelectedInterfaces(inputData.mclag_members);
+    }, []);
+
+    const getPortchannel = () => {
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        instance
+            .get(apiPUrl)
+            .then((res) => {
+                const names = res.data
+                    .map((item) => item.lag_name)
+                    
+                setInterfaceNames(names);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const handleDropdownChange = (event) => {
+        setSelectedInterfaces((prev) => {
+            const newValue = event.target.value;
+            if (!prev.includes(newValue)) {
+                return [...prev, newValue];
+            }
+            return prev;
+        });
+    };
+
+    const handleRemove = (key) => {
+        setDisableConfig(true);
+        let selectedMembers = inputData.members;
+
+        if (selectedMembers.includes(key)) {
+            handelDeleteMemeber(key);
+        } else {
+            setSelectedInterfaces((prev) => {
+                return prev.filter((item) => item !== key);
+            });
+
+            setDisableConfig(false);
+        }
+    };
+
+    const handelDeleteMemeber = (e) => {
+        // setDisableConfig(true);
+        // const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        // const output = {
+        //     mgt_ip: selectedDeviceIp,
+        //     members: [e],
+        //     lag_name: inputData.lag_name,
+        // };
+        // instance
+        //     .delete(apiPUrl, { data: output })
+        //     .then((response) => {
+        //         setSelectedInterfaces((prev) => {
+        //             return prev.filter((item) => item !== e);
+        //         });
+        //     })
+        //     .catch((err) => {})
+        //     .finally(() => {
+        //         setDisableConfig(false);
+        //     });
+    };
 
     const handleSubmit = (e) => {
-        // onSubmit(formData);
+        let dataToSubmit = {
+            mgt_ip: selectedDeviceIp,
+            domain_id: inputData.domain_id,
+            mclag_members: selectedInterfaces,
+        };
+
+        console.log(dataToSubmit);
+        onSubmit(dataToSubmit);
     };
 
     return (
-        <div className="">
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSubmit(formData);
-                }}
-                className="port-channel-form"
-            >
-                <div className="form-field">
-                    <label>Device IP:</label>
-                    <span>{selectedDeviceIp}</span>
-                </div>
-
-                <div className="form-field">
-                    <label htmlFor="lag-name"> Domain ID:</label>
-                    <input
-                        type="number"
-                        name="domain_id"
-                        value={formData.domain_id}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="form-field">
-                    <label htmlFor="lag-name">Mclag System mac Address:</label>
-                    <input
-                        type="text"
-                        name="mclag_sys_mac"
-                        value={formData.mclag_sys_mac}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="form-field">
-                    <label htmlFor="lag-name">source address :</label>
-                    <input
-                        type="text"
-                        name="source_address"
-                        value={formData.source_address}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="form-field">
-                    <label htmlFor="lag-name">Peer address:</label>
-                    <input
-                        type="text"
-                        name="peer_addr"
-                        value={formData.peer_addr}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="form-field">
-                    <label htmlFor="lag-name"> Peer Link:</label>
-                    <input
-                        type="text"
-                        name="peer_link"
-                        value={formData.peer_link}
-                        onChange={handleChange}
-                    />
-                </div>
-
-                <div className="">
-                    <button
-                        type="submit"
-                        className="btnStyle mr-10"
-                        disabled={disableConfig}
+        <div>
+            <div className="form-wrapper">
+                <div className="form-field w-75">
+                    <label>Select Member Interface </label>
+                    <select
+                        onChange={handleDropdownChange}
+                        defaultValue={"DEFAULT"}
                     >
-                        Apply Config
-                    </button>
-                    <button
-                        type="button"
-                        className="btnStyle mr-10"
-                        onClick={onCancel}
-                    >
-                        Cancel
-                    </button>
+                        <option value="DEFAULT" disabled>
+                            Select Member Interface
+                        </option>
+                        {interfaceNames.map((val, index) => (
+                            <option key={index} value={val}>
+                                {val}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-            </form>
+                <div className="form-field mt-25">
+                    {Object.keys(selectedInterfaces).length} selected
+                </div>
+            </div>
+
+            <div className="selected-interface-wrap mb-10 w-100">
+                {Object.entries(selectedInterfaces).map(
+                    ([key, value], index) => (
+                        <div className="selected-interface-list mb-10">
+                            <div key={key} className="ml-10 w-50">
+                                {index + 1} &nbsp; {value}
+                            </div>
+                            <div className=" w-50">
+                                <button
+                                    className="btnStyle ml-25"
+                                    disabled={disableConfig}
+                                    onClick={() => handleRemove(value)}
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        </div>
+                    )
+                )}
+            </div>
+
+            <div className="">
+                <button
+                    type="submit"
+                    className="btnStyle mr-10"
+                    disabled={disableConfig}
+                    onClick={handleSubmit}
+                >
+                    Apply Config
+                </button>
+
+                <button type="button" className="btnStyle" onClick={onCancel}>
+                    Cancel
+                </button>
+            </div>
         </div>
     );
 };

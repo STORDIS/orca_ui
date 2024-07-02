@@ -42,6 +42,7 @@ const McLagDataTable = (props) => {
 
     useEffect(() => {
         getMclag();
+        // getMclagMembers();
     }, [selectedDeviceIp]);
 
     const getMclag = () => {
@@ -53,8 +54,19 @@ const McLagDataTable = (props) => {
             .catch((err) => console.log(err));
     };
 
+    // const getMclagMembers = () => {
+    //     setDataTable([]);
+    //     const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
+    //     // console.log(apiMUrl + '&domain_id=1' );
+    //     instance
+    //         .get(apiMUrl + "&domain_id=1")
+    //         .then((res) => console.log(res.data))
+    //         .catch((err) => console.log(err));
+    // };
+
     const refreshData = () => {
         getMclag();
+        setConfigStatus("");
         setIsModalOpen("null");
     };
 
@@ -73,6 +85,7 @@ const McLagDataTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 resetConfigStatus();
+                refreshData();
             });
     };
 
@@ -98,7 +111,7 @@ const McLagDataTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                resetConfigStatus();
+                refreshData()
             });
     };
 
@@ -158,6 +171,14 @@ const McLagDataTable = (props) => {
         setIsModalOpen("addMclag");
     };
 
+    const onCellClicked = useCallback((params) => {
+        if (params?.colDef?.field === "mclag_members") {
+            setIsModalOpen("memberMclag");
+        }
+        setSelectedRows(params.data);
+    }, []);
+
+
     return (
         <div className="datatable">
             <div className="button-group stickyButton">
@@ -185,8 +206,10 @@ const McLagDataTable = (props) => {
 
                     <button
                         className="ml-10 btnStyle"
-                        disabled={selectedRows.length === 0}
-                        // onClick={deleteMclag}
+                        disabled={
+                            selectedRows.length === undefined ||
+                            selectedRows.length === 0
+                        }
                         onClick={handleDelete}
                     >
                         Delete Mclag
@@ -207,7 +230,9 @@ const McLagDataTable = (props) => {
                     enableCellTextSelection="true"
                     rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
+                    onCellClicked={onCellClicked}
                     domLayout={"autoHeight"}
+                    suppressRowClickSelection={true}
                 ></AgGridReact>
             </div>
 
@@ -230,6 +255,7 @@ const McLagDataTable = (props) => {
                 >
                     <MclagMemberForm
                         onSubmit={(e) => handleFormSubmit(e)}
+                        inputData={selectedRows}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={refreshData}
                         handelSubmitButton={disableConfig}
