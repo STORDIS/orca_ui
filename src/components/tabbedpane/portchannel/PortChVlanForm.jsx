@@ -110,7 +110,6 @@ const PortChVlanForm = ({
                 getAllVlans();
                 setDisableConfig(false);
                 onCancel();
-
             })
             .catch((err) => {
                 console.log(err);
@@ -139,7 +138,6 @@ const PortChVlanForm = ({
             admin_status: inputData.admin_sts,
             vlan_members: finalVlanMembers,
         };
-
 
         onSubmit(dataToSubmit);
     };
