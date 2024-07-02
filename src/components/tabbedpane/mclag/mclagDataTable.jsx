@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 
 import "../tabbedPaneTable.scss";
 import MclagForm from "./mclagForm";
+import MclagMemberForm from "./mclagMemberForm";
 
 import { mclagColumns, defaultColDef } from "../datatablesourse";
 import { getAllMclagsOfDeviceURL } from "../../../utils/backend_rest_urls";
@@ -21,11 +22,10 @@ const McLagDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const [dataTable, setDataTable] = useState([]);
-    const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState("null");
+    const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -36,7 +36,6 @@ const McLagDataTable = (props) => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getMclag();
-            console.log("check");
         }
         props.reset(false);
     }, [props.refresh]);
@@ -50,52 +49,29 @@ const McLagDataTable = (props) => {
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
-            .then((res) => {
-                let tableData = res.data.map((data) => {
-                    if (data.fast_convergence == null) {
-                        data.fast_convergence = "disable";
-                    }
-                    return data;
-                });
-                setDataTable(tableData);
-            })
+            .then((res) => setDataTable(res.data))
             .catch((err) => console.log(err));
     };
 
     const refreshData = () => {
         getMclag();
-        setIsMessageModalOpen("null");
-    };
-
-    const openAddModal = () => {
-        setShowForm(true);
-    };
-
-    const handleCancel = () => {
-        setShowForm(false);
+        setIsModalOpen("null");
     };
 
     const resetConfigStatus = () => {
         setConfigStatus("");
     };
 
-    const handleFormSubmit = (formData, status) => {
-        console.log(formData, status);
+    const handleFormSubmit = (formData) => {
         setDisableConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
-            .then((res) => {
-                setModalContent("Mclag " + status + "ed Successfully");
-            })
-            .catch((err) => {
-                setModalContent("Error in " + status + "ing Mclag");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                setShowForm(false);
                 setLog(true);
                 setDisableConfig(false);
-                setIsMessageModalOpen("message");
                 resetConfigStatus();
             });
     };
@@ -103,7 +79,6 @@ const McLagDataTable = (props) => {
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data);
-        console.log("====", selectedData);
         setSelectedRows(selectedData);
     };
 
@@ -117,17 +92,9 @@ const McLagDataTable = (props) => {
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: output })
-            .then((res) => {
-                setIsMessageModalOpen("message");
-                setModalContent("Mclag Deleted Successfully");
-            })
-            .catch((err) => {
-                setIsMessageModalOpen("message");
-                setModalContent("Error Deleting Mclag");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                setShowForm(false);
-                setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
@@ -175,16 +142,20 @@ const McLagDataTable = (props) => {
         }
     }, []);
 
+    const onColumnResized = useCallback((params) => {}, []);
 
     const handleDelete = () => {
-        setIsMessageModalOpen("delete");
+        setIsModalOpen("deleteMclag");
 
         selectedRows.forEach((element) => {
-            console.log(element.domain_id);
             setModalContent(
                 "Do you want to delete Mclag with id " + element.domain_id
             );
         });
+    };
+
+    const openAddFormModal = () => {
+        setIsModalOpen("addMclag");
     };
 
     return (
@@ -196,7 +167,7 @@ const McLagDataTable = (props) => {
                             disableConfig || Object.keys(changes).length === 0
                         }
                         className="btnStyle"
-                        onClick={() => handleFormSubmit(changes, "Updat")}
+                        onClick={() => handleFormSubmit(changes)}
                     >
                         Apply Config
                     </button>
@@ -207,7 +178,7 @@ const McLagDataTable = (props) => {
                     <button
                         className="btnStyle"
                         disabled={!getIsStaff()}
-                        onClick={openAddModal}
+                        onClick={openAddFormModal}
                     >
                         Add Mclag
                     </button>
@@ -229,50 +200,44 @@ const McLagDataTable = (props) => {
                     rowData={dataTable}
                     columnDefs={mclagColumns}
                     defaultColDef={defaultColDef}
+                    onColumnResized={onColumnResized}
+                    stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    rowSelection="multiple"
                     checkboxSelection
                     enableCellTextSelection="true"
+                    rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
-                    stopEditingWhenCellsLoseFocus={true}
                     domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 
-            <Modal
-                show={showForm}
-                onClose={() => setShowForm(false)}
-                title={"Add Mclag"}
-            >
-                <MclagForm
-                    onSubmit={(e) => handleFormSubmit(e, "Add")}
-                    selectedDeviceIp={selectedDeviceIp}
-                    onCancel={handleCancel}
-                    handelSubmitButton={disableConfig}
-                />
-            </Modal>
-
-            {isMessageModalOpen === "message" && (
-                <Modal show={true}>
-                    <div>
-                        {modalContent}
-                        <div
-                            style={{
-                                marginTop: "10px",
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: "10px",
-                            }}
-                        >
-                            <button className="btnStyle" onClick={refreshData}>
-                                Close
-                            </button>
-                        </div>
-                    </div>
+            {isModalOpen === "addMclag" && (
+                <Modal show={true} onClose={refreshData} title={"Add Mclag"}>
+                    <MclagForm
+                        onSubmit={(e) => handleFormSubmit(e)}
+                        selectedDeviceIp={selectedDeviceIp}
+                        onCancel={refreshData}
+                        handelSubmitButton={disableConfig}
+                    />
                 </Modal>
             )}
 
-            {isMessageModalOpen === "delete" && (
+            {isModalOpen === "memberMclag" && (
+                <Modal
+                    show={true}
+                    onClose={refreshData}
+                    title={"Add Mclag Members"}
+                >
+                    <MclagMemberForm
+                        onSubmit={(e) => handleFormSubmit(e)}
+                        selectedDeviceIp={selectedDeviceIp}
+                        onCancel={refreshData}
+                        handelSubmitButton={disableConfig}
+                    />
+                </Modal>
+            )}
+
+            {isModalOpen === "deleteMclag" && (
                 <Modal show={true}>
                     <div>
                         {modalContent}
