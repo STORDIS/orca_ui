@@ -414,14 +414,14 @@ export const mclagColumns = [
     {
         field: "domain_id",
         headerName: "Domain_ID",
-        type: "number",
+        cellDataType: "number",
         width: 130,
         sortable: true,
     },
     {
         field: "keepalive_interval",
         headerName: "Keepalive Interval",
-        type: "number",
+        cellDataType: "number",
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
@@ -454,7 +454,7 @@ export const mclagColumns = [
     {
         field: "session_timeout",
         headerName: "Session Timeout",
-        type: "number",
+        cellDataType: "number",
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
@@ -493,7 +493,7 @@ export const mclagColumns = [
     {
         field: "delay_restore",
         headerName: "Delay Restore",
-        type: "number",
+        cellDataType: "number",
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,

@@ -42,7 +42,6 @@ const McLagDataTable = (props) => {
 
     useEffect(() => {
         getMclag();
-        // getMclagMembers();
     }, [selectedDeviceIp]);
 
     const getMclag = () => {
@@ -50,19 +49,19 @@ const McLagDataTable = (props) => {
         const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiMUrl)
-            .then((res) => setDataTable(res.data))
+            .then((res) => {
+                let data = res.data.map((item) => {
+                    if (item.fast_convergence === null) {
+                        item.fast_convergence = "disable";
+                    }
+
+                    return item;
+                });
+
+                setDataTable(data);
+            })
             .catch((err) => console.log(err));
     };
-
-    // const getMclagMembers = () => {
-    //     setDataTable([]);
-    //     const apiMUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
-    //     // console.log(apiMUrl + '&domain_id=1' );
-    //     instance
-    //         .get(apiMUrl + "&domain_id=1")
-    //         .then((res) => console.log(res.data))
-    //         .catch((err) => console.log(err));
-    // };
 
     const refreshData = () => {
         getMclag();
@@ -111,7 +110,7 @@ const McLagDataTable = (props) => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                refreshData()
+                refreshData();
             });
     };
 
@@ -177,7 +176,6 @@ const McLagDataTable = (props) => {
         }
         setSelectedRows(params.data);
     }, []);
-
 
     return (
         <div className="datatable">

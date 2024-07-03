@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import { getAllPortChnlsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import "../Form.scss";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import interceptor from "../../../utils/interceptor";
 
 const MclagForm = ({
     onSubmit,
@@ -9,6 +12,9 @@ const MclagForm = ({
     handelSubmitButton,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
+    const [interfaceNames, setInterfaceNames] = useState([]);
+    const [selectedInterfaces, setSelectedInterfaces] = useState([]);
+    const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -18,12 +24,30 @@ const MclagForm = ({
         peer_link: "",
         mclag_sys_mac: "",
         mclag_members: "",
+
+        keepalive_interval: undefined,
+        session_timeout: undefined,
+        delay_restore: undefined,
+        session_vrf: "",
+        fast_convergence: "enable",
+        mclag_members: "",
     });
 
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        const updatedValue = name === "domain_id" ? parseInt(value, 10) : value;
+        let updatedValue;
+        if (
+            name === "domain_id" ||
+            name === "keepalive_interval" ||
+            name === "session_timeout" ||
+            name === "delay_restore"
+        ) {
+            updatedValue = parseInt(value);
+        } else {
+            updatedValue = value;
+        }
+
         setFormData((prevState) => ({
             ...prevState,
             [name]: updatedValue,
@@ -31,7 +55,10 @@ const MclagForm = ({
     };
 
     const handleSubmit = (e) => {
+        console.log(formData);
+
         if (
+            formData.mclag_sys_mac !== "" &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 formData.mclag_sys_mac
             )
@@ -40,11 +67,15 @@ const MclagForm = ({
             return;
         }
 
-        if (!/^PortChannel\d+$/.test(formData.peer_link)) {
+        if (
+            formData.peer_link !== "" &&
+            !/^PortChannel\d+$/.test(formData.peer_link)
+        ) {
             alert("Invalid peer_link format.");
             return;
         }
         if (
+            formData.source_address !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.source_address
             )
@@ -53,6 +84,7 @@ const MclagForm = ({
             return;
         }
         if (
+            formData.peer_addr !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.peer_addr
             )
@@ -62,8 +94,43 @@ const MclagForm = ({
         }
 
         setDisableConfig(true);
+        formData.mclag_members = selectedInterfaces;
 
         onSubmit(formData);
+    };
+
+    useEffect(() => {
+        getPortchannel();
+    }, []);
+
+    const getPortchannel = () => {
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        instance
+            .get(apiPUrl)
+            .then((res) => {
+                const names = res.data.map((item) => item.lag_name);
+
+                setInterfaceNames(names);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const handleRemove = (key) => {
+        setSelectedInterfaces((prev) => {
+            return prev.filter((item) => item !== key);
+        });
+    };
+
+    const handleDropdownChange = (event) => {
+        setSelectedInterfaces((prev) => {
+            const newValue = event.target.value;
+            if (!prev.includes(newValue)) {
+                return [...prev, newValue];
+            }
+            return prev;
+        });
     };
 
     return (
@@ -75,59 +142,193 @@ const MclagForm = ({
                 }}
                 className="port-channel-form"
             >
-                <div className="form-field">
-                    <label>Device IP:</label>
-                    <span>{selectedDeviceIp}</span>
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label>Device IP:</label>
+                        <input type="text" value={selectedDeviceIp} disabled />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Domain ID:</label>
+                        <input
+                            type="number"
+                            min={1}
+                            name="domain_id"
+                            value={formData.domain_id}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name"> Domain ID:</label>
-                    <input
-                        type="number"
-                        name="domain_id"
-                        value={formData.domain_id}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">
+                            Mclag System mac Address:
+                        </label>
+                        <input
+                            type="text"
+                            name="mclag_sys_mac"
+                            value={formData.mclag_sys_mac}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">source address :</label>
+                        <input
+                            type="text"
+                            name="source_address"
+                            value={formData.source_address}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name">Mclag System mac Address:</label>
-                    <input
-                        type="text"
-                        name="mclag_sys_mac"
-                        value={formData.mclag_sys_mac}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">Peer address:</label>
+                        <input
+                            type="text"
+                            name="peer_addr"
+                            value={formData.peer_addr}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Peer Link:</label>
+                        <input
+                            type="text"
+                            name="peer_link"
+                            value={formData.peer_link}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name">source address :</label>
-                    <input
-                        type="text"
-                        name="source_address"
-                        value={formData.source_address}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Keep Alive Interval:</label>
+                        <input
+                            type="number"
+                            name="keepalive_interval"
+                            value={formData.keepalive_interval}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">Session Timeout:</label>
+                        <input
+                            type="number"
+                            name="session_timeout"
+                            value={formData.session_timeout}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name">Peer address:</label>
-                    <input
-                        type="text"
-                        name="peer_addr"
-                        value={formData.peer_addr}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Delay Restore:</label>
+                        <input
+                            type="number"
+                            name="delay_restore"
+                            value={formData.delay_restore}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Session VRF:</label>
+                        <input
+                            type="text"
+                            name="session_vrf"
+                            value={formData.session_vrf}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name"> Peer Link:</label>
-                    <input
-                        type="text"
-                        name="peer_link"
-                        value={formData.peer_link}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label> Fast Convergence:</label>
+                        <select
+                            name="fast_convergence"
+                            value={formData.fast_convergence}
+                            onChange={handleChange}
+                        >
+                            <option value="enable">Enable</option>
+                            <option value="disable">Disable</option>
+                        </select>
+                    </div>
+
+                    {/* <div className="form-field w-50">
+                        <label htmlFor="lag-name">Gateway macs:</label>
+                        <input
+                            type="text"
+                            name="gateway_macs"
+                            value={formData.gateway_macs}
+                            onChange={handleChange}
+                        />
+                    </div> */}
+                </div>
+
+                {/* <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label> Role :</label>
+                        <select
+                            name="role"
+                            value={formData.role}
+                            onChange={handleChange}
+                        >
+                            <option value="enable">Enable</option>
+                            <option value="disable">Disable</option>
+                        </select>
+                    </div>
+                </div> */}
+
+                <div className="form-wrapper">
+                    <div className="form-field w-75">
+                        <label>Select Member Interface </label>
+                        <select
+                            onChange={handleDropdownChange}
+                            defaultValue={"DEFAULT"}
+                        >
+                            <option value="DEFAULT" disabled>
+                                Select Member Interface
+                            </option>
+                            {interfaceNames.map((val, index) => (
+                                <option key={index} value={val}>
+                                    {val}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-field mt-25">
+                        {Object.keys(selectedInterfaces).length} selected
+                    </div>
+                </div>
+
+                <div className="selected-interface-wrap mb-10 w-100">
+                    {Object.entries(selectedInterfaces).map(
+                        ([key, value], index) => (
+                            <div key={key} className="selected-interface-list mb-10">
+                                <div  className="ml-10 w-50">
+                                    {index + 1} &nbsp; {value}
+                                </div>
+                                <div className=" w-50">
+                                    <button
+                                        className="btnStyle ml-25"
+                                        disabled={disableConfig}
+                                        onClick={() => handleRemove(value)}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    )}
                 </div>
 
                 <div className="">
