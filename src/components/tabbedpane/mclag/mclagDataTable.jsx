@@ -21,11 +21,10 @@ const McLagDataTable = (props) => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const [dataTable, setDataTable] = useState([]);
-    const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState("null");
+    const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -36,7 +35,6 @@ const McLagDataTable = (props) => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getMclag();
-            console.log("check");
         }
         props.reset(false);
     }, [props.refresh]);
@@ -51,59 +49,47 @@ const McLagDataTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
-                let tableData = res.data.map((data) => {
-                    if (data.fast_convergence == null) {
-                        data.fast_convergence = "disable";
+                let data = res.data.map((item) => {
+                    if (item.fast_convergence === null) {
+                        item.fast_convergence = "disable";
                     }
-                    return data;
+
+                    return item;
                 });
-                setDataTable(tableData);
+
+                setDataTable(data);
             })
             .catch((err) => console.log(err));
     };
 
     const refreshData = () => {
         getMclag();
-        setIsMessageModalOpen("null");
-    };
-
-    const openAddModal = () => {
-        setShowForm(true);
-    };
-
-    const handleCancel = () => {
-        setShowForm(false);
+        setConfigStatus("");
+        setIsModalOpen("null");
     };
 
     const resetConfigStatus = () => {
         setConfigStatus("");
     };
 
-    const handleFormSubmit = (formData, status) => {
-        console.log(formData, status);
+    const handleFormSubmit = (formData) => {
         setDisableConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
-            .then((res) => {
-                setModalContent("Mclag " + status + "ed Successfully");
-            })
-            .catch((err) => {
-                setModalContent("Error in " + status + "ing Mclag");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                setShowForm(false);
                 setLog(true);
                 setDisableConfig(false);
-                setIsMessageModalOpen("message");
                 resetConfigStatus();
+                refreshData();
             });
     };
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data);
-        console.log("====", selectedData);
         setSelectedRows(selectedData);
     };
 
@@ -117,21 +103,13 @@ const McLagDataTable = (props) => {
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: output })
-            .then((res) => {
-                setIsMessageModalOpen("message");
-                setModalContent("Mclag Deleted Successfully");
-            })
-            .catch((err) => {
-                setIsMessageModalOpen("message");
-                setModalContent("Error Deleting Mclag");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                setShowForm(false);
-                setIsMessageModalOpen("message");
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
-                resetConfigStatus();
+                refreshData();
             });
     };
 
@@ -165,6 +143,12 @@ const McLagDataTable = (props) => {
             alert("Invalid peer_addr format.");
             return;
         }
+
+        if (params.data.domain_id < 0) {
+            alert("Domain id cannot be less than 0.");
+            return;
+        }
+
         if (params.newValue !== params.oldValue) {
             let payload = {
                 mgt_ip: selectedDeviceIp,
@@ -175,17 +159,25 @@ const McLagDataTable = (props) => {
         }
     }, []);
 
+    const onColumnResized = useCallback((params) => {}, []);
 
     const handleDelete = () => {
-        setIsMessageModalOpen("delete");
+        setIsModalOpen("deleteMclag");
 
         selectedRows.forEach((element) => {
-            console.log(element.domain_id);
             setModalContent(
                 "Do you want to delete Mclag with id " + element.domain_id
             );
         });
     };
+
+    const openAddFormModal = () => {
+        setIsModalOpen("addMclag");
+    };
+
+    const onCellClicked = useCallback((params) => {
+        setSelectedRows(params.data);
+    }, []);
 
     return (
         <div className="datatable">
@@ -196,7 +188,7 @@ const McLagDataTable = (props) => {
                             disableConfig || Object.keys(changes).length === 0
                         }
                         className="btnStyle"
-                        onClick={() => handleFormSubmit(changes, "Updat")}
+                        onClick={() => handleFormSubmit(changes)}
                     >
                         Apply Config
                     </button>
@@ -207,15 +199,17 @@ const McLagDataTable = (props) => {
                     <button
                         className="btnStyle"
                         disabled={!getIsStaff()}
-                        onClick={openAddModal}
+                        onClick={openAddFormModal}
                     >
                         Add Mclag
                     </button>
 
                     <button
                         className="ml-10 btnStyle"
-                        disabled={selectedRows.length === 0}
-                        // onClick={deleteMclag}
+                        disabled={
+                            selectedRows.length === undefined ||
+                            selectedRows.length === 0
+                        }
                         onClick={handleDelete}
                     >
                         Delete Mclag
@@ -229,50 +223,31 @@ const McLagDataTable = (props) => {
                     rowData={dataTable}
                     columnDefs={mclagColumns}
                     defaultColDef={defaultColDef}
+                    onColumnResized={onColumnResized}
+                    stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    rowSelection="multiple"
                     checkboxSelection
                     enableCellTextSelection="true"
+                    rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
-                    stopEditingWhenCellsLoseFocus={true}
+                    onCellClicked={onCellClicked}
                     domLayout={"autoHeight"}
+                    suppressRowClickSelection={true}
                 ></AgGridReact>
             </div>
 
-            <Modal
-                show={showForm}
-                onClose={() => setShowForm(false)}
-                title={"Add Mclag"}
-            >
-                <MclagForm
-                    onSubmit={(e) => handleFormSubmit(e, "Add")}
-                    selectedDeviceIp={selectedDeviceIp}
-                    onCancel={handleCancel}
-                    handelSubmitButton={disableConfig}
-                />
-            </Modal>
-
-            {isMessageModalOpen === "message" && (
-                <Modal show={true}>
-                    <div>
-                        {modalContent}
-                        <div
-                            style={{
-                                marginTop: "10px",
-                                display: "flex",
-                                justifyContent: "center",
-                                gap: "10px",
-                            }}
-                        >
-                            <button className="btnStyle" onClick={refreshData}>
-                                Close
-                            </button>
-                        </div>
-                    </div>
+            {isModalOpen === "addMclag" && (
+                <Modal show={true} onClose={refreshData} title={"Add Mclag"}>
+                    <MclagForm
+                        onSubmit={(e) => handleFormSubmit(e)}
+                        selectedDeviceIp={selectedDeviceIp}
+                        onCancel={refreshData}
+                        handelSubmitButton={disableConfig}
+                    />
                 </Modal>
             )}
 
-            {isMessageModalOpen === "delete" && (
+            {isModalOpen === "deleteMclag" && (
                 <Modal show={true}>
                     <div>
                         {modalContent}

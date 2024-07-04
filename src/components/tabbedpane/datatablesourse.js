@@ -478,8 +478,6 @@ export const mclagColumns = [
         field: "role",
         headerName: "Role",
         width: 130,
-        editable: getIsStaff(),
-        headerComponent: EditableHeaderComponent,
         sortable: true,
     },
     {
