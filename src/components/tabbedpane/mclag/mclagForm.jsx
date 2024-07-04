@@ -17,7 +17,7 @@ const MclagForm = ({
         peer_addr: "",
         peer_link: "",
         mclag_sys_mac: "",
-        mclag_members: "",
+        mclag_members: [],
         keepalive_interval: undefined,
         session_timeout: undefined,
         delay_restore: undefined,
@@ -77,9 +77,9 @@ const MclagForm = ({
             return;
         }
         console.log(formData);
-        // setDisableConfig(true);
+        setDisableConfig(true);
 
-        // onSubmit(formData);
+        onSubmit(formData);
     };
 
     return (
