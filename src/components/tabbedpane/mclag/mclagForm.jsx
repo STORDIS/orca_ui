@@ -18,6 +18,11 @@ const MclagForm = ({
         peer_link: "",
         mclag_sys_mac: "",
         mclag_members: "",
+        keepalive_interval: undefined,
+        session_timeout: undefined,
+        delay_restore: undefined,
+        session_vrf: "",
+        fast_convergence: "disable",
     });
 
     const handleChange = (e) => {
@@ -75,59 +80,136 @@ const MclagForm = ({
                 }}
                 className="port-channel-form"
             >
-                <div className="form-field">
-                    <label>Device IP:</label>
-                    <span>{selectedDeviceIp}</span>
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label>Device IP:</label>
+                        <input type="text" value={selectedDeviceIp} disabled />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Domain ID:</label>
+                        <input
+                            type="number"
+                            min={1}
+                            name="domain_id"
+                            value={formData.domain_id}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name"> Domain ID:</label>
-                    <input
-                        type="number"
-                        name="domain_id"
-                        value={formData.domain_id}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">
+                            Mclag System mac Address:
+                        </label>
+                        <input
+                            type="text"
+                            name="mclag_sys_mac"
+                            value={formData.mclag_sys_mac}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">source address :</label>
+                        <input
+                            type="text"
+                            name="source_address"
+                            value={formData.source_address}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name">Mclag System mac Address:</label>
-                    <input
-                        type="text"
-                        name="mclag_sys_mac"
-                        value={formData.mclag_sys_mac}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">Peer address:</label>
+                        <input
+                            type="text"
+                            name="peer_addr"
+                            value={formData.peer_addr}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Peer Link:</label>
+                        <input
+                            type="text"
+                            name="peer_link"
+                            value={formData.peer_link}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name">source address :</label>
-                    <input
-                        type="text"
-                        name="source_address"
-                        value={formData.source_address}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Keep Alive Interval:</label>
+                        <input
+                            type="number"
+                            name="keepalive_interval"
+                            value={formData.keepalive_interval}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">Session Timeout:</label>
+                        <input
+                            type="number"
+                            name="session_timeout"
+                            value={formData.session_timeout}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name">Peer address:</label>
-                    <input
-                        type="text"
-                        name="peer_addr"
-                        value={formData.peer_addr}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Delay Restore:</label>
+                        <input
+                            type="number"
+                            name="delay_restore"
+                            value={formData.delay_restore}
+                            onChange={handleChange}
+                        />
+                    </div>
+
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name"> Session VRF:</label>
+                        <input
+                            type="text"
+                            name="session_vrf"
+                            value={formData.session_vrf}
+                            onChange={handleChange}
+                        />
+                    </div>
                 </div>
 
-                <div className="form-field">
-                    <label htmlFor="lag-name"> Peer Link:</label>
-                    <input
-                        type="text"
-                        name="peer_link"
-                        value={formData.peer_link}
-                        onChange={handleChange}
-                    />
+                <div className="form-wrapper">
+                    <div className="form-field w-50">
+                        <label> Fast Convergence:</label>
+                        <select
+                            name="fast_convergence"
+                            value={formData.fast_convergence}
+                            onChange={handleChange}
+                        >
+                            <option value="enable">Enable</option>
+                            <option value="disable">Disable</option>
+                        </select>
+                    </div>
+
+                    {/* <div className="form-field w-50">
+                        <label htmlFor="lag-name">Gateway macs:</label>
+                        <input
+                            type="text"
+                            name="gateway_macs"
+                            value={formData.gateway_macs}
+                            onChange={handleChange}
+                        />
+                    </div> */}
                 </div>
 
                 <div className="">
