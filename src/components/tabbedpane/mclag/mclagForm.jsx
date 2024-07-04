@@ -12,17 +12,17 @@ const MclagForm = ({
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
-        domain_id: "",
-        source_address: "",
-        peer_addr: "",
-        peer_link: "",
-        mclag_sys_mac: "",
-        mclag_members: [],
-        keepalive_interval: undefined,
-        session_timeout: undefined,
-        delay_restore: undefined,
-        session_vrf: "",
-        fast_convergence: "disable",
+        domain_id: 1,
+        source_address: undefined,
+        peer_addr: undefined,
+        peer_link: undefined,
+        mclag_sys_mac: undefined,
+        // mclag_members: [],
+        keepalive_interval: 1,
+        session_timeout: 30,
+        delay_restore: 300,
+        session_vrf: undefined,
+        fast_convergence: "enable",
     });
 
     const handleChange = (e) => {
@@ -47,7 +47,12 @@ const MclagForm = ({
     };
 
     const handleSubmit = (e) => {
+        if (formData.domain_id === undefined) {
+            alert(" Domain ID is mandatory.");
+            return;
+        }
         if (
+            formData.mclag_sys_mac !== undefined &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 formData.mclag_sys_mac
             )
@@ -55,12 +60,15 @@ const MclagForm = ({
             alert("Invalid MAC address.");
             return;
         }
-
-        if (!/^PortChannel\d+$/.test(formData.peer_link)) {
+        if (
+            formData.peer_link !== undefined &&
+            !/^PortChannel\d+$/.test(formData.peer_link)
+        ) {
             alert("Invalid peer_link format.");
             return;
         }
         if (
+            formData.source_address !== undefined &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.source_address
             )
@@ -69,6 +77,7 @@ const MclagForm = ({
             return;
         }
         if (
+            formData.peer_addr !== undefined &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.peer_addr
             )
@@ -76,6 +85,7 @@ const MclagForm = ({
             alert("Invalid peer_addr format.");
             return;
         }
+
         console.log(formData);
         setDisableConfig(true);
 
@@ -212,15 +222,7 @@ const MclagForm = ({
                         </select>
                     </div>
 
-                    {/* <div className="form-field w-50">
-                        <label htmlFor="lag-name">Gateway macs:</label>
-                        <input
-                            type="text"
-                            name="gateway_macs"
-                            value={formData.gateway_macs}
-                            onChange={handleChange}
-                        />
-                    </div> */}
+                    
                 </div>
 
                 <div className="">
