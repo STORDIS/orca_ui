@@ -28,7 +28,18 @@ const MclagForm = ({
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        const updatedValue = name === "domain_id" ? parseInt(value, 10) : value;
+        let updatedValue;
+        if (
+            name === "domain_id" ||
+            name === "keepalive_interval" ||
+            name === "session_timeout" ||
+            name === "delay_restore"
+        ) {
+            updatedValue = parseInt(value);
+        } else {
+            updatedValue = value;
+        }
+
         setFormData((prevState) => ({
             ...prevState,
             [name]: updatedValue,
@@ -65,10 +76,10 @@ const MclagForm = ({
             alert("Invalid peer_addr format.");
             return;
         }
+        console.log(formData);
+        // setDisableConfig(true);
 
-        setDisableConfig(true);
-
-        onSubmit(formData);
+        // onSubmit(formData);
     };
 
     return (
