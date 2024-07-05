@@ -57,5 +57,5 @@ jobs:
       - name: Prune Old Images (Main Branch and Nightly Builds)
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
         run: |
-          docker images --filter "reference=main*" --format "{{.Repository}}:{{.Tag}}" | sort -r | tail -n +21 | xargs -n 1 docker rmi
-          docker images --filter "reference=nightly*" --format "{{.Repository}}:{{.Tag}}" | sort -r | tail -n +21 | xargs -n 1 docker rmi
+          docker images --filter "reference=main*" --format "{{.Repository}}:{{.Tag}}" | sort -r | tail -n +21 | xargs -n 1 docker rmi || true
+          docker images --filter "reference=nightly*" --format "{{.Repository}}:{{.Tag}}" | sort -r | tail -n +21 | xargs -n 1 docker rmi || true
