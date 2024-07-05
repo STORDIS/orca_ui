@@ -1,4 +1,3 @@
-/home/kamal/orca_ui/.github/workflows/docker-publish.yml
 name: Build and Push Docker Image
 
 # This workflow automates the building and pushing of Docker images for the orca_ui project.
