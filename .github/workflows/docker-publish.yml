@@ -1,3 +1,4 @@
+/home/kamal/orca_ui/.github/workflows/docker-publish.yml
 name: Build and Push Docker Image
 
 # This workflow automates the building and pushing of Docker images for the orca_ui project.
@@ -31,6 +32,9 @@ jobs:
         run: |
           if [[ ${{ github.event_name }} == 'release' ]]; then
             image_tag="${{ github.event.release.tag_name }}"
+            # Build and push 'latest' tag along with release, Hence there :latest tag always refers to latest released image 
+            docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:latest .
+            docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:latest
           elif [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
             # Use branch name, short hash, and commit message
             short_sha=$(git rev-parse --short HEAD)
