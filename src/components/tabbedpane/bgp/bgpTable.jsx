@@ -129,13 +129,11 @@ const BGPTable = (props) => {
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data);
-        console.log("====", selectedData);
         setSelectedRows(selectedData);
     };
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
-            console.log(params.data);
             let payload = {
                 mgt_ip: selectedDeviceIp,
                 vrf_name: params.data.vrf_name,

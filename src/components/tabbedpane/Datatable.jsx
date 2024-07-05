@@ -56,7 +56,6 @@ const Datatable = (props) => {
 
     const onCellClicked = useCallback((params) => {
         if (params.event.target.tagName === "BUTTON") {
-            console.log("onCellClicked", params.data.mgt_ip);
             setSelectedDeviceToDelete(params.data.mgt_ip);
         }
     }, []);
@@ -66,7 +65,6 @@ const Datatable = (props) => {
     };
 
     const handleDeleteConfirmation = () => {
-        console.log("Delete");
         setDisableConfig(true);
         const apiPUrl = deleteDevicesURL();
         instance

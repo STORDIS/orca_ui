@@ -86,7 +86,6 @@ const MclagForm = ({
             return;
         }
 
-        console.log(formData);
         setDisableConfig(true);
 
         onSubmit(formData);

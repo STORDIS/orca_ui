@@ -32,7 +32,6 @@ const InterfaceDataTable = (props) => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getInterfaceData();
-            console.log("check");
         }
         props.reset(false);
     }, [props.refresh]);
