@@ -1,14 +1,23 @@
 <p align="center">
+<a href="https://hub.docker.com/r/stordis/orca_ui/">
+      <img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/stordis/orca_ui?style=for-the-badge&logo=docker&logoColor=white&link=https%3A%2F%2Fhub.docker.com%2Fr%2Fstordis%2Forca_ui" />
+    </a>
+<a href="https://github.com/stordis/orca_ui/actions">
+      <img alt="Tests Passing" src="https://img.shields.io/github/actions/workflow/status/stordis/orca_ui/docker-publish.yml?style=for-the-badge&logo=github&link=https%3A%2F%2Fgithub.com%2FSTORDIS%2Forca_ui%2Factions
+      " />
+</a>
 <a href="https://github.com/stordis/orca_ui/issues">
-      <img alt="Issues" src="https://img.shields.io/github/issues/stordis/orca_ui?color=0088ff" />
+      <img alt="Issues" src="https://img.shields.io/github/issues/stordis/orca_ui?style=for-the-badge&logo=github&link=https%3A%2F%2Fgithub.com%2FSTORDIS%orca_ui%2Fissues
+      " />
 </a>
 <a href="https://github.com/stordis/orca_ui/graphs/contributors">
-      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/stordis/orca_ui" />
+      <img alt="GitHub Contributors" src="https://img.shields.io/github/contributors/stordis/orca_ui?style=for-the-badge&logo=github&link=https%3A%2F%2Fgithub.com%2FSTORDIS%orca_ui%2Fgraphs%2Fcontributors" />
 </a>
 <a href="https://github.com/stordis/orca_ui/pulls?q=">
-      <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/stordis/orca_ui?color=0088ff" />
+      <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/stordis/orca_ui?color=0088ff&style=for-the-badge&logo=github&link=https%3A%2F%2Fgithub.com%2FSTORDIS%orca_ui%2Fpulls" />
 </a>
 </p>
+
 
 # ORCA_UI
 
