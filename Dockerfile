@@ -12,4 +12,3 @@ COPY . .
 EXPOSE 3000
 # Start orca_ui
 CMD npm start
-CMD npm start
