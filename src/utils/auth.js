@@ -26,11 +26,9 @@ export const AuthProvider = ({ children }) => {
     };
 
     const getUser = async (userName, redirectUrl) => {
-        console.log(userName);
         await instance
             .get(getUserDetailsURL(userName))
             .then((response) => {
-                console.log(response);
                 secureLocalStorage.setItem("user_details", response.data);
                 window.location.href = redirectUrl;
             })

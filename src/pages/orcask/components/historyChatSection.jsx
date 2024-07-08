@@ -55,7 +55,6 @@ export const HistoryChatSection = ({
     }, [isLoading]);
 
     useEffect(() => {
-        console.log("copiedBookmark", copiedBookmark);
 
         if (copiedBookmark !== "") {
             setQuestionPrompt({
@@ -188,7 +187,6 @@ export const HistoryChatSection = ({
         sendBookmarkDataToParent(dataToParent);
     };
 
-    console.log(chatHistory);
 
     return (
         <>

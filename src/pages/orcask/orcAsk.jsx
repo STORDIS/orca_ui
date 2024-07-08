@@ -29,7 +29,6 @@ export const AskOrca = () => {
         instance
             .get(bookmarkURL())
             .then((response) => {
-                console.log(response.data);
                 setBookmarks(response.data);
             })
             .catch((error) => {

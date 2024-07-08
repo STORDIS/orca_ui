@@ -1,0 +1,69 @@
+name: Build and Push Docker Image
+
+# This workflow automates the building and pushing of Docker images for the orca_ui project.
+# It is triggered by the following events:
+# - Release creation: When a new release is created in the repository.
+# - Push to main branch: When a push is made to the main branch.
+# - Nightly build: Every day at midnight UTC.
+on:
+  release:
+    types: [created]
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 0 * * *" # Run at midnight UTC
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        # Checkout the code from the repository
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.STORDIS_DOCKER_HUB_USER }}
+          password: ${{ secrets.STORDIS_DOCKER_HUB_ACCESS_TOKEN }}
+        # Login to Docker Hub using the provided credentials
+
+      - name: Generate Image Tag
+        run: |
+          if [[ ${{ github.event_name }} == 'release' ]]; then
+            image_tag="${{ github.event.release.tag_name }}"
+            # Build and push 'latest' tag along with release, Hence there :latest tag always refers to latest released image 
+            docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:latest .
+            docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:latest
+          elif [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
+            # Use branch name, short hash, and commit message
+            short_sha=$(git rev-parse --short HEAD)
+            image_tag="main-$short_sha-${{ github.event.head_commit.message }}"
+            image_tag=$(echo "$image_tag" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g')
+          else
+            # Use "nightly" prefix and append date and time
+            image_tag="nightly-$(date +%Y-%m-%d_T_%H-%M-%S)" 
+          fi
+          echo "Image Tag: $image_tag"
+          echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
+        # Generate the image tag based on the event type (release, push to main, or nightly build)
+
+      - name: Build Docker Image
+        run: |
+          docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:${{ env.IMAGE_TAG }} .
+        # Build the Docker image using the generated image tag
+
+      - name: Push Docker Image
+        run: |
+          docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:${{ env.IMAGE_TAG }}
+        # Push the built Docker image to Docker Hub
+
+      - name: Prune Old Images (Main Branch and Nightly Builds)
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+        run: |
+          docker images --filter "reference=main*" --format "{{.Repository}}:{{.Tag}}" | sort -r | tail -n +21 | xargs -n 1 docker rmi || true
+          docker images --filter "reference=nightly*" --format "{{.Repository}}:{{.Tag}}" | sort -r | tail -n +21 | xargs -n 1 docker rmi || true
+        # Prune old images from the local Docker repository for both main branch and nightly builds.
+        # This step is executed only for pushes to the main branch and scheduled nightly builds.
+        # The `|| true` ensures that the workflow continues even if there are no old images to prune.

@@ -111,7 +111,6 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             dataToSubmit.mem_ifs = selectedInterfaces;
         }
 
-        console.log(dataToSubmit);
 
         setDisableConfig(true);
         onSubmit(dataToSubmit);
@@ -155,7 +154,6 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     const handleDropdownChange = (event) => {
-        console.log(event);
 
         setSelectedInterfaces((prev) => ({
             ...prev,
