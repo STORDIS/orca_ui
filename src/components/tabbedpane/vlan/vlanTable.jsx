@@ -227,6 +227,7 @@ const VlanTable = (props) => {
         }
     }, []);
 
+
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");

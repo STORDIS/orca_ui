@@ -30,7 +30,6 @@ const VlanMemberForm = ({
             mem_ifs: selectedInterfaces,
         };
 
-        console.log(dataToSubmit);
 
         setDisableConfig(true);
         onSubmit(dataToSubmit);
@@ -73,7 +72,6 @@ const VlanMemberForm = ({
         instance
             .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
             .then((response) => {
-                console.log("--", response);
 
                 setSelectedInterfaces((prevInterfaces) => {
                     const newInterfaces = { ...prevInterfaces };
@@ -127,9 +125,6 @@ const VlanMemberForm = ({
     };
 
     useEffect(() => {
-
-        console.log(inputData)
-
         let input_mem_if = JSON.parse(inputData.mem_ifs);
 
         if (Object.keys(input_mem_if).length !== 0) {
