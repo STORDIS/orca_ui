@@ -55,7 +55,6 @@ const MclagForm = ({
     };
 
     const handleSubmit = (e) => {
-        console.log(formData);
 
         if (
             formData.mclag_sys_mac !== "" &&
@@ -109,7 +108,6 @@ const MclagForm = ({
             .get(apiPUrl)
             .then((res) => {
                 const names = res.data.map((item) => item.lag_name);
-
                 setInterfaceNames(names);
             })
             .catch((err) => {
