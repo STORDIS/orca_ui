@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import interceptor from "../../../utils/interceptor";
-
+import { useLog } from "../../../utils/logpannelContext";
 import {
     getAllPortChnlsOfDeviceURL,
+    getAllMclagsOfDeviceURL,
 } from "../../../utils/backend_rest_urls";
 
 const MclagMemberForm = ({
@@ -15,19 +16,22 @@ const MclagMemberForm = ({
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const { disableConfig, setDisableConfig } = useDisableConfig();
+    const { setLog } = useLog();
 
     const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         domain_id: "",
-        mclag_members: "",
+        mclag_members: [],
     });
 
     useEffect(() => {
         getPortchannel();
 
-        setSelectedInterfaces(inputData.mclag_members);
+        console.log(inputData);
+
+        setSelectedInterfaces(JSON.parse(inputData.mclag_members));
     }, []);
 
     const getPortchannel = () => {
@@ -35,9 +39,8 @@ const MclagMemberForm = ({
         instance
             .get(apiPUrl)
             .then((res) => {
-                const names = res.data
-                    .map((item) => item.lag_name)
-                    
+                const names = res.data.map((item) => item.lag_name);
+
                 setInterfaceNames(names);
             })
             .catch((err) => {
@@ -56,8 +59,9 @@ const MclagMemberForm = ({
     };
 
     const handleRemove = (key) => {
+        let selectedMembers = JSON.parse(inputData.mclag_members);
+
         setDisableConfig(true);
-        let selectedMembers = inputData.members;
 
         if (selectedMembers.includes(key)) {
             handelDeleteMemeber(key);
@@ -71,24 +75,23 @@ const MclagMemberForm = ({
     };
 
     const handelDeleteMemeber = (e) => {
-        // setDisableConfig(true);
-        // const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        // const output = {
-        //     mgt_ip: selectedDeviceIp,
-        //     members: [e],
-        //     lag_name: inputData.lag_name,
-        // };
-        // instance
-        //     .delete(apiPUrl, { data: output })
-        //     .then((response) => {
-        //         setSelectedInterfaces((prev) => {
-        //             return prev.filter((item) => item !== e);
-        //         });
-        //     })
-        //     .catch((err) => {})
-        //     .finally(() => {
-        //         setDisableConfig(false);
-        //     });
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            domain_id: inputData.domain_id,
+            mclag_members: [e],
+        };
+
+        setDisableConfig(true);
+        const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
+        instance
+            .delete(apiPUrl, { data: payload })
+            .then((res) => {})
+            .catch((err) => {})
+            .finally(() => {
+                setLog(true);
+                setDisableConfig(false);
+            });
+        // setDisableConfig(false);
     };
 
     const handleSubmit = (e) => {
@@ -129,8 +132,11 @@ const MclagMemberForm = ({
             <div className="selected-interface-wrap mb-10 w-100">
                 {Object.entries(selectedInterfaces).map(
                     ([key, value], index) => (
-                        <div className="selected-interface-list mb-10">
-                            <div key={key} className="ml-10 w-50">
+                        <div
+                            key={key}
+                            className="selected-interface-list mb-10"
+                        >
+                            <div className="ml-10 w-50">
                                 {index + 1} &nbsp; {value}
                             </div>
                             <div className=" w-50">

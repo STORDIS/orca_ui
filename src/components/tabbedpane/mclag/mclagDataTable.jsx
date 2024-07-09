@@ -24,7 +24,7 @@ const McLagDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [changes, setChanges] = useState({});
+    const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
@@ -50,14 +50,15 @@ const McLagDataTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
+                console.log(res.data);
                 let data = res.data.map((item) => {
                     if (item.fast_convergence === null) {
                         item.fast_convergence = "disable";
                     }
-
+                    item.mclag_members = JSON.stringify(item.mclag_members);
                     return item;
                 });
-
+                
                 setDataTable(data);
             })
             .catch((err) => console.log(err));
@@ -114,6 +115,20 @@ const McLagDataTable = (props) => {
             });
     };
 
+    const handleDelete = () => {
+        setIsModalOpen("deleteMclag");
+
+        selectedRows.forEach((element) => {
+            setModalContent(
+                "Do you want to delete Mclag with id " + element.domain_id
+            );
+        });
+    };
+
+    const openAddFormModal = () => {
+        setIsModalOpen("addMclag");
+    };
+
     const handleCellValueChanged = useCallback((params) => {
         if (
             params.data.mclag_sys_mac !== null &&
@@ -159,31 +174,42 @@ const McLagDataTable = (props) => {
             alert("Domain id cannot be less than 0.");
             return;
         }
-        if (params.newValue !== params.oldValue) {
-            let payload = {
-                mgt_ip: selectedDeviceIp,
-                ...params.data,
-            };
 
-            setChanges(payload);
+        if (params.newValue !== params.oldValue) {
+            setChanges((prev) => {
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.vlanid === params.data.vlanid
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
+                        (val) => val.vlanid === params.data.vlanid
+                    );
+                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    latestChanges = [...prev];
+                } else {
+                    latestChanges = [
+                        ...prev,
+                        {
+                            mgt_ip: selectedDeviceIp,
+                            [params.colDef.field]: params.newValue || "",
+                        },
+                    ];
+                }
+                return latestChanges;
+            });
         }
+        // if (params.newValue !== params.oldValue) {
+        //     let payload = {
+        //         mgt_ip: selectedDeviceIp,
+        //         ...params.data,
+        //     };
+
+        //     setChanges(payload);
+        // }
     }, []);
 
     const onColumnResized = useCallback((params) => {}, []);
-
-    const handleDelete = () => {
-        setIsModalOpen("deleteMclag");
-
-        selectedRows.forEach((element) => {
-            setModalContent(
-                "Do you want to delete Mclag with id " + element.domain_id
-            );
-        });
-    };
-
-    const openAddFormModal = () => {
-        setIsModalOpen("addMclag");
-    };
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mclag_members") {
@@ -239,7 +265,6 @@ const McLagDataTable = (props) => {
                     onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    checkboxSelection
                     enableCellTextSelection="true"
                     rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
