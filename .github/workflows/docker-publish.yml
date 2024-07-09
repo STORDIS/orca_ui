@@ -37,8 +37,8 @@ jobs:
             image_tag="main-$short_sha-${{ github.event.head_commit.message }}"
             image_tag=$(echo "$image_tag" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g')
           else
-            nightly_build_number=$(( $(date +%j) % 10 ))
-            image_tag="nightly-${nightly_build_number}"
+            # Use "nightly" prefix.
+            image_tag="nightly" 
           fi
           echo "Image Tag: $image_tag"
           echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
@@ -50,3 +50,12 @@ jobs:
       - name: Push Docker Image
         run: |
           docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:${{ env.IMAGE_TAG }}
+        # Push the built Docker image to Docker Hub
+
+      - name: Prune Old Images (Main Branch Builds)
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+        run: |
+          docker images --filter "reference=main*" --format "{{.Repository}}:{{.Tag}}" | sort -r | tail -n +21 | xargs -n 1 docker rmi || true
+        # Prune old images from the local Docker repository for main branch builds.
+        # This step is executed only for pushes to the main branch builds.
+        # The `|| true` ensures that the workflow continues even if there are no old images to prune.
