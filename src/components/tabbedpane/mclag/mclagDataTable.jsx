@@ -116,6 +116,8 @@ const McLagDataTable = (props) => {
 
     const handleCellValueChanged = useCallback((params) => {
         if (
+            params.data.mclag_sys_mac !== null &&
+            params.data.mclag_sys_mac !== "" &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 params.data.mclag_sys_mac
             )
@@ -124,11 +126,17 @@ const McLagDataTable = (props) => {
             return;
         }
 
-        if (!/^PortChannel\d+$/.test(params.data.peer_link)) {
+        if (
+            params.data.peer_link !== null &&
+            params.data.peer_link !== "" &&
+            !/^PortChannel\d+$/.test(params.data.peer_link)
+        ) {
             alert("Invalid peer_link format.");
             return;
         }
         if (
+            params.data.source_address !== null &&
+            params.data.source_address !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 params.data.source_address
             )
@@ -137,11 +145,18 @@ const McLagDataTable = (props) => {
             return;
         }
         if (
+            params.data.peer_addr !== null &&
+            params.data.peer_addr !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 params.data.peer_addr
             )
         ) {
             alert("Invalid peer_addr format.");
+            return;
+        }
+
+        if (params.data.domain_id < 0) {
+            alert("Domain id cannot be less than 0.");
             return;
         }
         if (params.newValue !== params.oldValue) {
