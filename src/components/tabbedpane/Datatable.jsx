@@ -37,6 +37,8 @@ const Datatable = (props) => {
     }, [isTabbedPane]);
 
     const getDevices = () => {
+        setDisableConfig(true);
+
         setDataTable([]);
         instance(getAllDevicesURL())
             .then((res) => {
@@ -48,15 +50,18 @@ const Datatable = (props) => {
                 } else {
                     setDataTable(res.data);
                 }
+                setDisableConfig(false);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.log(err);
+                setDisableConfig(false);
+            });
     };
 
     const onColumnResized = useCallback((params) => {}, []);
 
     const onCellClicked = useCallback((params) => {
         if (params.event.target.tagName === "BUTTON") {
-            console.log("onCellClicked", params.data.mgt_ip);
             setSelectedDeviceToDelete(params.data.mgt_ip);
         }
     }, []);
@@ -66,7 +71,6 @@ const Datatable = (props) => {
     };
 
     const handleDeleteConfirmation = () => {
-        console.log("Delete");
         setDisableConfig(true);
         const apiPUrl = deleteDevicesURL();
         instance
@@ -108,12 +112,14 @@ const Datatable = (props) => {
                             links will be removed
                         </p>
                         <button
+                            disabled={disableConfig}
                             className="btnStyle mt-10 mr-10"
                             onClick={handleDeleteConfirmation}
                         >
                             Yes
                         </button>
                         <button
+                            disabled={disableConfig}
                             className="btnStyle mt-10"
                             onClick={handleDeleteCancellation}
                         >

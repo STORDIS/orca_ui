@@ -76,7 +76,6 @@ export const ChatSection = ({sendDataToParent}) => {
                     const updatedHistory = [...prevChatHistory];
 
                     if (typeof response?.data?.message === "string") {
-                        console.log("1");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
@@ -84,14 +83,12 @@ export const ChatSection = ({sendDataToParent}) => {
                             "string";
                         return updatedHistory;
                     } else if (response?.data?.message.length > 0) {
-                        console.log("2");
                         updatedHistory[updatedHistory.length - 1].message =
                             response?.data?.message;
                         updatedHistory[updatedHistory.length - 1].type =
                             "resData";
                         return updatedHistory;
                     } else {
-                        console.log("3");
                         const updatedHistory = [...prevChatHistory];
                         updatedHistory[updatedHistory.length - 1].message =
                             JSON.stringify(response?.data?.message, null, 2);
@@ -143,7 +140,6 @@ export const ChatSection = ({sendDataToParent}) => {
     };
 
     const getGoogleChart = (index) => {
-        console.log("google chart", googleChartData[index]);
 
         if (
             !googleChartData[index]?.cols?.length !== 0 &&
@@ -156,7 +152,6 @@ export const ChatSection = ({sendDataToParent}) => {
                     prompt: currentChatHistory[index - 1],
                 })
                 .then((response) => {
-                    console.log(JSON.parse(response.data.message));
 
                     let tempData = JSON.parse(response.data.message);
 
@@ -182,7 +177,6 @@ export const ChatSection = ({sendDataToParent}) => {
                     setIsLoadingChart(false);
                 });
         } else {
-            console.log("else", googleChartData[index]);
         }
     };
 

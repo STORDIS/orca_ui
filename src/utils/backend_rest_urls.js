@@ -78,3 +78,7 @@ export function bookmarkDeleteAllURL() {
 export function getUserDetailsURL(user) {
     return host_addr + "/auth/user/" + user;
 }
+
+export function deletePortchannelVlanMemberURL() {
+    return host_addr + "/port_chnl_vlan_member_remove";
+}

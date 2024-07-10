@@ -117,7 +117,6 @@ const PortGroupTable = (props) => {
         setConfigStatus("Config In Progress....");
 
         const req_json = createReqJson();
-        console.log(JSON.stringify(req_json));
         const apiUrl = getPortGroupsURL(selectedDeviceIp);
         instance
             .put(apiUrl, req_json)
