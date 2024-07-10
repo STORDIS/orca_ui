@@ -417,7 +417,7 @@ export const portChannelColumns = [
     },
     {
         field: "graceful_shutdown_mode",
-        headerName: "Shutdown Mode",
+        headerName: "Graceful Shutdown Mode",
         width: 130,
         sortable: true,
         cellEditor: "agSelectCellEditor",
