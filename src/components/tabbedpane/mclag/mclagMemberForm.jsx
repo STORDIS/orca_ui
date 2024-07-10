@@ -37,12 +37,12 @@ const MclagMemberForm = ({
     }, []);
 
     const getPortchannel = () => {
+        setInterfaceNames([]);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiPUrl)
             .then((res) => {
                 const names = res.data.map((item) => item.lag_name);
-
                 setInterfaceNames(names);
             })
             .catch((err) => {
@@ -87,13 +87,39 @@ const MclagMemberForm = ({
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: payload })
-            .then((res) => {})
+            .then((res) => {
+                setSelectedInterfaces((prev) => {
+                    return prev.filter((item) => item !== e);
+                });
+            })
             .catch((err) => {})
             .finally(() => {
                 setLog(true);
                 setDisableConfig(false);
+                getPortchannel();
             });
-        // setDisableConfig(false);
+    };
+
+    const removeAll = () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            domain_id: inputData.domain_id,
+            mclag_members: [],
+        };
+
+        setDisableConfig(true);
+        const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
+        instance
+            .delete(apiPUrl, { data: payload })
+            .then((res) => {
+                setSelectedInterfaces([]);
+            })
+            .catch((err) => {})
+            .finally(() => {
+                setLog(true);
+                setDisableConfig(false);
+                getPortchannel();
+            });
     };
 
     const handleSubmit = (e) => {
@@ -164,7 +190,14 @@ const MclagMemberForm = ({
                 >
                     Apply Config
                 </button>
-
+                <button
+                    type="button"
+                    className="btnStyle mr-10"
+                    disabled={disableConfig}
+                    onClick={removeAll}
+                >
+                    Remove All
+                </button>
                 <button type="button" className="btnStyle" onClick={onCancel}>
                     Cancel
                 </button>
