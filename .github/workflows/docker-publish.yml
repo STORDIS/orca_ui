@@ -59,8 +59,8 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push "$lowercase_docker_repo_image_url"
-        # Push the built Docker image to Docker Hub
+          docker push ${{ env.lowercase_docker_repo_image_url }}
+          # Push the built Docker image to Docker Hub
 
       - name: Prune Old Images (Main Branch Builds)
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
