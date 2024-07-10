@@ -34,8 +34,8 @@ jobs:
           if [[ ${{ github.event_name }} == 'release' ]]; then
             image_tag="${{ github.event.release.tag_name }}"
             # Build and push 'latest' tag along with release, Hence there :latest tag always refers to latest released image 
-            docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/{{ repository }}:latest .
-            docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/{{ repository }}:latest
+            docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:latest .
+            docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:latest
           elif [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
             # Use branch name, short hash, and commit message
             short_sha=$(git rev-parse --short HEAD)
@@ -51,12 +51,12 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/{{ repository }}:${{ env.IMAGE_TAG }} .
+          docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:${{ env.IMAGE_TAG }} .
         # Build the Docker image using the generated image tag
 
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/{{ repository }}:${{ env.IMAGE_TAG }}
+          docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
         # Push the built Docker image to Docker Hub
 
       - name: Prune Old Images (Main Branch Builds)
