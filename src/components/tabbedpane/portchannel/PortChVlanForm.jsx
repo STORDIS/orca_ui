@@ -131,11 +131,17 @@ const PortChVlanForm = ({
             }
         });
 
+        if (finalVlanMembers.access_vlan === "") {
+            delete finalVlanMembers.access_vlan;
+        }
+
+        if (finalVlanMembers.trunk_vlans.length === 0) {
+            delete finalVlanMembers.trunk_vlans;
+        }
+
         let dataToSubmit = {
             mgt_ip: selectedDeviceIp,
             lag_name: inputData.lag_name,
-            mtu: inputData.mtu,
-            admin_status: inputData.admin_sts,
             vlan_members: finalVlanMembers,
         };
 
