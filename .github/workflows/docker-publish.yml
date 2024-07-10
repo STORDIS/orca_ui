@@ -51,12 +51,13 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:${{ env.IMAGE_TAG }} .
+          docker_repo_image_url="${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:${{ env.IMAGE_TAG }}"
+          docker build -t "$docker_repo_image_url" .
         # Build the Docker image using the generated image tag
 
       - name: Push Docker Image
         run: |
-          docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
+          docker push "$docker_repo_image_url"
         # Push the built Docker image to Docker Hub
 
       - name: Prune Old Images (Main Branch Builds)
