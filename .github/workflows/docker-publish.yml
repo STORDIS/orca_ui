@@ -40,7 +40,7 @@ jobs:
             # Use branch name, short hash, and commit message
             short_sha=$(git rev-parse --short HEAD)
             image_tag="main-$short_sha-${{ github.event.head_commit.message }}"
-            image_tag=$(echo "$image_tag" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g')
+            image_tag=$(echo "$image_tag" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g' | tr '\n' '_')
           else
             # Use "nightly" prefix.
             image_tag="nightly" 
