@@ -59,7 +59,8 @@ jobs:
 
       - name: Push Docker Image
         run: |
-          docker push ${{ env.lowercase_docker_repo_image_url }}
+          docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/${{ github.repository }}:${{ env.IMAGE_TAG }}
+
           # Push the built Docker image to Docker Hub
 
       - name: Prune Old Images (Main Branch Builds)
