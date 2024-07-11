@@ -1,19 +1,22 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import "../tabbedPaneTable.scss";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import Modal from "../../modal/Modal";
+
 import { portChannelColumns } from "../datatablesourse";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
 } from "../../../utils/backend_rest_urls";
-import PortChannelForm from "./PortChannelForm";
-import Modal from "../../modal/Modal";
-import MembersSelection from "./MembersSelection";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import PortChannelForm from "./PortChannelForm";
+import PortChMemberForm from "./portChMemberForm";
+import PortChVlanForm from "./PortChVlanForm";
+import "../tabbedPaneTable.scss";
+
 import { getIsStaff } from "../datatablesourse";
 
 const PortChDataTable = (props) => {
@@ -24,16 +27,12 @@ const PortChDataTable = (props) => {
     );
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
-    const [originalData, setOriginalData] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
 
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
 
     const [selectedRows, setSelectedRows] = useState([]);
-    const [currentRowData, setCurrentRowData] = useState(null);
-    const [interfaceNames, setInterfaceNames] = useState([]);
-    const [existingMembers, setExistingMembers] = useState([]);
 
     const instance = interceptor();
 
@@ -46,45 +45,28 @@ const PortChDataTable = (props) => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getAllPortChanalData();
-            getInterfaces();
         }
         props.reset(false);
     }, [props.refresh]);
 
     useEffect(() => {
-        getInterfaces();
         getAllPortChanalData();
     }, [selectedDeviceIp]);
 
-    const getInterfaces = () => {
-        instance
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((res) => {
-                const names = res.data.map((item) => item.name);
-                setInterfaceNames(names);
-            })
-            .catch((error) =>
-                console.error("Failed to fetch interface names:", error)
-            );
-    };
-
     const getAllPortChanalData = () => {
         setDataTable([]);
-        setOriginalData([]);
         setChanges([]);
 
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .get(apiPUrl)
             .then((res) => {
-                let data = res.data;
+                let data = res.data.map((data) => {
+                    data.vlan_members = JSON.stringify(data.vlan_members);
+                    return data;
+                });
 
-                data &&
-                    data.map(
-                        (val) => (val["members"] = val["members"].toString())
-                    );
                 setDataTable(data);
-                setOriginalData(JSON.parse(JSON.stringify(data)));
             })
             .catch((err) => {
                 console.log(err);
@@ -100,38 +82,13 @@ const PortChDataTable = (props) => {
 
     const refreshData = () => {
         setDataTable([]);
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
-            .then((res) => {
-                setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
-            })
-            .catch((err) => {
-                setDataTable([]);
-                setOriginalData([]);
-            })
-            .finally(() => {
-                setIsModalOpen("null");
-            });
-    };
-
-    const handleFormSubmit = (formData) => {
-        setDisableConfig(true);
-
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .put(apiPUrl, formData)
-            .then((res) => {})
-            .catch((err) => {})
-            .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
-                refreshData();
-            });
+        getAllPortChanalData();
+        setIsModalOpen("null");
     };
 
     const deletePortchannel = () => {
+        setDisableConfig(true);
+
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const deleteData = selectedRows.map((rowData) => ({
             mgt_ip: selectedDeviceIp,
@@ -155,6 +112,8 @@ const PortChDataTable = (props) => {
             .catch((err) => {})
             .finally(() => {
                 refreshData();
+                setDisableConfig(false);
+
                 setLog(true);
             });
     };
@@ -164,8 +123,6 @@ const PortChDataTable = (props) => {
         const selectedData = selectedNodes.map((node) => node.data);
         setSelectedRows(selectedData);
     };
-
-
 
     const resetConfigStatus = () => {
         setConfigStatus("");
@@ -205,6 +162,7 @@ const PortChDataTable = (props) => {
                     latestChanges = [
                         ...prev,
                         {
+                            mgt_ip: selectedDeviceIp,
                             lag_name: params.data.lag_name,
                             [params.colDef.field]: params.newValue,
                         },
@@ -215,73 +173,27 @@ const PortChDataTable = (props) => {
         }
     }, []);
 
-    const createJsonOutput = useCallback(() => {
-        let output = changes.map((change) => {
-            let members = change.members;
-            if (
-                Array.isArray(members) &&
-                members.length > 0 &&
-                Array.isArray(members[0])
-            ) {
-                members = members.flat();
-            }
-
-            return {
-                mgt_ip: selectedDeviceIp,
-                lag_name: change.lag_name,
-                ...change,
-                members,
-            };
-        });
-
-        return output;
-    }, [selectedDeviceIp, changes]);
-
-    const sendUpdates = useCallback(() => {
-        if (changes.length === 0) {
-            return;
-        }
-        setDisableConfig(true);
-        setConfigStatus("Config In Progress....");
-
-        const output = createJsonOutput();
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .put(apiPUrl, output)
-            .then((res) => {
-                resetConfigStatus();
-            })
-            .catch((err) => {
-                resetConfigStatus();
-            })
-            .finally(() => {
-                setDisableConfig(false);
-                setLog(true);
-                refreshData();
-            });
-    }, [changes.length, createJsonOutput, selectedDeviceIp, instance]);
-
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "members") {
-            setCurrentRowData(params?.data);
-            setExistingMembers(params?.data?.members);
             setIsModalOpen("addPortchannelMembers");
         }
+        if (params?.colDef?.field === "vlan_members") {
+            setIsModalOpen("addPortchannelVlan");
+        }
+        setSelectedRows(params.data);
     }, []);
 
-    const handleMembersSave = (selectedMembers) => {
+    const handleFormSubmit = (formData) => {
         setDisableConfig(true);
 
-        const output = {
-            mgt_ip: selectedDeviceIp,
-            members: selectedMembers,
-            lag_name: currentRowData.lag_name,
-        };
+        // formData.forEach((obj) => {
+        //     obj.mgt_ip = selectedDeviceIp;
+        // });
 
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
 
         instance
-            .put(apiPUrl, output)
+            .put(apiPUrl, formData)
             .then((res) => {
                 resetConfigStatus();
             })
@@ -290,40 +202,6 @@ const PortChDataTable = (props) => {
             })
             .finally(() => {
                 getAllPortChanalData();
-                setLog(true);
-                setDisableConfig(false);
-                setIsModalOpen("null");
-            });
-    };
-
-    const handelDeleteMemeber = (e) => {
-        setDisableConfig(true);
-
-        setIsModalOpen("delete");
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        const output = {
-            mgt_ip: selectedDeviceIp,
-            members: e,
-            lag_name: currentRowData.lag_name,
-        };
-        instance
-            .delete(apiPUrl, { data: output })
-            .then((response) => {
-                if (response.data && Array.isArray(response.data.result)) {
-                    const updatedDataTable = dataTable.filter(
-                        (row) =>
-                            !selectedRows.some(
-                                (selectedRow) =>
-                                    selectedRow.lag_name === row.lag_name
-                            )
-                    );
-                    setDataTable(updatedDataTable);
-                }
-                setSelectedRows([]);
-            })
-            .catch((err) => {})
-            .finally(() => {
-                refreshData();
                 setLog(true);
                 setDisableConfig(false);
                 setIsModalOpen("null");
@@ -352,7 +230,7 @@ const PortChDataTable = (props) => {
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
-                            onClick={sendUpdates}
+                            onClick={() => handleFormSubmit(changes)}
                             disabled={
                                 disableConfig ||
                                 Object.keys(changes).length === 0
@@ -420,12 +298,29 @@ const PortChDataTable = (props) => {
                         onClose={refreshData}
                         title="Select Member Interfaces"
                     >
-                        <MembersSelection
-                            interfaceNames={interfaceNames}
-                            existingMembers={existingMembers}
-                            onDeleteMember={handelDeleteMemeber}
-                            onSave={(selectedMembers) => {
-                                handleMembersSave(selectedMembers);
+                        <PortChMemberForm
+                            selectedDeviceIp={selectedDeviceIp}
+                            inputData={selectedRows}
+                            onSubmit={(data) => {
+                                handleFormSubmit(data);
+                            }}
+                            onCancel={refreshData}
+                        />
+                    </Modal>
+                )}
+
+                {/* member selection */}
+                {isModalOpen === "addPortchannelVlan" && (
+                    <Modal
+                        show={true}
+                        onClose={refreshData}
+                        title="Select Vlan Member"
+                    >
+                        <PortChVlanForm
+                            selectedDeviceIp={selectedDeviceIp}
+                            inputData={selectedRows}
+                            onSubmit={(data) => {
+                                handleFormSubmit(data);
                             }}
                             onCancel={refreshData}
                         />
@@ -447,6 +342,7 @@ const PortChDataTable = (props) => {
                             >
                                 <button
                                     className="btnStyle"
+                                    disabled={disableConfig}
                                     onClick={deletePortchannel}
                                 >
                                     Yes

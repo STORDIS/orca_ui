@@ -7,12 +7,7 @@ import {
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 
-const VlanForm = ({
-    onSubmit,
-    selectedDeviceIp,
-    onCancel,
-    handelSubmitButton,
-}) => {
+const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const instance = interceptor();
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
@@ -70,11 +65,11 @@ const VlanForm = ({
             }));
         }
 
-        if(name === 'ip_address' && value) {
+        if (name === "ip_address" && value) {
             setDisabledSagIp(true);
-        }else if(name ==='sag_ip_address' && value) {
+        } else if (name === "sag_ip_address" && value) {
             setDisabledIp(true);
-        }else{
+        } else {
             setDisabledIp(false);
             setDisabledSagIp(false);
         }
