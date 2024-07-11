@@ -31,14 +31,13 @@ const PortChannelForm = ({
         mtu: 9100,
         members: "",
 
-        static: true,
-        fallback: true,
-        fast_rate: true,
-        graceful_shutdown_mode: "enable",
-        min_links: "",
+        static: false,
+        fallback: false,
+        fast_rate: false,
+        graceful_shutdown_mode: "disable",
+        min_links: 1,
         ip_address: null,
         description: null,
-
         vlan_members: null,
     });
 
@@ -290,7 +289,7 @@ const PortChannelForm = ({
                         name="static"
                         value={formData.static}
                         onChange={handleChange}
-                        defaultValue={true}
+                        defaultValue={false}
                     >
                         <option selected value={true}>
                             True
@@ -304,7 +303,7 @@ const PortChannelForm = ({
                         name="fallback"
                         value={formData.fallback}
                         onChange={handleChange}
-                        defaultValue={true}
+                        defaultValue={false}
                     >
                         <option selected value={true}>
                             True
@@ -321,7 +320,7 @@ const PortChannelForm = ({
                         name="fast_rate"
                         value={formData.fast_rate}
                         onChange={handleChange}
-                        defaultValue={true}
+                        defaultValue={false}
                     >
                         <option selected value={true}>
                             True
