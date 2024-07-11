@@ -69,15 +69,15 @@ const TabbedPane = () => {
         <div>
             <div className="listContainer">
                 Device :
-                <select value={deviceIP} onChange={handleDeviceChange}>
+                <select className="ml-10" value={deviceIP} onChange={handleDeviceChange}>
                     {dropdownOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.value}
                         </option>
                     ))}
                 </select>
-                &nbsp; &nbsp;
-                <button type="button" onClick={onUndo}>
+                
+                <button type="button" className="btnColor ml-10" onClick={onUndo}>
                     Undo Changes
                 </button>
             </div>

@@ -10,6 +10,10 @@
     flex-direction: column;
 }
 
+.note {
+    font-size: 12px;
+}
+
 .w-50 {
     width: 50% !important;
 }
@@ -27,6 +31,7 @@
 
 .form-field input[type="text"],
 .form-field input[type="number"],
+.form-field textarea,
 .form-field select {
     padding: 6px;
     border: 1px solid #ccc;
