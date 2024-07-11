@@ -20,32 +20,39 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        # Checkout the code from the repository
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.STORDIS_DOCKER_HUB_USER }}
           password: ${{ secrets.STORDIS_DOCKER_HUB_ACCESS_TOKEN }}
+        # Login to Docker Hub using the provided credentials
 
       - name: Generate Image Tag
         run: |
           if [[ ${{ github.event_name }} == 'release' ]]; then
             image_tag="${{ github.event.release.tag_name }}"
+            # Build and push 'latest' tag along with release, Hence there :latest tag always refers to latest released image 
+            docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:latest .
+            docker push ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:latest
           elif [[ ${{ github.event_name }} == 'push' && ${{ github.ref }} == 'refs/heads/main' ]]; then
             # Use branch name, short hash, and commit message
             short_sha=$(git rev-parse --short HEAD)
             image_tag="main-$short_sha-${{ github.event.head_commit.message }}"
-            image_tag=$(echo "$image_tag" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g')
+            image_tag=$(echo "$image_tag" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/_/g' | tr '\n' '_')
           else
             # Use "nightly" prefix.
             image_tag="nightly" 
           fi
           echo "Image Tag: $image_tag"
           echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
+        # Generate the image tag based on the event type (release, push to main, or nightly build)
 
       - name: Build Docker Image
         run: |
           docker build -t ${{ secrets.STORDIS_DOCKER_HUB_USER }}/orca_ui:${{ env.IMAGE_TAG }} .
+        # Build the Docker image using the generated image tag
 
       - name: Push Docker Image
         run: |
