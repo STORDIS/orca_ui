@@ -50,7 +50,6 @@ const McLagDataTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
-                console.log(res.data);
                 let data = res.data.map((item) => {
                     if (item.fast_convergence === null) {
                         item.fast_convergence = "disable";

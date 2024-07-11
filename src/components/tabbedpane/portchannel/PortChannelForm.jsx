@@ -67,7 +67,6 @@ const PortChannelForm = ({
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value);
 
         if (name === "mtu" && parseInt(value) < 0) {
             return;
