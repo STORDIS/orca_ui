@@ -29,7 +29,7 @@ const MclagForm = ({
         delay_restore: 300,
         session_vrf: undefined,
         fast_convergence: "enable",
-        gateway_mac: null,
+        gateway_mac: undefined,
     });
 
     const handleChange = (e) => {
@@ -64,7 +64,7 @@ const MclagForm = ({
         }
         if (
             formData.mclag_sys_mac !== undefined &&
-            formData.mclag_sys_mac !== undefined &&
+            formData.mclag_sys_mac !== "" &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 formData.mclag_sys_mac
             )
@@ -74,7 +74,7 @@ const MclagForm = ({
         }
         if (
             formData.gateway_mac !== undefined &&
-            formData.gateway_mac !== undefined &&
+            formData.gateway_mac !== "" &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 formData.gateway_mac
             )
@@ -92,7 +92,7 @@ const MclagForm = ({
         }
         if (
             formData.source_address !== undefined &&
-            formData.source_address !== undefined &&
+            formData.source_address !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.source_address
             )
@@ -102,7 +102,7 @@ const MclagForm = ({
         }
         if (
             formData.peer_addr !== undefined &&
-            formData.peer_addr !== undefined &&
+            formData.peer_addr !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.peer_addr
             )
@@ -290,20 +290,6 @@ const MclagForm = ({
                         />
                     </div>
                 </div>
-
-                {/* <div className="form-wrapper">
-                    <div className="form-field w-50">
-                        <label> Role :</label>
-                        <select
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                        >
-                            <option value="enable">Enable</option>
-                            <option value="disable">Disable</option>
-                        </select>
-                    </div>
-                </div> */}
 
                 <div className="form-wrapper">
                     <div className="form-field w-75">

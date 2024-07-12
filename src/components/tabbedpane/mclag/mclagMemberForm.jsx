@@ -4,7 +4,7 @@ import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import {
     getAllPortChnlsOfDeviceURL,
-    getAllMclagsOfDeviceURL,
+    deleteMclagsMemberURL,
 } from "../../../utils/backend_rest_urls";
 
 const MclagMemberForm = ({
@@ -84,7 +84,7 @@ const MclagMemberForm = ({
         };
 
         setDisableConfig(true);
-        const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
+        const apiPUrl = deleteMclagsMemberURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: payload })
             .then((res) => {
@@ -104,11 +104,11 @@ const MclagMemberForm = ({
         let payload = {
             mgt_ip: selectedDeviceIp,
             domain_id: inputData.domain_id,
-            mclag_members: [],
+            mclag_members: JSON.parse(inputData.mclag_members),
         };
 
         setDisableConfig(true);
-        const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
+        const apiPUrl = deleteMclagsMemberURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: payload })
             .then((res) => {

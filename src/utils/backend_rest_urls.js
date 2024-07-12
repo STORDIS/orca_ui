@@ -12,6 +12,10 @@ export function getAllMclagsOfDeviceURL(device_ip) {
     return host_addr + "/mclags?mgt_ip=" + device_ip;
 }
 
+export function deleteMclagsMemberURL(device_ip) {
+    return host_addr + "/delete_mclag_members";
+}
+
 export function getAllBGPOfDeviceURL(device_ip) {
     return host_addr + "/bgp?mgt_ip=" + device_ip;
 }
