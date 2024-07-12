@@ -23,7 +23,7 @@ const TabbedPane = () => {
     const instance = interceptor();
 
     const { deviceIP } = useParams();
-    const [tabValue, setTabValue] = React.useState(
+    const [tabvalue, settabvalue] = React.useState(
         parseInt(secureLocalStorage.getItem("selectedTab")) !== null
             ? parseInt(secureLocalStorage.getItem("selectedTab"))
             : 0
@@ -35,8 +35,8 @@ const TabbedPane = () => {
 
     useEffect(() => {
         if (!secureLocalStorage.getItem("selectedTab")) {
-            setTabValue(0);
-            secureLocalStorage.setItem("selectedTab", tabValue.toString());
+            settabvalue(0);
+            secureLocalStorage.setItem("selectedTab", tabvalue.toString());
         }
 
         instance(getAllDevicesURL())
@@ -47,10 +47,10 @@ const TabbedPane = () => {
                 setDropdownOptions(data);
             })
             .catch((err) => console.log(err));
-    }, [disableConfig, tabValue]);
+    }, [disableConfig, tabvalue]);
 
     const handleTabs = (event, val) => {
-        setTabValue(val);
+        settabvalue(val);
         secureLocalStorage.setItem("selectedTab", val.toString());
     };
 
@@ -83,7 +83,7 @@ const TabbedPane = () => {
             </div>
             <div className="listContainer ">
                 <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <Tabs value={tabValue} onChange={handleTabs}>
+                    <Tabs value={tabvalue} onChange={handleTabs}>
                         <Tab label="Device Info" />
                         <Tab label="Interfaces" />
                         <Tab label="PortChannels" />
@@ -93,8 +93,8 @@ const TabbedPane = () => {
                         <Tab label="VLANs" />
                     </Tabs>
                 </Box>
-                {tabValue === 0 && (
-                    <div className="resizable" tabValue={tabValue} index={0}>
+                {tabvalue === 0 && (
+                    <div className="resizable" tabvalue={tabvalue} index={0}>
                         <Deviceinfo
                             columns={2}
                             isTabbedPane={true}
@@ -102,8 +102,8 @@ const TabbedPane = () => {
                         />
                     </div>
                 )}
-                {tabValue === 1 && (
-                    <div className="resizable" tabValue={tabValue} index={1}>
+                {tabvalue === 1 && (
+                    <div className="resizable" tabvalue={tabvalue} index={1}>
                         <InterfaceDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
@@ -111,8 +111,8 @@ const TabbedPane = () => {
                         />
                     </div>
                 )}
-                {tabValue === 2 && (
-                    <div className="resizable" tabValue={tabValue} index={2}>
+                {tabvalue === 2 && (
+                    <div className="resizable" tabvalue={tabvalue} index={2}>
                         <PortChDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
@@ -120,8 +120,8 @@ const TabbedPane = () => {
                         />
                     </div>
                 )}
-                {tabValue === 3 && (
-                    <div className="resizable" tabValue={tabValue} index={3}>
+                {tabvalue === 3 && (
+                    <div className="resizable" tabvalue={tabvalue} index={3}>
                         <McLagDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
@@ -129,8 +129,8 @@ const TabbedPane = () => {
                         />
                     </div>
                 )}
-                {tabValue === 4 && (
-                    <div className="resizable" tabValue={tabValue} index={4}>
+                {tabvalue === 4 && (
+                    <div className="resizable" tabvalue={tabvalue} index={4}>
                         <BGPTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
@@ -138,8 +138,8 @@ const TabbedPane = () => {
                         />
                     </div>
                 )}
-                {tabValue === 5 && (
-                    <div className="resizable" tabValue={tabValue} index={5}>
+                {tabvalue === 5 && (
+                    <div className="resizable" tabvalue={tabvalue} index={5}>
                         <PortGroupTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
@@ -147,8 +147,8 @@ const TabbedPane = () => {
                         />
                     </div>
                 )}
-                {tabValue === 6 && (
-                    <div className="resizable" tabValue={tabValue} index={6}>
+                {tabvalue === 6 && (
+                    <div className="resizable" tabvalue={tabvalue} index={6}>
                         <VlanTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
@@ -162,8 +162,8 @@ const TabbedPane = () => {
 };
 
 // const div = (props) => {
-//     const { children, tabValue, index } = props;
-//     return <div className="">{tabValue === index && <h5>{children}</h5>}</div>;
+//     const { children, tabvalue, index } = props;
+//     return <div className="">{tabvalue === index && <h5>{children}</h5>}</div>;
 // };
 
 export default TabbedPane;

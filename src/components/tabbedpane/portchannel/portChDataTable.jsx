@@ -266,7 +266,6 @@ const PortChDataTable = (props) => {
                         defaultColDef={defaultColDef}
                         onCellValueChanged={handleCellValueChanged}
                         rowSelection="multiple"
-                        checkboxSelection
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}

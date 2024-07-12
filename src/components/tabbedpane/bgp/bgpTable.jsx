@@ -104,7 +104,6 @@ const BGPTable = (props) => {
     };
 
     const handleFormSubmit = (formData, status) => {
-        console.log(formData, status);
         setDisableConfig(true);
         setConfigStatus("Config In Progress....");
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);

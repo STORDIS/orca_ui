@@ -5,6 +5,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 
 import "../tabbedPaneTable.scss";
 import MclagForm from "./mclagForm";
+import MclagMemberForm from "./mclagMemberForm";
 
 import { mclagColumns, defaultColDef } from "../datatablesourse";
 import { getAllMclagsOfDeviceURL } from "../../../utils/backend_rest_urls";
@@ -23,7 +24,7 @@ const McLagDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [changes, setChanges] = useState({});
+    const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
@@ -53,7 +54,7 @@ const McLagDataTable = (props) => {
                     if (item.fast_convergence === null) {
                         item.fast_convergence = "disable";
                     }
-
+                    item.mclag_members = JSON.stringify(item.mclag_members);
                     return item;
                 });
 
@@ -73,6 +74,14 @@ const McLagDataTable = (props) => {
     };
 
     const handleFormSubmit = (formData) => {
+        if (Array.isArray(formData)) {
+            formData.map((item) => {
+                item.domain_id = selectedRows.domain_id;
+                return item;
+            });
+        }
+
+        console.log(formData);
         setDisableConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
@@ -111,6 +120,20 @@ const McLagDataTable = (props) => {
                 setSelectedRows([]);
                 refreshData();
             });
+    };
+
+    const handleDelete = () => {
+        setIsModalOpen("deleteMclag");
+
+        selectedRows.forEach((element) => {
+            setModalContent(
+                "Do you want to delete Mclag with id " + element.domain_id
+            );
+        });
+    };
+
+    const openAddFormModal = () => {
+        setIsModalOpen("addMclag");
     };
 
     const handleCellValueChanged = useCallback((params) => {
@@ -159,33 +182,51 @@ const McLagDataTable = (props) => {
             return;
         }
 
-        if (params.newValue !== params.oldValue) {
-            let payload = {
-                mgt_ip: selectedDeviceIp,
-                ...params.data,
-            };
-
-            setChanges(payload);
+        if (params.data.domain_id < 0) {
+            alert("Domain id cannot be less than 0.");
+            return;
         }
+
+        if (params.newValue !== params.oldValue) {
+            setChanges((prev) => {
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.vlanid === params.data.vlanid
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
+                        (val) => val.vlanid === params.data.vlanid
+                    );
+                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    latestChanges = [...prev];
+                } else {
+                    latestChanges = [
+                        ...prev,
+                        {
+                            mgt_ip: selectedDeviceIp,
+                            [params.colDef.field]: params.newValue || "",
+                        },
+                    ];
+                }
+                return latestChanges;
+            });
+        }
+        // if (params.newValue !== params.oldValue) {
+        //     let payload = {
+        //         mgt_ip: selectedDeviceIp,
+        //         ...params.data,
+        //     };
+
+        //     setChanges(payload);
+        // }
     }, []);
 
     const onColumnResized = useCallback((params) => {}, []);
 
-    const handleDelete = () => {
-        setIsModalOpen("deleteMclag");
-
-        selectedRows.forEach((element) => {
-            setModalContent(
-                "Do you want to delete Mclag with id " + element.domain_id
-            );
-        });
-    };
-
-    const openAddFormModal = () => {
-        setIsModalOpen("addMclag");
-    };
-
     const onCellClicked = useCallback((params) => {
+        if (params?.colDef?.field === "mclag_members") {
+            setIsModalOpen("memberMclag");
+        }
         setSelectedRows(params.data);
     }, []);
 
@@ -236,7 +277,6 @@ const McLagDataTable = (props) => {
                     onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    checkboxSelection
                     enableCellTextSelection="true"
                     rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
@@ -250,6 +290,22 @@ const McLagDataTable = (props) => {
                 <Modal show={true} onClose={refreshData} title={"Add Mclag"}>
                     <MclagForm
                         onSubmit={(e) => handleFormSubmit(e)}
+                        selectedDeviceIp={selectedDeviceIp}
+                        onCancel={refreshData}
+                        handelSubmitButton={disableConfig}
+                    />
+                </Modal>
+            )}
+
+            {isModalOpen === "memberMclag" && (
+                <Modal
+                    show={true}
+                    onClose={refreshData}
+                    title={"Add Mclag Members"}
+                >
+                    <MclagMemberForm
+                        onSubmit={(e) => handleFormSubmit(e)}
+                        inputData={selectedRows}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={refreshData}
                         handelSubmitButton={disableConfig}

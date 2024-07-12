@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+import { getAllPortChnlsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import "../Form.scss";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import interceptor from "../../../utils/interceptor";
 
 const MclagForm = ({
     onSubmit,
@@ -9,6 +12,9 @@ const MclagForm = ({
     handelSubmitButton,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
+    const [interfaceNames, setInterfaceNames] = useState([]);
+    const [selectedInterfaces, setSelectedInterfaces] = useState([]);
+    const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -17,12 +23,13 @@ const MclagForm = ({
         peer_addr: undefined,
         peer_link: undefined,
         mclag_sys_mac: undefined,
-        // mclag_members: [],
+        mclag_members: [],
         keepalive_interval: 1,
         session_timeout: 30,
         delay_restore: 300,
         session_vrf: undefined,
         fast_convergence: "enable",
+        gateway_mac: undefined,
     });
 
     const handleChange = (e) => {
@@ -51,8 +58,13 @@ const MclagForm = ({
             alert(" Domain ID is mandatory.");
             return;
         }
+        if (formData.domain_id === undefined) {
+            alert(" Domain ID is mandatory.");
+            return;
+        }
         if (
             formData.mclag_sys_mac !== undefined &&
+            formData.mclag_sys_mac !== "" &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 formData.mclag_sys_mac
             )
@@ -60,6 +72,17 @@ const MclagForm = ({
             alert("Invalid MAC address.");
             return;
         }
+        if (
+            formData.gateway_mac !== undefined &&
+            formData.gateway_mac !== "" &&
+            !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
+                formData.gateway_mac
+            )
+        ) {
+            alert("Invalid Gate MAC address.");
+            return;
+        }
+
         if (
             formData.peer_link !== undefined &&
             !/^PortChannel\d+$/.test(formData.peer_link)
@@ -69,6 +92,7 @@ const MclagForm = ({
         }
         if (
             formData.source_address !== undefined &&
+            formData.source_address !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.source_address
             )
@@ -78,6 +102,7 @@ const MclagForm = ({
         }
         if (
             formData.peer_addr !== undefined &&
+            formData.peer_addr !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.peer_addr
             )
@@ -86,9 +111,43 @@ const MclagForm = ({
             return;
         }
 
-        setDisableConfig(true);
+        formData.mclag_members = selectedInterfaces;
 
+        setDisableConfig(true);
         onSubmit(formData);
+    };
+
+    useEffect(() => {
+        getPortchannel();
+    }, []);
+
+    const getPortchannel = () => {
+        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        instance
+            .get(apiPUrl)
+            .then((res) => {
+                const names = res.data.map((item) => item.lag_name);
+                setInterfaceNames(names);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const handleRemove = (key) => {
+        setSelectedInterfaces((prev) => {
+            return prev.filter((item) => item !== key);
+        });
+    };
+
+    const handleDropdownChange = (event) => {
+        setSelectedInterfaces((prev) => {
+            const newValue = event.target.value;
+            if (!prev.includes(newValue)) {
+                return [...prev, newValue];
+            }
+            return prev;
+        });
     };
 
     return (
@@ -221,7 +280,61 @@ const MclagForm = ({
                         </select>
                     </div>
 
-                    
+                    <div className="form-field w-50">
+                        <label htmlFor="lag-name">Gateway macs:</label>
+                        <input
+                            type="text"
+                            name="gateway_mac"
+                            value={formData.gateway_mac}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+
+                <div className="form-wrapper">
+                    <div className="form-field w-75">
+                        <label>Select Member Interface </label>
+                        <select
+                            onChange={handleDropdownChange}
+                            defaultValue={"DEFAULT"}
+                        >
+                            <option value="DEFAULT" disabled>
+                                Select Member Interface
+                            </option>
+                            {interfaceNames.map((val, index) => (
+                                <option key={index} value={val}>
+                                    {val}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div className="form-field mt-25">
+                        {Object.keys(selectedInterfaces).length} selected
+                    </div>
+                </div>
+
+                <div className="selected-interface-wrap mb-10 w-100">
+                    {Object.entries(selectedInterfaces).map(
+                        ([key, value], index) => (
+                            <div
+                                key={key}
+                                className="selected-interface-list mb-10"
+                            >
+                                <div className="ml-10 w-50">
+                                    {index + 1} &nbsp; {value}
+                                </div>
+                                <div className=" w-50">
+                                    <button
+                                        className="btnStyle ml-25"
+                                        disabled={disableConfig}
+                                        onClick={() => handleRemove(value)}
+                                    >
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        )
+                    )}
                 </div>
 
                 <div className="">
