@@ -557,8 +557,6 @@ export const mclagColumns = [
         field: "gateway_macs",
         headerName: "Gateway MAC",
         width: 130,
-        editable: getIsStaff(),
-        headerComponent: EditableHeaderComponent,
         sortable: true,
     },
     {

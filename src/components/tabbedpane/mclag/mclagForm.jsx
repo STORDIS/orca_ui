@@ -57,7 +57,12 @@ const MclagForm = ({
             alert(" Domain ID is mandatory.");
             return;
         }
+        if (formData.domain_id === undefined) {
+            alert(" Domain ID is mandatory.");
+            return;
+        }
         if (
+            formData.mclag_sys_mac !== undefined &&
             formData.mclag_sys_mac !== undefined &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 formData.mclag_sys_mac
@@ -66,6 +71,7 @@ const MclagForm = ({
             alert("Invalid MAC address.");
             return;
         }
+
         if (
             formData.peer_link !== undefined &&
             !/^PortChannel\d+$/.test(formData.peer_link)
@@ -75,6 +81,7 @@ const MclagForm = ({
         }
         if (
             formData.source_address !== undefined &&
+            formData.source_address !== undefined &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.source_address
             )
@@ -83,6 +90,7 @@ const MclagForm = ({
             return;
         }
         if (
+            formData.peer_addr !== undefined &&
             formData.peer_addr !== undefined &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 formData.peer_addr
@@ -311,8 +319,11 @@ const MclagForm = ({
                 <div className="selected-interface-wrap mb-10 w-100">
                     {Object.entries(selectedInterfaces).map(
                         ([key, value], index) => (
-                            <div key={key} className="selected-interface-list mb-10">
-                                <div  className="ml-10 w-50">
+                            <div
+                                key={key}
+                                className="selected-interface-list mb-10"
+                            >
+                                <div className="ml-10 w-50">
                                     {index + 1} &nbsp; {value}
                                 </div>
                                 <div className=" w-50">

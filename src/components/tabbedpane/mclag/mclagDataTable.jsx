@@ -67,6 +67,8 @@ const McLagDataTable = (props) => {
         getMclag();
         setConfigStatus("");
         setIsModalOpen("null");
+        setConfigStatus("");
+        setIsModalOpen("null");
     };
 
     const resetConfigStatus = () => {
@@ -80,10 +82,13 @@ const McLagDataTable = (props) => {
             .put(apiPUrl, formData)
             .then((res) => {})
             .catch((err) => {})
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
                 setLog(true);
                 setDisableConfig(false);
                 resetConfigStatus();
+                refreshData();
                 refreshData();
             });
     };
@@ -106,10 +111,13 @@ const McLagDataTable = (props) => {
             .delete(apiPUrl, { data: output })
             .then((res) => {})
             .catch((err) => {})
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
                 setLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
+                refreshData();
                 refreshData();
             });
     };
@@ -132,6 +140,8 @@ const McLagDataTable = (props) => {
         if (
             params.data.mclag_sys_mac !== null &&
             params.data.mclag_sys_mac !== "" &&
+            params.data.mclag_sys_mac !== null &&
+            params.data.mclag_sys_mac !== "" &&
             !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
                 params.data.mclag_sys_mac
             )
@@ -151,6 +161,8 @@ const McLagDataTable = (props) => {
         if (
             params.data.source_address !== null &&
             params.data.source_address !== "" &&
+            params.data.source_address !== null &&
+            params.data.source_address !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 params.data.source_address
             )
@@ -161,6 +173,8 @@ const McLagDataTable = (props) => {
         if (
             params.data.peer_addr !== null &&
             params.data.peer_addr !== "" &&
+            params.data.peer_addr !== null &&
+            params.data.peer_addr !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
                 params.data.peer_addr
             )
@@ -168,6 +182,12 @@ const McLagDataTable = (props) => {
             alert("Invalid peer_addr format.");
             return;
         }
+
+        if (params.data.domain_id < 0) {
+            alert("Domain id cannot be less than 0.");
+            return;
+        }
+
 
         if (params.data.domain_id < 0) {
             alert("Domain id cannot be less than 0.");
@@ -211,9 +231,6 @@ const McLagDataTable = (props) => {
     const onColumnResized = useCallback((params) => {}, []);
 
     const onCellClicked = useCallback((params) => {
-        if (params?.colDef?.field === "mclag_members") {
-            setIsModalOpen("memberMclag");
-        }
         setSelectedRows(params.data);
     }, []);
 
@@ -227,6 +244,7 @@ const McLagDataTable = (props) => {
                         }
                         className="btnStyle"
                         onClick={() => handleFormSubmit(changes)}
+                        onClick={() => handleFormSubmit(changes)}
                     >
                         Apply Config
                     </button>
@@ -238,12 +256,17 @@ const McLagDataTable = (props) => {
                         className="btnStyle"
                         disabled={!getIsStaff()}
                         onClick={openAddFormModal}
+                        onClick={openAddFormModal}
                     >
                         Add Mclag
                     </button>
 
                     <button
                         className="ml-10 btnStyle"
+                        disabled={
+                            selectedRows.length === undefined ||
+                            selectedRows.length === 0
+                        }
                         disabled={
                             selectedRows.length === undefined ||
                             selectedRows.length === 0
@@ -263,12 +286,17 @@ const McLagDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
+                    onColumnResized={onColumnResized}
+                    stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
                     enableCellTextSelection="true"
                     rowSelection="multiple"
+                    rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
                     onCellClicked={onCellClicked}
+                    onCellClicked={onCellClicked}
                     domLayout={"autoHeight"}
+                    suppressRowClickSelection={true}
                     suppressRowClickSelection={true}
                 ></AgGridReact>
             </div>
