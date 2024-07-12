@@ -29,6 +29,7 @@ const MclagForm = ({
         delay_restore: 300,
         session_vrf: undefined,
         fast_convergence: "enable",
+        gateway_mac: null,
     });
 
     const handleChange = (e) => {
@@ -69,6 +70,16 @@ const MclagForm = ({
             )
         ) {
             alert("Invalid MAC address.");
+            return;
+        }
+        if (
+            formData.gateway_mac !== undefined &&
+            formData.gateway_mac !== undefined &&
+            !/^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$/.test(
+                formData.gateway_mac
+            )
+        ) {
+            alert("Invalid Gate MAC address.");
             return;
         }
 
@@ -269,15 +280,15 @@ const MclagForm = ({
                         </select>
                     </div>
 
-                    {/* <div className="form-field w-50">
+                    <div className="form-field w-50">
                         <label htmlFor="lag-name">Gateway macs:</label>
                         <input
                             type="text"
-                            name="gateway_macs"
-                            value={formData.gateway_macs}
+                            name="gateway_mac"
+                            value={formData.gateway_mac}
                             onChange={handleChange}
                         />
-                    </div> */}
+                    </div>
                 </div>
 
                 {/* <div className="form-wrapper">

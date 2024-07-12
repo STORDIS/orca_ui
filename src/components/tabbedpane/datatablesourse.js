@@ -554,10 +554,12 @@ export const mclagColumns = [
         sortable: true,
     },
     {
-        field: "gateway_macs",
+        field: "gateway_mac",
         headerName: "Gateway MAC",
         width: 130,
         sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
     },
     {
         field: "delay_restore",

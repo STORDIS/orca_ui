@@ -76,10 +76,21 @@ const McLagDataTable = (props) => {
     };
 
     const handleFormSubmit = (formData) => {
+
+        console.log(selectedRows);
+        console.log(formData);
+
+        let data = formData.map((item) => {
+            
+            item.domain_id = selectedRows.domain_id;
+            return item;
+        });
+
+        console.log(data)
         setDisableConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
-            .put(apiPUrl, formData)
+            .put(apiPUrl, data)
             .then((res) => {})
             .catch((err) => {})
             .then((res) => {})
