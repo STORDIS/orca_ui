@@ -20,12 +20,6 @@ const MclagMemberForm = ({
 
     const instance = interceptor();
 
-    const [formData, setFormData] = useState({
-        mgt_ip: selectedDeviceIp || "",
-        domain_id: "",
-        mclag_members: [],
-    });
-
     useEffect(() => {
         getPortchannel();
 
