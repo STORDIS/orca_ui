@@ -4,7 +4,7 @@ import { vlanColumns } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getVlansURL } from "../../../utils/backend_rest_urls";
+import { getVlansURL, removeVlanIp } from "../../../utils/backend_rest_urls";
 import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
 import VlanMemberForm from "./vlanMemberForm";
@@ -29,7 +29,6 @@ const VlanTable = (props) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const selectedDeviceIp = props.selectedDeviceIp;
-
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -99,7 +98,66 @@ const VlanTable = (props) => {
             });
     };
 
+    const hasOnlyAllowedKeys = (obj) => {
+        const allowedKeys = [
+            "mgt_ip",
+            "name",
+            "vlanid",
+            "sag_ip_address",
+            "ip_address",
+        ];
+        const objKeys = Object.keys(obj);
+
+        // Check if objKeys only contains allowed keys
+        const containsOnlyAllowedKeys = objKeys.every((key) =>
+            allowedKeys.includes(key)
+        );
+
+        // Check if obj contains either "sag_ip_address" or "ip_address" or both
+        const containsRequiredIpKey =
+            obj.hasOwnProperty("sag_ip_address") ||
+            obj.hasOwnProperty("ip_address");
+
+        return containsOnlyAllowedKeys && containsRequiredIpKey;
+    };
+
     const handleFormSubmit = (formData) => {
+        if (Array.isArray(formData)) {
+            formData.forEach((element) => {
+                if (
+                    !hasOnlyAllowedKeys(element) &&
+                    (element.sag_ip_address === null ||
+                        element.sag_ip_address === "" ||
+                        element.ip_address === null ||
+                        element.ip_address === "")
+                ) {
+                    deleteIpAddress(element);
+                    delete element.sag_ip_address;
+                    delete element.ip_address;
+
+                    putConfig(element);
+                    return;
+                } else if (
+                    hasOnlyAllowedKeys(element) &&
+                    (element.sag_ip_address === null ||
+                        element.sag_ip_address === "")
+                ) {
+                    deleteIpAddress(element);
+                } else if (
+                    hasOnlyAllowedKeys(element) &&
+                    (element.ip_address === null || element.ip_address === "")
+                ) {
+                    deleteIpAddress(element);
+                } else {
+                    putConfig(element);
+                }
+            });
+        } else {
+            putConfig(formData);
+        }
+    };
+
+    const putConfig = (formData) => {
         setDisableConfig(true);
         setConfigStatus("Config In Progress....");
 
@@ -108,6 +166,25 @@ const VlanTable = (props) => {
             .put(apiMUrl, formData)
             .then(() => {})
             .catch(() => {})
+            .finally(() => {
+                setLog(true);
+                setDisableConfig(false);
+                setSelectedRows([]);
+                resetConfigStatus();
+                refreshData();
+            });
+    };
+
+    const deleteIpAddress = (payload) => {
+        setDisableConfig(true);
+        setConfigStatus("Config In Progress....");
+
+        const apiMUrl = removeVlanIp();
+
+        instance
+            .delete(apiMUrl, { data: payload })
+            .then((response) => {})
+            .catch((err) => {})
             .finally(() => {
                 setLog(true);
                 setDisableConfig(false);
@@ -210,7 +287,7 @@ const VlanTable = (props) => {
                     let existedIndex = prev.findIndex(
                         (val) => val.vlanid === params.data.vlanid
                     );
-                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    prev[existedIndex][params.colDef.field] = params.newValue || "";
                     latestChanges = [...prev];
                 } else {
                     latestChanges = [
@@ -227,7 +304,6 @@ const VlanTable = (props) => {
             });
         }
     }, []);
-
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mem_ifs") {
