@@ -61,6 +61,7 @@ const VlanTable = (props) => {
             })
             .catch((err) => {
                 console.log(err);
+                
                 setDataTable([]);
             });
     };
