@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-import { getAllPortChnlsOfDeviceURL } from "../../../utils/backend_rest_urls";
+import {
+    getAllPortChnlsOfDeviceURL,
+    getAllInterfacesOfDeviceURL,
+} from "../../../utils/backend_rest_urls";
 import "../Form.scss";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import interceptor from "../../../utils/interceptor";
@@ -12,7 +15,8 @@ const MclagForm = ({
     handelSubmitButton,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
-    const [interfaceNames, setInterfaceNames] = useState([]);
+    const [memberNames, setMemberNames] = useState([]);
+    const [ethernetNames, setEthernetNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const instance = interceptor();
 
@@ -84,13 +88,6 @@ const MclagForm = ({
         }
 
         if (
-            formData.peer_link !== undefined &&
-            !/^PortChannel\d+$/.test(formData.peer_link)
-        ) {
-            alert("Invalid peer_link format.");
-            return;
-        }
-        if (
             formData.source_address !== undefined &&
             formData.source_address !== "" &&
             !/^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(
@@ -112,6 +109,7 @@ const MclagForm = ({
         }
 
         formData.mclag_members = selectedInterfaces;
+        console.log(formData);
 
         setDisableConfig(true);
         onSubmit(formData);
@@ -119,6 +117,7 @@ const MclagForm = ({
 
     useEffect(() => {
         getPortchannel();
+        getInterfaceData();
     }, []);
 
     const getPortchannel = () => {
@@ -127,7 +126,23 @@ const MclagForm = ({
             .get(apiPUrl)
             .then((res) => {
                 const names = res.data.map((item) => item.lag_name);
-                setInterfaceNames(names);
+                setMemberNames(names);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+    };
+
+    const getInterfaceData = () => {
+        const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
+        instance
+            .get(apiUrl)
+            .then((res) => {
+                const names = res.data
+                    .filter((item) => item.name.includes("Ethernet"))
+                    .map((item) => item.name);
+
+                setEthernetNames(names);
             })
             .catch((err) => {
                 console.log(err);
@@ -140,7 +155,14 @@ const MclagForm = ({
         });
     };
 
-    const handleDropdownChange = (event) => {
+    const handleDropdownPeerLink = (e) => {
+        setFormData((prevState) => ({
+            ...prevState,
+            peer_link: e.target.value,
+        }));
+    };
+
+    const handleDropdownMember = (event) => {
         setSelectedInterfaces((prev) => {
             const newValue = event.target.value;
             if (!prev.includes(newValue)) {
@@ -214,12 +236,30 @@ const MclagForm = ({
 
                     <div className="form-field w-50">
                         <label htmlFor="lag-name"> Peer Link:</label>
-                        <input
+                        <select
+                            onChange={handleDropdownPeerLink}
+                            defaultValue={"DEFAULT"}
+                        >
+                            <option value="DEFAULT" disabled>
+                                Select Member Interface
+                            </option>
+                            {memberNames.map((val, index) => (
+                                <option key={index} value={val}>
+                                    {val}
+                                </option>
+                            ))}
+                            {ethernetNames.map((val, index) => (
+                                <option key={index} value={val}>
+                                    {val}
+                                </option>
+                            ))}
+                        </select>
+                        {/* <input
                             type="text"
                             name="peer_link"
                             value={formData.peer_link}
                             onChange={handleChange}
-                        />
+                        /> */}
                     </div>
                 </div>
 
@@ -295,13 +335,13 @@ const MclagForm = ({
                     <div className="form-field w-75">
                         <label>Select Member Interface </label>
                         <select
-                            onChange={handleDropdownChange}
+                            onChange={handleDropdownMember}
                             defaultValue={"DEFAULT"}
                         >
                             <option value="DEFAULT" disabled>
                                 Select Member Interface
                             </option>
-                            {interfaceNames.map((val, index) => (
+                            {memberNames.map((val, index) => (
                                 <option key={index} value={val}>
                                     {val}
                                 </option>
