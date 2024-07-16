@@ -1,24 +1,17 @@
 import React, { useState, useEffect } from "react";
-
-import {
-    getAllPortChnlsOfDeviceURL,
-    getAllInterfacesOfDeviceURL,
-} from "../../../utils/backend_rest_urls";
+import { getPortchannel, getInterfaceData } from "./mclagDataTable";
 import "../Form.scss";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
-import interceptor from "../../../utils/interceptor";
 
 const MclagForm = ({
     onSubmit,
     selectedDeviceIp,
     onCancel,
-    handelSubmitButton,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
-    const [memberNames, setMemberNames] = useState([]);
-    const [ethernetNames, setEthernetNames] = useState([]);
+    const [memberNames, setPortChnlList] = useState([]);
+    const [ethernetNames, setEthernetList] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
-    const instance = interceptor();
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -116,38 +109,24 @@ const MclagForm = ({
     };
 
     useEffect(() => {
-        getPortchannel();
-        getInterfaceData();
-    }, []);
-
-    const getPortchannel = () => {
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
-            .then((res) => {
-                const names = res.data.map((item) => item.lag_name);
-                setMemberNames(names);
+        getPortchannel(selectedDeviceIp)
+            .then((names) => {
+                setPortChnlList(names);
+                getInterfaceData(selectedDeviceIp)
+                    .then((interfaceNames) => {
+                        setEthernetList((prevState) => [
+                            ...prevState,
+                            ...interfaceNames,
+                        ]);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
             })
             .catch((err) => {
                 console.log(err);
             });
-    };
-
-    const getInterfaceData = () => {
-        const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiUrl)
-            .then((res) => {
-                const names = res.data
-                    .filter((item) => item.name.includes("Ethernet"))
-                    .map((item) => item.name);
-
-                setEthernetNames(names);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
+    }, [selectedDeviceIp]);
 
     const handleRemove = (key) => {
         setSelectedInterfaces((prev) => {
@@ -241,7 +220,7 @@ const MclagForm = ({
                             defaultValue={"DEFAULT"}
                         >
                             <option value="DEFAULT" disabled>
-                                Select Member Interface
+                                Select Peer Link
                             </option>
                             {memberNames.map((val, index) => (
                                 <option key={index} value={val}>

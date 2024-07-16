@@ -6,7 +6,6 @@ import Modal from "../../modal/Modal";
 
 import { portChannelColumns } from "../datatablesourse";
 import {
-    getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
@@ -109,7 +108,7 @@ const PortChDataTable = (props) => {
                 }
                 setSelectedRows([]);
             })
-            .catch((err) => {})
+            .catch((err) => { })
             .finally(() => {
                 refreshData();
                 setDisableConfig(false);
