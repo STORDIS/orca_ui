@@ -5,9 +5,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
 
 import { portChannelColumns } from "../datatablesourse";
-import {
-    getAllPortChnlsOfDeviceURL,
-} from "../../../utils/backend_rest_urls";
+import { getAllPortChnlsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
@@ -17,6 +15,25 @@ import PortChVlanForm from "./PortChVlanForm";
 import "../tabbedPaneTable.scss";
 
 import { getIsStaff } from "../datatablesourse";
+
+export const getPortChannelDataUtil = (selectedDeviceIp) => {
+    const instance = interceptor();
+    const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+    return instance
+        .get(apiPUrl)
+        .then((res) => {
+            let data = res.data.map((data) => {
+                data.vlan_members = JSON.stringify(data.vlan_members);
+                return data;
+            });
+
+            return data;
+        })
+        .catch((err) => {
+            console.log(err);
+            return [];
+        });
+};
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
@@ -55,17 +72,9 @@ const PortChDataTable = (props) => {
     const getAllPortChanalData = () => {
         setDataTable([]);
         setChanges([]);
-
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
+        getPortChannelDataUtil(selectedDeviceIp)
             .then((res) => {
-                let data = res.data.map((data) => {
-                    data.vlan_members = JSON.stringify(data.vlan_members);
-                    return data;
-                });
-
-                setDataTable(data);
+                setDataTable(res);
             })
             .catch((err) => {
                 console.log(err);
@@ -108,7 +117,7 @@ const PortChDataTable = (props) => {
                 }
                 setSelectedRows([]);
             })
-            .catch((err) => { })
+            .catch((err) => {})
             .finally(() => {
                 refreshData();
                 setDisableConfig(false);

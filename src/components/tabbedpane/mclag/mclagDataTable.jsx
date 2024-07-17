@@ -8,51 +8,17 @@ import MclagForm from "./mclagForm";
 import MclagMemberForm from "./mclagMemberForm";
 
 import { mclagColumns, defaultColDef } from "../datatablesourse";
-import {
-    getAllMclagsOfDeviceURL,
-    getAllPortChnlsOfDeviceURL,
-    getAllInterfacesOfDeviceURL,
-} from "../../../utils/backend_rest_urls";
+import { getAllMclagsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
+import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
-// Function to get portchannel names
-export const getPortchannel = (selectedDeviceIp) => {
-    const instance = interceptor();
-    const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-    return instance
-        .get(apiPUrl)
-        .then((res) => {
-            const names = res.data.map((item) => item.lag_name);
-            return names;
-        })
-        .catch((err) => {
-            console.log(err);
-            return []; // Return an empty array on error
-        });
-};
 
-// Function to get interface names
-export const getInterfaceData = (selectedDeviceIp) => {
-    const instance = interceptor();
-    const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-    return instance
-        .get(apiUrl)
-        .then((res) => {
-            const names = res.data
-                .filter((item) => item.name.includes("Ethernet"))
-                .map((item) => item.name);
-            return names;
-        })
-        .catch((err) => {
-            console.log(err);
-            return []; // Return an empty array on error
-        });
-};
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -81,14 +47,23 @@ const McLagDataTable = (props) => {
 
     useEffect(() => {
         getMclag();
-        getPortchannel(selectedDeviceIp)
-            .then((names) => {
-                setEthernetPortchannelList(names);
-                getInterfaceData(selectedDeviceIp)
-                    .then((interfaceNames) => {
-                        setEthernetPortchannelList((prevState) => [
-                            ...prevState,
-                            ...interfaceNames,
+
+        getInterfaceDataUtil(selectedDeviceIp)
+            .then((res) => {
+                const ethernentNames = res
+                    .filter((item) => item.name.includes("Ethernet"))
+                    .map((item) => item.name);
+
+                getPortChannelDataUtil(selectedDeviceIp)
+                    .then((res) => {
+                        console.log(res);
+                        const portchannelNames = res.map(
+                            (item) => item.lag_name
+                        );
+
+                        setEthernetPortchannelList([
+                            ...ethernentNames,
+                            ...portchannelNames,
                         ]);
                     })
                     .catch((err) => {
@@ -142,8 +117,8 @@ const McLagDataTable = (props) => {
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
-            .then((res) => { })
-            .catch((err) => { })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
                 setLog(true);
                 setDisableConfig(false);
@@ -168,8 +143,8 @@ const McLagDataTable = (props) => {
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: output })
-            .then((res) => { })
-            .catch((err) => { })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
                 setLog(true);
                 setDisableConfig(false);
@@ -269,7 +244,7 @@ const McLagDataTable = (props) => {
         // }
     }, []);
 
-    const onColumnResized = useCallback((params) => { }, []);
+    const onColumnResized = useCallback((params) => {}, []);
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mclag_members") {

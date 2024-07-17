@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { getPortchannel, getInterfaceData } from "./mclagDataTable";
 import "../Form.scss";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
-const MclagForm = ({
-    onSubmit,
-    selectedDeviceIp,
-    onCancel,
-}) => {
+const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [memberNames, setPortChnlList] = useState([]);
     const [ethernetNames, setEthernetList] = useState([]);
@@ -109,19 +106,23 @@ const MclagForm = ({
     };
 
     useEffect(() => {
-        getPortchannel(selectedDeviceIp)
-            .then((names) => {
-                setPortChnlList(names);
-                getInterfaceData(selectedDeviceIp)
-                    .then((interfaceNames) => {
-                        setEthernetList((prevState) => [
-                            ...prevState,
-                            ...interfaceNames,
-                        ]);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
+        getInterfaceDataUtil(selectedDeviceIp)
+            .then((res) => {
+                const ethernentNames = res
+                    .filter((item) => item.name.includes("Ethernet"))
+                    .map((item) => item.name);
+                setEthernetList(ethernentNames);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
+
+        getPortChannelDataUtil(selectedDeviceIp)
+            .then((res) => {
+                console.log(res);
+                const portchannelNames = res.map((item) => item.lag_name);
+
+                setPortChnlList(portchannelNames);
             })
             .catch((err) => {
                 console.log(err);
@@ -233,12 +234,6 @@ const MclagForm = ({
                                 </option>
                             ))}
                         </select>
-                        {/* <input
-                            type="text"
-                            name="peer_link"
-                            value={formData.peer_link}
-                            onChange={handleChange}
-                        /> */}
                     </div>
                 </div>
 

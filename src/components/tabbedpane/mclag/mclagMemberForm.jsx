@@ -2,10 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
-import {
-    getAllPortChnlsOfDeviceURL,
-    deleteMclagsMemberURL,
-} from "../../../utils/backend_rest_urls";
+import { deleteMclagsMemberURL } from "../../../utils/backend_rest_urls";
+import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
 const MclagMemberForm = ({
     onSubmit,
@@ -31,12 +29,9 @@ const MclagMemberForm = ({
     }, []);
 
     const getPortchannel = () => {
-        setInterfaceNames([]);
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
+        getPortChannelDataUtil(selectedDeviceIp)
             .then((res) => {
-                const names = res.data.map((item) => item.lag_name);
+                const names = res.map((item) => item.lag_name);
                 setInterfaceNames(names);
             })
             .catch((err) => {
