@@ -52,10 +52,6 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             alert(" Domain ID is mandatory.");
             return;
         }
-        if (formData.domain_id === undefined) {
-            alert(" Domain ID is mandatory.");
-            return;
-        }
         if (
             formData.mclag_sys_mac !== undefined &&
             formData.mclag_sys_mac !== "" &&
