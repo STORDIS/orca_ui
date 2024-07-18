@@ -93,10 +93,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             alert("Invalid peer_addr format.");
             return;
         }
-
         formData.mclag_members = selectedInterfaces;
-        console.log(formData);
-
         setDisableConfig(true);
         onSubmit(formData);
     };
@@ -110,9 +107,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         });
 
         getPortChannelDataUtil(selectedDeviceIp).then((res) => {
-            console.log(res);
             const portchannelNames = res.map((item) => item.lag_name);
-
             setPortChnlList(portchannelNames);
         });
     }, [selectedDeviceIp]);
