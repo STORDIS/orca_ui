@@ -54,7 +54,6 @@ const PortChVlanForm = ({
         setSelectedVlans([]);
         setInputVlans([]);
         let input_vlans = JSON.parse(inputData.vlan_members);
-        console.log(input_vlans);
 
         if (Object.keys(input_vlans).length > 0) {
             let access_vlans = res

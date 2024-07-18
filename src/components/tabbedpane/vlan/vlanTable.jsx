@@ -14,6 +14,30 @@ import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
 
+// Function to get vlan names
+export const getVlanDataUtil = (selectedDeviceIp) => {
+    const instance = interceptor();
+    const apiUrl = getVlansURL(selectedDeviceIp);
+    return instance
+        .get(apiUrl)
+        .then((res) => {
+            let items = res.data.map((data) => {
+                data.mem_ifs = JSON.stringify(data.mem_ifs);
+
+                if (data.autostate === null) {
+                    data.autostate = "disable";
+                }
+
+                return data;
+            });
+            return items;
+        })
+        .catch((err) => {
+            console.log(err);
+            return []; // Return an empty array on error
+        });
+};
+
 const VlanTable = (props) => {
     const instance = interceptor();
 
@@ -44,27 +68,9 @@ const VlanTable = (props) => {
 
     const getVlans = () => {
         setDataTable([]);
-        const apiMUrl = getVlansURL(selectedDeviceIp);
-        instance
-            .get(apiMUrl)
-            .then((res) => {
-                let tableData = res.data.map((data) => {
-                    data.mem_ifs = JSON.stringify(data.mem_ifs);
-
-                    if (data.autostate === null) {
-                        data.autostate = "disable";
-                    }
-
-                    return data;
-                });
-
-                setDataTable(tableData);
-            })
-            .catch((err) => {
-                console.log(err);
-                
-                setDataTable([]);
-            });
+        getVlanDataUtil(selectedDeviceIp).then((res) => {
+            setDataTable(res);
+        });
     };
 
     const deleteVlan = () => {
@@ -134,17 +140,12 @@ const VlanTable = (props) => {
                         element.ip_address === "")
                 ) {
                     deleteIpAddress(element);
+
                     delete element.sag_ip_address;
                     delete element.ip_address;
 
                     putConfig(element);
                     return;
-                } else if (
-                    hasOnlyAllowedKeys(element) &&
-                    (element.sag_ip_address === null ||
-                        element.sag_ip_address === "")
-                ) {
-                    deleteIpAddress(element);
                 } else if (
                     hasOnlyAllowedKeys(element) &&
                     (element.ip_address === null || element.ip_address === "")
@@ -287,7 +288,8 @@ const VlanTable = (props) => {
                     let existedIndex = prev.findIndex(
                         (val) => val.vlanid === params.data.vlanid
                     );
-                    prev[existedIndex][params.colDef.field] = params.newValue || "";
+                    prev[existedIndex][params.colDef.field] =
+                        params.newValue || "";
                     latestChanges = [...prev];
                 } else {
                     latestChanges = [
@@ -306,10 +308,14 @@ const VlanTable = (props) => {
     }, []);
 
     const onCellClicked = useCallback((params) => {
+        console.log()
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
-        if (params?.colDef?.field === "sag_ip_address") {
+        if (
+            params?.colDef?.field === "sag_ip_address" &&
+            (params.data.ip_address === "" || params.data.ip_address  === null)
+        ) {
             setIsModalOpen("vlanSagIpForm");
         }
         setSelectedRows(params.data);
@@ -365,7 +371,11 @@ const VlanTable = (props) => {
 
                 {/* model for editing sag ip */}
                 {isModalOpen === "vlanSagIpForm" && (
-                    <Modal show={true} onClose={refreshData} title={"Edit Sag Ip"}>
+                    <Modal
+                        show={true}
+                        onClose={refreshData}
+                        title={"Edit Sag Ip"}
+                    >
                         <VlanSagIpForm
                             onSubmit={refreshData}
                             selectedDeviceIp={selectedDeviceIp}

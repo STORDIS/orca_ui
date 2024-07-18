@@ -123,8 +123,6 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             .split(",")
             .map((ip) => ip.trim());
 
-        console.log(trimmedIpAddresses);
-
         let dataToSubmit = {
             ...formData,
             sag_ip_address: trimmedIpAddresses,
@@ -134,8 +132,6 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         if (Object.keys(selectedInterfaces).length > 0) {
             dataToSubmit.mem_ifs = selectedInterfaces;
         }
-
-        console.log(dataToSubmit);
 
         setDisableConfig(true);
         onSubmit(dataToSubmit);
@@ -321,8 +317,11 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             <div className="selected-interface-wrap mb-10 w-100">
                 {Object.entries(selectedInterfaces).map(
                     ([key, value], index) => (
-                        <div className="selected-interface-list mb-10">
-                            <div key={key} className="ml-10 w-50">
+                        <div
+                            key={key}
+                            className="selected-interface-list mb-10"
+                        >
+                            <div className="ml-10 w-50">
                                 {index + 1} &nbsp; {key}
                             </div>
                             <div className=" w-50">

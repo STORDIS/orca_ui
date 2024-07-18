@@ -12,12 +12,26 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [newSagIp, setNewSagIp] = useState("");
 
-    useEffect(() => {
-        console.log(inputData.sag_ip_address);
-    }, [selectedDeviceIp]);
 
     const handleRemove = (e) => {
-        console.log(e);
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            name: inputData.name,
+            sag_ip_address: e,
+        };
+
+        setDisableConfig(true);
+        const apiMUrl = removeVlanIp();
+        instance
+            .delete(apiMUrl, { data: payload })
+            .then((response) => {})
+            .catch((err) => {})
+            .finally(() => {
+                setLog(true);
+                setDisableConfig(false);
+                onSubmit();
+                setLog(true);
+            });
     };
 
     const handleChange = (e) => {
@@ -25,7 +39,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
     };
 
     const addSagIptoArray = () => {
-        console.log(newSagIp);
 
         if (!isValidIPv4WithMac(newSagIp)) {
             alert("ip_address is not valid");
@@ -38,7 +51,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
                 sag_ip_address: [newSagIp],
             };
 
-            console.log(payload);
 
             setDisableConfig(true);
 
@@ -81,24 +93,24 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
                 </div>
             </div>
             <div className="selected-interface-wrap mb-10 w-100">
-                {Object.entries(inputData.sag_ip_address).map(
-                    ([key, value], index) => (
-                        <div className="selected-interface-list mb-10">
-                            <div key={key} className="ml-10 mr-10 w-75">
-                                {index + 1} &nbsp; {value}
-                            </div>
-                            <div className=" w-25">
-                                <button
-                                    className="btnStyle ml-25"
-                                    disabled={disableConfig}
-                                    onClick={() => handleRemove(value)}
-                                >
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
-                    )
-                )}
+                {inputData.sag_ip_address && inputData.sag_ip_address.length > 0
+                    ? inputData.sag_ip_address.map((ip, index) => (
+                          <div className="selected-interface-list mb-10">
+                              <div className="ml-10 mr-10 w-75">
+                                  {index + 1} &nbsp; {ip}
+                              </div>
+                              <div className=" w-25">
+                                  <button
+                                      className="btnStyle ml-25 mr-25"
+                                      disabled={disableConfig}
+                                      onClick={() => handleRemove(ip)}
+                                  >
+                                      Remove
+                                  </button>
+                              </div>
+                          </div>
+                      ))
+                    : null}
             </div>
         </div>
     );
