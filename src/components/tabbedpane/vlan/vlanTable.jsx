@@ -8,6 +8,7 @@ import { getVlansURL, removeVlanIp } from "../../../utils/backend_rest_urls";
 import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
 import VlanMemberForm from "./vlanMemberForm";
+import VlanSagIpForm from "./vlanSagIpForm";
 import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
@@ -179,9 +180,7 @@ const VlanTable = (props) => {
     const deleteIpAddress = (payload) => {
         setDisableConfig(true);
         setConfigStatus("Config In Progress....");
-
         const apiMUrl = removeVlanIp();
-
         instance
             .delete(apiMUrl, { data: payload })
             .then((response) => {})
@@ -310,6 +309,9 @@ const VlanTable = (props) => {
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
+        if (params?.colDef?.field === "sag_ip_address") {
+            setIsModalOpen("vlanSagIpForm");
+        }
         setSelectedRows(params.data);
     }, []);
 
@@ -360,6 +362,18 @@ const VlanTable = (props) => {
                         suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
+
+                {/* model for editing sag ip */}
+                {isModalOpen === "vlanSagIpForm" && (
+                    <Modal show={true} onClose={refreshData} title={"Edit Sag Ip"}>
+                        <VlanSagIpForm
+                            onSubmit={refreshData}
+                            selectedDeviceIp={selectedDeviceIp}
+                            inputData={selectedRows}
+                            onCancel={refreshData}
+                        />
+                    </Modal>
+                )}
 
                 {/* model for adding vlan */}
                 {isModalOpen === "add" && (

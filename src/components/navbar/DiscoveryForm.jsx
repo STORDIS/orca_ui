@@ -37,18 +37,15 @@ const DiscoveryForm = ({ handleSubmit, onCancel }) => {
         }
 
         if (areAllIPAddressesValid(formData.address)) {
-
-            
             let payload = {
                 address: formData.address.split(",").map((ip) => ip.trim()),
                 discover_from_config: formData.discover_from_config,
-            }
+            };
             handleSubmit(payload);
         } else {
             alert("Invalid IP Address");
             return;
         }
-
     };
 
     return (
@@ -70,7 +67,7 @@ const DiscoveryForm = ({ handleSubmit, onCancel }) => {
                 />
 
                 <p className="mt-10">
-                    Note : Use (,) Comma to separate the multiple IP address{" "}
+                    Note : Use (,) Comma to separate the multiple IP address
                 </p>
             </div>
             <div className="">
