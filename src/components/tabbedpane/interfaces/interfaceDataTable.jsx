@@ -8,6 +8,31 @@ import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
+// Function to get interface names
+export const getInterfaceDataUtil = (selectedDeviceIp) => {
+    const instance = interceptor();
+    const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
+    return instance
+        .get(apiUrl)
+        .then((res) => {
+            let items = res.data.map((item) => {
+                if (item.adv_speeds !== "all" && item.adv_speeds !== "") {
+                    item.adv_speeds =
+                        "SPEED_" + parseInt(item.adv_speeds) / 1000 + "GB";
+                } else {
+                    item.adv_speeds = "all";
+                }
+
+                return item;
+            });
+            return items;
+        })
+        .catch((err) => {
+            console.log(err);
+            return []; // Return an empty array on error
+        });
+};
+
 const InterfaceDataTable = (props) => {
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -39,28 +64,9 @@ const InterfaceDataTable = (props) => {
     const getInterfaceData = () => {
         setDataTable([]);
         setChanges([]);
-
-        const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiUrl)
-            .then((res) => {
-                let items = res.data.map((item) => {
-                    if (item.adv_speeds !== "all" && item.adv_speeds !== "") {
-                        item.adv_speeds =
-                            "SPEED_" + parseInt(item.adv_speeds) / 1000 + "GB";
-                    } else {
-                        item.adv_speeds = "all";
-                    }
-
-                    return item;
-                });
-
-                setDataTable(items);
-            })
-            .catch((err) => {
-                console.log(err);
-                setDataTable([]);
-            });
+        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+            setDataTable(res);
+        });
     };
 
     const resetConfigStatus = () => {

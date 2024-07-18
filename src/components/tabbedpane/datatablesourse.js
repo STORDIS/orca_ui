@@ -19,7 +19,6 @@ export const defaultColDef = {
     rowSelection: "multiple",
     enableCellTextSelection: "true",
     singleClickEdit: "true",
-    stopEditingWhenCellsLoseFocus: "true",
 };
 
 export const getCellEditorParamsInterfaceSpeed = (params) => {
@@ -89,7 +88,6 @@ export const interfaceColumns = [
         editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,
-        stopEditingWhenCellsLoseFocus: true,
         cellEditorParams: {
             values: ["FEC_RS", "FEC_FC", "FEC_DISABLED", "FEC_AUTO"],
         },
@@ -135,7 +133,6 @@ export const interfaceColumns = [
         editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,
-        stopEditingWhenCellsLoseFocus: true,
         cellEditorParams: {
             values: ["off", "on"],
         },
@@ -159,7 +156,6 @@ export const interfaceColumns = [
         editable: getIsStaff(),
         cellEditor: "agSelectCellEditor",
         singleClickEdit: true,
-        stopEditingWhenCellsLoseFocus: true,
         cellEditorParams: {
             values: ["off", "on"],
         },
@@ -476,7 +472,7 @@ export const portChannelColumns = [
     },
 ];
 
-export const mclagColumns = [
+export const mclagColumns = (interfaceNames) => [
     {
         headerCheckboxSelection: getIsStaff(),
         checkboxSelection: getIsStaff(),
@@ -521,6 +517,10 @@ export const mclagColumns = [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: interfaceNames,
+        },
     },
     {
         field: "session_timeout",
