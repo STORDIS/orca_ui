@@ -64,14 +64,9 @@ const InterfaceDataTable = (props) => {
     const getInterfaceData = () => {
         setDataTable([]);
         setChanges([]);
-        getInterfaceDataUtil(selectedDeviceIp)
-            .then((res) => {
-                setDataTable(res);
-            })
-            .catch((err) => {
-                console.log(err);
-                setDataTable([]);
-            });
+        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+            setDataTable(res);
+        });
     };
 
     const resetConfigStatus = () => {

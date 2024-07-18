@@ -106,27 +106,19 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     useEffect(() => {
-        getInterfaceDataUtil(selectedDeviceIp)
-            .then((res) => {
-                const ethernentNames = res
-                    .filter((item) => item.name.includes("Ethernet"))
-                    .map((item) => item.name);
-                setEthernetList(ethernentNames);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+            const ethernentNames = res
+                .filter((item) => item.name.includes("Ethernet"))
+                .map((item) => item.name);
+            setEthernetList(ethernentNames);
+        });
 
-        getPortChannelDataUtil(selectedDeviceIp)
-            .then((res) => {
-                console.log(res);
-                const portchannelNames = res.map((item) => item.lag_name);
+        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+            console.log(res);
+            const portchannelNames = res.map((item) => item.lag_name);
 
-                setPortChnlList(portchannelNames);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+            setPortChnlList(portchannelNames);
+        });
     }, [selectedDeviceIp]);
 
     const handleRemove = (key) => {

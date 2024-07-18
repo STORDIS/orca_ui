@@ -72,13 +72,9 @@ const PortChDataTable = (props) => {
     const getAllPortChanalData = () => {
         setDataTable([]);
         setChanges([]);
-        getPortChannelDataUtil(selectedDeviceIp)
-            .then((res) => {
-                setDataTable(res);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+            setDataTable(res);
+        });
     };
 
     const defaultColDef = {

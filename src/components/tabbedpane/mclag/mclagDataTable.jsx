@@ -18,8 +18,6 @@ import { getIsStaff } from "../datatablesourse";
 import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
-
-
 const McLagDataTable = (props) => {
     const instance = interceptor();
 
@@ -48,31 +46,21 @@ const McLagDataTable = (props) => {
     useEffect(() => {
         getMclag();
 
-        getInterfaceDataUtil(selectedDeviceIp)
-            .then((res) => {
-                const ethernentNames = res
-                    .filter((item) => item.name.includes("Ethernet"))
-                    .map((item) => item.name);
+        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+            const ethernentNames = res
+                .filter((item) => item.name.includes("Ethernet"))
+                .map((item) => item.name);
 
-                getPortChannelDataUtil(selectedDeviceIp)
-                    .then((res) => {
-                        console.log(res);
-                        const portchannelNames = res.map(
-                            (item) => item.lag_name
-                        );
+            getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+                console.log(res);
+                const portchannelNames = res.map((item) => item.lag_name);
 
-                        setEthernetPortchannelList([
-                            ...ethernentNames,
-                            ...portchannelNames,
-                        ]);
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-            })
-            .catch((err) => {
-                console.log(err);
+                setEthernetPortchannelList([
+                    ...ethernentNames,
+                    ...portchannelNames,
+                ]);
             });
+        });
     }, [selectedDeviceIp]);
 
     const getMclag = () => {

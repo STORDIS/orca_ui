@@ -29,14 +29,10 @@ const MclagMemberForm = ({
     }, []);
 
     const getPortchannel = () => {
-        getPortChannelDataUtil(selectedDeviceIp)
-            .then((res) => {
-                const names = res.map((item) => item.lag_name);
-                setInterfaceNames(names);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+            const names = res.map((item) => item.lag_name);
+            setInterfaceNames(names);
+        });
     };
 
     const handleDropdownChange = (event) => {
