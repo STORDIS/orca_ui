@@ -15,6 +15,8 @@ import Modal from "../../modal/Modal";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
+import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -25,6 +27,7 @@ const McLagDataTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState([]);
+    const [ethernetPortchannelList, setEthernetPortchannelList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const { setLog } = useLog();
@@ -42,6 +45,22 @@ const McLagDataTable = (props) => {
 
     useEffect(() => {
         getMclag();
+
+        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+            const ethernentNames = res
+                .filter((item) => item.name.includes("Ethernet"))
+                .map((item) => item.name);
+
+            getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+                console.log(res);
+                const portchannelNames = res.map((item) => item.lag_name);
+
+                setEthernetPortchannelList([
+                    ...ethernentNames,
+                    ...portchannelNames,
+                ]);
+            });
+        });
     }, [selectedDeviceIp]);
 
     const getMclag = () => {
@@ -148,14 +167,6 @@ const McLagDataTable = (props) => {
             return;
         }
 
-        if (
-            params.data.peer_link !== null &&
-            params.data.peer_link !== "" &&
-            !/^PortChannel\d+$/.test(params.data.peer_link)
-        ) {
-            alert("Invalid peer_link format.");
-            return;
-        }
         if (
             params.data.source_address !== null &&
             params.data.source_address !== "" &&
@@ -272,7 +283,7 @@ const McLagDataTable = (props) => {
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
-                    columnDefs={mclagColumns}
+                    columnDefs={mclagColumns(ethernetPortchannelList)}
                     defaultColDef={defaultColDef}
                     onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
