@@ -8,6 +8,8 @@ import InterfaceDataTable from "../../components/tabbedpane/interfaces/interface
 import PortChDataTable from "../../components/tabbedpane/portchannel/portChDataTable";
 import McLagDataTable from "../../components/tabbedpane/mclag/mclagDataTable";
 import BGPTable from "../../components/tabbedpane/bgp/bgpTable";
+import StpDataTable from "./stp/stpDataTable";
+
 import { useParams } from "react-router-dom";
 import { getAllDevicesURL } from "../../utils/backend_rest_urls";
 import { useState, useEffect } from "react";
@@ -69,21 +71,38 @@ const TabbedPane = () => {
         <div>
             <div className="listContainer">
                 Device :
-                <select className="ml-10" value={deviceIP} onChange={handleDeviceChange}>
+                <select
+                    className="ml-10"
+                    value={deviceIP}
+                    onChange={handleDeviceChange}
+                >
                     {dropdownOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                             {option.value}
                         </option>
                     ))}
                 </select>
-                
-                <button type="button" className="btnColor ml-10" onClick={onUndo}>
+                <button
+                    type="button"
+                    className="btnColor ml-10"
+                    onClick={onUndo}
+                >
                     Undo Changes
                 </button>
             </div>
             <div className="listContainer ">
-                <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                    <Tabs value={tabvalue} onChange={handleTabs}>
+                <Box
+                    sx={{
+                        borderBottom: 1,
+                        borderColor: "divider",
+                    }}
+                >
+                    <Tabs
+                        value={tabvalue}
+                        onChange={handleTabs}
+                        variant="scrollable"
+                        scrollButtons="auto"
+                    >
                         <Tab label="Device Info" />
                         <Tab label="Interfaces" />
                         <Tab label="PortChannels" />
@@ -91,6 +110,7 @@ const TabbedPane = () => {
                         <Tab label="BGP" />
                         <Tab label="Port Groups" />
                         <Tab label="VLANs" />
+                        <Tab label="STP" />
                     </Tabs>
                 </Box>
                 {tabvalue === 0 && (
@@ -156,14 +176,18 @@ const TabbedPane = () => {
                         />
                     </div>
                 )}
+                {tabvalue === 7 && (
+                    <div className="resizable" tabvalue={tabvalue} index={6}>
+                        <StpDataTable
+                            selectedDeviceIp={deviceIP}
+                            refresh={undoChanges}
+                            reset={() => setUndoChanges(false)}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );
 };
-
-// const div = (props) => {
-//     const { children, tabvalue, index } = props;
-//     return <div className="">{tabvalue === index && <h5>{children}</h5>}</div>;
-// };
 
 export default TabbedPane;
