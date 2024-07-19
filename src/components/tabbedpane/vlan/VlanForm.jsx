@@ -32,8 +32,8 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
-        name: "",
-        vlanid: 0,
+        name: "Vlan1",
+        vlanid: 1,
         mtu: 9000,
         enabled: false,
         description: "",
