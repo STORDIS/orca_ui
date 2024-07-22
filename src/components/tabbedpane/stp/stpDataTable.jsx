@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "../tabbedPaneTable.scss";
-import { vlanColumns } from "../datatablesourse";
+import { stpColumn } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -9,6 +9,21 @@ import interceptor from "../../../utils/interceptor";
 import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
+import { stpURL } from "../../../utils/backend_rest_urls";
+
+export const getStpDataUtil = (selectedDeviceIp) => {
+    const instance = interceptor();
+    const apiUrl = stpURL(selectedDeviceIp);
+    return instance
+        .get(apiUrl)
+        .then((res) => {
+            return res;
+        })
+        .catch((err) => {
+            console.log(err);
+            return []; // Return an empty array on error
+        });
+};
 
 const StpDataTable = (props) => {
     const instance = interceptor();
@@ -34,7 +49,11 @@ const StpDataTable = (props) => {
         props.reset(false);
     }, [props.refresh]);
 
-    useEffect(() => {}, [selectedDeviceIp]);
+    useEffect(() => {
+        getStpDataUtil(selectedDeviceIp).then((data) => {
+            console.log(data);
+        });
+    }, [selectedDeviceIp]);
 
     const resetConfigStatus = () => {
         setConfigStatus("");
@@ -82,7 +101,7 @@ const StpDataTable = (props) => {
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
-                        columnDefs={vlanColumns}
+                        columnDefs={stpColumn}
                         defaultColDef={defaultColDef}
                         onCellValueChanged={handleCellValueChanged}
                         rowSelection="multiple"

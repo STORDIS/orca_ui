@@ -38,7 +38,7 @@ const TabbedPane = () => {
     useEffect(() => {
         if (!secureLocalStorage.getItem("selectedTab")) {
             settabvalue(0);
-            secureLocalStorage.setItem("selectedTab", tabvalue.toString());
+            secureLocalStorage.setItem("selectedTab", tabvalue);
         }
 
         instance(getAllDevicesURL())
@@ -53,7 +53,7 @@ const TabbedPane = () => {
 
     const handleTabs = (event, val) => {
         settabvalue(val);
-        secureLocalStorage.setItem("selectedTab", val.toString());
+        secureLocalStorage.setItem("selectedTab", val);
     };
 
     const onUndo = (event) => {

@@ -638,6 +638,94 @@ export const bgpColumns = [
     },
 ];
 
+export const stpColumn = [
+    {
+        headerCheckboxSelection: getIsStaff(),
+        checkboxSelection: getIsStaff(),
+        width: 50,
+    },
+    {
+        field: "enabled_protocol",
+        headerName: "Enabled Protocol",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "bpdu_filter",
+        headerName: "BPDU Filter",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "forwarding_delay",
+        headerName: "Forwarding Delay",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "hello_time",
+        headerName: "Hello Time",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "max_age",
+        headerName: "max_age",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "bridge_priority",
+        headerName: "bridge_priority",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "disabled_vlans",
+        headerName: "disabled_vlans",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "rootguard_timeout",
+        headerName: "rootguard_timeout",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "loop_guard",
+        headerName: "loop_guard",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "portfast",
+        headerName: "portfast",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+];
+
 export const deviceUserColumns = (isTabbedPane = true) => {
     let dataColumn = [
         {
