@@ -6,7 +6,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
+
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
 import { stpURL } from "../../../utils/backend_rest_urls";
@@ -37,7 +37,6 @@ const StpDataTable = (props) => {
     const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
-    const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const selectedDeviceIp = props.selectedDeviceIp;

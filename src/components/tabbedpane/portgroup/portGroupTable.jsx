@@ -7,8 +7,8 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axios from "axios";
 import { getPortGroupsURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreLogs from "../../../utils/store";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
@@ -19,10 +19,10 @@ const PortGroupTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
 
     const instance = interceptor();
-    const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const selectedDeviceIp = props.selectedDeviceIp;
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -125,7 +125,7 @@ const PortGroupTable = (props) => {
             .finally(() => {
                 setChanges([]);
                 resetConfigStatus();
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
             });
     }, [createReqJson, selectedDeviceIp, changes]);

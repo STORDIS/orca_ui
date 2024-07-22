@@ -7,12 +7,12 @@ import Modal from "../../modal/Modal";
 import { portChannelColumns } from "../datatablesourse";
 import { getAllPortChnlsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import PortChannelForm from "./PortChannelForm";
 import PortChMemberForm from "./portChMemberForm";
 import PortChVlanForm from "./PortChVlanForm";
 import "../tabbedPaneTable.scss";
+import useStoreLogs from "../../../utils/store";
 
 import { getIsStaff } from "../datatablesourse";
 
@@ -52,10 +52,10 @@ const PortChDataTable = (props) => {
 
     const instance = interceptor();
 
-    const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const selectedDeviceIp = props.selectedDeviceIp;
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -118,7 +118,7 @@ const PortChDataTable = (props) => {
                 refreshData();
                 setDisableConfig(false);
 
-                setLog(true);
+                setUpdateLog(true);
             });
     };
 
@@ -206,7 +206,7 @@ const PortChDataTable = (props) => {
             })
             .finally(() => {
                 getAllPortChanalData();
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
                 setIsModalOpen("null");
             });

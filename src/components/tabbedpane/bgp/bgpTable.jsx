@@ -8,10 +8,11 @@ import { getAllBGPOfDeviceURL } from "../../../utils/backend_rest_urls";
 
 import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
-import { useLog } from "../../../utils/logpannelContext";
+
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import BgpForm from "./bgpForm";
 import { getIsStaff } from "../datatablesourse";
+import useStoreLogs from "../../../utils/store";
 
 const BGPTable = (props) => {
     const instance = interceptor();
@@ -27,8 +28,9 @@ const BGPTable = (props) => {
     const [changes, setChanges] = useState({});
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState("");
-    const { setLog } = useLog();
+    
     const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         getBgp();
@@ -96,7 +98,7 @@ const BGPTable = (props) => {
             .finally(() => {
                 setShowForm(false);
                 setIsMessageModalOpen(true);
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
@@ -118,7 +120,7 @@ const BGPTable = (props) => {
             .finally(() => {
                 setShowForm(false);
                 setIsMessageModalOpen(true);
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
                 setIsMessageModalOpen(true);
                 resetConfigStatus();

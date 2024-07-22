@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
 import { deleteMclagsMemberURL } from "../../../utils/backend_rest_urls";
 import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import useStoreLogs from "../../../utils/store";
 
 const MclagMemberForm = ({
     onSubmit,
@@ -14,9 +14,9 @@ const MclagMemberForm = ({
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const { disableConfig, setDisableConfig } = useDisableConfig();
-    const { setLog } = useLog();
 
     const instance = interceptor();
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         getPortchannel();
@@ -79,7 +79,7 @@ const MclagMemberForm = ({
             })
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
                 getPortchannel();
             });
@@ -101,7 +101,7 @@ const MclagMemberForm = ({
             })
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
                 getPortchannel();
             });

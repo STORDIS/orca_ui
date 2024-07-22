@@ -11,13 +11,11 @@ import interceptor from "../../utils/interceptor";
 
 import { deleteDevicesURL } from "../../utils/backend_rest_urls.js";
 
-import { useLog } from "../../utils/logpannelContext";
 import { useDisableConfig } from "../../utils/dissableConfigContext.js";
 
 const Datatable = (props) => {
     const instance = interceptor();
 
-    const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const gridRef = useRef();

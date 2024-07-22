@@ -5,12 +5,15 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllInterfacesOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
+
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
+
+import useStoreLogs from "../../../utils/store";
 
 // Function to get interface names
 export const getInterfaceDataUtil = (selectedDeviceIp) => {
     const instance = interceptor();
+
     const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
     return instance
         .get(apiUrl)
@@ -25,6 +28,7 @@ export const getInterfaceDataUtil = (selectedDeviceIp) => {
 
                 return item;
             });
+
             return items;
         })
         .catch((err) => {
@@ -34,7 +38,6 @@ export const getInterfaceDataUtil = (selectedDeviceIp) => {
 };
 
 const InterfaceDataTable = (props) => {
-    const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
     // setDisableConfig(true);
 
@@ -46,7 +49,10 @@ const InterfaceDataTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
 
     const instance = interceptor();
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+    // const setUpdateStatus = useStoreLogs((state) => state.setUpdateStatus);
+    //  onSuccess({ success: true });
     useEffect(() => {
         if (selectedDeviceIp) {
             getInterfaceData();
@@ -156,7 +162,7 @@ const InterfaceDataTable = (props) => {
                 setChanges([]);
                 setDataTable([]);
                 getInterfaceData();
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
             });
     };

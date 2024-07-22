@@ -12,11 +12,11 @@ import { getAllMclagsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
-import { useLog } from "../../../utils/logpannelContext";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
 import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import useStoreLogs from "../../../utils/store";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -30,10 +30,10 @@ const McLagDataTable = (props) => {
     const [ethernetPortchannelList, setEthernetPortchannelList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
-    const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const selectedDeviceIp = props.selectedDeviceIp;
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -108,7 +108,7 @@ const McLagDataTable = (props) => {
             .then((res) => {})
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
                 resetConfigStatus();
                 refreshData();
@@ -134,7 +134,7 @@ const McLagDataTable = (props) => {
             .then((res) => {})
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
+                setUpdateLog(true);
                 setDisableConfig(false);
                 setSelectedRows([]);
                 refreshData();
