@@ -21,8 +21,6 @@ import OrcAsk from "../orcask/orcAsk.jsx";
 
 // import { DataProvider } from "../../utils/logpannelContext.js";
 
-import { DataProviderConfig } from "../../utils/dissableConfigContext.js";
-
 import "./Layout.scss";
 
 const Layout = () => {
@@ -49,39 +47,37 @@ const Layout = () => {
             ) : null}
 
             <div className="container">
-                <DataProviderConfig>
-                    {token ? <Navbar /> : null}
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route
-                            path="/home"
-                            element={
-                                <RequireAuth>
-                                    <Home />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="/orcAsk"
-                            element={
-                                <RequireAuth>
-                                    <OrcAsk />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route
-                            path="devices/:deviceIP"
-                            element={
-                                <RequireAuth>
-                                    <TabbedPane />
-                                </RequireAuth>
-                            }
-                        />
-                        <Route path="/" element={<Redirect />} />
+                {token ? <Navbar /> : null}
+                <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route
+                        path="/home"
+                        element={
+                            <RequireAuth>
+                                <Home />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/orcAsk"
+                        element={
+                            <RequireAuth>
+                                <OrcAsk />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="devices/:deviceIP"
+                        element={
+                            <RequireAuth>
+                                <TabbedPane />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route path="/" element={<Redirect />} />
 
-                        <Route path="*" element={<ErrorPage />} />
-                    </Routes>
-                </DataProviderConfig>
+                    <Route path="*" element={<ErrorPage />} />
+                </Routes>
 
                 {token && isAI ? (
                     <div className="listContainer mb resizable">

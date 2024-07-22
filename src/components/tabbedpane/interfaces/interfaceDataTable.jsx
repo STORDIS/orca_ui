@@ -6,9 +6,8 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllInterfacesOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
-
 import useStoreLogs from "../../../utils/store";
+import useStoreConfig from "../../../utils/configStore";
 
 // Function to get interface names
 export const getInterfaceDataUtil = (selectedDeviceIp) => {
@@ -38,9 +37,6 @@ export const getInterfaceDataUtil = (selectedDeviceIp) => {
 };
 
 const InterfaceDataTable = (props) => {
-    const { disableConfig, setDisableConfig } = useDisableConfig();
-    // setDisableConfig(true);
-
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const selectedDeviceIp = props.selectedDeviceIp;
@@ -50,6 +46,9 @@ const InterfaceDataTable = (props) => {
 
     const instance = interceptor();
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     // const setUpdateStatus = useStoreLogs((state) => state.setUpdateStatus);
     //  onSuccess({ success: true });
@@ -146,7 +145,7 @@ const InterfaceDataTable = (props) => {
         if (changes.length === 0) {
             return;
         }
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
@@ -163,7 +162,7 @@ const InterfaceDataTable = (props) => {
                 setDataTable([]);
                 getInterfaceData();
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     };
 
@@ -172,9 +171,7 @@ const InterfaceDataTable = (props) => {
             <div className="stickyButton">
                 <button
                     onClick={sendUpdates}
-                    disabled={
-                        disableConfig || Object.keys(changes).length === 0
-                    }
+                    disabled={updateConfig || Object.keys(changes).length === 0}
                     className="btnStyle "
                 >
                     Apply Config

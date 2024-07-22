@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../Form.scss";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import useStoreConfig from "../../../utils/configStore";
 
 const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+
     const [memberNames, setPortChnlList] = useState([]);
     const [ethernetNames, setEthernetList] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
@@ -94,7 +96,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             return;
         }
         formData.mclag_members = selectedInterfaces;
-        setDisableConfig(true);
+        setUpdateConfig(true);
         onSubmit(formData);
     };
 
@@ -323,7 +325,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                                 <div className=" w-50">
                                     <button
                                         className="btnStyle ml-25"
-                                        disabled={disableConfig}
+                                        disabled={updateConfig}
                                         onClick={() => handleRemove(value)}
                                     >
                                         Remove
@@ -338,7 +340,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     <button
                         type="submit"
                         className="btnStyle mr-10"
-                        disabled={disableConfig}
+                        disabled={updateConfig}
                     >
                         Apply Config
                     </button>

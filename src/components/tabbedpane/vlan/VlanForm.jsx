@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
@@ -9,7 +9,8 @@ import interceptor from "../../../utils/interceptor";
 
 const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const instance = interceptor();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [disabledIp, setDisabledIp] = useState(false);
@@ -112,7 +113,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         }
 
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
         onSubmit(dataToSubmit);
     };
 
@@ -333,7 +334,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                 >
                     Apply Config
                 </button>

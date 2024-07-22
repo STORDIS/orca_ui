@@ -9,10 +9,10 @@ import { getAllBGPOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import BgpForm from "./bgpForm";
 import { getIsStaff } from "../datatablesourse";
 import useStoreLogs from "../../../utils/store";
+import useStoreConfig from "../../../utils/configStore";
 
 const BGPTable = (props) => {
     const instance = interceptor();
@@ -28,9 +28,10 @@ const BGPTable = (props) => {
     const [changes, setChanges] = useState({});
     const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
     const [modalContent, setModalContent] = useState("");
-    
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     useEffect(() => {
         getBgp();
@@ -84,7 +85,7 @@ const BGPTable = (props) => {
             vrf_name: selectedRows.pop().vrf_name,
         };
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         setConfigStatus("Config In Progress....");
         instance
@@ -99,14 +100,14 @@ const BGPTable = (props) => {
                 setShowForm(false);
                 setIsMessageModalOpen(true);
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
             });
     };
 
     const handleFormSubmit = (formData, status) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
@@ -121,7 +122,7 @@ const BGPTable = (props) => {
                 setShowForm(false);
                 setIsMessageModalOpen(true);
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 setIsMessageModalOpen(true);
                 resetConfigStatus();
             });
@@ -153,7 +154,7 @@ const BGPTable = (props) => {
                 <div className="button-column">
                     <button
                         disabled={
-                            disableConfig || Object.keys(changes).length === 0
+                            updateConfig || Object.keys(changes).length === 0
                         }
                         className="btnStyle"
                         onClick={() => handleFormSubmit(changes, "Updat")}
@@ -208,7 +209,7 @@ const BGPTable = (props) => {
                     onSubmit={(e) => handleFormSubmit(e, "Add")}
                     selectedDeviceIp={selectedDeviceIp}
                     onCancel={handleCancel}
-                    handelSubmitButton={disableConfig}
+                    handelSubmitButton={updateConfig}
                 />
             </Modal>
 

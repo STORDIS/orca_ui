@@ -7,7 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import axios from "axios";
 import { getPortGroupsURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 
 const PortGroupTable = (props) => {
@@ -19,7 +19,8 @@ const PortGroupTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
 
     const instance = interceptor();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const selectedDeviceIp = props.selectedDeviceIp;
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
@@ -113,7 +114,7 @@ const PortGroupTable = (props) => {
         if (changes.length === 0) {
             return;
         }
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
 
         const req_json = createReqJson();
@@ -126,7 +127,7 @@ const PortGroupTable = (props) => {
                 setChanges([]);
                 resetConfigStatus();
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     }, [createReqJson, selectedDeviceIp, changes]);
 
@@ -137,7 +138,7 @@ const PortGroupTable = (props) => {
                     type="button"
                     onClick={sendUpdates}
                     disabled={
-                        disableConfig || Object.keys(changes).length === 0
+                        updateConfig || Object.keys(changes).length === 0
                     }
                     className="btnStyle"
                 >

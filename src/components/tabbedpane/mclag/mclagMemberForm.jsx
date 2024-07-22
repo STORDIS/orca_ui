@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 import interceptor from "../../../utils/interceptor";
 import { deleteMclagsMemberURL } from "../../../utils/backend_rest_urls";
 import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
@@ -13,7 +13,9 @@ const MclagMemberForm = ({
 }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+
 
     const instance = interceptor();
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
@@ -48,7 +50,7 @@ const MclagMemberForm = ({
     const handleRemove = (key) => {
         let selectedMembers = JSON.parse(inputData.mclag_members);
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         if (selectedMembers.includes(key)) {
             handelDeleteMemeber(key);
@@ -57,7 +59,7 @@ const MclagMemberForm = ({
                 return prev.filter((item) => item !== key);
             });
 
-            setDisableConfig(false);
+            setUpdateConfig(false);
         }
     };
 
@@ -68,7 +70,7 @@ const MclagMemberForm = ({
             mclag_members: [e],
         };
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
         const apiPUrl = deleteMclagsMemberURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: payload })
@@ -80,7 +82,7 @@ const MclagMemberForm = ({
             .catch((err) => {})
             .finally(() => {
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 getPortchannel();
             });
     };
@@ -92,7 +94,7 @@ const MclagMemberForm = ({
             mclag_members: JSON.parse(inputData.mclag_members),
         };
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
         const apiPUrl = deleteMclagsMemberURL(selectedDeviceIp);
         instance
             .delete(apiPUrl, { data: payload })
@@ -102,7 +104,7 @@ const MclagMemberForm = ({
             .catch((err) => {})
             .finally(() => {
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 getPortchannel();
             });
     };
@@ -155,7 +157,7 @@ const MclagMemberForm = ({
                             <div className=" w-50">
                                 <button
                                     className="btnStyle ml-25"
-                                    disabled={disableConfig}
+                                    disabled={updateConfig}
                                     onClick={() => handleRemove(value)}
                                 >
                                     Remove
@@ -170,7 +172,7 @@ const MclagMemberForm = ({
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                     onClick={handleSubmit}
                 >
                     Apply Config
@@ -178,7 +180,7 @@ const MclagMemberForm = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                     onClick={removeAll}
                 >
                     Remove All

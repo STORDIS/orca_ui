@@ -7,7 +7,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
 import interceptor from "../../../utils/interceptor";
 
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 import { getIsStaff } from "../datatablesourse";
 import { stpURL } from "../../../utils/backend_rest_urls";
 
@@ -37,7 +37,8 @@ const StpDataTable = (props) => {
     const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const selectedDeviceIp = props.selectedDeviceIp;
 
@@ -77,7 +78,7 @@ const StpDataTable = (props) => {
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
-                            disabled={disableConfig || changes.length === 0}
+                            disabled={updateConfig || changes.length === 0}
                             className="btnStyle"
                         >
                             Apply Config

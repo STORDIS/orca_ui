@@ -9,7 +9,7 @@ import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
 import VlanMemberForm from "./vlanMemberForm";
 import interceptor from "../../../utils/interceptor";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 import { getIsStaff } from "../datatablesourse";
 import useStoreLogs from "../../../utils/store";
 
@@ -25,12 +25,12 @@ const VlanTable = (props) => {
     const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const selectedDeviceIp = props.selectedDeviceIp;
 
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
-    // setUpdateLog(true);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -68,7 +68,7 @@ const VlanTable = (props) => {
     };
 
     const deleteVlan = () => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -93,7 +93,7 @@ const VlanTable = (props) => {
             .catch((err) => {})
             .finally(() => {
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
                 refreshData();
@@ -101,7 +101,7 @@ const VlanTable = (props) => {
     };
 
     const handleFormSubmit = (formData) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -111,7 +111,7 @@ const VlanTable = (props) => {
             .catch(() => {})
             .finally(() => {
                 setUpdateLog(true);
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
                 refreshData();
@@ -242,7 +242,7 @@ const VlanTable = (props) => {
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
-                            disabled={disableConfig || changes.length === 0}
+                            disabled={updateConfig || changes.length === 0}
                             className="btnStyle"
                             onClick={() => handleFormSubmit(changes)}
                         >
