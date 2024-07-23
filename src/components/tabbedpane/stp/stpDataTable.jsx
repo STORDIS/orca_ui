@@ -10,6 +10,7 @@ import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import { getIsStaff } from "../datatablesourse";
 import { stpURL } from "../../../utils/backend_rest_urls";
+import StpForm from "./stpForm";
 
 export const getStpDataUtil = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -44,16 +45,20 @@ const StpDataTable = (props) => {
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
-            // getVlans();
+            getStp();
         }
         props.reset(false);
     }, [props.refresh]);
 
     useEffect(() => {
+        getStp();
+    }, [selectedDeviceIp]);
+
+    const getStp = () => {
         getStpDataUtil(selectedDeviceIp).then((data) => {
             console.log(data);
         });
-    }, [selectedDeviceIp]);
+    };
 
     const resetConfigStatus = () => {
         setConfigStatus("");
@@ -72,6 +77,18 @@ const StpDataTable = (props) => {
 
     const onCellClicked = useCallback((params) => {}, []);
 
+    const handleFormSubmit = (formData) => {};
+
+    const refreshData = () => {
+        getStp();
+        setChanges([]);
+        setIsModalOpen("null");
+    };
+
+    const openAddFormModal = () => {
+        setIsModalOpen("addStpForm");
+    };
+
     return (
         <div className="datatable-container">
             <div className="datatable">
@@ -86,7 +103,11 @@ const StpDataTable = (props) => {
                         <span className="config-status">{configStatus}</span>
                     </div>
 
-                    <button className="btnStyle" disabled={!getIsStaff()}>
+                    <button
+                        className="btnStyle"
+                        onClick={openAddFormModal}
+                        disabled={!getIsStaff()}
+                    >
                         Add STP
                     </button>
                     <button
@@ -113,6 +134,17 @@ const StpDataTable = (props) => {
                         suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
+
+                {/* model for adding STP */}
+                {isModalOpen === "addStpForm" && (
+                    <Modal show={true} onClose={refreshData} title={"Add STP"}>
+                        <StpForm
+                            onSubmit={(e) => handleFormSubmit(e)}
+                            selectedDeviceIp={selectedDeviceIp}
+                            onCancel={refreshData}
+                        />
+                    </Modal>
+                )}
             </div>
         </div>
     );
