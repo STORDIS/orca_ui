@@ -73,7 +73,6 @@ const Datatable = (props) => {
         instance
             .delete(apiPUrl, { data: { mgt_ip: selectedDeviceToDelete } })
             .then((res) => {
-                console.log(res);
             })
             .catch((err) => {})
             .finally(() => {

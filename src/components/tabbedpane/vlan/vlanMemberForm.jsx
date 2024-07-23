@@ -15,7 +15,6 @@ const VlanMemberForm = ({
     inputData,
     selectedDeviceIp,
     onCancel,
-    handelSubmitButton,
 }) => {
     const instance = interceptor();
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);

@@ -53,7 +53,6 @@ const McLagDataTable = (props) => {
                 .map((item) => item.name);
 
             getPortChannelDataUtil(selectedDeviceIp).then((res) => {
-                console.log(res);
                 const portchannelNames = res.map((item) => item.lag_name);
 
                 setEthernetPortchannelList([
