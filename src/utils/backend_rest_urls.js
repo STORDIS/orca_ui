@@ -86,3 +86,7 @@ export function getUserDetailsURL(user) {
 export function deletePortchannelVlanMemberURL() {
     return host_addr + "/port_chnl_vlan_member_remove";
 }
+
+export function deletePortchannelVlanMemberAllURL() {
+    return host_addr + "/port_chnl_vlan_member_remove_all";
+}

@@ -30,7 +30,6 @@ const VlanTable = (props) => {
 
     const selectedDeviceIp = props.selectedDeviceIp;
 
-
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             getVlans();
@@ -227,7 +226,6 @@ const VlanTable = (props) => {
             });
         }
     }, []);
-
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mem_ifs") {
