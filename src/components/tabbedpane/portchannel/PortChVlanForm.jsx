@@ -86,17 +86,17 @@ const PortChVlanForm = ({
 
     const handleRemove = (key) => {
         let input_mem = JSON.parse(inputData.vlan_members);
-
-        if (input_mem?.trunk_vlans?.includes(key.vlanid)) {
-            handleRemoveOne({ trunk_vlans: [key.vlanid] });
-        } else if (key.vlanid === input_mem.access_vlan) {
-            handleRemoveOne({ access_vlan: key.vlanid });
-        } else {
-            setSelectedVlans((prev) => {
-                return prev.filter((item) => item.vlanid !== key.vlanid);
-            });
+        if (input_mem) {
+            if (input_mem.trunk_vlans?.includes(key.vlanid)) {
+                handleRemoveOne({ trunk_vlans: [key.vlanid] });
+            } else if (input_mem.access_vlan === key.vlanid) {
+                handleRemoveOne({ access_vlan: key.vlanid });
+            } else if (input_mem.trunk_vlans && input_mem.access_vlan) {
+                setSelectedVlans((prev) => {
+                    return prev.filter((item) => item.vlanid !== key.vlanid);
+                });
+            }
         }
-
     };
 
     const handleRemoveOne = (e) => {
