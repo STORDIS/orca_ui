@@ -19,11 +19,28 @@ export const getStpDataUtil = (selectedDeviceIp) => {
     return instance
         .get(apiUrl)
         .then((res) => {
-            return res.data;
+            return [res.data];
         })
         .catch((err) => {
             console.log(err);
             return []; // Return an empty array on error
+        });
+};
+
+export const setStpDataUtil = (selectedDeviceIp, payload, status) => {
+    status(true);
+    const instance = interceptor();
+    const apiUrl = stpURL(selectedDeviceIp);
+    return instance
+        .put(apiUrl, payload)
+        .then((res) => {
+            status(false);
+            return true;
+        })
+        .catch((err) => {
+            console.log(err);
+            status(false);
+            return false; // Return an empty array on error
         });
 };
 
@@ -36,7 +53,7 @@ const StpDataTable = (props) => {
 
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [changes, setChanges] = useState([]);
+    const [changes, setChanges] = useState({});
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
@@ -59,7 +76,9 @@ const StpDataTable = (props) => {
     const getStp = () => {
         getStpDataUtil(selectedDeviceIp).then((data) => {
             console.log(data);
-            setDataTable([data])
+            if (data[0] !== "") {
+                setDataTable(data);
+            }
         });
     };
 
@@ -74,19 +93,63 @@ const StpDataTable = (props) => {
         resizable: true,
     };
 
-    const onSelectionChanged = () => {};
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        setSelectedRows(selectedData);
+    };
 
-    const handleCellValueChanged = () => {};
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            console.log(params.data.enabled_protocol);
+            setChanges((prev) => ({
+                ...prev,
+                mgt_ip: selectedDeviceIp,
+                [params.colDef.field]: params.newValue || "",
+            }));
+        }
+        setSelectedRows(params.data);
+    }, []);
 
-    const onCellClicked = useCallback((params) => {}, []);
+    const onCellClicked = useCallback((params) => {
+        setSelectedRows(params.data);
+    }, []);
 
-    const handleFormSubmit = (formData) => {
-        setUpdateConfig(true);
+    const handleFormSubmit = async (formData) => {
+        console.log(formData.hasOwnProperty("enabled_protocol"));
+        if (!formData.hasOwnProperty("enabled_protocol")) {
+            formData.enabled_protocol = [selectedRows.enabled_protocol];
+        } else {
+            formData.enabled_protocol = [formData.enabled_protocol];
+        }
+
+        console.log(formData);
+
         setConfigStatus("Config In Progress....");
+        await setStpDataUtil(selectedDeviceIp, formData, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            refreshData();
+        });
+    };
 
+    const refreshData = () => {
+        getStp();
+        setChanges([]);
+        setIsModalOpen("null");
+        setConfigStatus("");
+    };
+
+    const openAddFormModal = () => {
+        setIsModalOpen("addStpForm");
+    };
+    const deleteStp = () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+        };
         const apiMUrl = stpURL(selectedDeviceIp);
         instance
-            .put(apiMUrl, formData)
+            .delete(apiMUrl, { data: payload })
             .then(() => {})
             .catch(() => {})
             .finally(() => {
@@ -97,22 +160,13 @@ const StpDataTable = (props) => {
             });
     };
 
-    const refreshData = () => {
-        getStp();
-        setChanges([]);
-        setIsModalOpen("null");
-    };
-
-    const openAddFormModal = () => {
-        setIsModalOpen("addStpForm");
-    };
-
     return (
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
+                            onClick={() => handleFormSubmit(changes)}
                             disabled={updateConfig || changes.length === 0}
                             className="btnStyle"
                         >
@@ -130,6 +184,7 @@ const StpDataTable = (props) => {
                     </button>
                     <button
                         className="btnStyle"
+                        onClick={deleteStp}
                         disabled={selectedRows.length === 0}
                     >
                         Delete selected Vlan
@@ -157,7 +212,7 @@ const StpDataTable = (props) => {
                 {isModalOpen === "addStpForm" && (
                     <Modal show={true} onClose={refreshData} title={"Add STP"}>
                         <StpForm
-                            onSubmit={(e) => handleFormSubmit(e)}
+                            onSubmit={refreshData}
                             selectedDeviceIp={selectedDeviceIp}
                             onCancel={refreshData}
                         />

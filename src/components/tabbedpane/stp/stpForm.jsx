@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import useStoreConfig from "../../../utils/configStore";
 import interceptor from "../../../utils/interceptor";
+import { setStpDataUtil } from "./stpDataTable";
+import useStoreLogs from "../../../utils/store";
 
 const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
+
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -57,16 +61,21 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         }
     };
 
-    const handleSubmit = (e) => {
-        console.log(formData);
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setUpdateConfig(true);
+
+        await setStpDataUtil(selectedDeviceIp, formData, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+        });
         onSubmit(formData);
     };
 
     const handleDropdownChange = (event) => {};
 
     const handleRemove = (key) => {};
+
+    console.log(updateConfig)
 
     return (
         <div>
