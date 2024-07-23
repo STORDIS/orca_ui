@@ -17,7 +17,7 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
         let payload = {
             mgt_ip: selectedDeviceIp,
             name: inputData.name,
-            sag_ip_address: e,
+            sag_ip_address: [e],
         };
 
         setDisableConfig(true);

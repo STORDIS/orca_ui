@@ -233,6 +233,7 @@ const VlanTable = (props) => {
     };
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
+        console.log(ipWithCidr)
         if (ipWithCidr) {
             const ipv4Regex =
                 /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
@@ -262,16 +263,7 @@ const VlanTable = (props) => {
             refreshData();
             return;
         }
-        if (
-            !isValidIPv4WithCIDR(params.data.sag_ip_address) &&
-            params.data.sag_ip_address !== "" &&
-            params.data.sag_ip_address !== null
-        ) {
-            alert("sag_ip_address is not valid");
-            setSelectedRows([]);
-            refreshData();
-            return;
-        }
+        
         if (params.data.sag_ip_address && params.data.ip_address) {
             alert("ip_address or sag_ip_address any one must be added");
             setSelectedRows([]);
