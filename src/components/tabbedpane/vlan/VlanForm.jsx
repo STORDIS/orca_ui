@@ -7,6 +7,21 @@ import {
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 
+export const isValidIPv4WithMac = (ipWithCidr) => {
+    const ipv4Regex =
+        /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
+    const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
+
+    const [ip, cidr] = ipWithCidr.split("/");
+
+    if (ipv4Regex.test(ip)) {
+        if (cidr === undefined || cidrRegex.test(cidr)) {
+            return true;
+        }
+    }
+    return false;
+};
+
 const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const instance = interceptor();
     const { disableConfig, setDisableConfig } = useDisableConfig();
@@ -14,21 +29,6 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [disabledIp, setDisabledIp] = useState(false);
     const [disabledSagIp, setDisabledSagIp] = useState(false);
-
-    const isValidIPv4WithCIDR = (ipWithCidr) => {
-        const ipv4Regex =
-            /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
-        const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
-
-        const [ip, cidr] = ipWithCidr.split("/");
-
-        if (ipv4Regex.test(ip)) {
-            if (cidr === undefined || cidrRegex.test(cidr)) {
-                return true;
-            }
-        }
-        return false;
-    };
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -42,6 +42,23 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         autostate: "",
         mem_ifs: "",
     });
+
+    const isValidIPv4 = (ip) => {
+        const ipv4Pattern =
+            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        return ipv4Pattern.test(ip);
+    };
+
+    const isValidCIDR = (cidr) => {
+        const cidrPattern =
+            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|[1-2][0-9]|3[0-2])$/;
+        return cidrPattern.test(cidr);
+    };
+
+    const areAllIPAddressesValid = (input) => {
+        const ipAddresses = input.split(",").map((ip) => ip.trim());
+        return ipAddresses.every((ip) => isValidIPv4(ip) || isValidCIDR(ip));
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -84,14 +101,14 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             return;
         }
         if (
-            !isValidIPv4WithCIDR(formData.ip_address) &&
+            !isValidIPv4WithMac(formData.ip_address) &&
             formData.ip_address !== ""
         ) {
             alert("ip_address is not valid");
             return;
         }
         if (
-            !isValidIPv4WithCIDR(formData.sag_ip_address) &&
+            !areAllIPAddressesValid(formData.sag_ip_address) &&
             formData.sag_ip_address !== ""
         ) {
             alert("sag_ip_address is not valid");
@@ -102,15 +119,19 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             return;
         }
 
+        let trimmedIpAddresses = formData.sag_ip_address
+            .split(",")
+            .map((ip) => ip.trim());
+
         let dataToSubmit = {
             ...formData,
+            sag_ip_address: trimmedIpAddresses,
             vlanid,
         };
 
         if (Object.keys(selectedInterfaces).length > 0) {
             dataToSubmit.mem_ifs = selectedInterfaces;
         }
-
 
         setDisableConfig(true);
         onSubmit(dataToSubmit);
@@ -154,7 +175,6 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     const handleDropdownChange = (event) => {
-
         setSelectedInterfaces((prev) => ({
             ...prev,
             [event.target.value]: "ACCESS",
@@ -266,6 +286,9 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                         value={formData.sag_ip_address}
                         onChange={handleChange}
                     />
+                    <small>
+                        Note : Use (,) Comma to separate the multiple IP address
+                    </small>
                 </div>
             </div>
 
@@ -294,8 +317,11 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             <div className="selected-interface-wrap mb-10 w-100">
                 {Object.entries(selectedInterfaces).map(
                     ([key, value], index) => (
-                        <div className="selected-interface-list mb-10">
-                            <div key={key} className="ml-10 w-50">
+                        <div
+                            key={key}
+                            className="selected-interface-list mb-10"
+                        >
+                            <div className="ml-10 w-50">
                                 {index + 1} &nbsp; {key}
                             </div>
                             <div className=" w-50">

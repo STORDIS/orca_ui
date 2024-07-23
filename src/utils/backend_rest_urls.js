@@ -36,6 +36,10 @@ export function getVlansURL(device_ip) {
     return host_addr + "/vlans?mgt_ip=" + device_ip;
 }
 
+export function removeVlanIp() {
+    return host_addr + "/vlan_ip_remove";
+}
+
 export function postLogin() {
     return host_addr + "/auth/login";
 }
