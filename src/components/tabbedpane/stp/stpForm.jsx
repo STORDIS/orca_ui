@@ -6,7 +6,7 @@ import interceptor from "../../../utils/interceptor";
 const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
-        enabled_protocol: undefined,
+        enabled_protocol: "PVST",
         bpdu_filter: undefined,
         forwarding_delay: undefined,
         hello_time: undefined,
@@ -29,6 +29,11 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 ...prevFormData,
                 [name]: value === "true" ? true : false,
             }));
+        } else if (name === "enabled_protocol") {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: [value],
+            }));
         } else {
             setFormData((prevFormData) => ({
                 ...prevFormData,
@@ -40,6 +45,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        onSubmit(formData);
     };
 
     const handleDropdownChange = (event) => {};
@@ -89,6 +95,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                         min={0}
                         max={61440}
                     />
+                    <small>Must Be Multiple of 4096</small>
                 </div>
             </div>
 

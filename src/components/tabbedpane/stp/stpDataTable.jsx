@@ -11,6 +11,7 @@ import useStoreConfig from "../../../utils/configStore";
 import { getIsStaff } from "../datatablesourse";
 import { stpURL } from "../../../utils/backend_rest_urls";
 import StpForm from "./stpForm";
+import useStoreLogs from "../../../utils/store";
 
 export const getStpDataUtil = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -42,6 +43,7 @@ const StpDataTable = (props) => {
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const selectedDeviceIp = props.selectedDeviceIp;
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -77,7 +79,22 @@ const StpDataTable = (props) => {
 
     const onCellClicked = useCallback((params) => {}, []);
 
-    const handleFormSubmit = (formData) => {};
+    const handleFormSubmit = (formData) => {
+        setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
+
+        const apiMUrl = stpURL(selectedDeviceIp);
+        instance
+            .put(apiMUrl, formData)
+            .then(() => {})
+            .catch(() => {})
+            .finally(() => {
+                setUpdateLog(true);
+                setUpdateConfig(false);
+                resetConfigStatus();
+                refreshData();
+            });
+    };
 
     const refreshData = () => {
         getStp();
