@@ -233,7 +233,6 @@ const VlanTable = (props) => {
     };
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
-        console.log(ipWithCidr)
         if (ipWithCidr) {
             const ipv4Regex =
                 /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
@@ -263,7 +262,6 @@ const VlanTable = (props) => {
             refreshData();
             return;
         }
-        
         if (params.data.sag_ip_address && params.data.ip_address) {
             alert("ip_address or sag_ip_address any one must be added");
             setSelectedRows([]);
@@ -300,13 +298,13 @@ const VlanTable = (props) => {
     }, []);
 
     const onCellClicked = useCallback((params) => {
-        console.log()
+        console.log();
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
         if (
             params?.colDef?.field === "sag_ip_address" &&
-            (params.data.ip_address === "" || params.data.ip_address  === null)
+            (params.data.ip_address === "" || params.data.ip_address === null)
         ) {
             setIsModalOpen("vlanSagIpForm");
         }

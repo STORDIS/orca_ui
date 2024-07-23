@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
-import {
-    getAllInterfacesOfDeviceURL,
-    getAllPortChnlsOfDeviceURL,
-} from "../../../utils/backend_rest_urls";
+
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
+
+import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
 export const isValidIPv4WithMac = (ipWithCidr) => {
     const ipv4Regex =
@@ -40,7 +40,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         enabled: false,
         description: "",
         ip_address: "",
-        sag_ip_address: "",
+        sag_ip_address: undefined,
         autostate: "",
         mem_ifs: "",
     });
@@ -58,8 +58,14 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     const areAllIPAddressesValid = (input) => {
-        const ipAddresses = input.split(",").map((ip) => ip.trim());
-        return ipAddresses.every((ip) => isValidIPv4(ip) || isValidCIDR(ip));
+        if (input) {
+            const ipAddresses = input?.split(",").map((ip) => ip.trim());
+            return ipAddresses.every(
+                (ip) => isValidIPv4(ip) || isValidCIDR(ip)
+            );
+        } else {
+            return true;
+        }
     };
 
     const handleChange = (e) => {
@@ -120,14 +126,15 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             alert("ip_address or sag_ip_address any one must be added");
             return;
         }
-
-        let trimmedIpAddresses = formData.sag_ip_address
-            .split(",")
-            .map((ip) => ip.trim());
+        if (formData?.sag_ip_address) {
+            let trimmedIpAddresses = formData.sag_ip_address
+                .split(",")
+                .map((ip) => ip.trim());
+            formData.sag_ip_address = trimmedIpAddresses;
+        }
 
         let dataToSubmit = {
             ...formData,
-            sag_ip_address: trimmedIpAddresses,
             vlanid,
         };
 
@@ -141,40 +148,19 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     useEffect(() => {
         setInterfaceNames([]);
-        getInterfaces();
-        getPortchannel();
-    }, []);
 
-    const getInterfaces = () => {
-        instance
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const ethernetInterfaces = response.data
-                    .filter((element) => element.name.includes("Ethernet"))
-                    .map((element) => element.name);
-
-                setInterfaceNames((prev) => [...prev, ...ethernetInterfaces]);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
-            })
-            .finally(() => {});
-    };
-
-    const getPortchannel = () => {
-        instance
-            .get(getAllPortChnlsOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const portchannel = response.data.map(
+        getInterfaceDataUtil(selectedDeviceIp).then((eth_Data) => {
+            const ethernetInterfaces = eth_Data
+                .filter((element) => element.name.includes("Ethernet"))
+                .map((element) => element.name);
+            getPortChannelDataUtil(selectedDeviceIp).then((port_data) => {
+                const portchannel = port_data.map(
                     (element) => element.lag_name
                 );
-
-                setInterfaceNames((prev) => [...prev, ...portchannel]);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
+                setInterfaceNames([...portchannel, ...ethernetInterfaces]);
             });
-    };
+        });
+    }, []);
 
     const handleDropdownChange = (event) => {
         setSelectedInterfaces((prev) => ({
