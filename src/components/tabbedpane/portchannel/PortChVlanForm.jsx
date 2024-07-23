@@ -87,7 +87,7 @@ const PortChVlanForm = ({
     const handleRemove = (key) => {
         let input_mem = JSON.parse(inputData.vlan_members);
 
-        if (input_mem?.trunk_vlans.includes(key.vlanid)) {
+        if (input_mem?.trunk_vlans?.includes(key.vlanid)) {
             handleRemoveOne({ trunk_vlans: [key.vlanid] });
         } else if (key.vlanid === input_mem.access_vlan) {
             handleRemoveOne({ access_vlan: key.vlanid });
