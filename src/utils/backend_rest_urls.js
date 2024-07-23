@@ -90,3 +90,7 @@ export function deletePortchannelVlanMemberURL() {
 export function stpURL(device_ip) {
     return host_addr + "/stp?mgt_ip=" + device_ip ;
 }
+
+export function deletePortchannelVlanMemberAllURL() {
+    return host_addr + "/port_chnl_vlan_member_remove_all";
+}

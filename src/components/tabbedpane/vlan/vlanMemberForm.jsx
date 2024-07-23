@@ -7,6 +7,8 @@ import {
     deleteVlanMembersURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
+import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
 const VlanMemberForm = ({
     onSubmit,
@@ -30,41 +32,8 @@ const VlanMemberForm = ({
             vlanid: inputData.vlanid,
             mem_ifs: selectedInterfaces,
         };
-
-
         setUpdateConfig(true);
         onSubmit(dataToSubmit);
-    };
-
-    const getInterfaces = () => {
-        instance
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const ethernetInterfaces = response.data
-                    .filter((element) => element.name.includes("Ethernet"))
-                    .map((element) => element.name);
-
-                setInterfaceNames((prev) => [...prev, ...ethernetInterfaces]);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
-            })
-            .finally(() => {});
-    };
-
-    const getPortchannel = () => {
-        instance
-            .get(getAllPortChnlsOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const portchannel = response.data.map(
-                    (element) => element.lag_name
-                );
-
-                setInterfaceNames((prev) => [...prev, ...portchannel]);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
-            });
     };
 
     const deleteMembers = (payload, key) => {
@@ -73,7 +42,6 @@ const VlanMemberForm = ({
         instance
             .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
             .then((response) => {
-
                 setSelectedInterfaces((prevInterfaces) => {
                     const newInterfaces = { ...prevInterfaces };
                     delete newInterfaces[key];
@@ -133,8 +101,19 @@ const VlanMemberForm = ({
         }
 
         setInterfaceNames([]);
-        getInterfaces();
-        getPortchannel();
+        // getInterfaces();
+
+        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+            const ethernetInterfaces = res
+                .filter((element) => element.name.includes("Ethernet"))
+                .map((element) => element.name);
+
+            getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+                const portchannel = res.map((element) => element.lag_name);
+
+                setInterfaceNames([...ethernetInterfaces, ...portchannel]);
+            });
+        });
     }, []);
 
     return (
