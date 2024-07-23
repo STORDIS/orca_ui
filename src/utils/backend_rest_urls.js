@@ -88,5 +88,5 @@ export function deletePortchannelVlanMemberURL() {
 }
 
 export function stpURL(device_ip) {
-    return host_addr + "/stp_config";
+    return host_addr + "/stp?mgt_ip=" + device_ip ;
 }

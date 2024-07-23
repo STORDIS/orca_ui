@@ -651,12 +651,17 @@ export const stpColumn = [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: {
+            values: ["PVST", "MSTP", "RSTP","RAPID_PVST"],
+        },
     },
     {
         field: "bpdu_filter",
         headerName: "BPDU Filter",
         width: 130,
         sortable: true,
+        cellDataType: "boolean",
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
     },
@@ -678,7 +683,7 @@ export const stpColumn = [
     },
     {
         field: "max_age",
-        headerName: "max_age",
+        headerName: "Max Age",
         width: 130,
         sortable: true,
         editable: getIsStaff(),
@@ -686,15 +691,7 @@ export const stpColumn = [
     },
     {
         field: "bridge_priority",
-        headerName: "bridge_priority",
-        width: 130,
-        sortable: true,
-        editable: getIsStaff(),
-        headerComponent: EditableHeaderComponent,
-    },
-    {
-        field: "disabled_vlans",
-        headerName: "disabled_vlans",
+        headerName: "Bridge Priority",
         width: 130,
         sortable: true,
         editable: getIsStaff(),
@@ -719,6 +716,14 @@ export const stpColumn = [
     {
         field: "portfast",
         headerName: "portfast",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+    },
+    {
+        field: "disabled_vlans",
+        headerName: "disabled_vlans",
         width: 130,
         sortable: true,
         editable: getIsStaff(),

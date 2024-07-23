@@ -19,7 +19,7 @@ export const getStpDataUtil = (selectedDeviceIp) => {
     return instance
         .get(apiUrl)
         .then((res) => {
-            return res;
+            return res.data;
         })
         .catch((err) => {
             console.log(err);
@@ -59,6 +59,7 @@ const StpDataTable = (props) => {
     const getStp = () => {
         getStpDataUtil(selectedDeviceIp).then((data) => {
             console.log(data);
+            setDataTable([data])
         });
     };
 

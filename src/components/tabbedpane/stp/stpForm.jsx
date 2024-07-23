@@ -4,18 +4,21 @@ import useStoreConfig from "../../../utils/configStore";
 import interceptor from "../../../utils/interceptor";
 
 const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
-        enabled_protocol: "PVST",
-        bpdu_filter: undefined,
-        forwarding_delay: undefined,
-        hello_time: undefined,
-        max_age: undefined,
-        bridge_priority: undefined,
+        enabled_protocol: ["PVST"],
+        bpdu_filter: true,
+        bridge_priority: 4096,
+        max_age: 6,
+        hello_time: 1,
+        rootguard_timeout: 5,
+        // loop_guard: false,
+        portfast: false,
+        forwarding_delay: 4,
         disabled_vlans: undefined,
-        rootguard_timeout: undefined,
-        loop_guard: undefined,
-        portfast: undefined,
     });
 
     useEffect(() => {}, []);
@@ -25,6 +28,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         console.log(name, value);
 
         if (value === "true" || value === "false") {
+            console.log("in");
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: value === "true" ? true : false,
@@ -34,6 +38,17 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 ...prevFormData,
                 [name]: [value],
             }));
+        } else if (
+            name === "bridge_priority" ||
+            name === "max_age" ||
+            name === "hello_time" ||
+            name === "rootguard_timeout" ||
+            name === "forwarding_delay"
+        ) {
+            setFormData((prevFormData) => ({
+                ...prevFormData,
+                [name]: parseInt(value),
+            }));
         } else {
             setFormData((prevFormData) => ({
                 ...prevFormData,
@@ -41,10 +56,11 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             }));
         }
     };
-    console.log(formData);
 
     const handleSubmit = (e) => {
+        console.log(formData);
         e.preventDefault();
+        setUpdateConfig(true);
         onSubmit(formData);
     };
 
@@ -53,7 +69,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const handleRemove = (key) => {};
 
     return (
-        <form onSubmit={handleSubmit}>
+        <div>
             <div className="form-wrapper">
                 <div className="form-field w-50">
                     <label>Device IP:</label>
@@ -79,8 +95,8 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 <div className="form-field w-50">
                     <label>bpdu_filter:</label>
                     <select
-                        name="bridge_priority"
                         value={formData.bpdu_filter}
+                        name="bpdu_filter"
                         onChange={handleChange}
                     >
                         <option value="true">Enable</option>
@@ -91,9 +107,11 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     <label>bridge_priority:</label>
                     <input
                         type="number"
+                        name="bridge_priority"
                         value={formData.bridge_priority}
                         min={0}
                         max={61440}
+                        onChange={handleChange}
                     />
                     <small>Must Be Multiple of 4096</small>
                 </div>
@@ -102,15 +120,22 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             <div className="form-wrapper">
                 <div className="form-field w-50">
                     <label> max_age:</label>
-                    <input type="number" value={formData.max_age} />
+                    <input
+                        type="number"
+                        name="max_age"
+                        value={formData.max_age}
+                        onChange={handleChange}
+                    />
                 </div>
                 <div className="form-field w-50">
                     <label> hello_time:</label>
                     <input
                         type="number"
+                        name="hello_time"
                         value={formData.hello_time}
                         min={1}
                         max={10}
+                        onChange={handleChange}
                     />
                 </div>
             </div>
@@ -120,17 +145,19 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     <label> rootguard_timeout:</label>
                     <input
                         type="number"
+                        name="rootguard_timeout"
                         value={formData.rootguard_timeout}
                         min={5}
                         max={600}
+                        onChange={handleChange}
                     />
                 </div>
                 <div className="form-field w-50">
                     <label> loop_guard:</label>
                     <select
                         name="loop_guard"
-                        value={formData.loop_guard}
-                        onChange={handleChange}
+                        // value={formData.loop_guard}
+                        // onChange={handleChange}
                     >
                         <option value="true">Enable</option>
                         <option value="false">Disable</option>
@@ -142,7 +169,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 <div className="form-field w-50">
                     <label> portfast:</label>
                     <select
-                        name="loop_guard"
+                        name="portfast"
                         value={formData.portfast}
                         onChange={handleChange}
                     >
@@ -154,13 +181,30 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     <label> forwarding_delay:</label>
                     <input
                         type="number"
+                        name="forwarding_delay"
                         value={formData.forwarding_delay}
                         min={4}
                         max={30}
+                        onChange={handleChange}
                     />
                 </div>
             </div>
-        </form>
+
+            <div className="">
+                <button
+                    type="submit"
+                    className="btnStyle mr-10"
+                    disabled={updateConfig}
+                    onClick={handleSubmit}
+                >
+                    Apply Config
+                </button>
+
+                <button type="button" className="btnStyle" onClick={onCancel}>
+                    Cancel
+                </button>
+            </div>
+        </div>
     );
 };
 export default StpForm;
