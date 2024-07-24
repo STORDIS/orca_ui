@@ -1,17 +1,17 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "../tabbedPaneTable.scss";
-import { stpColumn } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
+import { stpColumn } from "../datatablesourse";
 import interceptor from "../../../utils/interceptor";
-
 import useStoreConfig from "../../../utils/configStore";
+import useStoreLogs from "../../../utils/store";
 import { getIsStaff } from "../datatablesourse";
 import { stpURL } from "../../../utils/backend_rest_urls";
 import StpForm from "./stpForm";
-import useStoreLogs from "../../../utils/store";
+import StpVlanForm from "./stpVlanForm";
 
 export const getStpDataUtil = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -133,6 +133,11 @@ const StpDataTable = (props) => {
     }, []);
 
     const onCellClicked = useCallback((params) => {
+        if (params?.colDef?.field === "disabled_vlans") {
+            console.log("---");
+            setIsModalOpen("addStpVlanForm");
+        }
+
         setSelectedRows(params.data);
     }, []);
 
@@ -159,6 +164,7 @@ const StpDataTable = (props) => {
     const openAddFormModal = () => {
         setIsModalOpen("addStpForm");
     };
+
     const deleteStp = async () => {
         let payload = {
             mgt_ip: selectedDeviceIp,
@@ -225,6 +231,21 @@ const StpDataTable = (props) => {
                 {isModalOpen === "addStpForm" && (
                     <Modal show={true} onClose={refreshData} title={"Add STP"}>
                         <StpForm
+                            onSubmit={refreshData}
+                            selectedDeviceIp={selectedDeviceIp}
+                            onCancel={refreshData}
+                        />
+                    </Modal>
+                )}
+
+                {/* model for adding vlans STP */}
+                {isModalOpen === "addStpVlanForm" && (
+                    <Modal
+                        show={true}
+                        onClose={refreshData}
+                        title={"Add Disabled Vlans for STP"}
+                    >
+                        <StpVlanForm
                             onSubmit={refreshData}
                             selectedDeviceIp={selectedDeviceIp}
                             onCancel={refreshData}

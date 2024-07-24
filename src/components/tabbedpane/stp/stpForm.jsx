@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import useStoreConfig from "../../../utils/configStore";
-import interceptor from "../../../utils/interceptor";
 import { putStpDataUtil } from "./stpDataTable";
 import useStoreLogs from "../../../utils/store";
+import { FaArrowAltCircleUp } from "react-icons/fa";
+import { FaArrowAltCircleDown } from "react-icons/fa";
+import Tooltip from "@mui/material/Tooltip";
 
 const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
@@ -71,6 +73,26 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         onSubmit(formData);
     };
 
+    const handleIncrease = () => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            bridge_priority:
+                prevFormData.bridge_priority + 4096 <= 61440
+                    ? prevFormData.bridge_priority + 4096
+                    : 61440,
+        }));
+    };
+
+    const handleDecrease = () => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            bridge_priority:
+                prevFormData.bridge_priority - 4096 >= 4096
+                    ? prevFormData.bridge_priority - 4096
+                    : 4096,
+        }));
+    };
+
     const handleDropdownChange = (event) => {};
 
     const handleRemove = (key) => {};
@@ -81,12 +103,12 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         <div>
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label>Device IP:</label>
+                    <label>* Device IP :</label>
                     <input type="text" value={selectedDeviceIp} disabled />
                 </div>
 
                 <div className="form-field w-50">
-                    <label>enabled_protocol </label>
+                    <label>* Enabled Protocol :</label>
                     <select
                         name="enabled_protocol"
                         value={formData.enabled_protocol}
@@ -102,7 +124,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label>bpdu_filter:</label>
+                    <label>* BPDU Filter :</label>
                     <select
                         value={formData.bpdu_filter}
                         name="bpdu_filter"
@@ -112,23 +134,42 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                         <option value="false">Disable</option>
                     </select>
                 </div>
-                <div className="form-field w-50">
-                    <label>bridge_priority:</label>
+                <div className="form-field  " style={{ width: "45%" }}>
+                    <label>* Bridge Priority :</label>
                     <input
                         type="number"
                         name="bridge_priority"
                         value={formData.bridge_priority}
                         min={0}
                         max={61440}
+                        readOnly
                         onChange={handleChange}
                     />
                     <small>Must Be Multiple of 4096</small>
+                </div>
+                <div className="form-field  mt-15" style={{ width: "5%" }}>
+                    <Tooltip title="Increase" placement="right">
+                        <button
+                            className="increadeDecrease mb-5"
+                            onClick={handleIncrease}
+                        >
+                            <FaArrowAltCircleUp />
+                        </button>
+                    </Tooltip>
+                    <Tooltip title="Decrease" placement="right">
+                        <button
+                            className="increadeDecrease"
+                            onClick={handleDecrease}
+                        >
+                            <FaArrowAltCircleDown />
+                        </button>
+                    </Tooltip>
                 </div>
             </div>
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> max_age:</label>
+                    <label>* Max Age:</label>
                     <input
                         type="number"
                         name="max_age"
@@ -137,7 +178,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     />
                 </div>
                 <div className="form-field w-50">
-                    <label> hello_time:</label>
+                    <label>* Hello Time:</label>
                     <input
                         type="number"
                         name="hello_time"
@@ -151,7 +192,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> rootguard_timeout:</label>
+                    <label> Rootguard Timeout:</label>
                     <input
                         type="number"
                         name="rootguard_timeout"
@@ -162,7 +203,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     />
                 </div>
                 <div className="form-field w-50">
-                    <label> loop_guard:</label>
+                    <label> Loop Guard:</label>
                     <select
                         name="loop_guard"
                         // value={formData.loop_guard}
@@ -176,7 +217,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> portfast:</label>
+                    <label> Portfast:</label>
                     <select
                         name="portfast"
                         value={formData.portfast}
@@ -187,7 +228,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     </select>
                 </div>
                 <div className="form-field w-50">
-                    <label> forwarding_delay:</label>
+                    <label> Forwarding Delay:</label>
                     <input
                         type="number"
                         name="forwarding_delay"
