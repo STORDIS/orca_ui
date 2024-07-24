@@ -13,6 +13,8 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+    const [disableInput, setDisableInput] = useState("null");
+
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         enabled_protocol: ["PVST"],
@@ -21,7 +23,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         max_age: 6,
         hello_time: 1,
         rootguard_timeout: 5,
-        // loop_guard: false,
+        loop_guard: false,
         portfast: false,
         forwarding_delay: 4,
         disabled_vlans: undefined,
@@ -40,6 +42,11 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                 [name]: value === "true" ? true : false,
             }));
         } else if (name === "enabled_protocol") {
+            if (value === "PVST") {
+                setDisableInput("portfast");
+            } else if (value === "MSTP") {
+                setDisableInput("loop_guard");
+            }
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: [value],
@@ -202,31 +209,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                         onChange={handleChange}
                     />
                 </div>
-                <div className="form-field w-50">
-                    <label> Loop Guard:</label>
-                    <select
-                        name="loop_guard"
-                        // value={formData.loop_guard}
-                        // onChange={handleChange}
-                    >
-                        <option value="true">Enable</option>
-                        <option value="false">Disable</option>
-                    </select>
-                </div>
-            </div>
 
-            <div className="form-wrapper">
-                <div className="form-field w-50">
-                    <label> Portfast:</label>
-                    <select
-                        name="portfast"
-                        value={formData.portfast}
-                        onChange={handleChange}
-                    >
-                        <option value="true">Enable</option>
-                        <option value="false">Disable</option>
-                    </select>
-                </div>
                 <div className="form-field w-50">
                     <label> Forwarding Delay:</label>
                     <input
@@ -238,6 +221,36 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                         onChange={handleChange}
                     />
                 </div>
+            </div>
+
+            <div className="form-wrapper">
+                {disableInput === "portfast" ? (
+                    <div className="form-field w-50">
+                        <label> Portfast:</label>
+                        <select
+                            name="portfast"
+                            value={formData.portfast}
+                            onChange={handleChange}
+                        >
+                            <option value="true">Enable</option>
+                            <option value="false">Disable</option>
+                        </select>
+                    </div>
+                ) : null}
+
+                {disableInput === "loop_guard" ? (
+                    <div className="form-field w-50">
+                        <label> Loop Guard:</label>
+                        <select
+                            name="loop_guard"
+                            value={formData.loop_guard}
+                            onChange={handleChange}
+                        >
+                            <option value="true">Enable</option>
+                            <option value="false">Disable</option>
+                        </select>
+                    </div>
+                ) : null}
             </div>
 
             <div className="">
