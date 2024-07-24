@@ -19,7 +19,7 @@ export const getStpDataUtil = (selectedDeviceIp) => {
     return instance
         .get(apiUrl)
         .then((res) => {
-            return [res.data];
+            return res.data;
         })
         .catch((err) => {
             console.log(err);
@@ -35,12 +35,14 @@ export const setStpDataUtil = (selectedDeviceIp, payload, status) => {
         .put(apiUrl, payload)
         .then((res) => {
             status(false);
+            console.log("-- then");
             return true;
         })
         .catch((err) => {
             console.log(err);
             status(false);
-            return false; // Return an empty array on error
+            console.log("-- catch");
+            return false;
         });
 };
 
@@ -75,10 +77,7 @@ const StpDataTable = (props) => {
 
     const getStp = () => {
         getStpDataUtil(selectedDeviceIp).then((data) => {
-            console.log(data);
-            if (data[0] !== "") {
-                setDataTable(data);
-            }
+            setDataTable(data);
         });
     };
 
@@ -101,12 +100,19 @@ const StpDataTable = (props) => {
 
     const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
-            console.log(params.data.enabled_protocol);
-            setChanges((prev) => ({
-                ...prev,
-                mgt_ip: selectedDeviceIp,
-                [params.colDef.field]: params.newValue || "",
-            }));
+            if (params.colDef.field === "enabled_protocol") {
+                setChanges((prev) => ({
+                    ...prev,
+                    mgt_ip: selectedDeviceIp,
+                    [params.colDef.field]: [params.newValue],
+                }));
+            } else {
+                setChanges((prev) => ({
+                    ...prev,
+                    mgt_ip: selectedDeviceIp,
+                    [params.colDef.field]: params.newValue,
+                }));
+            }
         }
         setSelectedRows(params.data);
     }, []);
@@ -116,26 +122,22 @@ const StpDataTable = (props) => {
     }, []);
 
     const handleFormSubmit = async (formData) => {
-        console.log(formData.hasOwnProperty("enabled_protocol"));
-        if (!formData.hasOwnProperty("enabled_protocol")) {
-            formData.enabled_protocol = [selectedRows.enabled_protocol];
-        } else {
-            formData.enabled_protocol = [formData.enabled_protocol];
-        }
-
         console.log(formData);
 
         setConfigStatus("Config In Progress....");
         await setStpDataUtil(selectedDeviceIp, formData, (status) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
-            refreshData();
+            if (!status) {
+                refreshData();
+            }
         });
     };
 
     const refreshData = () => {
-        getStp();
         setChanges([]);
+        setDataTable([]);
+        getStp();
         setIsModalOpen("null");
         setConfigStatus("");
     };
