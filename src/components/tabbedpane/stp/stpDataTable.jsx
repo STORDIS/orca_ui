@@ -27,7 +27,7 @@ export const getStpDataUtil = (selectedDeviceIp) => {
         });
 };
 
-export const setStpDataUtil = (selectedDeviceIp, payload, status) => {
+export const putStpDataUtil = (selectedDeviceIp, payload, status) => {
     status(true);
     const instance = interceptor();
     const apiUrl = stpURL(selectedDeviceIp);
@@ -35,13 +35,28 @@ export const setStpDataUtil = (selectedDeviceIp, payload, status) => {
         .put(apiUrl, payload)
         .then((res) => {
             status(false);
-            console.log("-- then");
             return true;
         })
         .catch((err) => {
             console.log(err);
             status(false);
-            console.log("-- catch");
+            return false;
+        });
+};
+
+export const deleteStpDataUtil = (selectedDeviceIp, payload, status) => {
+    status(true);
+    const instance = interceptor();
+    const apiUrl = stpURL(selectedDeviceIp);
+    return instance
+        .delete(apiUrl, { data: payload })
+        .then((res) => {
+            status(false);
+            return true;
+        })
+        .catch((err) => {
+            console.log(err);
+            status(false);
             return false;
         });
 };
@@ -122,10 +137,8 @@ const StpDataTable = (props) => {
     }, []);
 
     const handleFormSubmit = async (formData) => {
-        console.log(formData);
-
         setConfigStatus("Config In Progress....");
-        await setStpDataUtil(selectedDeviceIp, formData, (status) => {
+        await putStpDataUtil(selectedDeviceIp, formData, (status) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
@@ -137,29 +150,27 @@ const StpDataTable = (props) => {
     const refreshData = () => {
         setChanges([]);
         setDataTable([]);
-        getStp();
+        setSelectedRows([]);
         setIsModalOpen("null");
         setConfigStatus("");
+        getStp();
     };
 
     const openAddFormModal = () => {
         setIsModalOpen("addStpForm");
     };
-    const deleteStp = () => {
+    const deleteStp = async () => {
         let payload = {
             mgt_ip: selectedDeviceIp,
         };
-        const apiMUrl = stpURL(selectedDeviceIp);
-        instance
-            .delete(apiMUrl, { data: payload })
-            .then(() => {})
-            .catch(() => {})
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-                resetConfigStatus();
+
+        await deleteStpDataUtil(selectedDeviceIp, payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
                 refreshData();
-            });
+            }
+        });
     };
 
     return (

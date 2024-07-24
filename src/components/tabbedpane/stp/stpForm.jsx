@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import useStoreConfig from "../../../utils/configStore";
 import interceptor from "../../../utils/interceptor";
-import { setStpDataUtil } from "./stpDataTable";
+import { putStpDataUtil } from "./stpDataTable";
 import useStoreLogs from "../../../utils/store";
 
 const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
@@ -64,7 +64,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        await setStpDataUtil(selectedDeviceIp, formData, (status) => {
+        await putStpDataUtil(selectedDeviceIp, formData, (status) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
         });
@@ -75,7 +75,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     const handleRemove = (key) => {};
 
-    console.log(updateConfig)
+    console.log(updateConfig);
 
     return (
         <div>
