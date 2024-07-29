@@ -11,7 +11,7 @@ import {
     bookmarkDeleteAllURL,
 } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
-import { Tooltip as ReactTooltip } from "react-tooltip";
+import Tooltip from "@mui/material/Tooltip";
 
 import HistoryChatSection from "./components/historyChatSection";
 
@@ -90,19 +90,15 @@ export const AskOrca = () => {
                         <FaBookmark />
                     </span>
                     Bookmark
-                    <button
-                        data-tooltip-id="deleteAllBookmark"
-                        disabled={!getIsStaff()}
-                        onClick={deleteAllBookMark}
-                        className="deleteIcon"
-                    >
-                        <FaTrashAlt />
-                        <ReactTooltip
-                            id="deleteAllBookmark"
-                            place="bottom"
-                            content="Delete All Bookmark"
-                        />
-                    </button>
+                    <Tooltip place="bottom" title="Delete All Bookmark">
+                        <button
+                            disabled={!getIsStaff()}
+                            onClick={deleteAllBookMark}
+                            className="deleteIcon"
+                        >
+                            <FaTrashAlt />
+                        </button>
+                    </Tooltip>
                 </div>
 
                 <div className="tabBody">
@@ -115,19 +111,20 @@ export const AskOrca = () => {
                                 <FaRegCopy />
                             </span>
                             <div className="ml-10">{item.prompt}</div>
-                            <button
-                                data-tooltip-id="deleteBookmark"
-                                onClick={() => deleteBookmark(item.bookmark_id)}
-                                disabled={!getIsStaff()}
-                                className="deleteIcon "
+                            <Tooltip
+                                place="bottom"
+                                title="Delete This Bookmark"
                             >
-                                <FaTrashAlt />
-                                <ReactTooltip
-                                    id="deleteBookmark"
-                                    place="bottom"
-                                    content="Delete This Bookmark"
-                                />
-                            </button>
+                                <button
+                                    onClick={() =>
+                                        deleteBookmark(item.bookmark_id)
+                                    }
+                                    disabled={!getIsStaff()}
+                                    className="deleteIcon "
+                                >
+                                    <FaTrashAlt />
+                                </button>
+                            </Tooltip>
                         </div>
                     ))}
 
