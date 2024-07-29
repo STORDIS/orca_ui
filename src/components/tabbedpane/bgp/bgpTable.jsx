@@ -186,14 +186,13 @@ const BGPTable = (props) => {
                     rowData={dataTable}
                     columnDefs={bgpColumns}
                     defaultColDef={defaultColDef}
-                    onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
-                    checkboxSelection
                     enableCellTextSelection="true"
-                    rowSelection="single"
+                    rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
                     onCellValueChanged={handleCellValueChanged}
                     domLayout={"autoHeight"}
+                    suppressRowClickSelection={true}
                 ></AgGridReact>
             </div>
 

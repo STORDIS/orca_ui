@@ -27,7 +27,14 @@ const PortChMemberForm = ({
         } else {
             setSelectedInterfaces(inputData.members.split(","));
         }
+        document.addEventListener("keydown", handleKeyDown);
     }, []);
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+            onCancel();
+        }
+    };
 
     const getAllInterfaces = () => {
         const apiPUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);

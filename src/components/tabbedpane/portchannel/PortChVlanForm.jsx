@@ -24,7 +24,14 @@ const PortChVlanForm = ({
 
     useEffect(() => {
         getAllVlans();
+        document.addEventListener("keydown", handleKeyDown);
     }, []);
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+            onCancel();
+        }
+    };
 
     const getAllVlans = () => {
         setVlanNames([]);

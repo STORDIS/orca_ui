@@ -63,7 +63,14 @@ const PortChannelForm = ({
     useEffect(() => {
         getAllVlans();
         getAllInterfacesOfDevice();
+        document.addEventListener("keydown", handleKeyDown);
     }, []);
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+            onCancel();
+        }
+    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
