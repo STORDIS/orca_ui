@@ -26,7 +26,14 @@ const MclagMemberForm = ({
         if (inputData.mclag_members) {
             setSelectedInterfaces(JSON.parse(inputData.mclag_members));
         }
+        document.addEventListener("keydown", handleKeyDown);
     }, []);
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+            onCancel();
+        }
+    };
 
     const getPortchannel = () => {
         getPortChannelDataUtil(selectedDeviceIp).then((res) => {
@@ -178,7 +185,7 @@ const MclagMemberForm = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={disableConfig || selectedInterfaces.length === 0}
                     onClick={removeAll}
                 >
                     Remove All
