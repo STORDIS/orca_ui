@@ -62,7 +62,7 @@ export const interfaceColumns = [
             }
         },
         sortable: true,
-        headerTooltip: "", // add header tooltip here
+        headerTooltip: "Test tool tip", // add header tooltip here
     },
     {
         field: "enabled",
@@ -73,7 +73,7 @@ export const interfaceColumns = [
         editable: getIsStaff(),
         suppressKeyboardEvent: (params) => params.event.key === " ",
         headerComponent: EditableHeaderComponent,
-        headerTooltip: "", // add header tooltip here
+        headerTooltip: "test tool tip", // add header tooltip here
     },
     {
         field: "mtu",

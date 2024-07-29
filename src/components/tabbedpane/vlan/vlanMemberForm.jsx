@@ -113,7 +113,14 @@ const VlanMemberForm = ({
                 setInterfaceNames([...ethernetInterfaces, ...portchannel]);
             });
         });
+        document.addEventListener("keydown", handleKeyDown);
     }, []);
+
+    const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+            onCancel();
+        }
+    };
 
     return (
         <div>

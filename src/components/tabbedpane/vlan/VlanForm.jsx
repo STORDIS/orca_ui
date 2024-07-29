@@ -141,7 +141,16 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         setInterfaceNames([]);
         getInterfaces();
         getPortchannel();
+
+        document.addEventListener("keydown", handleKeyDown);
     }, []);
+    
+    // document.addEventListener("keydown", handleKeyDown);
+    const handleKeyDown = (event) => {
+        if (event.key === "Escape") {
+            onCancel();
+        }
+    };
 
     const getInterfaces = () => {
         instance
