@@ -25,6 +25,10 @@ export const LogViewer = () => {
         }
     }, [updateLog]);
 
+    useEffect(() => {
+        getLogs();
+    }, []);
+
     const getLogs = () => {
         instance
             .get(logPanelURL())
@@ -104,7 +108,12 @@ export const LogViewer = () => {
             filter: true,
             sortable: true,
             cellRenderer: (params) => {
-                return <span>{JSON.stringify(params.value)}</span>;
+                return (
+                    <span>
+                        {params.data.http_method} :{" "}
+                        {JSON.stringify(params.value)}
+                    </span>
+                );
             },
             tooltipValueGetter: (params) => {
                 return JSON.stringify(params.value);
