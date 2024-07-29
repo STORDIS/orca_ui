@@ -206,7 +206,7 @@ const StpDataTable = (props) => {
                         onClick={deleteStp}
                         disabled={selectedRows.length === 0}
                     >
-                        Delete selected Vlan
+                        Delete selected STP
                     </button>
                 </div>
 
