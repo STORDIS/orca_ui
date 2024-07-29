@@ -42,6 +42,10 @@
     background-color: #dbdbdb;
 }
 
+.form-field select:disabled {
+    background-color: #dbdbdb;
+}
+
 .form-field input[type="submit"]:hover,
 .form-field button:hover {
     opacity: 0.9;

@@ -220,49 +220,46 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     />
                 </div>
 
-                {disableInput !== "MSTP" ? (
-                    <div className="form-field w-50">
-                        <label> Rootguard Timeout:</label>
-                        <input
-                            type="number"
-                            name="rootguard_timeout"
-                            value={formData.rootguard_timeout}
-                            min={5}
-                            max={600}
-                            onChange={handleChange}
-                        />
-                    </div>
-                ) : null}
-
-                {disableInput === "MSTP" ? (
-                    <div className="form-field w-50">
-                        <label> Loop Guard:</label>
-                        <select
-                            name="loop_guard"
-                            value={formData.loop_guard}
-                            onChange={handleChange}
-                        >
-                            <option value="true">Enable</option>
-                            <option value="false">Disable</option>
-                        </select>
-                    </div>
-                ) : null}
+                <div className="form-field w-50">
+                    <label> Portfast:</label>
+                    <select
+                        name="portfast"
+                        value={formData.portfast}
+                        onChange={handleChange}
+                        disabled={disableInput === "PVST"}
+                    >
+                        <option value="true">Enable</option>
+                        <option value="false">Disable</option>
+                    </select>
+                </div>
             </div>
 
             <div className="form-wrapper">
-                {disableInput === "PVST" ? (
-                    <div className="form-field w-50">
-                        <label> Portfast:</label>
-                        <select
-                            name="portfast"
-                            value={formData.portfast}
-                            onChange={handleChange}
-                        >
-                            <option value="true">Enable</option>
-                            <option value="false">Disable</option>
-                        </select>
-                    </div>
-                ) : null}
+                <div className="form-field w-50">
+                    <label> Loop Guard:</label>
+                    <select
+                        name="loop_guard"
+                        value={formData.loop_guard}
+                        onChange={handleChange}
+                        disabled={disableInput === "MSTP"}
+                    >
+                        <option value="true">Enable</option>
+                        <option value="false">Disable</option>
+                    </select>
+                </div>
+
+                <div className="form-field w-50">
+                    <label> Rootguard Timeout:</label>
+                    <input
+                        type="number"
+                        name="rootguard_timeout"
+                        value={formData.rootguard_timeout}
+                        min={5}
+                        max={600}
+                        onChange={handleChange}
+                        disabled={disableInput === "MSTP"}
+                    />
+                </div>
             </div>
 
             <div className="">
