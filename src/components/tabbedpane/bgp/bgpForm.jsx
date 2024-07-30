@@ -32,7 +32,6 @@ const BgpForm = ({
 
     const handleSubmit = (e) => {
         setDisableConfig(true);
-
         onSubmit(formData);
     };
 

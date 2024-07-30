@@ -24,14 +24,9 @@ const MclagMemberForm = ({
         if (inputData.mclag_members) {
             setSelectedInterfaces(JSON.parse(inputData.mclag_members));
         }
-        document.addEventListener("keydown", handleKeyDown);
     }, []);
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Escape") {
-            onCancel();
-        }
-    };
+
 
     const getPortchannel = () => {
         getPortChannelDataUtil(selectedDeviceIp).then((res) => {

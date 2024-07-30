@@ -233,7 +233,7 @@ const VlanTable = (props) => {
     };
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
-        console.log(ipWithCidr)
+        console.log(ipWithCidr);
         if (ipWithCidr) {
             const ipv4Regex =
                 /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
@@ -263,7 +263,7 @@ const VlanTable = (props) => {
             refreshData();
             return;
         }
-        
+
         if (params.data.sag_ip_address && params.data.ip_address) {
             alert("ip_address or sag_ip_address any one must be added");
             setSelectedRows([]);
@@ -300,13 +300,13 @@ const VlanTable = (props) => {
     }, []);
 
     const onCellClicked = useCallback((params) => {
-        console.log()
+        console.log();
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
         if (
             params?.colDef?.field === "sag_ip_address" &&
-            (params.data.ip_address === "" || params.data.ip_address  === null)
+            (params.data.ip_address === "" || params.data.ip_address === null)
         ) {
             setIsModalOpen("vlanSagIpForm");
         }
@@ -367,24 +367,24 @@ const VlanTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title={"Edit Sag Ip"}
+                        onSubmit={refreshData}
                     >
                         <VlanSagIpForm
-                            onSubmit={refreshData}
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
-                            onCancel={refreshData}
                         />
                     </Modal>
                 )}
 
                 {/* model for adding vlan */}
                 {isModalOpen === "add" && (
-                    <Modal show={true} onClose={refreshData} title={"Add Vlan"}>
-                        <VlanForm
-                            onSubmit={(e) => handleFormSubmit(e)}
-                            selectedDeviceIp={selectedDeviceIp}
-                            onCancel={refreshData}
-                        />
+                    <Modal
+                        show={true}
+                        onClose={refreshData}
+                        title={"Add Vlan"}
+                        onSubmit={(e) => handleFormSubmit(e)}
+                    >
+                        <VlanForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
                 )}
 
@@ -394,12 +394,11 @@ const VlanTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title="Select Interfaces"
+                        onSubmit={(e) => handleFormSubmit(e)}
                     >
                         <VlanMemberForm
-                            onSubmit={(e) => handleFormSubmit(e)}
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
-                            onCancel={refreshData}
                         />
                     </Modal>
                 )}

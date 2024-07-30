@@ -6,11 +6,13 @@ import interceptor from "../../../utils/interceptor";
 import { isValidIPv4WithMac } from "./VlanForm";
 import { getVlansURL, removeVlanIp } from "../../../utils/backend_rest_urls";
 
-const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onCancel }) => {
+const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
     const instance = interceptor();
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [newSagIp, setNewSagIp] = useState("");
+
+
 
     const handleRemove = (e) => {
         let payload = {
@@ -65,15 +67,7 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onCancel }) => {
         }
     };
 
-    useEffect(() => {
-        document.addEventListener("keydown", handleKeyDown);
-    }, []);
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Escape") {
-            onCancel();
-        }
-    };
 
     return (
         <div>

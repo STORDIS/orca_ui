@@ -22,7 +22,7 @@ export const isValidIPv4WithMac = (ipWithCidr) => {
     return false;
 };
 
-const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
+const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const instance = interceptor();
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
@@ -92,7 +92,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handelSubmit = (e) => {
         e.preventDefault();
 
         const vlanid = parseFloat(formData.vlanid);
@@ -141,16 +141,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         setInterfaceNames([]);
         getInterfaces();
         getPortchannel();
-
-        document.addEventListener("keydown", handleKeyDown);
     }, []);
-    
-    // document.addEventListener("keydown", handleKeyDown);
-    const handleKeyDown = (event) => {
-        if (event.key === "Escape") {
-            onCancel();
-        }
-    };
 
     const getInterfaces = () => {
         instance
@@ -206,7 +197,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <div>
             <div className="form-wrapper">
                 <div className="form-field w-50">
                     <label>Device IP:</label>
@@ -369,15 +360,16 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     type="submit"
                     className="btnStyle mr-10"
                     disabled={disableConfig}
+                    onClick={handelSubmit}
                 >
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>
-        </form>
+        </div>
     );
 };
 

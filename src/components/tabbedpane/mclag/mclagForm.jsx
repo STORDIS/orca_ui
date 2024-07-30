@@ -110,14 +110,9 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             const portchannelNames = res.map((item) => item.lag_name);
             setPortChnlList(portchannelNames);
         });
-        document.addEventListener("keydown", handleKeyDown);
     }, [selectedDeviceIp]);
 
-    const handleKeyDown = (event) => {
-        if (event.key === "Escape") {
-            onCancel();
-        }
-    };
+
 
     const handleRemove = (key) => {
         setSelectedInterfaces((prev) => {
