@@ -4,8 +4,8 @@ import "../Form.scss";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 
-import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 
 export const isValidIPv4WithMac = (ipWithCidr) => {
     const ipv4Regex =
@@ -149,11 +149,11 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     useEffect(() => {
         setInterfaceNames([]);
 
-        getInterfaceDataUtil(selectedDeviceIp).then((eth_Data) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((eth_Data) => {
             const ethernetInterfaces = eth_Data
                 .filter((element) => element.name.includes("Ethernet"))
                 .map((element) => element.name);
-            getPortChannelDataUtil(selectedDeviceIp).then((port_data) => {
+            getPortChannelDataCommon(selectedDeviceIp).then((port_data) => {
                 const portchannel = port_data.map(
                     (element) => element.lag_name
                 );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import useStoreConfig from "../../../utils/configStore";
 import interceptor from "../../../utils/interceptor";
 import { deleteMclagsMemberURL } from "../../../utils/backend_rest_urls";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreLogs from "../../../utils/store";
 
 const MclagMemberForm = ({
@@ -30,7 +30,7 @@ const MclagMemberForm = ({
     }, []);
 
     const getPortchannel = () => {
-        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+        getPortChannelDataCommon(selectedDeviceIp).then((res) => {
             const names = res.map((item) => item.lag_name);
             setInterfaceNames(names);
         });

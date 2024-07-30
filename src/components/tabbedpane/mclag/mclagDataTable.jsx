@@ -13,8 +13,8 @@ import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
 import { getIsStaff } from "../datatablesourse";
-import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 
@@ -47,12 +47,12 @@ const McLagDataTable = (props) => {
     useEffect(() => {
         getMclag();
 
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernentNames = res
                 .filter((item) => item.name.includes("Ethernet"))
                 .map((item) => item.name);
 
-            getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+            getPortChannelDataCommon(selectedDeviceIp).then((res) => {
                 const portchannelNames = res.map((item) => item.lag_name);
 
                 setEthernetPortchannelList([

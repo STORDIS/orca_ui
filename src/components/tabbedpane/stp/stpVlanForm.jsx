@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import useStoreConfig from "../../../utils/configStore";
-import { putStpDataUtil } from "./stpDataTable";
+import { putStpDataCommon } from "./stpDataTable";
 import useStoreLogs from "../../../utils/store";
 
 const StpVlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {

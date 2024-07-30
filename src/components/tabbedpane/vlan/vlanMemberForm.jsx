@@ -7,8 +7,8 @@ import {
     deleteVlanMembersURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 
 const VlanMemberForm = ({
     onSubmit,
@@ -102,12 +102,12 @@ const VlanMemberForm = ({
         setInterfaceNames([]);
         // getInterfaces();
 
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernetInterfaces = res
                 .filter((element) => element.name.includes("Ethernet"))
                 .map((element) => element.name);
 
-            getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+            getPortChannelDataCommon(selectedDeviceIp).then((res) => {
                 const portchannel = res.map((element) => element.lag_name);
 
                 setInterfaceNames([...ethernetInterfaces, ...portchannel]);

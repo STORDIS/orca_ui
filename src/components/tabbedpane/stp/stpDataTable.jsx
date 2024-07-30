@@ -13,7 +13,7 @@ import { stpURL } from "../../../utils/backend_rest_urls";
 import StpForm from "./stpForm";
 import StpVlanForm from "./stpVlanForm";
 
-export const getStpDataUtil = (selectedDeviceIp) => {
+export const getStpDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
     const apiUrl = stpURL(selectedDeviceIp);
     return instance
@@ -27,7 +27,7 @@ export const getStpDataUtil = (selectedDeviceIp) => {
         });
 };
 
-export const putStpDataUtil = (selectedDeviceIp, payload, status) => {
+export const putStpDataCommon = (selectedDeviceIp, payload, status) => {
     status(true);
     const instance = interceptor();
     const apiUrl = stpURL(selectedDeviceIp);
@@ -44,7 +44,7 @@ export const putStpDataUtil = (selectedDeviceIp, payload, status) => {
         });
 };
 
-export const deleteStpDataUtil = (selectedDeviceIp, payload, status) => {
+export const deleteStpDataCommon = (selectedDeviceIp, payload, status) => {
     status(true);
     const instance = interceptor();
     const apiUrl = stpURL(selectedDeviceIp);
@@ -91,7 +91,7 @@ const StpDataTable = (props) => {
     }, [selectedDeviceIp]);
 
     const getStp = () => {
-        getStpDataUtil(selectedDeviceIp).then((data) => {
+        getStpDataCommon(selectedDeviceIp).then((data) => {
             setDataTable(data);
         });
     };
@@ -142,7 +142,7 @@ const StpDataTable = (props) => {
 
     const handleFormSubmit = async (formData) => {
         setConfigStatus("Config In Progress....");
-        await putStpDataUtil(selectedDeviceIp, formData, (status) => {
+        await putStpDataCommon(selectedDeviceIp, formData, (status) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
@@ -169,7 +169,7 @@ const StpDataTable = (props) => {
             mgt_ip: selectedDeviceIp,
         };
 
-        await deleteStpDataUtil(selectedDeviceIp, payload, (status) => {
+        await deleteStpDataCommon(selectedDeviceIp, payload, (status) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {

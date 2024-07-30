@@ -15,7 +15,7 @@ import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 
 // Function to get vlan names
-export const getVlanDataUtil = (selectedDeviceIp) => {
+export const getVlanDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
     const apiUrl = getVlansURL(selectedDeviceIp);
     return instance
@@ -68,7 +68,7 @@ const VlanTable = (props) => {
 
     const getVlans = () => {
         setDataTable([]);
-        getVlanDataUtil(selectedDeviceIp).then((res) => {
+        getVlanDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
         });
     };

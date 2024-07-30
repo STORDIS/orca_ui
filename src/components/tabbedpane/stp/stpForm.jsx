@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import useStoreConfig from "../../../utils/configStore";
-import { putStpDataUtil } from "./stpDataTable";
+import { putStpDataCommon } from "./stpDataTable";
 import useStoreLogs from "../../../utils/store";
 import { FaArrowAltCircleUp } from "react-icons/fa";
 import { FaArrowAltCircleDown } from "react-icons/fa";
@@ -81,7 +81,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             delete formData.portfast;
         }
 
-        await putStpDataUtil(selectedDeviceIp, formData, (status) => {
+        await putStpDataCommon(selectedDeviceIp, formData, (status) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
         });

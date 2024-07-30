@@ -16,7 +16,7 @@ import useStoreLogs from "../../../utils/store";
 import { getIsStaff } from "../datatablesourse";
 import useStoreConfig from "../../../utils/configStore";
 
-export const getPortChannelDataUtil = (selectedDeviceIp) => {
+export const getPortChannelDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
     const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
     return instance
@@ -69,7 +69,7 @@ const PortChDataTable = (props) => {
     const getAllPortChanalData = () => {
         setDataTable([]);
         setChanges([]);
-        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+        getPortChannelDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
         });
     };

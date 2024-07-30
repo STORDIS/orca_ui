@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../Form.scss";
-import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreConfig from "../../../utils/configStore";
 
 const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
@@ -101,14 +101,14 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     useEffect(() => {
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernentNames = res
                 .filter((item) => item.name.includes("Ethernet"))
                 .map((item) => item.name);
             setEthernetList(ethernentNames);
         });
 
-        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+        getPortChannelDataCommon(selectedDeviceIp).then((res) => {
             const portchannelNames = res.map((item) => item.lag_name);
             setPortChnlList(portchannelNames);
         });

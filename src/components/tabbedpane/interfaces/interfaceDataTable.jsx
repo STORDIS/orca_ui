@@ -10,7 +10,7 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 
 // Function to get interface names
-export const getInterfaceDataUtil = (selectedDeviceIp) => {
+export const getInterfaceDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
 
     const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
@@ -69,7 +69,7 @@ const InterfaceDataTable = (props) => {
     const getInterfaceData = () => {
         setDataTable([]);
         setChanges([]);
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
         });
     };
