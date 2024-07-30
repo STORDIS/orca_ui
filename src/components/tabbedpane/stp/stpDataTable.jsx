@@ -134,7 +134,6 @@ const StpDataTable = (props) => {
 
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "disabled_vlans") {
-            console.log("---");
             setIsModalOpen("addStpVlanForm");
         }
 

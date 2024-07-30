@@ -23,7 +23,6 @@ const MclagMemberForm = ({
     useEffect(() => {
         getPortchannel();
 
-        console.log(inputData.mclag_members);
 
         if (inputData.mclag_members) {
             setSelectedInterfaces(JSON.parse(inputData.mclag_members));
@@ -116,7 +115,6 @@ const MclagMemberForm = ({
             mclag_members: selectedInterfaces,
         };
 
-        console.log(dataToSubmit);
         onSubmit(dataToSubmit);
     };
 

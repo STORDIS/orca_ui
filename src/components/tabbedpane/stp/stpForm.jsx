@@ -33,10 +33,8 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(name, value);
 
         if (value === "true" || value === "false") {
-            console.log("in");
             setFormData((prevFormData) => ({
                 ...prevFormData,
                 [name]: value === "true" ? true : false,
@@ -109,12 +107,6 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     : 4096,
         }));
     };
-
-    const handleDropdownChange = (event) => {};
-
-    const handleRemove = (key) => {};
-
-    console.log(updateConfig);
 
     return (
         <div>

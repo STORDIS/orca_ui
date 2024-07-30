@@ -100,7 +100,6 @@ const McLagDataTable = (props) => {
             });
         }
 
-        console.log(formData);
         setUpdateConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
