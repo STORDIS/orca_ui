@@ -9,7 +9,6 @@ const SigmaGraph = (props) => {
     const [noItem, setNoItem] = useState(false);
 
     useEffect(() => {
-        console.log(props?.message[0]);
 
         if (
             props?.message[0] !== undefined &&
@@ -29,20 +28,25 @@ const SigmaGraph = (props) => {
             Object.keys(props?.message[0])?.forEach((key) => {
                 if (
                     key.toLowerCase()?.includes("name") &&
-                    key.toLowerCase() !== "name"
+                    key.toLowerCase() !== "name" // check for key which includes name
                 ) {
                     lableFound = true;
                     labelToUse = key;
+                    
                     return;
                 } else if (key.toLowerCase() === "name" && !lableFound) {
+                    // check for key which is name when there is no key which includes name
                     labelToUse = key;
+                    lableFound = true;
+                    
                     return;
                 } else if (
                     key.toLowerCase()?.includes("id") &&
                     key.toLowerCase() !== "id" &&
-                    !lableFound
+                    !lableFound // check for key which includes id and not equal to id when there is no key which includes name or equal to name
                 ) {
                     labelToUse = key;
+                    
                 }
             });
 
