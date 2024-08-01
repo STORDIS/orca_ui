@@ -77,7 +77,7 @@ const InterfaceDataTable = (props) => {
     const getAdvSpeed = (params) => {
         let result = "all";
 
-        if (params.includes("SPEED_")) {
+        if (params?.includes("SPEED_")) {
             let numericalPart = params.split("_")[1].slice(0, -2);
             result = parseInt(numericalPart) * 1000;
             result = result.toString();

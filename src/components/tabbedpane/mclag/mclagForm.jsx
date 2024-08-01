@@ -101,13 +101,13 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     useEffect(() => {
         getInterfaceDataUtil(selectedDeviceIp).then((res) => {
             const ethernentNames = res
-                .filter((item) => item.name.includes("Ethernet"))
-                .map((item) => item.name);
+                .filter((item) => item?.name?.includes("Ethernet"))
+                .map((item) => item?.name);
             setEthernetList(ethernentNames);
         });
 
         getPortChannelDataUtil(selectedDeviceIp).then((res) => {
-            const portchannelNames = res.map((item) => item.lag_name);
+            const portchannelNames = res.map((item) => item?.lag_name);
             setPortChnlList(portchannelNames);
         });
     }, [selectedDeviceIp]);
@@ -128,7 +128,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const handleDropdownMember = (event) => {
         setSelectedInterfaces((prev) => {
             const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;

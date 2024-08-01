@@ -117,8 +117,8 @@ const VlanTable = (props) => {
         const objKeys = Object.keys(obj);
 
         // Check if objKeys only contains allowed keys
-        const containsOnlyAllowedKeys = objKeys.every((key) =>
-            allowedKeys.includes(key)
+        const containsOnlyAllowedKeys = objKeys?.every((key) =>
+            allowedKeys?.includes(key)
         );
 
         // Check if obj contains either "sag_ip_address" or "ip_address" or both
@@ -131,13 +131,13 @@ const VlanTable = (props) => {
 
     const handleFormSubmit = (formData) => {
         if (Array.isArray(formData)) {
-            formData.forEach((element) => {
+            formData?.forEach((element) => {
                 if (
                     !hasOnlyAllowedKeys(element) &&
-                    (element.sag_ip_address === null ||
-                        element.sag_ip_address === "" ||
-                        element.ip_address === null ||
-                        element.ip_address === "")
+                    (element?.sag_ip_address === null ||
+                        element?.sag_ip_address === "" ||
+                        element?.ip_address === null ||
+                        element?.ip_address === "")
                 ) {
                     deleteIpAddress(element);
 

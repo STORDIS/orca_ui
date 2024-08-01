@@ -48,11 +48,11 @@ const McLagDataTable = (props) => {
 
         getInterfaceDataUtil(selectedDeviceIp).then((res) => {
             const ethernentNames = res
-                .filter((item) => item.name.includes("Ethernet"))
-                .map((item) => item.name);
+                .filter((item) => item?.name?.includes("Ethernet"))
+                .map((item) => item?.name);
 
             getPortChannelDataUtil(selectedDeviceIp).then((res) => {
-                const portchannelNames = res.map((item) => item.lag_name);
+                const portchannelNames = res.map((item) => item?.lag_name);
 
                 setEthernetPortchannelList([
                     ...ethernentNames,
@@ -94,7 +94,7 @@ const McLagDataTable = (props) => {
     const handleFormSubmit = (formData) => {
         if (Array.isArray(formData)) {
             formData.map((item) => {
-                item.domain_id = selectedRows.domain_id;
+                item.domain_id = selectedRows?.domain_id;
                 return item;
             });
         }
@@ -142,9 +142,9 @@ const McLagDataTable = (props) => {
     const handleDelete = () => {
         setIsModalOpen("deleteMclag");
 
-        selectedRows.forEach((element) => {
+        selectedRows?.forEach((element) => {
             setModalContent(
-                "Do you want to delete Mclag with id " + element.domain_id
+                "Do you want to delete Mclag with id " + element?.domain_id
             );
         });
     };

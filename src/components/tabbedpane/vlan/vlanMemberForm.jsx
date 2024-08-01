@@ -104,11 +104,11 @@ const VlanMemberForm = ({
 
         getInterfaceDataUtil(selectedDeviceIp).then((res) => {
             const ethernetInterfaces = res
-                .filter((element) => element.name.includes("Ethernet"))
-                .map((element) => element.name);
+                .filter((element) => element?.name?.includes("Ethernet"))
+                .map((element) => element?.name);
 
             getPortChannelDataUtil(selectedDeviceIp).then((res) => {
-                const portchannel = res.map((element) => element.lag_name);
+                const portchannel = res.map((element) => element?.lag_name);
 
                 setInterfaceNames([...ethernetInterfaces, ...portchannel]);
             });

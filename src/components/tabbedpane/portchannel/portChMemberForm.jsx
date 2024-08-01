@@ -34,9 +34,9 @@ const PortChMemberForm = ({
         instance
             .get(apiPUrl)
             .then((res) => {
-                const names = res.data
-                    .map((item) => item.name)
-                    .filter((item) => item.includes("Ethernet"));
+                const names = res?.data
+                    .map((item) => item?.name)
+                    .filter((item) => item?.includes("Ethernet"));
                 setInterfaceNames(names);
             })
             .catch((err) => {
@@ -46,8 +46,8 @@ const PortChMemberForm = ({
 
     const handleDropdownChange = (event) => {
         setSelectedInterfaces((prev) => {
-            const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            const newValue = event?.target?.value;
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
@@ -56,13 +56,13 @@ const PortChMemberForm = ({
 
     const handleRemove = (key) => {
         setDisableConfig(true);
-        let selectedMembers = inputData.members;
+        let selectedMembers = inputData?.members;
 
-        if (selectedMembers.includes(key)) {
+        if (selectedMembers?.includes(key)) {
             handelDeleteMemeber(key);
         } else {
             setSelectedInterfaces((prev) => {
-                return prev.filter((item) => item !== key);
+                return prev?.filter((item) => item !== key);
             });
 
             setDisableConfig(false);

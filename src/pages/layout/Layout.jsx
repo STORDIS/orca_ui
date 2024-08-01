@@ -32,7 +32,7 @@ const Layout = () => {
     const location = useLocation();
 
     useEffect(() => {
-        if (location.pathname.includes("/ORCAsk")) {
+        if (location.pathname?.includes("/ORCAsk")) {
             setIsAI(false);
         } else {
             setIsAI(true);

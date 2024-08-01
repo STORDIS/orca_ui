@@ -147,9 +147,9 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((response) => {
-                const ethernetInterfaces = response.data
-                    .filter((element) => element.name.includes("Ethernet"))
-                    .map((element) => element.name);
+                const ethernetInterfaces = response?.data
+                    .filter((element) => element?.name?.includes("Ethernet"))
+                    .map((element) => element?.name);
 
                 setInterfaceNames((prev) => [...prev, ...ethernetInterfaces]);
             })
