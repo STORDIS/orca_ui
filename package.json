@@ -9,6 +9,7 @@
     "ag-grid-community": "^30.0.3",
     "ag-grid-react": "^30.2.1",
     "axios": "^1.7.2",
+    "axios-retry": "^4.5.0",
     "chroma-js": "^2.4.2",
     "graphology": "^0.25.4",
     "graphology-layout-force": "^0.2.4",
