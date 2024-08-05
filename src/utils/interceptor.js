@@ -2,7 +2,10 @@ import axios from "axios";
 import axiosRetry from "axios-retry";
 import secureLocalStorage from "react-secure-storage";
 
-const interceptor = (retryCount = 4, retryDelay = 3000) => {
+const interceptor = (
+    retryCount = 4, // number of retries. There will be total +1 of retryCount api calls from browser to backend
+    retryDelay = 3000 // retry delay in mill seconds, 1000 = 1 sec
+) => {
     const instance = axios.create({
         headers: {
             "Content-Type": "application/json",
