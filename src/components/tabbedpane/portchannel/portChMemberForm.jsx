@@ -4,7 +4,7 @@ import interceptor from "../../../utils/interceptor";
 
 import {
     getAllInterfacesOfDeviceURL,
-    getAllPortChnlsOfDeviceURL,
+    deletePortchannelEthernetMemberURL,
 } from "../../../utils/backend_rest_urls";
 
 const PortChMemberForm = ({
@@ -72,7 +72,7 @@ const PortChMemberForm = ({
     const handelDeleteMemeber = (e) => {
         setDisableConfig(true);
 
-        const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
+        const apiPUrl = deletePortchannelEthernetMemberURL(selectedDeviceIp);
         const output = {
             mgt_ip: selectedDeviceIp,
             members: [e],
@@ -84,6 +84,7 @@ const PortChMemberForm = ({
                 setSelectedInterfaces((prev) => {
                     return prev.filter((item) => item !== e);
                 });
+                onCancel();
             })
             .catch((err) => {})
             .finally(() => {
