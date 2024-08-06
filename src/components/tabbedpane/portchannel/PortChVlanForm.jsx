@@ -26,8 +26,6 @@ const PortChVlanForm = ({
         getAllVlans();
     }, []);
 
-
-
     const getAllVlans = () => {
         setVlanNames([]);
         addSelectedVlans([]);

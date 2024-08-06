@@ -285,13 +285,10 @@ const PortChDataTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title={"Add Port Channel"}
+                        onSubmit={handleFormSubmit}
+                        onCancel={refreshData}
                     >
-                        <PortChannelForm
-                            onSubmit={handleFormSubmit}
-                            selectedDeviceIp={selectedDeviceIp}
-                            onCancel={refreshData}
-                            handelSubmitButton={disableConfig}
-                        />
+                        <PortChannelForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
                 )}
 
@@ -301,14 +298,14 @@ const PortChDataTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title="Select Member Interfaces"
+                        onSubmit={(data) => {
+                            handleFormSubmit(data);
+                        }}
+                        onCancel={refreshData}
                     >
                         <PortChMemberForm
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
-                            onSubmit={(data) => {
-                                handleFormSubmit(data);
-                            }}
-                            onCancel={refreshData}
                         />
                     </Modal>
                 )}
@@ -319,14 +316,14 @@ const PortChDataTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title="Select Vlan Member"
+                        onSubmit={(data) => {
+                            handleFormSubmit(data);
+                        }}
+                        onCancel={refreshData}
                     >
                         <PortChVlanForm
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
-                            onSubmit={(data) => {
-                                handleFormSubmit(data);
-                            }}
-                            onCancel={refreshData}
                         />
                     </Modal>
                 )}
