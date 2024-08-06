@@ -8,18 +8,22 @@ import {
 import interceptor from "../../../utils/interceptor";
 
 export const isValidIPv4WithMac = (ipWithCidr) => {
-    const ipv4Regex =
-        /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
-    const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
+    if (ipWithCidr) {
+        const ipv4Regex =
+            /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
+        const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
 
-    const [ip, cidr] = ipWithCidr.split("/");
+        const [ip, cidr] = ipWithCidr.split("/");
 
-    if (ipv4Regex.test(ip)) {
-        if (cidr === undefined || cidrRegex.test(cidr)) {
-            return true;
+        if (ipv4Regex.test(ip)) {
+            if (cidr === undefined || cidrRegex.test(cidr)) {
+                return true;
+            }
         }
+        return false;
+    } else {
+        return true;
     }
-    return false;
 };
 
 const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
@@ -36,11 +40,11 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         vlanid: 1,
         mtu: 9000,
         enabled: false,
-        description: "",
-        ip_address: "",
-        sag_ip_address: "",
-        autostate: "",
-        mem_ifs: "",
+        description: undefined,
+        ip_address: undefined,
+        sag_ip_address: undefined,
+        autostate: undefined,
+        mem_ifs: undefined,
     });
 
     const isValidIPv4 = (ip) => {
@@ -56,8 +60,14 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     };
 
     const areAllIPAddressesValid = (input) => {
-        const ipAddresses = input.split(",").map((ip) => ip.trim());
-        return ipAddresses.every((ip) => isValidIPv4(ip) || isValidCIDR(ip));
+        if (input) {
+            const ipAddresses = input.split(",").map((ip) => ip.trim());
+            return ipAddresses.every(
+                (ip) => isValidIPv4(ip) || isValidCIDR(ip)
+            );
+        } else {
+            return true;
+        }
     };
 
     const handleChange = (e) => {
@@ -119,15 +129,18 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             return;
         }
 
-        let trimmedIpAddresses = formData.sag_ip_address
-            .split(",")
-            .map((ip) => ip.trim());
-
         let dataToSubmit = {
             ...formData,
-            sag_ip_address: trimmedIpAddresses,
             vlanid,
         };
+
+        if (formData.sag_ip_address) {
+            let trimmedIpAddresses = formData.sag_ip_address
+                .split(",")
+                .map((ip) => ip.trim());
+
+            dataToSubmit.sag_ip_address = trimmedIpAddresses;
+        }
 
         if (Object.keys(selectedInterfaces).length > 0) {
             dataToSubmit.mem_ifs = selectedInterfaces;
