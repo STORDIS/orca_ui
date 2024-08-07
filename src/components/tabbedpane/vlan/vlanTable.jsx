@@ -233,7 +233,6 @@ const VlanTable = (props) => {
     };
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
-        console.log(ipWithCidr);
         if (ipWithCidr) {
             const ipv4Regex =
                 /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
@@ -300,7 +299,6 @@ const VlanTable = (props) => {
     }, []);
 
     const onCellClicked = useCallback((params) => {
-        console.log();
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
@@ -338,7 +336,10 @@ const VlanTable = (props) => {
                     <button
                         className="btnStyle"
                         onClick={handleDelete}
-                        disabled={selectedRows.length === 0}
+                        disabled={
+                            selectedRows.length === 0 ||
+                            selectedRows.length === undefined
+                        }
                     >
                         Delete selected Vlan
                     </button>

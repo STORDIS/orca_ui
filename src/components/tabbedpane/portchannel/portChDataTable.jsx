@@ -122,18 +122,18 @@ const PortChDataTable = (props) => {
             });
     };
 
-    const onSelectionChanged = () => {
-        const selectedNodes = gridRef.current.api.getSelectedNodes();
-        const selectedData = selectedNodes.map((node) => node.data);
-        setSelectedRows(selectedData);
-    };
-
     const resetConfigStatus = () => {
         setConfigStatus("");
         setChanges([]);
 
         gridRef.current.api.deselectAll();
         setSelectedRows([]);
+    };
+
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        setSelectedRows(selectedData);
     };
 
     const handleCellValueChanged = useCallback((params) => {
@@ -256,7 +256,10 @@ const PortChDataTable = (props) => {
                     <button
                         className="btnStyle"
                         onClick={handleDelete}
-                        disabled={selectedRows.length === 0}
+                        disabled={
+                            selectedRows.length === 0 ||
+                            selectedRows.length === undefined
+                        }
                     >
                         Delete Selected Port Channel
                     </button>

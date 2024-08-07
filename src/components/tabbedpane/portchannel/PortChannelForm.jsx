@@ -24,15 +24,15 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         lag_name: undefined,
         admin_sts: "up",
         mtu: 9100,
-        members: "",
+        members: undefined,
         static: false,
         fallback: false,
         fast_rate: false,
         graceful_shutdown_mode: "disable",
         min_links: 1,
-        ip_address: null,
-        description: null,
-        vlan_members: null,
+        ip_address: undefined,
+        description: undefined,
+        vlan_members: undefined,
     });
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
@@ -223,8 +223,17 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             }
         });
 
-        formData.vlan_members = finalVlanMembers;
-        formData.members = selectedInterfaces;
+        if (selectedInterfaces.length > 0) {
+            formData.members = selectedInterfaces;
+        }
+
+        if (
+            finalVlanMembers.access_vlan !== "" ||
+            finalVlanMembers.trunk_vlans.length > 0
+        ) {
+            console.log(finalVlanMembers);
+            formData.vlan_members = finalVlanMembers;
+        }
 
         onSubmit(formData);
     };
