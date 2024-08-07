@@ -286,7 +286,6 @@ const PortChDataTable = (props) => {
                         onClose={refreshData}
                         title={"Add Port Channel"}
                         onSubmit={handleFormSubmit}
-                        onCancel={refreshData}
                     >
                         <PortChannelForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
@@ -301,7 +300,6 @@ const PortChDataTable = (props) => {
                         onSubmit={(data) => {
                             handleFormSubmit(data);
                         }}
-                        onCancel={refreshData}
                     >
                         <PortChMemberForm
                             selectedDeviceIp={selectedDeviceIp}
@@ -319,7 +317,6 @@ const PortChDataTable = (props) => {
                         onSubmit={(data) => {
                             handleFormSubmit(data);
                         }}
-                        onCancel={refreshData}
                     >
                         <PortChVlanForm
                             selectedDeviceIp={selectedDeviceIp}

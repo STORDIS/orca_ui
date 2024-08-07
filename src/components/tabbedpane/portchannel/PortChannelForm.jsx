@@ -10,8 +10,7 @@ import { useDisableConfig } from "../../../utils/dissableConfigContext";
 const PortChannelForm = ({
     onSubmit,
     selectedDeviceIp,
-    onCancel,
-    handelSubmitButton,
+    onClose,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const selectRef = useRef(null);
@@ -30,7 +29,6 @@ const PortChannelForm = ({
         admin_sts: "up",
         mtu: 9100,
         members: "",
-
         static: false,
         fallback: false,
         fast_rate: false,
@@ -127,7 +125,7 @@ const PortChannelForm = ({
     };
 
     // vlan related function
-
+ 
     const getAllVlans = () => {
         setVlanNames([]);
 
@@ -481,7 +479,7 @@ const PortChannelForm = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    onClick={onCancel}
+                    onClick={onClose}
                 >
                     Cancel
                 </button>
