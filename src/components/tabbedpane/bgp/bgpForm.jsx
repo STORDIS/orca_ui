@@ -16,7 +16,7 @@ const BgpForm = ({
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         vrf_name: "default",
-        local_asn: 0,
+        local_asn: 1,
         router_id: selectedDeviceIp,
     });
 
