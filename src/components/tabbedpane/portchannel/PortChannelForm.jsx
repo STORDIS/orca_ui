@@ -7,11 +7,7 @@ import {
 import interceptor from "../../../utils/interceptor";
 import { useDisableConfig } from "../../../utils/dissableConfigContext";
 
-const PortChannelForm = ({
-    onSubmit,
-    selectedDeviceIp,
-    onClose,
-}) => {
+const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const selectRef = useRef(null);
 
@@ -25,7 +21,7 @@ const PortChannelForm = ({
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
-        lag_name: "",
+        lag_name: undefined,
         admin_sts: "up",
         mtu: 9100,
         members: "",
@@ -125,7 +121,7 @@ const PortChannelForm = ({
     };
 
     // vlan related function
- 
+
     const getAllVlans = () => {
         setVlanNames([]);
 
@@ -193,6 +189,11 @@ const PortChannelForm = ({
     };
 
     const handleSubmit = (e) => {
+        if (formData.lag_name === "" || formData.lag_name === undefined) {
+            alert("Channel Name is not valid");
+            return;
+        }
+
         if (
             !isValidIPv4WithCIDR(formData.ip_address) &&
             formData.ip_address !== ""
