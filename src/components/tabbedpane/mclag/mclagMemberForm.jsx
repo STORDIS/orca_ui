@@ -9,7 +9,7 @@ const MclagMemberForm = ({
     onSubmit,
     inputData,
     selectedDeviceIp,
-    onCancel,
+    onClose,
 }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
@@ -182,7 +182,7 @@ const MclagMemberForm = ({
                 >
                     Remove All
                 </button>
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>

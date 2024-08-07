@@ -4,7 +4,7 @@ import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
 
-const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
+const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [memberNames, setPortChnlList] = useState([]);
     const [ethernetNames, setEthernetList] = useState([]);
@@ -347,7 +347,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     <button
                         type="button"
                         className="btnStyle mr-10"
-                        onClick={onCancel}
+                        onClick={onClose}
                     >
                         Cancel
                     </button>

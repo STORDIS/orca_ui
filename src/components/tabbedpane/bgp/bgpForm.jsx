@@ -6,8 +6,7 @@ import { useDisableConfig } from "../../../utils/dissableConfigContext";
 const BgpForm = ({
     onSubmit,
     selectedDeviceIp,
-    onCancel,
-    handelSubmitButton,
+    onClose,
 }) => {
     const { disableConfig, setDisableConfig } = useDisableConfig();
 
@@ -90,7 +89,7 @@ const BgpForm = ({
                     <button
                         type="button"
                         className="btnStyle mr-10"
-                        onClick={onCancel}
+                        onClick={onClose}
                     >
                         Cancel
                     </button>

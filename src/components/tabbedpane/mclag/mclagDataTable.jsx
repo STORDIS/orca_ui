@@ -301,7 +301,6 @@ const McLagDataTable = (props) => {
                     onClose={refreshData}
                     title={"Add Mclag"}
                     onSubmit={(e) => handleFormSubmit(e)}
-                    onCancel={refreshData}
                 >
                     <MclagForm selectedDeviceIp={selectedDeviceIp} />
                 </Modal>
@@ -313,7 +312,6 @@ const McLagDataTable = (props) => {
                     onClose={refreshData}
                     title={"Add Mclag Members"}
                     onSubmit={(e) => handleFormSubmit(e)}
-                    onCancel={refreshData}
                 >
                     <MclagMemberForm
                         inputData={selectedRows}

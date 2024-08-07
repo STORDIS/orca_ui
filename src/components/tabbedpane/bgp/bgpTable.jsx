@@ -201,7 +201,6 @@ const BGPTable = (props) => {
                 onClose={() => setShowForm(false)}
                 title={"Add BGP"}
                 onSubmit={(e) => handleFormSubmit(e, "Add")}
-                onCancel={handleCancel}
             >
                 <BgpForm selectedDeviceIp={selectedDeviceIp} />
             </Modal>

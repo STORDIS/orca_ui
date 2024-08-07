@@ -11,7 +11,7 @@ const PortChMemberForm = ({
     onSubmit,
     inputData,
     selectedDeviceIp,
-    onCancel,
+    onClose,
 }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
@@ -160,7 +160,7 @@ const PortChMemberForm = ({
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>
