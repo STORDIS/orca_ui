@@ -38,7 +38,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
         enabled: false,
         description: "",
         ip_address: "",
-        sag_ip_address: "",
+        sag_ip_address: undefined,
         autostate: "",
         mem_ifs: "",
     });
@@ -56,8 +56,14 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     };
 
     const areAllIPAddressesValid = (input) => {
-        const ipAddresses = input.split(",").map((ip) => ip.trim());
-        return ipAddresses.every((ip) => isValidIPv4(ip) || isValidCIDR(ip));
+        if (input) {
+            const ipAddresses = input.split(",").map((ip) => ip.trim());
+            return ipAddresses.every(
+                (ip) => isValidIPv4(ip) || isValidCIDR(ip)
+            );
+        } else {
+            return true;
+        }
     };
 
     const handleChange = (e) => {
@@ -119,19 +125,25 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             return;
         }
 
-        let trimmedIpAddresses = formData.sag_ip_address
-            .split(",")
-            .map((ip) => ip.trim());
-
         let dataToSubmit = {
             ...formData,
-            sag_ip_address: trimmedIpAddresses,
             vlanid,
         };
+
+        console.log(formData.sag_ip_address);
+
+        if (formData.sag_ip_address) {
+            let trimmedIpAddresses = formData.sag_ip_address
+                .split(",")
+                .map((ip) => ip.trim());
+
+            dataToSubmit.sag_ip_address = trimmedIpAddresses;
+        }
 
         if (Object.keys(selectedInterfaces).length > 0) {
             dataToSubmit.mem_ifs = selectedInterfaces;
         }
+        console.log(dataToSubmit);
 
         setDisableConfig(true);
         onSubmit(dataToSubmit);
