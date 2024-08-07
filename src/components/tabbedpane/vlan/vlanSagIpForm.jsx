@@ -6,13 +6,11 @@ import interceptor from "../../../utils/interceptor";
 import { isValidIPv4WithMac } from "./VlanForm";
 import { getVlansURL, removeVlanIp } from "../../../utils/backend_rest_urls";
 
-const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
+const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
     const instance = interceptor();
     const { setLog } = useLog();
     const { disableConfig, setDisableConfig } = useDisableConfig();
     const [newSagIp, setNewSagIp] = useState("");
-
-
 
     const handleRemove = (e) => {
         let payload = {
@@ -67,8 +65,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
         }
     };
 
-
-
     return (
         <div>
             <div className="form-wrapper">
@@ -112,6 +108,12 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
                           </div>
                       ))
                     : null}
+            </div>
+
+            <div className="">
+                <button type="button" className="btnStyle" onClick={onClose}>
+                    Cancel
+                </button>
             </div>
         </div>
     );

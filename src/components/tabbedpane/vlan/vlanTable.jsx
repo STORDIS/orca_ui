@@ -223,7 +223,7 @@ const VlanTable = (props) => {
     };
 
     const openAddFormModal = () => {
-        setIsModalOpen("add");
+        setIsModalOpen("addVlan");
     };
 
     const onSelectionChanged = () => {
@@ -378,7 +378,7 @@ const VlanTable = (props) => {
                 )}
 
                 {/* model for adding vlan */}
-                {isModalOpen === "add" && (
+                {isModalOpen === "addVlan" && (
                     <Modal
                         show={true}
                         onClose={refreshData}
