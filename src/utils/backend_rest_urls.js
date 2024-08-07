@@ -75,6 +75,12 @@ export function deleteVlanMembersURL(device_ip) {
     return host_addr + "/vlan_mem_delete?mgt_ip=" + device_ip;
 }
 
+// stp urls
+
+export function stpURL(device_ip) {
+    return host_addr + "/stp?mgt_ip=" + device_ip ;
+}
+
 // orcask urls
 
 export function gptCompletionsURL(formate) {
