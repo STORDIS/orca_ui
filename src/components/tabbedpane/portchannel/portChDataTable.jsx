@@ -292,7 +292,7 @@ const PortChDataTable = (props) => {
                     </Modal>
                 )}
 
-                {/* member selection */}
+                {/* ethernet member selection */}
                 {isModalOpen === "addPortchannelMembers" && (
                     <Modal
                         show={true}
@@ -310,7 +310,7 @@ const PortChDataTable = (props) => {
                     </Modal>
                 )}
 
-                {/* member selection */}
+                {/* vlan member selection */}
                 {isModalOpen === "addPortchannelVlan" && (
                     <Modal
                         show={true}

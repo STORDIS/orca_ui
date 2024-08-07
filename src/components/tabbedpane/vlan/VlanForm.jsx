@@ -138,9 +138,20 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             vlanid,
         };
 
+        console.log(formData.sag_ip_address);
+
+        if (formData.sag_ip_address) {
+            let trimmedIpAddresses = formData.sag_ip_address
+                .split(",")
+                .map((ip) => ip.trim());
+
+            dataToSubmit.sag_ip_address = trimmedIpAddresses;
+        }
+
         if (Object.keys(selectedInterfaces).length > 0) {
             dataToSubmit.mem_ifs = selectedInterfaces;
         }
+        console.log(dataToSubmit);
 
         setUpdateConfig(true);
         onSubmit(dataToSubmit);
