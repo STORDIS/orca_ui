@@ -13,7 +13,6 @@ const Deviceinfo = (props) => {
     isTabbedPane = false,
     selectedDeviceIp = "",
   } = props;
-  console.log(rows, columns, selectedDeviceIp);
 
   const [dataTable, setDataTable] = useState([]);
   const instance = interceptor();

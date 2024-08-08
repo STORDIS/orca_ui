@@ -12,11 +12,11 @@ import { getAllMclagsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
-import { useLog } from "../../../utils/logpannelContext";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
-import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
+import useStoreLogs from "../../../utils/store";
+import useStoreConfig from "../../../utils/configStore";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -30,10 +30,11 @@ const McLagDataTable = (props) => {
     const [ethernetPortchannelList, setEthernetPortchannelList] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
-    const { setLog } = useLog();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const selectedDeviceIp = props.selectedDeviceIp;
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -46,13 +47,13 @@ const McLagDataTable = (props) => {
     useEffect(() => {
         getMclag();
 
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernentNames = res
                 .filter((item) => item?.name?.includes("Ethernet"))
                 .map((item) => item?.name);
 
-            getPortChannelDataUtil(selectedDeviceIp).then((res) => {
-                const portchannelNames = res.map((item) => item?.lag_name);
+            getPortChannelDataCommon(selectedDeviceIp).then((res) => {
+                const portchannelNames = res.map((item) => item.lag_name);
 
                 setEthernetPortchannelList([
                     ...ethernentNames,
@@ -99,15 +100,15 @@ const McLagDataTable = (props) => {
             });
         }
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
         const apiPUrl = getAllMclagsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
             .then((res) => {})
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
                 resetConfigStatus();
                 refreshData();
             });
@@ -120,7 +121,7 @@ const McLagDataTable = (props) => {
     };
 
     const deleteMclag = () => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         const output = {
             mgt_ip: selectedDeviceIp,
@@ -132,8 +133,8 @@ const McLagDataTable = (props) => {
             .then((res) => {})
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
                 setSelectedRows([]);
                 refreshData();
             });
@@ -245,7 +246,7 @@ const McLagDataTable = (props) => {
                 <div className="button-column">
                     <button
                         disabled={
-                            disableConfig || Object.keys(changes).length === 0
+                            updateConfig || Object.keys(changes).length === 0
                         }
                         className="btnStyle"
                         onClick={() => handleFormSubmit(changes)}
@@ -301,7 +302,7 @@ const McLagDataTable = (props) => {
                         onSubmit={(e) => handleFormSubmit(e)}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={refreshData}
-                        handelSubmitButton={disableConfig}
+                        handelSubmitButton={updateConfig}
                     />
                 </Modal>
             )}
@@ -317,7 +318,7 @@ const McLagDataTable = (props) => {
                         inputData={selectedRows}
                         selectedDeviceIp={selectedDeviceIp}
                         onCancel={refreshData}
-                        handelSubmitButton={disableConfig}
+                        handelSubmitButton={updateConfig}
                     />
                 </Modal>
             )}
