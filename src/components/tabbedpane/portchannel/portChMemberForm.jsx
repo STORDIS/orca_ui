@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import interceptor from "../../../utils/interceptor";
+import useStoreConfig from "../../../utils/configStore";
 
 import {
     getAllInterfacesOfDeviceURL,
@@ -15,9 +15,10 @@ const PortChMemberForm = ({
 }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
-    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const instance = interceptor();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     useEffect(() => {
         getAllInterfaces();
@@ -55,7 +56,7 @@ const PortChMemberForm = ({
     };
 
     const handleRemove = (key) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         let selectedMembers = inputData.members;
 
         if (selectedMembers.includes(key)) {
@@ -65,12 +66,12 @@ const PortChMemberForm = ({
                 return prev.filter((item) => item !== key);
             });
 
-            setDisableConfig(false);
+            setUpdateConfig(false);
         }
     };
 
     const handelDeleteMemeber = (e) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         const apiPUrl = deletePortchannelEthernetMemberURL(selectedDeviceIp);
         const output = {
@@ -88,7 +89,7 @@ const PortChMemberForm = ({
             })
             .catch((err) => {})
             .finally(() => {
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     };
 
@@ -138,7 +139,7 @@ const PortChMemberForm = ({
                             <div className=" w-50">
                                 <button
                                     className="btnStyle ml-25"
-                                    disabled={disableConfig}
+                                    disabled={updateConfig}
                                     onClick={() => handleRemove(value)}
                                 >
                                     Remove
@@ -153,7 +154,7 @@ const PortChMemberForm = ({
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                     onClick={handleSubmit}
                 >
                     Apply Config
