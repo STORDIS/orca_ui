@@ -52,9 +52,9 @@ const BGPTable = (props) => {
             .get(apiMUrl)
             .then((res) => {
                 // get neighbor_prop property from json and convert to string
-                res.data.forEach((element) => {
+                res?.data?.forEach((element) => {
                     element.neighbor_prop = JSON.stringify(
-                        element.neighbor_prop
+                        element?.neighbor_prop
                     );
                 });
                 setDataTable(res.data);

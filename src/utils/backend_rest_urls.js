@@ -1,5 +1,5 @@
 const host_addr =
-    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
+    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://10.10.130.202:8000";
 
 // auth urls
 

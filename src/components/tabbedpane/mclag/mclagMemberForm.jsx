@@ -39,7 +39,7 @@ const MclagMemberForm = ({
     const handleDropdownChange = (event) => {
         setSelectedInterfaces((prev) => {
             const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
@@ -51,7 +51,7 @@ const MclagMemberForm = ({
 
         setUpdateConfig(true);
 
-        if (selectedMembers.includes(key)) {
+        if (selectedMembers?.includes(key)) {
             handelDeleteMemeber(key);
         } else {
             setSelectedInterfaces((prev) => {

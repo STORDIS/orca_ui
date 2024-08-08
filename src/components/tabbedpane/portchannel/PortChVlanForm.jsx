@@ -36,15 +36,15 @@ const PortChVlanForm = ({
             .get(apiPUrl)
             .then((res) => {
                 const names = res.data
-                    .filter((item) => item.name.includes("Vlan"))
+                    .filter((item) => item?.name?.includes("Vlan"))
                     .map((item) => ({
-                        name: item.name,
-                        vlanid: item.vlanid,
+                        name: item?.name,
+                        vlanid: item?.vlanid,
                         taggingMode: "",
                     }));
                 setVlanNames(names);
 
-                addSelectedVlans(res.data);
+                addSelectedVlans(res?.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -68,15 +68,15 @@ const PortChVlanForm = ({
             let trunk_vlans = [];
 
             if (input_vlans?.trunk_vlans) {
-                input_vlans?.trunk_vlans.forEach((element) => {
+                input_vlans?.trunk_vlans?.forEach((element) => {
                     const filteredItems = res
                         .filter((item) => item?.vlanid === element)
                         .map((item) => ({
                             name: item?.name,
-                            vlanid: item.vlanid,
+                            vlanid: item?.vlanid,
                             taggingMode: "",
                         }));
-                    trunk_vlans = trunk_vlans.concat(filteredItems);
+                    trunk_vlans = trunk_vlans?.concat(filteredItems);
                 });
             }
 
@@ -153,19 +153,19 @@ const PortChVlanForm = ({
             trunk_vlans: [],
         };
 
-        selectedVlans.forEach((element) => {
+        selectedVlans?.forEach((element) => {
             if (element.taggingMode === "ACCESS") {
-                finalVlanMembers.access_vlan = element.vlanid;
+                finalVlanMembers.access_vlan = element?.vlanid;
             } else {
-                finalVlanMembers.trunk_vlans.push(element.vlanid);
+                finalVlanMembers?.trunk_vlans.push(element?.vlanid);
             }
         });
 
-        if (finalVlanMembers.access_vlan === "") {
+        if (finalVlanMembers?.access_vlan === "") {
             delete finalVlanMembers.access_vlan;
         }
 
-        if (finalVlanMembers.trunk_vlans.length === 0) {
+        if (finalVlanMembers?.trunk_vlans?.length === 0) {
             delete finalVlanMembers.trunk_vlans;
         }
 

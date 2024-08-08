@@ -86,9 +86,9 @@ const PortChannelForm = ({
         instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((response) => {
-                const fetchedInterfaceNames = response.data
+                const fetchedInterfaceNames = response?.data
                     .map((item) => item.name)
-                    .filter((item) => item.includes("Ethernet"));
+                    .filter((item) => item?.includes("Ethernet"));
                 setInterfaceNames(fetchedInterfaceNames);
             })
             .catch((error) => {
@@ -99,7 +99,7 @@ const PortChannelForm = ({
     const handleDropdownChangeInterface = (event) => {
         setSelectedInterfaces((prev) => {
             const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
@@ -133,10 +133,10 @@ const PortChannelForm = ({
             .get(apiPUrl)
             .then((res) => {
                 const names = res.data
-                    .filter((item) => item.name.includes("Vlan"))
+                    .filter((item) => item?.name?.includes("Vlan"))
                     .map((item) => ({
-                        name: item.name,
-                        vlanid: item.vlanid,
+                        name: item?.name,
+                        vlanid: item?.vlanid,
                         taggingMode: "",
                         removable: false,
                     }));
@@ -213,11 +213,11 @@ const PortChannelForm = ({
             trunk_vlans: [],
         };
 
-        selectedVlans.forEach((element) => {
-            if (element.taggingMode === "ACCESS") {
-                finalVlanMembers.access_vlan = element.vlanid;
+        selectedVlans?.forEach((element) => {
+            if (element?.taggingMode === "ACCESS") {
+                finalVlanMembers.access_vlan = element?.vlanid;
             } else {
-                finalVlanMembers.trunk_vlans.push(element.vlanid);
+                finalVlanMembers?.trunk_vlans.push(element?.vlanid);
             }
         });
 
