@@ -46,7 +46,7 @@ const TabbedPane = () => {
                 setDropdownOptions(data);
             })
             .catch((err) => console.log(err));
-    }, [disableConfig]);
+    }, [tabvalue]);
 
     const handleTabs = (event, val) => {
         settabvalue(val);
