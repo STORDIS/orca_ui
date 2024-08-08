@@ -7,16 +7,16 @@ import Modal from "../../modal/Modal";
 import { portChannelColumns } from "../datatablesourse";
 import { getAllPortChnlsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import PortChannelForm from "./PortChannelForm";
 import PortChMemberForm from "./portChMemberForm";
 import PortChVlanForm from "./PortChVlanForm";
 import "../tabbedPaneTable.scss";
+import useStoreLogs from "../../../utils/store";
 
 import { getIsStaff } from "../datatablesourse";
+import useStoreConfig from "../../../utils/configStore";
 
-export const getPortChannelDataUtil = (selectedDeviceIp) => {
+export const getPortChannelDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
     const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
     return instance
@@ -44,18 +44,15 @@ const PortChDataTable = (props) => {
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
-
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
-
     const [selectedRows, setSelectedRows] = useState([]);
-
     const instance = interceptor();
 
-    const { setLog } = useLog();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
-
     const selectedDeviceIp = props.selectedDeviceIp;
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -72,7 +69,7 @@ const PortChDataTable = (props) => {
     const getAllPortChanalData = () => {
         setDataTable([]);
         setChanges([]);
-        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+        getPortChannelDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
         });
     };
@@ -91,7 +88,7 @@ const PortChDataTable = (props) => {
     };
 
     const deletePortchannel = () => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         const deleteData = selectedRows.map((rowData) => ({
@@ -116,9 +113,9 @@ const PortChDataTable = (props) => {
             .catch((err) => {})
             .finally(() => {
                 refreshData();
-                setDisableConfig(false);
+                setUpdateConfig(false);
 
-                setLog(true);
+                setUpdateLog(true);
             });
     };
 
@@ -188,7 +185,7 @@ const PortChDataTable = (props) => {
     }, []);
 
     const handleFormSubmit = (formData) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         // formData.forEach((obj) => {
         //     obj.mgt_ip = selectedDeviceIp;
@@ -206,8 +203,8 @@ const PortChDataTable = (props) => {
             })
             .finally(() => {
                 getAllPortChanalData();
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
                 setIsModalOpen("null");
             });
     };
@@ -236,7 +233,7 @@ const PortChDataTable = (props) => {
                         <button
                             onClick={() => handleFormSubmit(changes)}
                             disabled={
-                                disableConfig ||
+                                updateConfig ||
                                 Object.keys(changes).length === 0
                             }
                             className="btnStyle"
@@ -290,12 +287,12 @@ const PortChDataTable = (props) => {
                             onSubmit={handleFormSubmit}
                             selectedDeviceIp={selectedDeviceIp}
                             onCancel={refreshData}
-                            handelSubmitButton={disableConfig}
+                            handelSubmitButton={updateConfig}
                         />
                     </Modal>
                 )}
 
-                {/* member selection */}
+                {/* ethernet member selection */}
                 {isModalOpen === "addPortchannelMembers" && (
                     <Modal
                         show={true}
@@ -313,7 +310,7 @@ const PortChDataTable = (props) => {
                     </Modal>
                 )}
 
-                {/* member selection */}
+                {/* vlan member selection */}
                 {isModalOpen === "addPortchannelVlan" && (
                     <Modal
                         show={true}
@@ -346,7 +343,7 @@ const PortChDataTable = (props) => {
                             >
                                 <button
                                     className="btnStyle"
-                                    disabled={disableConfig}
+                                    disabled={updateConfig}
                                     onClick={deletePortchannel}
                                 >
                                     Yes

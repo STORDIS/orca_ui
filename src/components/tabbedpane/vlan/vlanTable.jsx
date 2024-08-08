@@ -10,12 +10,12 @@ import VlanForm from "./VlanForm";
 import VlanMemberForm from "./vlanMemberForm";
 import VlanSagIpForm from "./vlanSagIpForm";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import { getIsStaff } from "../datatablesourse";
+import useStoreConfig from "../../../utils/configStore";
+import useStoreLogs from "../../../utils/store";
 
 // Function to get vlan names
-export const getVlanDataUtil = (selectedDeviceIp) => {
+export const getVlanDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
     const apiUrl = getVlansURL(selectedDeviceIp);
     return instance
@@ -50,10 +50,10 @@ const VlanTable = (props) => {
     const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
     const [modalContent, setModalContent] = useState("");
-    const { setLog } = useLog();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
-
     const selectedDeviceIp = props.selectedDeviceIp;
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
@@ -68,13 +68,13 @@ const VlanTable = (props) => {
 
     const getVlans = () => {
         setDataTable([]);
-        getVlanDataUtil(selectedDeviceIp).then((res) => {
+        getVlanDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
         });
     };
 
     const deleteVlan = () => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -98,8 +98,8 @@ const VlanTable = (props) => {
             })
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
                 refreshData();
@@ -161,7 +161,7 @@ const VlanTable = (props) => {
     };
 
     const putConfig = (formData) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
 
         const apiMUrl = getVlansURL(selectedDeviceIp);
@@ -170,8 +170,8 @@ const VlanTable = (props) => {
             .then(() => {})
             .catch(() => {})
             .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
                 refreshData();
@@ -179,7 +179,7 @@ const VlanTable = (props) => {
     };
 
     const deleteIpAddress = (payload) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
         const apiMUrl = removeVlanIp();
         instance
@@ -187,8 +187,8 @@ const VlanTable = (props) => {
             .then((response) => {})
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
                 setSelectedRows([]);
                 resetConfigStatus();
                 refreshData();
@@ -233,7 +233,6 @@ const VlanTable = (props) => {
     };
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
-        console.log(ipWithCidr)
         if (ipWithCidr) {
             const ipv4Regex =
                 /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
@@ -263,7 +262,6 @@ const VlanTable = (props) => {
             refreshData();
             return;
         }
-        
         if (params.data.sag_ip_address && params.data.ip_address) {
             alert("ip_address or sag_ip_address any one must be added");
             setSelectedRows([]);
@@ -300,13 +298,13 @@ const VlanTable = (props) => {
     }, []);
 
     const onCellClicked = useCallback((params) => {
-        console.log()
+        console.log();
         if (params?.colDef?.field === "mem_ifs") {
             setIsModalOpen("addMember");
         }
         if (
             params?.colDef?.field === "sag_ip_address" &&
-            (params.data.ip_address === "" || params.data.ip_address  === null)
+            (params.data.ip_address === "" || params.data.ip_address === null)
         ) {
             setIsModalOpen("vlanSagIpForm");
         }
@@ -319,7 +317,7 @@ const VlanTable = (props) => {
                 <div className="button-group stickyButton">
                     <div className="button-column">
                         <button
-                            disabled={disableConfig || changes.length === 0}
+                            disabled={updateConfig || changes.length === 0}
                             className="btnStyle"
                             onClick={() => handleFormSubmit(changes)}
                         >

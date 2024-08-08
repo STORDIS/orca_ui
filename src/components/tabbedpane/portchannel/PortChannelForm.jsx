@@ -5,7 +5,7 @@ import {
     getAllInterfacesOfDeviceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 
 const PortChannelForm = ({
     onSubmit,
@@ -13,17 +13,14 @@ const PortChannelForm = ({
     onCancel,
     handelSubmitButton,
 }) => {
-    const { disableConfig, setDisableConfig } = useDisableConfig();
     const selectRef = useRef(null);
-
     const instance = interceptor();
-
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const [interfaceNames, setInterfaceNames] = useState([]);
-
     const [vlanNames, setVlanNames] = useState([]);
     const [selectedVlans, setSelectedVlans] = useState([]);
-
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         lag_name: "",
@@ -114,7 +111,7 @@ const PortChannelForm = ({
             return prev.filter((item) => item !== key);
         });
 
-        setDisableConfig(false);
+        setUpdateConfig(false);
     };
 
     const handleValue = (e) => {
@@ -411,7 +408,7 @@ const PortChannelForm = ({
                             <div className=" w-50">
                                 <button
                                     className="btnStyle ml-25"
-                                    disabled={disableConfig}
+                                    disabled={updateConfig}
                                     onClick={() => handleRemoveInterface(value)}
                                 >
                                     Remove
@@ -460,7 +457,7 @@ const PortChannelForm = ({
 
                             <button
                                 className="btnStyle ml-25"
-                                disabled={disableConfig || !value.removable}
+                                disabled={updateConfig || !value.removable}
                                 onClick={() => handleRemoveVlan(value)}
                             >
                                 Remove
@@ -474,7 +471,7 @@ const PortChannelForm = ({
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                 >
                     Apply Config
                 </button>

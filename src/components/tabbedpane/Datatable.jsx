@@ -10,15 +10,10 @@ import Modal from "../modal/Modal";
 import interceptor from "../../utils/interceptor";
 
 import { deleteDevicesURL } from "../../utils/backend_rest_urls.js";
-
-import { useLog } from "../../utils/logpannelContext";
-import { useDisableConfig } from "../../utils/dissableConfigContext.js";
+import useStoreConfig from "../../utils/configStore.js";
 
 const Datatable = (props) => {
     const instance = interceptor();
-
-    const { setLog } = useLog();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
@@ -31,13 +26,15 @@ const Datatable = (props) => {
 
     const [dataTable, setDataTable] = useState([]);
     const [selectedDeviceToDelete, setSelectedDeviceToDelete] = useState("");
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     useEffect(() => {
         getDevices();
     }, [isTabbedPane]);
 
     const getDevices = () => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         setDataTable([]);
         instance(getAllDevicesURL())
@@ -50,11 +47,11 @@ const Datatable = (props) => {
                 } else {
                     setDataTable(res.data);
                 }
-                setDisableConfig(false);
+                setUpdateConfig(false);
             })
             .catch((err) => {
                 console.log(err);
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     };
 
@@ -71,7 +68,7 @@ const Datatable = (props) => {
     };
 
     const handleDeleteConfirmation = () => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
         const apiPUrl = deleteDevicesURL();
         instance
             .delete(apiPUrl, { data: { mgt_ip: selectedDeviceToDelete } })
@@ -79,7 +76,7 @@ const Datatable = (props) => {
             })
             .catch((err) => {})
             .finally(() => {
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 setSelectedDeviceToDelete("");
                 getDevices();
             });
@@ -111,14 +108,14 @@ const Datatable = (props) => {
                             links will be removed
                         </p>
                         <button
-                            disabled={disableConfig}
+                            disabled={updateConfig}
                             className="btnStyle mt-10 mr-10"
                             onClick={handleDeleteConfirmation}
                         >
                             Yes
                         </button>
                         <button
-                            disabled={disableConfig}
+                            disabled={updateConfig}
                             className="btnStyle mt-10"
                             onClick={handleDeleteCancellation}
                         >
