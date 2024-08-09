@@ -34,20 +34,9 @@ ORCA UI is a web application that provides a user interface for interacting with
 
 ## Quick Start
 ORCA UI can be started easily by just running a docker container, as follows :
-- If orca_backend is running on the same machine use below command:
-
-  - create docker network if doesn't exits:
-    ```shell
-    docker network create orca_container_network
-    ```
-  - Then run orca_ui
-    ```shell
-    docker run --network=orca_container_network -p 3000:3000 --name orca_ui -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_ip:port>" -d stordis/orca_ui:latest
-    ```
-- If orca_backend is running on the different machine use below command:
-  ```shell
-  docker run -p 3000:3000 --name orca_ui -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_ip:port>" -d stordis/orca_ui:latest
-  ```
+```shell
+docker run --network=orca_container_network -p 3000:3000 --name orca_ui -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_ip:port>" -d stordis/orca_ui:latest
+```
 
 To verify that container has successfully started, try to access http://<server_ip>:3000/ and log in with default user/password- admin/admin which is by default created in backend container. To know how to quick start with orca_backend refer to [ORCA Backend](https://github.com/STORDIS/orca_backend) quick start section. 
 
@@ -90,11 +79,6 @@ If docker image is to be transferred to other machine to run there, first save t
     docker load -i orca_ui.tar.gz
 ### Run orca_ui docker container
 orca_ui docker container can be started as follows:
-- If orca_backend is running on the same machine use below command:
-  ```shell
-  docker run --network=orca_container_network -p 3000:3000 -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_server_address:port>" orca_ui
-  ```
-- If orca_backend is running on the different machine use below command:
-  ```shell
-  docker run -p 3000:3000 -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_server_address:port>" orca_ui
-  ```
+```shell
+docker run -p 3000:3000 -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_server_address:port>" orca_ui
+```
