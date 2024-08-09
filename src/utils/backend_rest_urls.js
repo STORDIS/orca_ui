@@ -1,5 +1,5 @@
 const host_addr =
-    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
+    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://10.10.130.202:8000";
 
 // auth urls
 
@@ -73,6 +73,12 @@ export function removeVlanIp() {
 
 export function deleteVlanMembersURL(device_ip) {
     return host_addr + "/vlan_mem_delete?mgt_ip=" + device_ip;
+}
+
+// stp urls
+
+export function stpURL(device_ip) {
+    return host_addr + "/stp?mgt_ip=" + device_ip ;
 }
 
 // orcask urls

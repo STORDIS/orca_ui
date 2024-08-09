@@ -5,13 +5,13 @@ import React, { useState } from "react";
 import { getDiscoveryUrl } from "../../utils/backend_rest_urls";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
-import { useLog } from "../../utils/logpannelContext";
 import interceptor from "../../utils/interceptor";
 import { getIsStaff } from "../tabbedpane/datatablesourse";
+import useStoreLogs from "../../utils/store";
 
 const Navbar = () => {
     const auth = useAuth();
-    const { setLog } = useLog();
+    
 
     const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(!getIsStaff());
     const [discBtnText, setDiscBtnText] = useState("Discover Network");
@@ -19,6 +19,7 @@ const Navbar = () => {
     const [showForm, setShowForm] = useState(false);
 
     const instance = interceptor();
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     const start_discovery = async (formData) => {
         setDiscBtnText("Discovery In Progress");
@@ -28,7 +29,7 @@ const Navbar = () => {
             const response = await instance.put(getDiscoveryUrl(), formData);
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
-            setLog(true);
+            setUpdateLog(true);
 
             window.location.reload();
         } catch (error) {
@@ -36,7 +37,7 @@ const Navbar = () => {
             window.location.reload();
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
-            setLog(true);
+            setUpdateLog(true);
         }
     };
 

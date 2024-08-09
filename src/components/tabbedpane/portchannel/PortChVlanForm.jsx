@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 import interceptor from "../../../utils/interceptor";
 
 import {
@@ -17,7 +17,8 @@ const PortChVlanForm = ({
     const [vlanNames, setVlanNames] = useState([]);
     const [selectedVlans, setSelectedVlans] = useState([]);
     const [inputVlans, setInputVlans] = useState([]);
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
     const selectRef = useRef(null);
 
     const instance = interceptor();
@@ -35,15 +36,15 @@ const PortChVlanForm = ({
             .get(apiPUrl)
             .then((res) => {
                 const names = res.data
-                    .filter((item) => item.name.includes("Vlan"))
+                    .filter((item) => item?.name?.includes("Vlan"))
                     .map((item) => ({
-                        name: item.name,
-                        vlanid: item.vlanid,
+                        name: item?.name,
+                        vlanid: item?.vlanid,
                         taggingMode: "",
                     }));
                 setVlanNames(names);
 
-                addSelectedVlans(res.data);
+                addSelectedVlans(res?.data);
             })
             .catch((err) => {
                 console.log(err);
@@ -67,15 +68,15 @@ const PortChVlanForm = ({
             let trunk_vlans = [];
 
             if (input_vlans?.trunk_vlans) {
-                input_vlans?.trunk_vlans.forEach((element) => {
+                input_vlans?.trunk_vlans?.forEach((element) => {
                     const filteredItems = res
                         .filter((item) => item?.vlanid === element)
                         .map((item) => ({
                             name: item?.name,
-                            vlanid: item.vlanid,
+                            vlanid: item?.vlanid,
                             taggingMode: "",
                         }));
-                    trunk_vlans = trunk_vlans.concat(filteredItems);
+                    trunk_vlans = trunk_vlans?.concat(filteredItems);
                 });
             }
 
@@ -100,8 +101,7 @@ const PortChVlanForm = ({
     };
 
     const handleRemoveOne = (e) => {
-        setDisableConfig(true);
-
+        setUpdateConfig(true);
         let payload = {
             mgt_ip: selectedDeviceIp,
             lag_name: inputData.lag_name,
@@ -109,26 +109,23 @@ const PortChVlanForm = ({
             admin_status: inputData.admin_sts,
             vlan_members: e,
         };
-
         const apiPUrl = deletePortchannelVlanMemberURL();
         instance
             .delete(apiPUrl, { data: payload })
             .then((res) => {
                 getAllVlans();
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 onCancel();
             })
             .catch((err) => {
                 console.log(err);
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     };
 
     const handleRemoveAll = () => {
-        setDisableConfig(true);
-
+        setUpdateConfig(true);
         const apiPUrl = deletePortchannelVlanMemberAllURL();
-
         let dataToSubmit = {
             mgt_ip: selectedDeviceIp,
             lag_name: inputData.lag_name,
@@ -141,12 +138,12 @@ const PortChVlanForm = ({
             .delete(apiPUrl, { data: dataToSubmit })
             .then((res) => {
                 getAllVlans();
-                setDisableConfig(false);
+                setUpdateConfig(false);
                 onCancel();
             })
             .catch((err) => {
                 console.log(err);
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     };
 
@@ -156,19 +153,19 @@ const PortChVlanForm = ({
             trunk_vlans: [],
         };
 
-        selectedVlans.forEach((element) => {
+        selectedVlans?.forEach((element) => {
             if (element.taggingMode === "ACCESS") {
-                finalVlanMembers.access_vlan = element.vlanid;
+                finalVlanMembers.access_vlan = element?.vlanid;
             } else {
-                finalVlanMembers.trunk_vlans.push(element.vlanid);
+                finalVlanMembers?.trunk_vlans.push(element?.vlanid);
             }
         });
 
-        if (finalVlanMembers.access_vlan === "") {
+        if (finalVlanMembers?.access_vlan === "") {
             delete finalVlanMembers.access_vlan;
         }
 
-        if (finalVlanMembers.trunk_vlans.length === 0) {
+        if (finalVlanMembers?.trunk_vlans?.length === 0) {
             delete finalVlanMembers.trunk_vlans;
         }
 
@@ -258,7 +255,7 @@ const PortChVlanForm = ({
 
                             <button
                                 className="btnStyle ml-25"
-                                disabled={disableConfig}
+                                disabled={updateConfig || !value.removable}
                                 onClick={() => handleRemove(value)}
                             >
                                 Remove
@@ -272,7 +269,7 @@ const PortChVlanForm = ({
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                     onClick={handleSubmit}
                 >
                     Apply Config
@@ -283,7 +280,7 @@ const PortChVlanForm = ({
                 </button>
                 <button
                     className="btnStyle ml-10"
-                    disabled={disableConfig || selectedVlans.length === 0}
+                    disabled={updateConfig || selectedVlans.length === 0}
                     onClick={() => handleRemoveAll()}
                 >
                     Remove All

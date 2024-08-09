@@ -38,7 +38,7 @@ const DiscoveryForm = ({ handleSubmit, onCancel }) => {
 
         if (areAllIPAddressesValid(formData.address)) {
             let payload = {
-                address: formData.address.split(",").map((ip) => ip.trim()),
+                address: formData?.address?.split(",").map((ip) => ip.trim()),
                 discover_from_config: formData.discover_from_config,
             };
             handleSubmit(payload);

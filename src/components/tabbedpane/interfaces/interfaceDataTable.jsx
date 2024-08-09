@@ -5,12 +5,14 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { getAllInterfacesOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useLog } from "../../../utils/logpannelContext";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+
+import useStoreLogs from "../../../utils/store";
+import useStoreConfig from "../../../utils/configStore";
 
 // Function to get interface names
-export const getInterfaceDataUtil = (selectedDeviceIp) => {
+export const getInterfaceDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
+
     const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
     return instance
         .get(apiUrl)
@@ -25,6 +27,7 @@ export const getInterfaceDataUtil = (selectedDeviceIp) => {
 
                 return item;
             });
+
             return items;
         })
         .catch((err) => {
@@ -34,10 +37,6 @@ export const getInterfaceDataUtil = (selectedDeviceIp) => {
 };
 
 const InterfaceDataTable = (props) => {
-    const { setLog } = useLog();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
-    // setDisableConfig(true);
-
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const selectedDeviceIp = props.selectedDeviceIp;
@@ -46,7 +45,13 @@ const InterfaceDataTable = (props) => {
     const [configStatus, setConfigStatus] = useState("");
 
     const instance = interceptor();
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+
+    // const setUpdateStatus = useStoreLogs((state) => state.setUpdateStatus);
+    //  onSuccess({ success: true });
     useEffect(() => {
         if (selectedDeviceIp) {
             getInterfaceData();
@@ -64,7 +69,7 @@ const InterfaceDataTable = (props) => {
     const getInterfaceData = () => {
         setDataTable([]);
         setChanges([]);
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
         });
     };
@@ -77,7 +82,7 @@ const InterfaceDataTable = (props) => {
     const getAdvSpeed = (params) => {
         let result = "all";
 
-        if (params.includes("SPEED_")) {
+        if (params?.includes("SPEED_")) {
             let numericalPart = params.split("_")[1].slice(0, -2);
             result = parseInt(numericalPart) * 1000;
             result = result.toString();
@@ -140,7 +145,7 @@ const InterfaceDataTable = (props) => {
         if (changes.length === 0) {
             return;
         }
-        setDisableConfig(true);
+        setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
@@ -156,8 +161,8 @@ const InterfaceDataTable = (props) => {
                 setChanges([]);
                 setDataTable([]);
                 getInterfaceData();
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
             });
     };
 
@@ -166,9 +171,7 @@ const InterfaceDataTable = (props) => {
             <div className="stickyButton">
                 <button
                     onClick={sendUpdates}
-                    disabled={
-                        disableConfig || Object.keys(changes).length === 0
-                    }
+                    disabled={updateConfig || Object.keys(changes).length === 0}
                     className="btnStyle "
                 >
                     Apply Config

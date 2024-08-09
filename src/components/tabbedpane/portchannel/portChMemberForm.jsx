@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
 import interceptor from "../../../utils/interceptor";
+import useStoreConfig from "../../../utils/configStore";
 
 import {
     getAllInterfacesOfDeviceURL,
@@ -15,9 +15,10 @@ const PortChMemberForm = ({
 }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
-    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const instance = interceptor();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     useEffect(() => {
         getAllInterfaces();
@@ -34,9 +35,9 @@ const PortChMemberForm = ({
         instance
             .get(apiPUrl)
             .then((res) => {
-                const names = res.data
-                    .map((item) => item.name)
-                    .filter((item) => item.includes("Ethernet"));
+                const names = res?.data
+                    .map((item) => item?.name)
+                    .filter((item) => item?.includes("Ethernet"));
                 setInterfaceNames(names);
             })
             .catch((err) => {
@@ -46,8 +47,8 @@ const PortChMemberForm = ({
 
     const handleDropdownChange = (event) => {
         setSelectedInterfaces((prev) => {
-            const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            const newValue = event?.target?.value;
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
@@ -55,22 +56,22 @@ const PortChMemberForm = ({
     };
 
     const handleRemove = (key) => {
-        setDisableConfig(true);
-        let selectedMembers = inputData.members;
+        setUpdateConfig(true);
+        let selectedMembers = inputData?.members;
 
-        if (selectedMembers.includes(key)) {
+        if (selectedMembers?.includes(key)) {
             handelDeleteMemeber(key);
         } else {
             setSelectedInterfaces((prev) => {
-                return prev.filter((item) => item !== key);
+                return prev?.filter((item) => item !== key);
             });
 
-            setDisableConfig(false);
+            setUpdateConfig(false);
         }
     };
 
     const handelDeleteMemeber = (e) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         const apiPUrl = deletePortchannelEthernetMemberURL(selectedDeviceIp);
         const output = {
@@ -88,7 +89,7 @@ const PortChMemberForm = ({
             })
             .catch((err) => {})
             .finally(() => {
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     };
 
@@ -138,7 +139,7 @@ const PortChMemberForm = ({
                             <div className=" w-50">
                                 <button
                                     className="btnStyle ml-25"
-                                    disabled={disableConfig}
+                                    disabled={updateConfig}
                                     onClick={() => handleRemove(value)}
                                 >
                                     Remove
@@ -153,7 +154,7 @@ const PortChMemberForm = ({
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                     onClick={handleSubmit}
                 >
                     Apply Config
