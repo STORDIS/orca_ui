@@ -87,7 +87,7 @@ const PortChMemberForm = ({
                 setSelectedInterfaces((prev) => {
                     return prev.filter((item) => item !== e);
                 });
-                onCancel();
+                onClose();
             })
             .catch((err) => {})
             .finally(() => {

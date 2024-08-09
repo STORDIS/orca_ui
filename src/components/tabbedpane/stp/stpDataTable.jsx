@@ -228,12 +228,13 @@ const StpDataTable = (props) => {
 
                 {/* model for adding STP */}
                 {isModalOpen === "addStpForm" && (
-                    <Modal show={true} onClose={refreshData} title={"Add STP"}>
-                        <StpForm
-                            onSubmit={refreshData}
-                            selectedDeviceIp={selectedDeviceIp}
-                            onCancel={refreshData}
-                        />
+                    <Modal
+                        show={true}
+                        onClose={refreshData}
+                        onSubmit={refreshData}
+                        title={"Add STP"}
+                    >
+                        <StpForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
                 )}
 
@@ -243,12 +244,9 @@ const StpDataTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title={"Add Disabled Vlans for STP"}
+                        onSubmit={refreshData}
                     >
-                        <StpVlanForm
-                            onSubmit={refreshData}
-                            selectedDeviceIp={selectedDeviceIp}
-                            onCancel={refreshData}
-                        />
+                        <StpVlanForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
                 )}
             </div>
