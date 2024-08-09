@@ -6,8 +6,7 @@ import useStoreConfig from "../../../utils/configStore";
 const BgpForm = ({
     onSubmit,
     selectedDeviceIp,
-    onCancel,
-    handelSubmitButton,
+    onClose,
 }) => {
 
     const instance = interceptor();
@@ -17,7 +16,7 @@ const BgpForm = ({
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         vrf_name: "default",
-        local_asn: 0,
+        local_asn: 1,
         router_id: selectedDeviceIp,
     });
 
@@ -92,7 +91,7 @@ const BgpForm = ({
                     <button
                         type="button"
                         className="btnStyle mr-10"
-                        onClick={onCancel}
+                        onClick={onClose}
                     >
                         Cancel
                     </button>

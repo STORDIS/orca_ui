@@ -7,7 +7,7 @@ import { FaArrowAltCircleUp } from "react-icons/fa";
 import { FaArrowAltCircleDown } from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
 
-const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
+const StpForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
@@ -264,7 +264,7 @@ const StpForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>

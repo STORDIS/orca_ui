@@ -67,10 +67,7 @@ const Navbar = () => {
                             onClose={() => setShowForm(false)}
                             title="Discover Devices"
                         >
-                            <DiscoveryForm
-                                handleSubmit={start_discovery}
-                                onCancel={() => setShowForm(false)}
-                            />
+                            <DiscoveryForm handleSubmit={start_discovery} />
                         </Modal>
                     </div>
 

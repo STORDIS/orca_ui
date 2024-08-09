@@ -9,7 +9,7 @@ const MclagMemberForm = ({
     onSubmit,
     inputData,
     selectedDeviceIp,
-    onCancel,
+    onClose,
 }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
@@ -23,11 +23,12 @@ const MclagMemberForm = ({
     useEffect(() => {
         getPortchannel();
 
-
         if (inputData.mclag_members) {
             setSelectedInterfaces(JSON.parse(inputData.mclag_members));
         }
     }, []);
+
+
 
     const getPortchannel = () => {
         getPortChannelDataCommon(selectedDeviceIp).then((res) => {
@@ -178,12 +179,12 @@ const MclagMemberForm = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    disabled={updateConfig}
+                    disabled={updateConfig || selectedInterfaces.length === 0}
                     onClick={removeAll}
                 >
                     Remove All
                 </button>
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>

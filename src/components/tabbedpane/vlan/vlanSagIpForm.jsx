@@ -6,7 +6,7 @@ import { getVlansURL, removeVlanIp } from "../../../utils/backend_rest_urls";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 
-const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
+const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
     const instance = interceptor();
     const [newSagIp, setNewSagIp] = useState("");
 
@@ -40,7 +40,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
     };
 
     const addSagIptoArray = () => {
-
         if (!isValidIPv4WithMac(newSagIp)) {
             alert("ip_address is not valid");
             setNewSagIp("");
@@ -51,7 +50,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
                 name: inputData.name,
                 sag_ip_address: [newSagIp],
             };
-
 
             setUpdateConfig(true);
 
@@ -112,6 +110,12 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData }) => {
                           </div>
                       ))
                     : null}
+            </div>
+
+            <div className="">
+                <button type="button" className="btnStyle" onClick={onClose}>
+                    Cancel
+                </button>
             </div>
         </div>
     );

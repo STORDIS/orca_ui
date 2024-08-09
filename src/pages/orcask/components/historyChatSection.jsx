@@ -12,7 +12,7 @@ import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { getIsStaff } from "../../../components/tabbedpane/datatablesourse";
-import { Tooltip as ReactTooltip } from "react-tooltip";
+import Tooltip from "@mui/material/Tooltip";
 
 import "../orcAsk.scss";
 import {
@@ -366,38 +366,29 @@ export const HistoryChatSection = ({
                     disabled={isLoading || !getIsStaff()}
                     placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
                 ></textarea>
-                <button
-                    data-tooltip-id="SendChat"
-                    disabled={
-                        isLoading ||
-                        !getIsStaff() ||
-                        questionPrompt.prompt === ""
-                    }
-                    onClick={gptCompletions}
-                    className="btnStyle ml-10 "
-                >
-                    {!isLoading ? <FaArrowUp /> : null}
-                    {isLoading ? <FaSpinner /> : null}
-                    <ReactTooltip
-                        id="SendChat"
-                        place="bottom"
-                        content="Send Message"
-                    />
-                </button>
-                <button
-                    data-tooltip-id="clearChat"
-                    disabled={!getIsStaff() || chatHistory.length === 1}
-                    onClick={deleteHistory}
-                    className="btnStyle ml-10 "
-                >
-                    <FaRotateLeft />
-
-                    <ReactTooltip
-                        id="clearChat"
-                        place="bottom"
-                        content="Clear Chat"
-                    />
-                </button>
+                <Tooltip place="bottom" title="Send Message">
+                    <button
+                        disabled={
+                            isLoading ||
+                            !getIsStaff() ||
+                            questionPrompt.prompt === ""
+                        }
+                        onClick={gptCompletions}
+                        className="btnStyle ml-10 "
+                    >
+                        {!isLoading ? <FaArrowUp /> : null}
+                        {isLoading ? <FaSpinner /> : null}
+                    </button>
+                </Tooltip>
+                <Tooltip place="bottom" title="Clear Chat">
+                    <button
+                        disabled={!getIsStaff() || chatHistory.length === 1}
+                        onClick={deleteHistory}
+                        className="btnStyle ml-10 "
+                    >
+                        <FaRotateLeft />
+                    </button>
+                </Tooltip>
             </div>
         </>
     );

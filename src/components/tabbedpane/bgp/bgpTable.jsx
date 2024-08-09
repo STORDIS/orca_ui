@@ -189,14 +189,13 @@ const BGPTable = (props) => {
                     rowData={dataTable}
                     columnDefs={bgpColumns}
                     defaultColDef={defaultColDef}
-                    onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
-                    checkboxSelection
                     enableCellTextSelection="true"
-                    rowSelection="single"
+                    rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
                     onCellValueChanged={handleCellValueChanged}
                     domLayout={"autoHeight"}
+                    suppressRowClickSelection={true}
                 ></AgGridReact>
             </div>
 
@@ -204,13 +203,9 @@ const BGPTable = (props) => {
                 show={showForm}
                 onClose={() => setShowForm(false)}
                 title={"Add BGP"}
+                onSubmit={(e) => handleFormSubmit(e, "Add")}
             >
-                <BgpForm
-                    onSubmit={(e) => handleFormSubmit(e, "Add")}
-                    selectedDeviceIp={selectedDeviceIp}
-                    onCancel={handleCancel}
-                    handelSubmitButton={updateConfig}
-                />
+                <BgpForm selectedDeviceIp={selectedDeviceIp} />
             </Modal>
 
             {isMessageModalOpen && (
