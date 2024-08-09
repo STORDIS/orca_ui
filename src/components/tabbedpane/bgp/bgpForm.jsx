@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import interceptor from "../../../utils/interceptor";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 
 const BgpForm = ({
     onSubmit,
     selectedDeviceIp,
     onClose,
 }) => {
-    const { disableConfig, setDisableConfig } = useDisableConfig();
 
     const instance = interceptor();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -30,7 +31,8 @@ const BgpForm = ({
     };
 
     const handleSubmit = (e) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
+
         onSubmit(formData);
     };
 
@@ -82,7 +84,7 @@ const BgpForm = ({
                     <button
                         type="submit"
                         className="btnStyle mr-10"
-                        disabled={disableConfig}
+                        disabled={updateConfig}
                     >
                         Apply Config
                     </button>

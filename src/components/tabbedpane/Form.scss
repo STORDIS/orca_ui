@@ -42,6 +42,10 @@
     background-color: #dbdbdb;
 }
 
+.form-field select:disabled {
+    background-color: #dbdbdb;
+}
+
 .form-field input[type="submit"]:hover,
 .form-field button:hover {
     opacity: 0.9;
@@ -60,4 +64,12 @@
     overflow-y: auto;
     padding-top: 5px;
     padding-bottom: 5px;
+}
+
+.increadeDecrease {
+    border: none;
+    background-color: transparent;
+    color: black;
+    cursor: pointer;
+    align-items: center;
 }

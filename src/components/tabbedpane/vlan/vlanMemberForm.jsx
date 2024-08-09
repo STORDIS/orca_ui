@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 import {
     getAllInterfacesOfDeviceURL,
     getAllPortChnlsOfDeviceURL,
     deleteVlanMembersURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 
 const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const instance = interceptor();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
 
     const deleteMembers = (payload, key) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         instance
             .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
@@ -27,16 +28,16 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                     delete newInterfaces[key];
                     return newInterfaces;
                 });
-                setDisableConfig(false);
+                setUpdateConfig(false);
             })
             .catch((error) => {
                 console.error("Error fetching interface names", error);
-                setDisableConfig(false);
+                setUpdateConfig(false);
             });
     };
 
     const handleRemove = (key) => {
-        setDisableConfig(true);
+        setUpdateConfig(true);
 
         let input_mem_if = JSON.parse(inputData.mem_ifs);
 
@@ -55,7 +56,7 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                 delete newInterfaces[key];
                 return newInterfaces;
             });
-            setDisableConfig(false);
+            setUpdateConfig(false);
         }
     };
 
@@ -83,13 +84,13 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
         setInterfaceNames([]);
         // getInterfaces();
 
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernetInterfaces = res
-                .filter((element) => element.name.includes("Ethernet"))
-                .map((element) => element.name);
+                .filter((element) => element?.name?.includes("Ethernet"))
+                .map((element) => element?.name);
 
-            getPortChannelDataUtil(selectedDeviceIp).then((res) => {
-                const portchannel = res.map((element) => element.lag_name);
+            getPortChannelDataCommon(selectedDeviceIp).then((res) => {
+                const portchannel = res.map((element) => element?.lag_name);
 
                 setInterfaceNames([...ethernetInterfaces, ...portchannel]);
             });
@@ -137,7 +138,7 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
 
                                 <button
                                     className="btnStyle ml-25"
-                                    disabled={disableConfig}
+                                    disabled={updateConfig}
                                     onClick={() => handleRemove(key)}
                                 >
                                     Remove
@@ -152,7 +153,7 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                     onClick={(e) =>
                         onSubmit({
                             mgt_ip: selectedDeviceIp,

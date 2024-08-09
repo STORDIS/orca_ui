@@ -6,28 +6,35 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { AgGridReact } from "ag-grid-react";
 import interceptor from "../../utils/interceptor";
 import { logPanelURL, logPanelDeleteURL } from "../../utils/backend_rest_urls";
-import { useLog } from "../../utils/logpannelContext";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { getIsStaff } from "../tabbedpane/datatablesourse";
+import useStoreLogs from "../../utils/store";
 
 export const LogViewer = () => {
     const [logEntries, setLogEntries] = useState([]);
 
     const instance = interceptor();
 
-    const { log, setLog } = useLog();
+    const updateLog = useStoreLogs((state) => state.updateLog);
+    const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
+
+    useEffect(() => {
+        if (updateLog) {
+            getLogs();
+        }
+    }, [updateLog]);
 
     useEffect(() => {
         getLogs();
-    }, [log]);
+    }, []);
 
     const getLogs = () => {
         instance
             .get(logPanelURL())
             .then((response) => {
                 setLogEntries(response.data);
-                setLog(false);
+                resetUpdateLog();
             })
             .catch((error) => {
                 console.error("Error:", error);
@@ -38,14 +45,14 @@ export const LogViewer = () => {
         instance
             .delete(logPanelDeleteURL())
             .then((response) => {
-                setLog(false);
+                resetUpdateLog();
             })
             .catch((error) => {
                 console.error("Error:", error);
             })
             .finally(() => {
                 getLogs();
-                setLog(false);
+                resetUpdateLog();
             });
     };
 
@@ -69,7 +76,7 @@ export const LogViewer = () => {
             sortable: true,
             cellRenderer: (params) => {
                 return (
-                    <Time value={params.value} format="hh:mm:ss DD-MM-YYYY" />
+                    <Time value={params?.value} format="hh:mm:ss DD-MM-YYYY" />
                 );
             },
             tooltipValueGetter: (params) => {
@@ -101,7 +108,12 @@ export const LogViewer = () => {
             filter: true,
             sortable: true,
             cellRenderer: (params) => {
-                return <span>{JSON.stringify(params.value)}</span>;
+                return (
+                    <span>
+                        {params.data.http_method} :{" "}
+                        {JSON.stringify(params.value)}
+                    </span>
+                );
             },
             tooltipValueGetter: (params) => {
                 return JSON.stringify(params.value);
@@ -145,7 +157,7 @@ export const LogViewer = () => {
     const gridStyle = useMemo(() => ({ height: "440px", width: "100%" }), []);
 
     return (
-        <div  className="logPanel" >
+        <div className="logPanel">
             <div className="stickyButton">
                 <button
                     className="clearLogBtn btnStyle"

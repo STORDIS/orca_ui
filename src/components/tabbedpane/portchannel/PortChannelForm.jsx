@@ -5,20 +5,17 @@ import {
     getAllInterfacesOfDeviceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
+import useStoreConfig from "../../../utils/configStore";
 
 const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
-    const { disableConfig, setDisableConfig } = useDisableConfig();
     const selectRef = useRef(null);
-
     const instance = interceptor();
-
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const [interfaceNames, setInterfaceNames] = useState([]);
-
     const [vlanNames, setVlanNames] = useState([]);
     const [selectedVlans, setSelectedVlans] = useState([]);
-
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         lag_name: undefined,
@@ -83,9 +80,9 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         instance
             .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
             .then((response) => {
-                const fetchedInterfaceNames = response.data
+                const fetchedInterfaceNames = response?.data
                     .map((item) => item.name)
-                    .filter((item) => item.includes("Ethernet"));
+                    .filter((item) => item?.includes("Ethernet"));
                 setInterfaceNames(fetchedInterfaceNames);
             })
             .catch((error) => {
@@ -96,7 +93,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const handleDropdownChangeInterface = (event) => {
         setSelectedInterfaces((prev) => {
             const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
@@ -108,7 +105,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             return prev.filter((item) => item !== key);
         });
 
-        setDisableConfig(false);
+        setUpdateConfig(false);
     };
 
     const handleValue = (e) => {
@@ -130,10 +127,10 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             .get(apiPUrl)
             .then((res) => {
                 const names = res.data
-                    .filter((item) => item.name.includes("Vlan"))
+                    .filter((item) => item?.name?.includes("Vlan"))
                     .map((item) => ({
-                        name: item.name,
-                        vlanid: item.vlanid,
+                        name: item?.name,
+                        vlanid: item?.vlanid,
                         taggingMode: "",
                         removable: false,
                     }));
@@ -215,11 +212,11 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             trunk_vlans: [],
         };
 
-        selectedVlans.forEach((element) => {
-            if (element.taggingMode === "ACCESS") {
-                finalVlanMembers.access_vlan = element.vlanid;
+        selectedVlans?.forEach((element) => {
+            if (element?.taggingMode === "ACCESS") {
+                finalVlanMembers.access_vlan = element?.vlanid;
             } else {
-                finalVlanMembers.trunk_vlans.push(element.vlanid);
+                finalVlanMembers?.trunk_vlans.push(element?.vlanid);
             }
         });
 
@@ -419,7 +416,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                             <div className=" w-50">
                                 <button
                                     className="btnStyle ml-25"
-                                    disabled={disableConfig}
+                                    disabled={updateConfig}
                                     onClick={() => handleRemoveInterface(value)}
                                 >
                                     Remove
@@ -468,7 +465,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
                             <button
                                 className="btnStyle ml-25"
-                                disabled={disableConfig || !value.removable}
+                                disabled={updateConfig || !value.removable}
                                 onClick={() => handleRemoveVlan(value)}
                             >
                                 Remove
@@ -482,7 +479,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                 >
                     Apply Config
                 </button>

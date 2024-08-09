@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../Form.scss";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
-import { getInterfaceDataUtil } from "../interfaces/interfaceDataTable";
-import { getPortChannelDataUtil } from "../portchannel/portChDataTable";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
+import useStoreConfig from "../../../utils/configStore";
 
 const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
-    const { disableConfig, setDisableConfig } = useDisableConfig();
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+
     const [memberNames, setPortChnlList] = useState([]);
     const [ethernetNames, setEthernetList] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
@@ -94,19 +96,19 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             return;
         }
         formData.mclag_members = selectedInterfaces;
-        setDisableConfig(true);
+        setUpdateConfig(true);
         onSubmit(formData);
     };
 
     useEffect(() => {
-        getInterfaceDataUtil(selectedDeviceIp).then((res) => {
+        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernentNames = res
-                .filter((item) => item.name.includes("Ethernet"))
-                .map((item) => item.name);
+                .filter((item) => item?.name?.includes("Ethernet"))
+                .map((item) => item?.name);
             setEthernetList(ethernentNames);
         });
 
-        getPortChannelDataUtil(selectedDeviceIp).then((res) => {
+        getPortChannelDataCommon(selectedDeviceIp).then((res) => {
             const portchannelNames = res.map((item) => item.lag_name);
             setPortChnlList(portchannelNames);
         });
@@ -130,7 +132,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const handleDropdownMember = (event) => {
         setSelectedInterfaces((prev) => {
             const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
@@ -325,7 +327,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                                 <div className=" w-50">
                                     <button
                                         className="btnStyle ml-25"
-                                        disabled={disableConfig}
+                                        disabled={updateConfig}
                                         onClick={() => handleRemove(value)}
                                     >
                                         Remove
@@ -340,7 +342,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     <button
                         type="submit"
                         className="btnStyle mr-10"
-                        disabled={disableConfig}
+                        disabled={updateConfig}
                     >
                         Apply Config
                     </button>

@@ -1,13 +1,21 @@
 import Graph from "graphology";
 import ForceSupervisor from "graphology-layout-force/worker";
 import Sigma from "sigma";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 const SigmaGraph = (props) => {
     let container_id = "check" + Math.random();
 
+    const [noItem, setNoItem] = useState(false);
+
     useEffect(() => {
-        if (Object.keys(props.message[0]).length > 0) {
+
+        if (
+            props?.message[0] !== undefined &&
+            Object.keys(props?.message[0]).length > 0
+        ) {
+            setNoItem(false);
+
             let tempNodes = [];
             let tempEdges = [];
 
@@ -17,29 +25,34 @@ const SigmaGraph = (props) => {
             let idFound = false;
             let idToUse;
 
-            Object.keys(props.message[0]).forEach((key) => {
+            Object.keys(props?.message[0])?.forEach((key) => {
                 if (
-                    key.toLowerCase().includes("name") &&
-                    key.toLowerCase() !== "name"
+                    key.toLowerCase()?.includes("name") &&
+                    key.toLowerCase() !== "name" // check for key which includes name
                 ) {
                     lableFound = true;
                     labelToUse = key;
+                    
                     return;
                 } else if (key.toLowerCase() === "name" && !lableFound) {
+                    // check for key which is name when there is no key which includes name
                     labelToUse = key;
+                    lableFound = true;
+                    
                     return;
                 } else if (
-                    key.toLowerCase().includes("id") &&
+                    key.toLowerCase()?.includes("id") &&
                     key.toLowerCase() !== "id" &&
-                    !lableFound
+                    !lableFound // check for key which includes id and not equal to id when there is no key which includes name or equal to name
                 ) {
                     labelToUse = key;
+                    
                 }
             });
 
-            Object.keys(props.message[0]).forEach((key) => {
+            Object.keys(props?.message[0])?.forEach((key) => {
                 if (
-                    key.toLowerCase().includes("id") &&
+                    key.toLowerCase()?.includes("id") &&
                     key.toLowerCase() !== "id"
                 ) {
                     idFound = true;
@@ -49,7 +62,7 @@ const SigmaGraph = (props) => {
                     idToUse = key;
                     return;
                 } else if (
-                    key.toLowerCase().includes("id") &&
+                    key.toLowerCase()?.includes("id") &&
                     key.toLowerCase() !== "id" &&
                     !idFound
                 ) {
@@ -57,7 +70,7 @@ const SigmaGraph = (props) => {
                 }
             });
 
-            props.message.forEach((element) => {
+            props?.message?.forEach((element) => {
                 tempNodes.push({
                     id: element?.[idToUse].toString(),
                     label: element[labelToUse],
@@ -83,7 +96,7 @@ const SigmaGraph = (props) => {
             const container = document.getElementById(container_id);
 
             const graph = new Graph();
-            tempNodes.forEach((node) => {
+            tempNodes?.forEach((node) => {
                 graph.addNode(node.id, {
                     x: Math.random() * 100,
                     y: Math.random() * 100,
@@ -93,7 +106,7 @@ const SigmaGraph = (props) => {
                 });
             });
 
-            tempEdges.forEach((edge, index) => {
+            tempEdges?.forEach((edge, index) => {
                 graph.addEdge(edge.source, edge.target, {
                     type: "arrow",
                     label: edge.label,
@@ -167,13 +180,13 @@ const SigmaGraph = (props) => {
                 // "wheelEdge",
             ];
 
-            // nodeEvents.forEach((eventType) =>
+            // nodeEvents?.forEach((eventType) =>
             //     renderer.on(eventType, ({ node }) =>
             //         console.log(eventType, "node", node)
             //     )
             // );
 
-            // edgeEvents.forEach((eventType) =>
+            // edgeEvents?.forEach((eventType) =>
             //     renderer.on(eventType, ({ edge }) =>
             //         console.log(eventType, "edge", edge)
             //     )
@@ -197,18 +210,37 @@ const SigmaGraph = (props) => {
                 layout.kill();
             };
         } else {
+            setNoItem(true);
         }
     }, []);
 
     return (
-        <div
-            id={container_id}
-            style={{
-                width: "-webkit-fill-available",
-                height: "100%",
-                backgroundColor: "white",
-            }}
-        ></div>
+        <>
+            {!noItem ? (
+                <div
+                    id={container_id}
+                    style={{
+                        width: "-webkit-fill-available",
+                        height: "100%",
+                        backgroundColor: "white",
+                    }}
+                ></div>
+            ) : null}
+            {noItem ? (
+                <div
+                    style={{
+                        width: "-webkit-fill-available",
+                        height: "100%",
+                        backgroundColor: "white",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    Item Not Found
+                </div>
+            ) : null}
+        </>
     );
 };
 

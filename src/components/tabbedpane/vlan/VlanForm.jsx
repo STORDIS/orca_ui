@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
-import {
-    getAllInterfacesOfDeviceURL,
-    getAllPortChnlsOfDeviceURL,
-} from "../../../utils/backend_rest_urls";
+
 import interceptor from "../../../utils/interceptor";
+import useStoreConfig from "../../../utils/configStore";
+
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 
 export const isValidIPv4WithMac = (ipWithCidr) => {
     if (ipWithCidr) {
@@ -28,11 +28,13 @@ export const isValidIPv4WithMac = (ipWithCidr) => {
 
 const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const instance = interceptor();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [disabledIp, setDisabledIp] = useState(false);
     const [disabledSagIp, setDisabledSagIp] = useState(false);
+
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -61,10 +63,16 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
     const areAllIPAddressesValid = (input) => {
         if (input) {
-            const ipAddresses = input.split(",").map((ip) => ip.trim());
-            return ipAddresses.every(
+            if (input) {
+            const ipAddresses = input?.split(",").map((ip) => ip.trim());
+                return ipAddresses.every(
+                
                 (ip) => isValidIPv4(ip) || isValidCIDR(ip)
+            
             );
+        } else {
+            return true;
+        }
         } else {
             return true;
         }
@@ -128,6 +136,12 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             alert("ip_address or sag_ip_address any one must be added");
             return;
         }
+        if (formData?.sag_ip_address) {
+            let trimmedIpAddresses = formData.sag_ip_address
+                .split(",")
+                .map((ip) => ip.trim());
+            formData.sag_ip_address = trimmedIpAddresses;
+        }
 
         let dataToSubmit = {
             ...formData,
@@ -145,47 +159,27 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         if (Object.keys(selectedInterfaces).length > 0) {
             dataToSubmit.mem_ifs = selectedInterfaces;
         }
+        console.log(dataToSubmit);
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
         onSubmit(dataToSubmit);
     };
 
     useEffect(() => {
         setInterfaceNames([]);
-        getInterfaces();
-        getPortchannel();
-    }, []);
 
-    const getInterfaces = () => {
-        instance
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const ethernetInterfaces = response.data
-                    .filter((element) => element.name.includes("Ethernet"))
-                    .map((element) => element.name);
-
-                setInterfaceNames((prev) => [...prev, ...ethernetInterfaces]);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
-            })
-            .finally(() => {});
-    };
-
-    const getPortchannel = () => {
-        instance
-            .get(getAllPortChnlsOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const portchannel = response.data.map(
+        getInterfaceDataCommon(selectedDeviceIp).then((eth_Data) => {
+            const ethernetInterfaces = eth_Data
+                .filter((element) => element.name.includes("Ethernet"))
+                .map((element) => element.name);
+            getPortChannelDataCommon(selectedDeviceIp).then((port_data) => {
+                const portchannel = port_data.map(
                     (element) => element.lag_name
                 );
-
-                setInterfaceNames((prev) => [...prev, ...portchannel]);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
+                setInterfaceNames([...portchannel, ...ethernetInterfaces]);
             });
-    };
+        });
+    }, []);
 
     const handleDropdownChange = (event) => {
         setSelectedInterfaces((prev) => ({
@@ -372,7 +366,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                 <button
                     type="submit"
                     className="btnStyle mr-10"
-                    disabled={disableConfig}
+                    disabled={updateConfig}
                     onClick={handelSubmit}
                 >
                     Apply Config

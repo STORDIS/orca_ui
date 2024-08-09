@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
-import { useDisableConfig } from "../../../utils/dissableConfigContext";
-import { useLog } from "../../../utils/logpannelContext";
 import interceptor from "../../../utils/interceptor";
 import { isValidIPv4WithMac } from "./VlanForm";
 import { getVlansURL, removeVlanIp } from "../../../utils/backend_rest_urls";
+import useStoreConfig from "../../../utils/configStore";
+import useStoreLogs from "../../../utils/store";
 
 const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
     const instance = interceptor();
-    const { setLog } = useLog();
-    const { disableConfig, setDisableConfig } = useDisableConfig();
     const [newSagIp, setNewSagIp] = useState("");
+
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     const handleRemove = (e) => {
         let payload = {
@@ -19,17 +21,17 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
             sag_ip_address: [e],
         };
 
-        setDisableConfig(true);
+        setUpdateConfig(true);
         const apiMUrl = removeVlanIp();
         instance
             .delete(apiMUrl, { data: payload })
             .then((response) => {})
             .catch((err) => {})
             .finally(() => {
-                setLog(true);
-                setDisableConfig(false);
+                setUpdateLog(true);
+                setUpdateConfig(false);
                 onSubmit();
-                setLog(true);
+                
             });
     };
 
@@ -49,7 +51,7 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
                 sag_ip_address: [newSagIp],
             };
 
-            setDisableConfig(true);
+            setUpdateConfig(true);
 
             const apiMUrl = getVlansURL(selectedDeviceIp);
             instance
@@ -57,8 +59,8 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
                 .then(() => {})
                 .catch(() => {})
                 .finally(() => {
-                    setLog(true);
-                    setDisableConfig(false);
+                    setUpdateLog(true);
+                    setUpdateConfig(false);
                     setNewSagIp("");
                     onSubmit();
                 });
@@ -75,7 +77,7 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
                         className="form-control"
                         onChange={handleChange}
                         value={newSagIp}
-                        disabled={disableConfig}
+                        disabled={updateConfig}
                     />
                 </div>
 
@@ -99,7 +101,7 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
                               <div className=" w-25">
                                   <button
                                       className="btnStyle ml-25 mr-25"
-                                      disabled={disableConfig}
+                                      disabled={updateConfig}
                                       onClick={() => handleRemove(ip)}
                                   >
                                       Remove
