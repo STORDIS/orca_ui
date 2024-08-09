@@ -76,7 +76,7 @@ export const LogViewer = () => {
             sortable: true,
             cellRenderer: (params) => {
                 return (
-                    <Time value={params.value} format="hh:mm:ss DD-MM-YYYY" />
+                    <Time value={params?.value} format="hh:mm:ss DD-MM-YYYY" />
                 );
             },
             tooltipValueGetter: (params) => {

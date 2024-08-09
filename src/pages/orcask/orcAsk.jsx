@@ -29,7 +29,7 @@ export const AskOrca = () => {
         instance
             .get(bookmarkURL())
             .then((response) => {
-                setBookmarks(response.data);
+                setBookmarks(response?.data);
             })
             .catch((error) => {
                 console.error("Error ", error);

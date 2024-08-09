@@ -103,8 +103,8 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     useEffect(() => {
         getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernentNames = res
-                .filter((item) => item.name.includes("Ethernet"))
-                .map((item) => item.name);
+                .filter((item) => item?.name?.includes("Ethernet"))
+                .map((item) => item?.name);
             setEthernetList(ethernentNames);
         });
 
@@ -130,7 +130,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
     const handleDropdownMember = (event) => {
         setSelectedInterfaces((prev) => {
             const newValue = event.target.value;
-            if (!prev.includes(newValue)) {
+            if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;

@@ -43,7 +43,7 @@ export const HistoryChatSection = ({
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
 
     const handleInputChange = (event) => {
-        setQuestionPrompt({ prompt: event.target.value });
+        setQuestionPrompt({ prompt: event?.target?.value });
     };
 
     useEffect(() => {
@@ -55,13 +55,20 @@ export const HistoryChatSection = ({
     }, [isLoading]);
 
     useEffect(() => {
-
         if (copiedBookmark !== "") {
             setQuestionPrompt({
                 prompt: copiedBookmark,
             });
+            textAreaRef.current.focus();
         }
     }, [copiedBookmark]);
+
+    useEffect(() => {
+        if (!isLoading && textAreaRef.current) {
+            textAreaRef.current.value = "";
+            textAreaRef.current.focus();
+        }
+    }, [chatHistory, isLoading]);
 
     const scrollToBottom = () => {
         if (chatContainerRef.current) {
@@ -74,26 +81,30 @@ export const HistoryChatSection = ({
         instance
             .get(getOrcAskHistoryURL())
             .then((response) => {
-                const newChatHistory = response.data.map((chat) => ({
+                const newChatHistory = response?.data.map((chat) => ({
                     id: chat.id,
-                    final_message: chat.final_message,
-                    user_message: chat.user_message,
-                    viewType: getChartType(chat.final_message), // table / graph / string
+                    final_message: chat?.final_message,
+                    user_message: chat?.user_message,
+                    viewType: getChartType(chat?.final_message), // table / graph / string
                 }));
 
                 setChatHistory((prevChatHistory) => {
                     const existingIds = new Set(
-                        prevChatHistory.map((chat) => chat.id)
+                        prevChatHistory.map((chat) => chat?.id)
                     );
 
                     const filteredNewChatHistory = newChatHistory.filter(
-                        (chat) => !existingIds.has(chat.id)
+                        (chat) => !existingIds.has(chat?.id)
                     );
 
                     return [...prevChatHistory, ...filteredNewChatHistory];
                 });
 
                 setIsLoading(false);
+
+                // textAreaRef.current.value = "";
+                // textAreaRef.current.focus();
+                // console.log("here");
             })
             .catch((error) => {
                 console.error("Error ", error);
@@ -135,7 +146,7 @@ export const HistoryChatSection = ({
             .post(gptCompletionsURL("json"), questionPrompt)
             .then((response) => {
                 setQuestionPrompt({ prompt: "" });
-                textAreaRef.current.value = "";
+
                 getChatHistory();
             })
             .catch((error) => {
@@ -150,8 +161,8 @@ export const HistoryChatSection = ({
         let index = parseInt(e.target.id);
         setChatHistory((prevChatHistory) => {
             const updatedChatHistory = [...prevChatHistory];
-            if (index >= 0 && index < updatedChatHistory.length) {
-                updatedChatHistory[index].viewType = e.target.value;
+            if (index >= 0 && index < updatedChatHistory?.length) {
+                updatedChatHistory[index].viewType = e?.target?.value;
             }
             return updatedChatHistory;
         });
@@ -187,7 +198,6 @@ export const HistoryChatSection = ({
         sendBookmarkDataToParent(dataToParent);
     };
 
-
     return (
         <>
             <div className="chatSection" ref={chatContainerRef}>
@@ -212,11 +222,12 @@ export const HistoryChatSection = ({
                                     <span className="copy">
                                         <CopyToClipboard
                                             text={item.user_message}
-                                            onCopy={() =>
+                                            onCopy={() => {
                                                 setQuestionPrompt({
                                                     prompt: item.user_message,
-                                                })
-                                            }
+                                                });
+                                                textAreaRef.current.focus();
+                                            }}
                                         >
                                             <FaRegCopy />
                                         </CopyToClipboard>
@@ -254,6 +265,7 @@ export const HistoryChatSection = ({
                                                     <option value="table">
                                                         Table
                                                     </option>
+                                                    item?.final_message
                                                     <option value="graph">
                                                         Graph
                                                     </option>
@@ -266,10 +278,10 @@ export const HistoryChatSection = ({
                                                 >
                                                     <AgGridReact
                                                         rowData={
-                                                            item.final_message
+                                                            item?.final_message
                                                         }
                                                         columnDefs={generateColumnDefs(
-                                                            item.final_message
+                                                            item?.final_message
                                                         )}
                                                     />
                                                 </div>
@@ -278,7 +290,7 @@ export const HistoryChatSection = ({
                                                 <div className="graph">
                                                     <SigmaGraph
                                                         message={
-                                                            item.final_message
+                                                            item?.final_message
                                                         }
                                                     />
                                                 </div>
@@ -287,7 +299,7 @@ export const HistoryChatSection = ({
                                     ) : null}
                                     <span className="copy">
                                         <CopyToClipboard
-                                            text={item.final_message}
+                                            text={item?.final_message}
                                         >
                                             <FaRegCopy />
                                         </CopyToClipboard>
@@ -311,11 +323,12 @@ export const HistoryChatSection = ({
                                 </button>
                                 <CopyToClipboard
                                     text={questionPrompt.prompt}
-                                    onCopy={() =>
+                                    onCopy={() => {
                                         setQuestionPrompt({
                                             prompt: questionPrompt.prompt,
-                                        })
-                                    }
+                                        });
+                                        textAreaRef.current.focus();
+                                    }}
                                 >
                                     <FaRegCopy />
                                 </CopyToClipboard>

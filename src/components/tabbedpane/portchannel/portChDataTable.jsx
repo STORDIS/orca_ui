@@ -217,8 +217,8 @@ const PortChDataTable = (props) => {
         setIsModalOpen("deletePortChannel");
 
         let nameArray = [];
-        selectedRows.forEach((element) => {
-            nameArray.push(element.lag_name + " ");
+        selectedRows?.forEach((element) => {
+            nameArray.push(element?.lag_name + " ");
         });
         setModalContent(
             "Do you want to delete Portchannel with id " + nameArray

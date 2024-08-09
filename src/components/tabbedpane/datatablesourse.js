@@ -13,7 +13,7 @@ export const getIsStaff = () => {
 
 export const defaultColDef = {
     tooltipValueGetter: (params) => {
-        return params.value;
+        return params?.value;
     },
     resizable: true,
     rowSelection: "multiple",
@@ -22,13 +22,13 @@ export const defaultColDef = {
 };
 
 export const getCellEditorParamsInterfaceSpeed = (params) => {
-    let valid_speeds = params.data.valid_speeds.split(",");
+    let valid_speeds = params?.data?.valid_speeds?.split(",");
     let result = [];
-    valid_speeds.forEach((element) => {
+    valid_speeds?.forEach((element) => {
         const bytesInGB = 1000;
         let converted_value = element / bytesInGB;
         converted_value = "SPEED_" + converted_value + "GB";
-        result.push(converted_value);
+        result?.push(converted_value);
     });
 
     return {
@@ -37,13 +37,13 @@ export const getCellEditorParamsInterfaceSpeed = (params) => {
 };
 
 export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
-    let valid_speeds = params.data.valid_speeds.split(",");
+    let valid_speeds = params?.data?.valid_speeds?.split(",");
     let result = ["all"];
-    valid_speeds.forEach((element) => {
+    valid_speeds?.forEach((element) => {
         const bytesInGB = 1000;
         let converted_value = element / bytesInGB;
         converted_value = "SPEED_" + converted_value + "GB";
-        result.push(converted_value);
+        result?.push(converted_value);
     });
 
     return {
@@ -57,8 +57,8 @@ export const interfaceColumns = [
         headerName: "Name",
         width: 130,
         getQuickFilterText: (params) => {
-            if (params.data.name.includes("Ethernet")) {
-                return params.data.name;
+            if (params?.data?.name?.includes("Ethernet")) {
+                return params?.data?.name;
             }
         },
         sortable: true,
@@ -70,7 +70,7 @@ export const interfaceColumns = [
         cellRenderer: "agCheckboxCellRenderer",
         cellEditor: "agCheckboxCellEditor",
         editable: getIsStaff(),
-        suppressKeyboardEvent: (params) => params.event.key === " ",
+        suppressKeyboardEvent: (params) => params?.event?.key === " ",
         headerComponent: EditableHeaderComponent,
     },
     {
@@ -177,7 +177,7 @@ export const portGroupColumns = [
         width: 130,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name) || !getIsStaff()) {
+            if (regex?.test(params?.data?.name) || !getIsStaff()) {
                 return false;
             } else {
                 return true;
@@ -186,7 +186,7 @@ export const portGroupColumns = [
         cellEditor: "agSelectCellEditor",
         cellEditorParams: (params) => {
             return {
-                values: params.data.valid_speeds,
+                values: params?.data?.valid_speeds,
             };
         },
         headerComponent: EditableHeaderComponent,
@@ -222,7 +222,7 @@ export const valnIp = (params) => {
     }
 };
 export const valnSagIp = (params) => {
-    if (params.data.ip_address) {
+    if (params?.data?.ip_address) {
         return false;
     } else {
         return true;
@@ -344,7 +344,7 @@ export const portChannelColumns = [
         width: 150,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name) || !getIsStaff()) {
+            if (regex?.test(params?.data?.name) || !getIsStaff()) {
                 return false;
             } else {
                 return true;
@@ -363,7 +363,7 @@ export const portChannelColumns = [
         width: 130,
         editable: (params) => {
             const regex = /Management*/i;
-            if (regex.test(params.data.name) || !getIsStaff()) {
+            if (regex?.test(params?.data?.name) || !getIsStaff()) {
                 return false;
             } else {
                 return true;
@@ -783,7 +783,7 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             cellRenderer: (params) => {
                 return (
                     <>
-                        <Link to={`/devices/${params.data.mgt_ip}`}>
+                        <Link to={`/devices/${params?.data?.mgt_ip}`}>
                             <button className="btnStyle">Details</button>
                         </Link>
                         <button
