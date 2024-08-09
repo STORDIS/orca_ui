@@ -4,7 +4,7 @@ import secureLocalStorage from "react-secure-storage";
 
 const interceptor = (
     retryCount = 4, // number of retries. There will be total +1 of retryCount api calls from browser to backend
-    retryDelay = 3000 // retry delay in mill seconds, 1000 = 1 sec
+    retryDelay = 3000 // retry delay in milliseconds, 1000 = 1 sec
 ) => {
     const instance = axios.create({
         headers: {
@@ -31,7 +31,13 @@ const interceptor = (
             return response;
         },
         (error) => {
-            if (error.code === "ERR_NETWORK") {
+            // Check if this is the last retry
+            const config = error.config;
+            if (
+                config &&
+                config.__retryCount >= retryCount &&
+                error.code === "ERR_NETWORK"
+            ) {
                 alert("Connection timed out. Please try again.");
             } else if (
                 error.response &&
@@ -57,6 +63,9 @@ const interceptor = (
                 axiosRetry.isNetworkError(error) ||
                 axiosRetry.isRetryableError(error)
             );
+        },
+        onRetry: (retryCount, error, requestConfig) => {
+            requestConfig.__retryCount = retryCount;
         },
     });
 
