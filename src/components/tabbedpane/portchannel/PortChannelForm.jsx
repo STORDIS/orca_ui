@@ -20,7 +20,10 @@ const PortChannelForm = ({
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [vlanNames, setVlanNames] = useState([]);
-    const [selectedVlans, setSelectedVlans] = useState([]);
+    const [selectedVlans, setSelectedVlans] = useState({
+        vlan_ids: [],
+        if_mode: "TRUNK",
+    });
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         lag_name: "",
@@ -123,8 +126,6 @@ const PortChannelForm = ({
         }
     };
 
-    // vlan related function
-
     const getAllVlans = () => {
         setVlanNames([]);
 
@@ -137,8 +138,6 @@ const PortChannelForm = ({
                     .map((item) => ({
                         name: item?.name,
                         vlanid: item?.vlanid,
-                        taggingMode: "",
-                        removable: false,
                     }));
                 setVlanNames(names);
             })
@@ -147,47 +146,38 @@ const PortChannelForm = ({
             });
     };
 
-    const handleCheckboxVlan = (key, value) => {
-        const hasTagged = selectedVlans.some(
-            (iface) => iface.taggingMode === "ACCESS"
-        );
-
-        if (!hasTagged) {
-            setSelectedVlans((prevVlans) => {
-                prevVlans[key].taggingMode = "ACCESS";
-                return [...prevVlans];
-            });
-        } else if (selectedVlans[key].taggingMode === "ACCESS") {
-            setSelectedVlans((prevVlans) => {
-                prevVlans[key].taggingMode = "TRUNK";
-                return [...prevVlans];
-            });
-        } else {
-            alert("Only one Vlan can be Tagged");
-        }
-    };
-
     const handleRemoveVlan = (key) => {
-        setSelectedVlans((prev) => {
-            return prev.filter((item) => item.vlanid !== key.vlanid);
+        setSelectedVlans((prevState) => {
+            return {
+                ...prevState,
+                vlan_ids: prevState.vlan_ids.filter((vlan) => vlan !== key),
+            };
         });
     };
 
     const handleDropdownChangeVlan = (event) => {
-        let value = JSON.parse(event.target.value);
-        value.removable = true;
+        let value = event.target.value;
 
         setSelectedVlans((prevState) => {
-            const vlanExists = prevState.some(
-                (vlan) => vlan.name === value.name
-            );
+            if (value === "TRUNK" || value === "ACCESS") {
+                return {
+                    ...prevState,
+                    if_mode: value,
+                };
+            } else {
+                const vlanExists = prevState.vlan_ids.some(
+                    (vlan) => vlan === value
+                );
 
-            if (!vlanExists) {
-                return [...prevState, value];
+                return {
+                    ...prevState,
+                    vlan_ids: vlanExists
+                        ? prevState.vlan_ids
+                        : [...prevState.vlan_ids, parseInt(value)],
+                };
             }
-
-            return prevState;
         });
+
         selectRef.current.value = "DEFAULT";
     };
 
@@ -208,21 +198,17 @@ const PortChannelForm = ({
             return;
         }
 
-        let finalVlanMembers = {
-            access_vlan: "",
-            trunk_vlans: [],
-        };
+        if (selectedVlans.vlan_ids.length > 0) {
+            formData.vlan_members = selectedVlans;
+        } else {
+            delete formData.vlan_members;
+        }
 
-        selectedVlans?.forEach((element) => {
-            if (element?.taggingMode === "ACCESS") {
-                finalVlanMembers.access_vlan = element?.vlanid;
-            } else {
-                finalVlanMembers?.trunk_vlans.push(element?.vlanid);
-            }
-        });
-
-        formData.vlan_members = finalVlanMembers;
-        formData.members = selectedInterfaces;
+        if (selectedInterfaces.length > 0) {
+            formData.members = selectedInterfaces;
+        } else {
+            delete formData.members;
+        }
 
         onSubmit(formData);
     };
@@ -378,7 +364,7 @@ const PortChannelForm = ({
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label>Members:</label>
+                    <label>Ethernet Members:</label>
                     <select
                         onChange={handleDropdownChangeInterface}
                         defaultValue={"DEFAULT"}
@@ -419,8 +405,25 @@ const PortChannelForm = ({
                 )}
             </div>
 
+            <div className="form-wrapper" style={{ alignItems: "center" }}>
+                <div className="form-field w-50">
+                    <label>Vlan Tagging mood:</label>
+                </div>
+                <div className="form-field w-50">
+                    <select
+                        onChange={handleDropdownChangeVlan}
+                        defaultValue={"TRUNK"}
+                        ref={selectRef}
+                    >
+                        <option value="TRUNK">TRUNK</option>
+                        <option value="ACCESS">ACCESS</option>
+                    </select>
+                </div>
+            </div>
+
             <div className="form-wrapper">
                 <div className="form-field w-75">
+                    <label>Vlan Members:</label>
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"DEFAULT"}
@@ -430,34 +433,27 @@ const PortChannelForm = ({
                             Select Vlan Member
                         </option>
                         {vlanNames.map((val, index) => (
-                            <option key={index} value={JSON.stringify(val)}>
+                            <option key={index} value={val.vlanid}>
                                 {val.name}
                             </option>
                         ))}
                     </select>
                 </div>
-                <div className="form-field ">
+                <div className="form-field mt-25">
                     {Object.keys(selectedVlans).length} selected
                 </div>
             </div>
 
             <div className="selected-interface-wrap mb-10 w-100">
-                {Object.entries(selectedVlans).map(([key, value], index) => (
+                {selectedVlans?.vlan_ids.map((value, index) => (
                     <div className="selected-interface-list mb-10">
-                        <div className="ml-10 w-50">
-                            {index + 1} &nbsp; {value.name}
+                        <div className="ml-10 w-75">
+                            {index + 1} &nbsp; Vlan{value}
                         </div>
-                        <div className=" w-50">
-                            <input
-                                type="checkbox"
-                                checked={value.taggingMode === "ACCESS"}
-                                onChange={() => handleCheckboxVlan(key, value)}
-                            />
-                            <span className="ml-10">Tagged</span>
-
+                        <div className=" w-25">
                             <button
-                                className="btnStyle ml-25"
-                                disabled={updateConfig || !value.removable}
+                                className="btnStyle mr-25"
+                                disabled={updateConfig}
                                 onClick={() => handleRemoveVlan(value)}
                             >
                                 Remove
