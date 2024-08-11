@@ -17,7 +17,10 @@ const PortChVlanForm = ({
     const [vlanNames, setVlanNames] = useState([]);
 
     // const [selectedVlans, setSelectedVlans] = useState([]);
-    const [inputVlans, setInputVlans] = useState({});
+    const [inputVlans, setInputVlans] = useState({
+        vlan_ids: [],
+        if_mode: "TRUNK",
+    });
 
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
@@ -28,7 +31,10 @@ const PortChVlanForm = ({
     useEffect(() => {
         getAllVlans();
         console.log(JSON.parse(inputData.vlan_members));
-        setInputVlans(JSON.parse(inputData.vlan_members));
+
+        if (JSON.parse(inputData.vlan_members).vlan_ids?.length > 0) {
+            setInputVlans(JSON.parse(inputData.vlan_members));
+        }
     }, []);
 
     const getAllVlans = () => {
@@ -50,18 +56,32 @@ const PortChVlanForm = ({
     };
 
     const handleRemove = (key) => {
-        // let input_mem = JSON.parse(inputData.vlan_members);
-        // if (input_mem) {
-        //     if (input_mem.trunk_vlans?.includes(key.vlanid)) {
-        //         handleRemoveOne({ trunk_vlans: [key.vlanid] });
-        //     } else if (input_mem.access_vlan === key.vlanid) {
-        //         handleRemoveOne({ access_vlan: key.vlanid });
-        //     } else if (input_mem.trunk_vlans && input_mem.access_vlan) {
-        //         setSelectedVlans((prev) => {
-        //             return prev.filter((item) => item.vlanid !== key.vlanid);
-        //         });
-        //     }
-        // }
+        let input_mem = JSON.parse(inputData.vlan_members);
+        if (input_mem?.vlan_ids?.length > 0) {
+            console.log(input_mem.vlan_ids.includes(key));
+            if (input_mem.vlan_ids.includes(key)) {
+                handleRemoveOne({
+                    vlan_ids: [key],
+                    if_mode: input_mem.if_mode,
+                });
+            } else {
+                setInputVlans((prevState) => {
+                    return {
+                        ...prevState,
+                        vlan_ids: prevState.vlan_ids.filter(
+                            (vlan) => vlan !== key
+                        ),
+                    };
+                });
+            }
+        } else {
+            setInputVlans((prevState) => {
+                return {
+                    ...prevState,
+                    vlan_ids: prevState.vlan_ids.filter((vlan) => vlan !== key),
+                };
+            });
+        }
     };
 
     const handleRemoveOne = (e) => {
@@ -95,7 +115,7 @@ const PortChVlanForm = ({
             lag_name: inputData.lag_name,
             mtu: inputData.mtu,
             admin_status: inputData.admin_sts,
-            vlan_members: JSON.parse(inputData.vlan_members),
+            vlan_members: inputData.vlan_members,
         };
 
         instance
@@ -112,12 +132,12 @@ const PortChVlanForm = ({
     };
 
     const handleSubmit = (e) => {
-        // let dataToSubmit = {
-        //     mgt_ip: selectedDeviceIp,
-        //     lag_name: inputData.lag_name,
-        //     vlan_members: finalVlanMembers,
-        // };
-        // onSubmit(dataToSubmit);
+        let dataToSubmit = {
+            mgt_ip: selectedDeviceIp,
+            lag_name: inputData.lag_name,
+            vlan_members: inputVlans,
+        };
+        onSubmit(dataToSubmit);
     };
 
     const handleInterfaceMood = (event) => {
@@ -130,18 +150,26 @@ const PortChVlanForm = ({
 
     const handleDropdownChange = (event) => {
         let value = JSON.parse(event.target.value);
+        setInputVlans((prevState) => {
+            if (value === "TRUNK" || value === "ACCESS") {
+                return {
+                    ...prevState,
+                    if_mode: value,
+                };
+            } else {
+                const vlanExists = prevState?.vlan_ids?.some(
+                    (vlan) => vlan === value
+                );
 
-        inputVlans((prevState) => {
-            const vlanExists = prevState.some(
-                (vlan) => vlan.name === value.name
-            );
-
-            if (!vlanExists) {
-                return [...prevState, value];
+                return {
+                    ...prevState,
+                    vlan_ids: vlanExists
+                        ? prevState.vlan_ids
+                        : [...prevState?.vlan_ids, parseInt(value)],
+                };
             }
-
-            return prevState;
         });
+
         selectRef.current.value = "DEFAULT";
     };
 
@@ -175,7 +203,7 @@ const PortChVlanForm = ({
                             Select Vlan Member
                         </option>
                         {vlanNames.map((val, index) => (
-                            <option key={index} value={JSON.stringify(val)}>
+                            <option key={index} value={val.vlanid}>
                                 {val.name}
                             </option>
                         ))}
@@ -195,7 +223,7 @@ const PortChVlanForm = ({
                         <div className=" w-25">
                             <button
                                 className="btnStyle mr-25"
-                                disabled={updateConfig || !value.removable}
+                                disabled={updateConfig}
                                 onClick={() => handleRemove(value)}
                             >
                                 Remove
@@ -220,7 +248,9 @@ const PortChVlanForm = ({
                 </button>
                 <button
                     className="btnStyle ml-10"
-                    disabled={updateConfig || inputVlans?.vlan_ids?.length === 0}
+                    disabled={
+                        updateConfig || inputVlans?.vlan_ids?.length === 0
+                    }
                     onClick={() => handleRemoveAll()}
                 >
                     Remove All
