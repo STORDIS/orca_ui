@@ -440,7 +440,7 @@ const PortChannelForm = ({
                     </select>
                 </div>
                 <div className="form-field mt-25">
-                    {Object.keys(selectedVlans).length} selected
+                    {selectedVlans?.vlan_ids?.length} selected
                 </div>
             </div>
 
