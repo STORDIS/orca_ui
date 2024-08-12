@@ -63,9 +63,7 @@ const McLagDataTable = (props) => {
                 });
 
                 setDataTable(data);
-            })
-            .catch((err) => console.log(err))
-            .finally(() => {
+
                 getInterfaceDataCommon(selectedDeviceIp).then((res) => {
                     const ethernentNames = res
                         .filter((item) => item?.name?.includes("Ethernet"))
@@ -82,7 +80,9 @@ const McLagDataTable = (props) => {
                         ]);
                     });
                 });
-            });
+            })
+            .catch((err) => console.log(err))
+            .finally(() => {});
     };
 
     const refreshData = () => {
