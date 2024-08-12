@@ -322,7 +322,7 @@ const McLagDataTable = (props) => {
             )}
 
             {isModalOpen === "deleteMclag" && (
-                <Modal show={true}>
+                <Modal show={true} onClose={refreshData}>
                     <div>
                         {modalContent}
                         <div

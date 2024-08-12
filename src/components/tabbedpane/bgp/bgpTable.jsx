@@ -209,7 +209,7 @@ const BGPTable = (props) => {
             </Modal>
 
             {isMessageModalOpen && (
-                <Modal show={isMessageModalOpen}>
+                <Modal show={isMessageModalOpen} onClose={refreshData}>
                     <div>
                         {modalContent}
                         <div

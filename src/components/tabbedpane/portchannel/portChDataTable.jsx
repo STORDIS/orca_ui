@@ -327,7 +327,7 @@ const PortChDataTable = (props) => {
 
                 {/* model for delete confirmation message */}
                 {isModalOpen === "deletePortChannel" && (
-                    <Modal show={true}>
+                    <Modal show={true} onClose={refreshData}>
                         <div>
                             {modalContent}
                             <div

@@ -304,8 +304,9 @@ const VlanTable = (props) => {
         }
         if (
             params?.colDef?.field === "sag_ip_address" &&
-            (params.data.ip_address === "" || params.data.ip_address === null)
-            (params.data.ip_address === "" || params.data.ip_address === null)
+            (params.data.ip_address === "" || params.data.ip_address === null)(
+                params.data.ip_address === "" || params.data.ip_address === null
+            )
         ) {
             setIsModalOpen("vlanSagIpForm");
         }
@@ -407,7 +408,7 @@ const VlanTable = (props) => {
 
                 {/* model for delete confirmation message */}
                 {isModalOpen === "delete" && (
-                    <Modal show={true}>
+                    <Modal show={true} onClose={refreshData}>
                         <div>
                             {modalContent}
                             <div

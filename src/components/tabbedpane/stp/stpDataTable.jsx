@@ -129,7 +129,7 @@ const StpDataTable = (props) => {
                 }));
             }
         }
-        setSelectedRows(params.data);
+        // setSelectedRows(params.data);
     }, []);
 
     const onCellClicked = useCallback((params) => {
@@ -203,7 +203,10 @@ const StpDataTable = (props) => {
                     <button
                         className="btnStyle"
                         onClick={deleteStp}
-                        disabled={selectedRows.length === 0}
+                        disabled={
+                            selectedRows.length === 0 ||
+                            selectedRows.length === undefined
+                        }
                     >
                         Delete selected STP
                     </button>
