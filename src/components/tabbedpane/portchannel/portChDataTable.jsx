@@ -119,18 +119,18 @@ const PortChDataTable = (props) => {
             });
     };
 
-    const onSelectionChanged = () => {
-        const selectedNodes = gridRef.current.api.getSelectedNodes();
-        const selectedData = selectedNodes.map((node) => node.data);
-        setSelectedRows(selectedData);
-    };
-
     const resetConfigStatus = () => {
         setConfigStatus("");
         setChanges([]);
 
         gridRef.current.api.deselectAll();
         setSelectedRows([]);
+    };
+
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        setSelectedRows(selectedData);
     };
 
     const handleCellValueChanged = useCallback((params) => {
@@ -253,7 +253,10 @@ const PortChDataTable = (props) => {
                     <button
                         className="btnStyle"
                         onClick={handleDelete}
-                        disabled={selectedRows.length === 0}
+                        disabled={
+                            selectedRows.length === 0 ||
+                            selectedRows.length === undefined
+                        }
                     >
                         Delete Selected Port Channel
                     </button>
@@ -282,13 +285,9 @@ const PortChDataTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title={"Add Port Channel"}
+                        onSubmit={handleFormSubmit}
                     >
-                        <PortChannelForm
-                            onSubmit={handleFormSubmit}
-                            selectedDeviceIp={selectedDeviceIp}
-                            onCancel={refreshData}
-                            handelSubmitButton={updateConfig}
-                        />
+                        <PortChannelForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
                 )}
 
@@ -298,14 +297,13 @@ const PortChDataTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title="Select Member Interfaces"
+                        onSubmit={(data) => {
+                            handleFormSubmit(data);
+                        }}
                     >
                         <PortChMemberForm
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
-                            onSubmit={(data) => {
-                                handleFormSubmit(data);
-                            }}
-                            onCancel={refreshData}
                         />
                     </Modal>
                 )}
@@ -316,21 +314,20 @@ const PortChDataTable = (props) => {
                         show={true}
                         onClose={refreshData}
                         title="Select Vlan Member"
+                        onSubmit={(data) => {
+                            handleFormSubmit(data);
+                        }}
                     >
                         <PortChVlanForm
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
-                            onSubmit={(data) => {
-                                handleFormSubmit(data);
-                            }}
-                            onCancel={refreshData}
                         />
                     </Modal>
                 )}
 
                 {/* model for delete confirmation message */}
                 {isModalOpen === "deletePortChannel" && (
-                    <Modal show={true}>
+                    <Modal show={true} onClose={refreshData}>
                         <div>
                             {modalContent}
                             <div

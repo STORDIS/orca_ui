@@ -11,7 +11,7 @@ const PortChMemberForm = ({
     onSubmit,
     inputData,
     selectedDeviceIp,
-    onCancel,
+    onClose,
 }) => {
     const [interfaceNames, setInterfaceNames] = useState([]);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
@@ -29,6 +29,8 @@ const PortChMemberForm = ({
             setSelectedInterfaces(inputData.members.split(","));
         }
     }, []);
+
+
 
     const getAllInterfaces = () => {
         const apiPUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
@@ -85,7 +87,7 @@ const PortChMemberForm = ({
                 setSelectedInterfaces((prev) => {
                     return prev.filter((item) => item !== e);
                 });
-                onCancel();
+                onClose();
             })
             .catch((err) => {})
             .finally(() => {
@@ -160,7 +162,7 @@ const PortChMemberForm = ({
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>
