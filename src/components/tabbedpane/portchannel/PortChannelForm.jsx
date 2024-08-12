@@ -154,14 +154,22 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
         setSelectedVlans((prevState) => {
             if (value === "TRUNK" || value === "ACCESS") {
-                return {
-                    ...prevState,
-                    if_mode: value,
-                };
+                if (value === "ACCESS" && prevState.vlan_ids.length === 1) {
+                    return {
+                        vlan_ids: [prevState.vlan_ids[0]],
+                        if_mode: value,
+                    };
+                } else {
+                    return {
+                        ...prevState,
+                        if_mode: value,
+                    };
+                }
             } else {
                 const vlanExists = prevState.vlan_ids.some(
-                    (vlan) => vlan === value
+                    (vlan) => vlan === parseInt(value)
                 );
+
 
                 return {
                     ...prevState,
@@ -427,6 +435,10 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"DEFAULT"}
                         ref={selectRef}
+                        disabled={
+                            selectedVlans.if_mode === "ACCESS" &&
+                            selectedVlans.vlan_ids.length >= 1
+                        }
                     >
                         <option value="DEFAULT" disabled>
                             Select Vlan
@@ -437,6 +449,13 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                             </option>
                         ))}
                     </select>
+
+                    {selectedVlans.if_mode === "ACCESS" &&
+                    selectedVlans.vlan_ids.length >= 1 ? (
+                        <small className="mt-10">
+                            Note: Access mode can only have one vlan
+                        </small>
+                    ) : null}
                 </div>
                 <div className="form-field mt-25">
                     {selectedVlans?.vlan_ids?.length} selected

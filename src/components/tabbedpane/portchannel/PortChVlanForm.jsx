@@ -25,7 +25,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
 
     useEffect(() => {
         getAllVlans();
-        console.log(JSON.parse(inputData.vlan_members));
 
         if (JSON.parse(inputData.vlan_members).vlan_ids?.length > 0) {
             setInputVlans(JSON.parse(inputData.vlan_members));
@@ -53,7 +52,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const handleRemove = (key) => {
         let input_mem = JSON.parse(inputData.vlan_members);
         if (input_mem?.vlan_ids?.length > 0) {
-            console.log(input_mem.vlan_ids.includes(key));
             if (input_mem.vlan_ids.includes(key)) {
                 handleRemoveOne({
                     vlan_ids: [key],
@@ -137,14 +135,31 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
 
     const handleInterfaceMood = (event) => {
         const value = event.target.value;
-        setInputVlans((prevState) => ({
-            ...prevState,
-            if_mode: value, // Update the if_mode with the selected value
-        }));
+
+        setInputVlans((prevState) => {
+            if (value === "ACCESS" && prevState.vlan_ids.length === 1) {
+                return {
+                    vlan_ids: [prevState.vlan_ids[0]],
+                    if_mode: value,
+                };
+            } else {
+                return {
+                    ...prevState,
+                    if_mode: value,
+                };
+            }
+        });
+
+        // setInputVlans((prevState) => (
+        //     {
+        //     ...prevState,
+        //     if_mode: value, // Update the if_mode with the selected value
+        // }));
     };
 
     const handleDropdownChange = (event) => {
         let value = JSON.parse(event.target.value);
+
         setInputVlans((prevState) => {
             if (value === "TRUNK" || value === "ACCESS") {
                 return {
@@ -167,8 +182,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
 
         selectRef.current.value = "DEFAULT";
     };
-
-    console.log(inputVlans);
 
     return (
         <div>
@@ -193,6 +206,10 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                         onChange={handleDropdownChange}
                         defaultValue={"DEFAULT"}
                         ref={selectRef}
+                        disabled={
+                            inputVlans.if_mode === "ACCESS" &&
+                            inputVlans.vlan_ids.length >= 1
+                        }
                     >
                         <option value="DEFAULT" disabled>
                             Select Vlan
@@ -203,6 +220,12 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                             </option>
                         ))}
                     </select>
+                    {inputVlans.if_mode === "ACCESS" &&
+                    inputVlans.vlan_ids.length >= 1 ? (
+                        <small className="mt-10">
+                            Note: Access mode can only have one vlan
+                        </small>
+                    ) : null}
                 </div>
                 <div className="form-field ">
                     {inputVlans?.vlan_ids?.length} selected
