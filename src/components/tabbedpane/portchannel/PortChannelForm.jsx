@@ -7,12 +7,7 @@ import {
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 
-const PortChannelForm = ({
-    onSubmit,
-    selectedDeviceIp,
-    onCancel,
-    handelSubmitButton,
-}) => {
+const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const selectRef = useRef(null);
     const instance = interceptor();
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
@@ -23,19 +18,18 @@ const PortChannelForm = ({
     const [selectedVlans, setSelectedVlans] = useState([]);
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
-        lag_name: "",
+        lag_name: undefined,
         admin_sts: "up",
         mtu: 9100,
-        members: "",
-
+        members: undefined,
         static: false,
         fallback: false,
         fast_rate: false,
         graceful_shutdown_mode: "disable",
         min_links: 1,
-        ip_address: null,
-        description: null,
-        vlan_members: null,
+        ip_address: undefined,
+        description: undefined,
+        vlan_members: undefined,
     });
 
     const isValidIPv4WithCIDR = (ipWithCidr) => {
@@ -192,6 +186,11 @@ const PortChannelForm = ({
     };
 
     const handleSubmit = (e) => {
+        if (formData.lag_name === "" || formData.lag_name === undefined) {
+            alert("Channel Name is not valid");
+            return;
+        }
+
         if (
             !isValidIPv4WithCIDR(formData.ip_address) &&
             formData.ip_address !== ""
@@ -221,8 +220,17 @@ const PortChannelForm = ({
             }
         });
 
-        formData.vlan_members = finalVlanMembers;
-        formData.members = selectedInterfaces;
+        if (selectedInterfaces.length > 0) {
+            formData.members = selectedInterfaces;
+        }
+
+        if (
+            finalVlanMembers.access_vlan !== "" ||
+            finalVlanMembers.trunk_vlans.length > 0
+        ) {
+            console.log(finalVlanMembers);
+            formData.vlan_members = finalVlanMembers;
+        }
 
         onSubmit(formData);
     };
@@ -478,7 +486,7 @@ const PortChannelForm = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    onClick={onCancel}
+                    onClick={onClose}
                 >
                     Cancel
                 </button>

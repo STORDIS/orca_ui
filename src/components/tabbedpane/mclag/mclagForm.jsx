@@ -4,7 +4,7 @@ import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreConfig from "../../../utils/configStore";
 
-const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
+const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
@@ -113,6 +113,8 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
             setPortChnlList(portchannelNames);
         });
     }, [selectedDeviceIp]);
+
+
 
     const handleRemove = (key) => {
         setSelectedInterfaces((prev) => {
@@ -347,7 +349,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onCancel }) => {
                     <button
                         type="button"
                         className="btnStyle mr-10"
-                        onClick={onCancel}
+                        onClick={onClose}
                     >
                         Cancel
                     </button>

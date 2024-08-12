@@ -10,30 +10,12 @@ import interceptor from "../../../utils/interceptor";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 
-const VlanMemberForm = ({
-    onSubmit,
-    inputData,
-    selectedDeviceIp,
-    onCancel,
-}) => {
+const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const instance = interceptor();
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-
-        let dataToSubmit = {
-            mgt_ip: selectedDeviceIp,
-            name: inputData.name,
-            vlanid: inputData.vlanid,
-            mem_ifs: selectedInterfaces,
-        };
-        setUpdateConfig(true);
-        onSubmit(dataToSubmit);
-    };
 
     const deleteMembers = (payload, key) => {
         setUpdateConfig(true);
@@ -172,12 +154,19 @@ const VlanMemberForm = ({
                     type="submit"
                     className="btnStyle mr-10"
                     disabled={updateConfig}
-                    onClick={handleSubmit}
+                    onClick={(e) =>
+                        onSubmit({
+                            mgt_ip: selectedDeviceIp,
+                            name: inputData.name,
+                            vlanid: inputData.vlanid,
+                            mem_ifs: selectedInterfaces,
+                        })
+                    }
                 >
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>

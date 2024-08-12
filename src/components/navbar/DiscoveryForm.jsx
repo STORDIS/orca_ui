@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const DiscoveryForm = ({ handleSubmit, onCancel }) => {
+const DiscoveryForm = ({ handleSubmit, onClose }) => {
     const [formData, setFormData] = useState({
         address: "",
         discover_from_config: false,
@@ -77,7 +77,7 @@ const DiscoveryForm = ({ handleSubmit, onCancel }) => {
                 <button
                     className="btnStyle mt-10"
                     type="button"
-                    onClick={onCancel}
+                    onClick={onClose}
                 >
                     Cancel
                 </button>

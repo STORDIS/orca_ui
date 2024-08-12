@@ -62,6 +62,7 @@ export const interfaceColumns = [
             }
         },
         sortable: true,
+        headerTooltip: "Test tool tip", // add header tooltip here
     },
     {
         field: "enabled",
@@ -72,6 +73,7 @@ export const interfaceColumns = [
         editable: getIsStaff(),
         suppressKeyboardEvent: (params) => params?.event?.key === " ",
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "test tool tip", // add header tooltip here
     },
     {
         field: "mtu",
@@ -80,6 +82,7 @@ export const interfaceColumns = [
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "fec",
@@ -92,6 +95,7 @@ export const interfaceColumns = [
             values: ["FEC_RS", "FEC_FC", "FEC_DISABLED", "FEC_AUTO"],
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     { field: "oper_sts", headerName: "Oper_STS", width: 130, sortable: true },
     {
@@ -102,12 +106,14 @@ export const interfaceColumns = [
         cellEditor: "agSelectCellEditor",
         cellEditorParams: getCellEditorParamsInterfaceSpeed,
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "admin_sts",
         headerName: "Admin Status",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "description",
@@ -115,16 +121,36 @@ export const interfaceColumns = [
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "last_chng",
         headerName: "Last Change",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
-    { field: "mac_addr", headerName: "MAC ADDR", width: 130, sortable: true },
-    { field: "alias", headerName: "Alias", width: 130, sortable: true },
-    { field: "lanes", headerName: "Lanes", width: 130, sortable: true },
+    {
+        field: "mac_addr",
+        headerName: "MAC ADDR",
+        width: 130,
+        sortable: true,
+        headerTooltip: "", // add header tooltip here
+    },
+    {
+        field: "alias",
+        headerName: "Alias",
+        width: 130,
+        sortable: true,
+        headerTooltip: "", // add header tooltip here
+    },
+    {
+        field: "lanes",
+        headerName: "Lanes",
+        width: 130,
+        sortable: true,
+        headerTooltip: "", // add header tooltip here
+    },
     {
         field: "autoneg",
         headerName: "autoneg",
@@ -137,6 +163,7 @@ export const interfaceColumns = [
             values: ["off", "on"],
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "adv_speeds",
@@ -147,6 +174,7 @@ export const interfaceColumns = [
         cellEditor: "agSelectCellEditor",
         cellEditorParams: getCellEditorParamsInterfaceAdvSpeed,
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "link_training",
@@ -160,6 +188,7 @@ export const interfaceColumns = [
             values: ["off", "on"],
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
 ];
 
@@ -170,6 +199,7 @@ export const portGroupColumns = [
         width: 75,
         sortable: true,
         comparator: (valueA, valueB) => valueA - valueB,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "speed",
@@ -190,6 +220,7 @@ export const portGroupColumns = [
             };
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "valid_speeds",
@@ -197,6 +228,7 @@ export const portGroupColumns = [
         cellDataType: "text",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "default_speed",
@@ -204,6 +236,7 @@ export const portGroupColumns = [
         cellDataType: "text",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "mem_intfs",
@@ -211,6 +244,7 @@ export const portGroupColumns = [
         cellDataType: "text",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
 ];
 
@@ -235,6 +269,7 @@ export const vlanColumns = [
         checkboxSelection: getIsStaff(),
         width: 50,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "vlanid",
@@ -242,8 +277,15 @@ export const vlanColumns = [
         type: "number",
         width: 90,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
-    { field: "name", headerName: "Name", width: 130, sortable: true },
+    {
+        field: "name",
+        headerName: "Name",
+        width: 130,
+        sortable: true,
+        headerTooltip: "", // add header tooltip here
+    },
     {
         field: "description",
         headerName: "Description",
@@ -251,6 +293,7 @@ export const vlanColumns = [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "autostate",
@@ -263,6 +306,7 @@ export const vlanColumns = [
             values: ["enable", "disable"],
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "ip_address",
@@ -272,6 +316,7 @@ export const vlanColumns = [
         editable: getIsStaff() && valnIp,
 
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "sag_ip_address",
@@ -280,6 +325,7 @@ export const vlanColumns = [
         sortable: true,
         editable: getIsStaff() && valnSagIp,
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "mtu",
@@ -288,6 +334,7 @@ export const vlanColumns = [
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "enabled",
@@ -300,6 +347,7 @@ export const vlanColumns = [
             values: ["up", "down"],
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "oper_status",
@@ -307,14 +355,15 @@ export const vlanColumns = [
         type: "boolean",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "mem_ifs",
         headerName: "Member IFs",
         width: 130,
         editable: getIsStaff(),
-        // cellEditorParams: { values: interfaceNames },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
 ];
 
@@ -324,12 +373,14 @@ export const portChannelColumns = [
         checkboxSelection: getIsStaff(),
         width: 50,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "lag_name",
         headerName: "Channel Name",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "active",
@@ -337,6 +388,7 @@ export const portChannelColumns = [
         cellDataType: "boolean",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "admin_sts",
@@ -355,6 +407,7 @@ export const portChannelColumns = [
             values: ["up", "down"],
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "mtu",
@@ -370,8 +423,15 @@ export const portChannelColumns = [
             }
         },
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
-    { field: "name", headerName: "Name", width: 130, sortable: true },
+    {
+        field: "name",
+        headerName: "Name",
+        width: 130,
+        sortable: true,
+        headerTooltip: "", // add header tooltip here
+    },
     {
         field: "description",
         headerName: "Description",
@@ -379,6 +439,7 @@ export const portChannelColumns = [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "ip_address",
@@ -387,6 +448,7 @@ export const portChannelColumns = [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "fallback_operational",
@@ -394,14 +456,22 @@ export const portChannelColumns = [
         cellDataType: "boolean",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "oper_sts",
         headerName: "Operation Status",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
-    { field: "speed", headerName: "Speed", width: 130, sortable: true },
+    {
+        field: "speed",
+        headerName: "Speed",
+        width: 130,
+        sortable: true,
+        headerTooltip: "", // add header tooltip here
+    },
     {
         field: "min_links",
         headerName: "Min Links",
@@ -410,6 +480,7 @@ export const portChannelColumns = [
         cellDataType: "number",
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "graceful_shutdown_mode",
@@ -422,6 +493,7 @@ export const portChannelColumns = [
         },
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "static",
@@ -431,6 +503,7 @@ export const portChannelColumns = [
         cellDataType: "boolean",
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "fallback",
@@ -440,6 +513,7 @@ export const portChannelColumns = [
         cellDataType: "boolean",
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "fast_rate",
@@ -449,12 +523,14 @@ export const portChannelColumns = [
         cellDataType: "boolean",
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "oper_sts_reason",
         headerName: "OperReason",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "members",
@@ -462,6 +538,7 @@ export const portChannelColumns = [
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "vlan_members",
@@ -469,6 +546,7 @@ export const portChannelColumns = [
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
 ];
 
@@ -484,6 +562,7 @@ export const mclagColumns = (interfaceNames) => [
         cellDataType: "number",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "keepalive_interval",
@@ -493,6 +572,7 @@ export const mclagColumns = (interfaceNames) => [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "mclag_sys_mac",
@@ -501,6 +581,7 @@ export const mclagColumns = (interfaceNames) => [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "peer_addr",
@@ -509,6 +590,7 @@ export const mclagColumns = (interfaceNames) => [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "peer_link",
@@ -521,6 +603,7 @@ export const mclagColumns = (interfaceNames) => [
         cellEditorParams: {
             values: interfaceNames,
         },
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "session_timeout",
@@ -530,6 +613,7 @@ export const mclagColumns = (interfaceNames) => [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "source_address",
@@ -538,12 +622,14 @@ export const mclagColumns = (interfaceNames) => [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "oper_status",
         headerName: "Operation Status",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "role",
@@ -552,6 +638,7 @@ export const mclagColumns = (interfaceNames) => [
         // editable: getIsStaff(),
         // headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "gateway_mac",
@@ -560,6 +647,7 @@ export const mclagColumns = (interfaceNames) => [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "delay_restore",
@@ -567,36 +655,40 @@ export const mclagColumns = (interfaceNames) => [
         cellDataType: "number",
         width: 130,
         editable: getIsStaff(),
-        headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "fast_convergence",
         headerName: "Fast Convergence",
         width: 130,
         editable: getIsStaff(),
-        headerComponent: EditableHeaderComponent,
         sortable: true,
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
             values: ["enable", "disable"],
         },
+        headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "session_vrf",
         headerName: "session vrf",
         width: 130,
         editable: getIsStaff(),
-        headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "mclag_members",
         headerName: "Members",
         width: 130,
         editable: getIsStaff(),
-        headerComponent: EditableHeaderComponent,
         sortable: true,
+        headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
 ];
 
@@ -613,6 +705,7 @@ export const bgpColumns = [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "vrf_name",
@@ -621,6 +714,7 @@ export const bgpColumns = [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "router_id",
@@ -629,12 +723,14 @@ export const bgpColumns = [
         sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
     },
     {
         field: "neighbor_prop",
         headerName: "Neighbors",
         width: 130,
         sortable: true,
+        headerTooltip: "", // add header tooltip here
     },
 ];
 
