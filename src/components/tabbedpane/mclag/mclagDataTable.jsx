@@ -46,21 +46,6 @@ const McLagDataTable = (props) => {
 
     useEffect(() => {
         getMclag();
-
-        getInterfaceDataCommon(selectedDeviceIp).then((res) => {
-            const ethernentNames = res
-                .filter((item) => item?.name?.includes("Ethernet"))
-                .map((item) => item?.name);
-
-            getPortChannelDataCommon(selectedDeviceIp).then((res) => {
-                const portchannelNames = res.map((item) => item.lag_name);
-
-                setEthernetPortchannelList([
-                    ...ethernentNames,
-                    ...portchannelNames,
-                ]);
-            });
-        });
     }, [selectedDeviceIp]);
 
     const getMclag = () => {
@@ -79,7 +64,25 @@ const McLagDataTable = (props) => {
 
                 setDataTable(data);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.log(err))
+            .finally(() => {
+                getInterfaceDataCommon(selectedDeviceIp).then((res) => {
+                    const ethernentNames = res
+                        .filter((item) => item?.name?.includes("Ethernet"))
+                        .map((item) => item?.name);
+
+                    getPortChannelDataCommon(selectedDeviceIp).then((res) => {
+                        const portchannelNames = res.map(
+                            (item) => item.lag_name
+                        );
+
+                        setEthernetPortchannelList([
+                            ...ethernentNames,
+                            ...portchannelNames,
+                        ]);
+                    });
+                });
+            });
     };
 
     const refreshData = () => {
@@ -221,14 +224,6 @@ const McLagDataTable = (props) => {
                 return latestChanges;
             });
         }
-        // if (params.newValue !== params.oldValue) {
-        //     let payload = {
-        //         mgt_ip: selectedDeviceIp,
-        //         ...params.data,
-        //     };
-
-        //     setChanges(payload);
-        // }
     }, []);
 
     const onColumnResized = useCallback((params) => {}, []);
