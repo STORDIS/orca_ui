@@ -406,7 +406,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper" style={{ alignItems: "center" }}>
                 <div className="form-field w-50">
-                    <label>Vlan Tagging mood:</label>
+                    <label>Interface mode:</label>
                 </div>
                 <div className="form-field w-50">
                     <select
@@ -422,14 +422,14 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label>Vlan Members:</label>
+                    <label>Access Vlan:</label>
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"DEFAULT"}
                         ref={selectRef}
                     >
                         <option value="DEFAULT" disabled>
-                            Select Vlan Member
+                            Select Vlan
                         </option>
                         {vlanNames.map((val, index) => (
                             <option key={index} value={val.vlanid}>

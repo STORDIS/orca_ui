@@ -542,7 +542,7 @@ export const portChannelColumns = [
     },
     {
         field: "vlan_members",
-        headerName: "Vlan Members",
+        headerName: "Access Vlan",
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
@@ -749,7 +749,7 @@ export const stpColumn = [
         headerComponent: EditableHeaderComponent,
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
-            values: ["PVST", "MSTP", "RSTP","RAPID_PVST"],
+            values: ["PVST", "MSTP", "RSTP", "RAPID_PVST"],
         },
     },
     {

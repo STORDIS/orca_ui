@@ -313,12 +313,13 @@ const PortChDataTable = (props) => {
                     <Modal
                         show={true}
                         onClose={refreshData}
-                        title="Select Vlan Member"
+                        title="Add Access Vlan"
                         onSubmit={(data) => {
                             handleFormSubmit(data);
                         }}
                     >
                         <PortChVlanForm
+                        
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
                         />

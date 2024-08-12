@@ -8,12 +8,7 @@ import {
     deletePortchannelVlanMemberAllURL,
 } from "../../../utils/backend_rest_urls";
 
-const PortChVlanForm = ({
-    onSubmit,
-    inputData,
-    selectedDeviceIp,
-    onClose,
-}) => {
+const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const [vlanNames, setVlanNames] = useState([]);
 
     // const [selectedVlans, setSelectedVlans] = useState([]);
@@ -200,7 +195,7 @@ const PortChVlanForm = ({
                         ref={selectRef}
                     >
                         <option value="DEFAULT" disabled>
-                            Select Vlan Member
+                            Select Vlan
                         </option>
                         {vlanNames.map((val, index) => (
                             <option key={index} value={val.vlanid}>
