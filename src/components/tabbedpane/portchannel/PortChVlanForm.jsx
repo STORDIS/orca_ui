@@ -12,7 +12,7 @@ const PortChVlanForm = ({
     onSubmit,
     inputData,
     selectedDeviceIp,
-    onCancel,
+    onClose,
 }) => {
     const [vlanNames, setVlanNames] = useState([]);
 
@@ -99,7 +99,7 @@ const PortChVlanForm = ({
             .then((res) => {
                 getAllVlans();
                 setUpdateConfig(false);
-                onCancel();
+                onClose();
             })
             .catch((err) => {
                 console.log(err);
@@ -123,7 +123,7 @@ const PortChVlanForm = ({
             .then((res) => {
                 getAllVlans();
                 setUpdateConfig(false);
-                onCancel();
+                onClose();
             })
             .catch((err) => {
                 console.log(err);
@@ -243,7 +243,7 @@ const PortChVlanForm = ({
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onCancel}>
+                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
                 <button

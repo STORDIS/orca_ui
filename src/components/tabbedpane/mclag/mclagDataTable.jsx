@@ -297,13 +297,13 @@ const McLagDataTable = (props) => {
             </div>
 
             {isModalOpen === "addMclag" && (
-                <Modal show={true} onClose={refreshData} title={"Add Mclag"}>
-                    <MclagForm
-                        onSubmit={(e) => handleFormSubmit(e)}
-                        selectedDeviceIp={selectedDeviceIp}
-                        onCancel={refreshData}
-                        handelSubmitButton={updateConfig}
-                    />
+                <Modal
+                    show={true}
+                    onClose={refreshData}
+                    title={"Add Mclag"}
+                    onSubmit={(e) => handleFormSubmit(e)}
+                >
+                    <MclagForm selectedDeviceIp={selectedDeviceIp} />
                 </Modal>
             )}
 
@@ -312,19 +312,17 @@ const McLagDataTable = (props) => {
                     show={true}
                     onClose={refreshData}
                     title={"Add Mclag Members"}
+                    onSubmit={(e) => handleFormSubmit(e)}
                 >
                     <MclagMemberForm
-                        onSubmit={(e) => handleFormSubmit(e)}
                         inputData={selectedRows}
                         selectedDeviceIp={selectedDeviceIp}
-                        onCancel={refreshData}
-                        handelSubmitButton={updateConfig}
                     />
                 </Modal>
             )}
 
             {isModalOpen === "deleteMclag" && (
-                <Modal show={true}>
+                <Modal show={true} onClose={refreshData}>
                     <div>
                         {modalContent}
                         <div
