@@ -1,11 +1,15 @@
+// interceptor.js
 import axios from "axios";
 import axiosRetry from "axios-retry";
 import secureLocalStorage from "react-secure-storage";
+import { getNavigate } from "./NavigationService";
 
 const interceptor = (
-    retryCount = 4, // number of retries. There will be total +1 of retryCount api calls from browser to backend
+    retryCount = 2, // number of retries. There will be a total of +1 retryCount API calls from the browser to the backend
     retryDelay = 3000 // retry delay in milliseconds, 1000 = 1 sec
 ) => {
+    const navigate = getNavigate();
+
     const instance = axios.create({
         headers: {
             "Content-Type": "application/json",
@@ -31,14 +35,13 @@ const interceptor = (
             return response;
         },
         (error) => {
-            // Check if this is the last retry
             const config = error.config;
             if (
                 config &&
                 config.__retryCount >= retryCount &&
                 error.code === "ERR_NETWORK"
             ) {
-                alert("Connection timed out. Please try again.");
+                navigate("/error?message=ERR_NETWORK");
             } else if (
                 error.response &&
                 error.response.statusText === "Unauthorized" &&
@@ -54,11 +57,10 @@ const interceptor = (
 
     axiosRetry(instance, {
         retries: retryCount,
-        retryDelay: (retryCount) => {
+        retryDelay: () => {
             return retryDelay;
         },
         retryCondition: (error) => {
-            // retry on network errors or 5xx errors
             return (
                 axiosRetry.isNetworkError(error) ||
                 axiosRetry.isRetryableError(error)
