@@ -2,7 +2,6 @@ import { useState, createContext, useContext } from "react";
 import secureLocalStorage from "react-secure-storage";
 import interceptor from "./interceptor";
 import { postLogin, getUserDetailsURL } from "./backend_rest_urls";
-import { getNavigate } from "./NavigationService";
 
 const AuthContext = createContext(null);
 
@@ -10,7 +9,6 @@ export const AuthProvider = ({ children }) => {
     const [accessToken, setAccessToken] = useState(null);
 
     const instance = interceptor();
-    const navigate = getNavigate();
 
     const login = async (credential, redirectUrl) => {
         await instance
@@ -23,14 +21,11 @@ export const AuthProvider = ({ children }) => {
             .catch((error) => {
                 console.log(error);
                 if (error.code === "ERR_BAD_RESPONSE") {
-                    console.log("1");
                     alert("Invalid credential");
                 } else {
-                    console.log("2");
-                    navigate("/error?message=ERR_NETWORK");
+                    window.location.href = "/error?message=ERR_NETWORK";
                 }
 
-                console.error("Error:", error);
                 secureLocalStorage.clear();
             });
     };
