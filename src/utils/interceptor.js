@@ -41,12 +41,14 @@ const interceptor = (
                 config.__retryCount >= retryCount &&
                 error.code === "ERR_NETWORK"
             ) {
+                console.log("3");
                 navigate("/error?message=ERR_NETWORK");
             } else if (
                 error.response &&
                 error.response.statusText === "Unauthorized" &&
                 error.response.status === 401
             ) {
+                console.log("4");
                 alert("Invalid Token");
                 secureLocalStorage.clear();
                 window.location.href = "/login";

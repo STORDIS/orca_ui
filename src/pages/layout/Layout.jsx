@@ -34,6 +34,8 @@ const Layout = () => {
     useEffect(() => {
         if (location.pathname?.includes("/ORCAsk")) {
             setIsAI(false);
+        } else if (location.pathname?.includes("/error")) {
+            setIsAI(false);
         } else {
             setIsAI(true);
         }
