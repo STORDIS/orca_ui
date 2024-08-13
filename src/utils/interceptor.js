@@ -6,7 +6,7 @@ import { getNavigate } from "./NavigationService";
 
 const interceptor = (
     retryCount = 2, // number of retries. There will be a total of +1 retryCount API calls from the browser to the backend
-    retryDelay = 3000 // retry delay in milliseconds, 1000 = 1 sec
+    retryDelay = 2000 // retry delay in milliseconds, 1000 = 1 sec
 ) => {
     const navigate = getNavigate();
 
