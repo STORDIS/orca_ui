@@ -37,12 +37,6 @@ const interceptor = (
         (error) => {
             const config = error.config;
             if (
-                config &&
-                config.__retryCount >= retryCount &&
-                error.code === "ERR_NETWORK"
-            ) {
-                navigate("/error?message=ERR_NETWORK");
-            } else if (
                 error.response &&
                 error.response.statusText === "Unauthorized" &&
                 error.response.status === 401
@@ -50,6 +44,12 @@ const interceptor = (
                 alert("Invalid Token");
                 secureLocalStorage.clear();
                 window.location.href = "/login";
+            } else if (
+                config &&
+                config.__retryCount >= retryCount &&
+                error.code === "ERR_NETWORK"
+            ) {
+                navigate("/error?message=ERR_NETWORK");
             }
             return Promise.reject(error);
         }
@@ -57,13 +57,11 @@ const interceptor = (
 
     axiosRetry(instance, {
         retries: retryCount,
-        retryDelay: () => {
-            return retryDelay;
-        },
+        retryDelay: () => retryDelay,
         retryCondition: (error) => {
+            // Retry only for network errors
             return (
-                axiosRetry.isNetworkError(error) ||
-                axiosRetry.isRetryableError(error)
+                axiosRetry.isNetworkError(error) && error.code === "ERR_NETWORK"
             );
         },
         onRetry: (retryCount, error, requestConfig) => {
