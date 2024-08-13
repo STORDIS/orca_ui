@@ -16,12 +16,17 @@ export const AuthProvider = ({ children }) => {
             .then((response) => {
                 secureLocalStorage.setItem("token", response.data.token);
                 setAccessToken(credential);
-                getUser(credential.username, redirectUrl)
+                getUser(credential.username, redirectUrl);
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.log(error);
+                if (error.code === "ERR_BAD_RESPONSE") {
+                    alert("Invalid credential");
+                } else {
+                    window.location.href = "/error?message=ERR_NETWORK";
+                }
+
                 secureLocalStorage.clear();
-                alert("Invalid credential");
             });
     };
 

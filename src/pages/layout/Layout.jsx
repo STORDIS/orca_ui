@@ -19,7 +19,7 @@ import Navbar from "../../components/navbar/Navbar.jsx";
 import Sidebar from "../../components/sidebar/Sidebar.jsx";
 import OrcAsk from "../orcask/orcAsk.jsx";
 
-// import { DataProvider } from "../../utils/logpannelContext.js";
+import { setNavigate } from "../../utils/NavigationService";
 
 import "./Layout.scss";
 
@@ -28,8 +28,13 @@ const Layout = () => {
     const [isAI, setIsAI] = useState(true);
     const location = useLocation();
 
+    const navigate = useNavigate();
+    setNavigate(navigate); // Set the navigate function
+
     useEffect(() => {
         if (location.pathname?.includes("/ORCAsk")) {
+            setIsAI(false);
+        } else if (location.pathname?.includes("/error")) {
             setIsAI(false);
         } else {
             setIsAI(true);
