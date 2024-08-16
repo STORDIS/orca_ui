@@ -6,6 +6,7 @@ import {
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
+import { isValidIPv4WithCIDR } from "../../../utils/common";
 
 const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const selectRef = useRef(null);
@@ -34,25 +35,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         description: undefined,
         vlan_members: undefined,
     });
-
-    const isValidIPv4WithCIDR = (ipWithCidr) => {
-        if (ipWithCidr) {
-            const ipv4Regex =
-                /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
-            const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
-
-            const [ip, cidr] = ipWithCidr.split("/");
-
-            if (ipv4Regex.test(ip)) {
-                if (cidr === undefined || cidrRegex.test(cidr)) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            return true;
-        }
-    };
 
     useEffect(() => {
         getAllVlans();
@@ -170,7 +152,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     (vlan) => vlan === parseInt(value)
                 );
 
-
                 return {
                     ...prevState,
                     vlan_ids: vlanExists
@@ -191,7 +172,8 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
         if (
             !isValidIPv4WithCIDR(formData.ip_address) &&
-            formData.ip_address !== ""
+            formData.ip_address !== "" &&
+            formData.ip_address !== undefined
         ) {
             alert("ip_address is not valid");
             return;

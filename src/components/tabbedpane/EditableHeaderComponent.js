@@ -1,7 +1,6 @@
 import React from "react";
 import { FaEdit } from "react-icons/fa";
-import secureLocalStorage from "react-secure-storage";
-import { getIsStaff } from './datatablesourse';
+import { getIsStaff } from "../../utils/common";
 
 const EditableHeaderComponent = (props) => {
     const { displayName, column } = props;

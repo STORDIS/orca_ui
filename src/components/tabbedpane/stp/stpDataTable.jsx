@@ -8,7 +8,7 @@ import { stpColumn } from "../datatablesourse";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
-import { getIsStaff } from "../datatablesourse";
+import { getIsStaff } from "../../../utils/common";
 import { stpURL } from "../../../utils/backend_rest_urls";
 import StpForm from "./stpForm";
 import StpVlanForm from "./stpVlanForm";

@@ -4,7 +4,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { FaBookmark } from "react-icons/fa";
 import { FaTrashAlt } from "react-icons/fa";
 import { FaRegCopy } from "react-icons/fa";
-import { getIsStaff } from "../../components/tabbedpane/datatablesourse";
 import "./orcAsk.scss";
 import {
     bookmarkURL,
@@ -14,6 +13,7 @@ import interceptor from "../../utils/interceptor";
 import Tooltip from "@mui/material/Tooltip";
 
 import HistoryChatSection from "./components/historyChatSection";
+import { getIsStaff } from "../../utils/common";
 
 export const AskOrca = () => {
     const instance = interceptor();

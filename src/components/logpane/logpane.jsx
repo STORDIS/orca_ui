@@ -8,7 +8,7 @@ import interceptor from "../../utils/interceptor";
 import { logPanelURL, logPanelDeleteURL } from "../../utils/backend_rest_urls";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCircleXmark } from "react-icons/fa6";
-import { getIsStaff } from "../tabbedpane/datatablesourse";
+import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 
 export const LogViewer = () => {

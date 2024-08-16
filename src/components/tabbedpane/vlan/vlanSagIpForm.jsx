@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../Form.scss";
 import interceptor from "../../../utils/interceptor";
-import { isValidIPv4WithMac } from "./VlanForm";
+import { isValidIPv4WithMac } from "../../../utils/common";
 import { getVlansURL, removeVlanIp } from "../../../utils/backend_rest_urls";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
@@ -31,7 +31,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
                 onSubmit();
-                
             });
     };
 

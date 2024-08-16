@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { areAllIPAddressesValid } from "../../utils/common";
 
 const DiscoveryForm = ({ handleSubmit, onClose }) => {
     const [formData, setFormData] = useState({
@@ -12,23 +13,6 @@ const DiscoveryForm = ({ handleSubmit, onClose }) => {
             ...prevFormData,
             [name]: value.trim(),
         }));
-    };
-
-    const isValidIPv4 = (ip) => {
-        const ipv4Pattern =
-            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        return ipv4Pattern.test(ip);
-    };
-
-    const isValidCIDR = (cidr) => {
-        const cidrPattern =
-            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|[1-2][0-9]|3[0-2])$/;
-        return cidrPattern.test(cidr);
-    };
-
-    const areAllIPAddressesValid = (input) => {
-        const ipAddresses = input.split(",").map((ip) => ip.trim());
-        return ipAddresses.every((ip) => isValidIPv4(ip) || isValidCIDR(ip));
     };
 
     const handleFormData = () => {

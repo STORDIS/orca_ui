@@ -6,7 +6,7 @@ import { getDiscoveryUrl } from "../../utils/backend_rest_urls";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 import interceptor from "../../utils/interceptor";
-import { getIsStaff } from "../tabbedpane/datatablesourse";
+import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 
 const Navbar = () => {

@@ -10,7 +10,7 @@ import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
 import BgpForm from "./bgpForm";
-import { getIsStaff } from "../datatablesourse";
+import { getIsStaff } from "../../../utils/common";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 

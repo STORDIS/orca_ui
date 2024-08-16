@@ -61,6 +61,10 @@ export function getAllPortChnlsOfDeviceURL(device_ip) {
     return host_addr + "/port_chnls?mgt_ip=" + device_ip;
 }
 
+export function deletePortchannelIpURL(device_ip) {
+    return host_addr + "/port_chnl_ip_remove?mgt_ip=" + device_ip;
+}
+
 // vlan urls
 
 export function getVlansURL(device_ip) {

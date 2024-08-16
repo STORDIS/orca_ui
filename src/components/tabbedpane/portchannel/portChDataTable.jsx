@@ -13,8 +13,10 @@ import PortChVlanForm from "./PortChVlanForm";
 import "../tabbedPaneTable.scss";
 import useStoreLogs from "../../../utils/store";
 
-import { getIsStaff } from "../datatablesourse";
+import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
+
+import { isValidIPv4WithCIDR } from "../../../utils/common";
 
 export const getPortChannelDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -134,6 +136,18 @@ const PortChDataTable = (props) => {
     };
 
     const handleCellValueChanged = useCallback((params) => {
+
+        if (
+            !isValidIPv4WithCIDR(params.data.ip_address) &&
+            params.data.ip_address !== "" &&
+            params.data.ip_address !== null
+        ) {
+            alert("ip_address is not valid");
+            setSelectedRows([]);
+            refreshData();
+            return;
+        }
+
         if (params.newValue !== params.oldValue) {
             if (params.colDef.field === "lag_name") {
                 if (!/^PortChannel\d+$/.test(params.newValue)) {
@@ -144,6 +158,7 @@ const PortChDataTable = (props) => {
                     return;
                 }
             }
+
             setChanges((prev) => {
                 if (!Array.isArray(prev)) {
                     console.error("Expected array but got:", prev);
@@ -319,7 +334,6 @@ const PortChDataTable = (props) => {
                         }}
                     >
                         <PortChVlanForm
-                        
                             selectedDeviceIp={selectedDeviceIp}
                             inputData={selectedRows}
                         />

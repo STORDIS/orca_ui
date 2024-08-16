@@ -6,25 +6,8 @@ import useStoreConfig from "../../../utils/configStore";
 
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
-
-export const isValidIPv4WithMac = (ipWithCidr) => {
-    if (ipWithCidr) {
-        const ipv4Regex =
-            /^(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9]?[0-9])$/;
-        const cidrRegex = /^([0-9]|[12][0-9]|3[0-2])$/;
-
-        const [ip, cidr] = ipWithCidr.split("/");
-
-        if (ipv4Regex.test(ip)) {
-            if (cidr === undefined || cidrRegex.test(cidr)) {
-                return true;
-            }
-        }
-        return false;
-    } else {
-        return true;
-    }
-};
+import { areAllIPAddressesValid } from "../../../utils/common";
+import { isValidIPv4WithMac } from "../../../utils/common";
 
 const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const instance = interceptor();
@@ -48,35 +31,6 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         autostate: undefined,
         mem_ifs: undefined,
     });
-
-    const isValidIPv4 = (ip) => {
-        const ipv4Pattern =
-            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-        return ipv4Pattern.test(ip);
-    };
-
-    const isValidCIDR = (cidr) => {
-        const cidrPattern =
-            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|[1-2][0-9]|3[0-2])$/;
-        return cidrPattern.test(cidr);
-    };
-
-    const areAllIPAddressesValid = (input) => {
-        if (input) {
-            if (input) {
-            const ipAddresses = input?.split(",").map((ip) => ip.trim());
-                return ipAddresses.every(
-                
-                (ip) => isValidIPv4(ip) || isValidCIDR(ip)
-            
-            );
-        } else {
-            return true;
-        }
-        } else {
-            return true;
-        }
-    };
 
     const handleChange = (e) => {
         const { name, value } = e.target;
