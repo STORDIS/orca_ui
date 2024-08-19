@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../Form.scss";
-import { getVlansURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { getVlanDataCommon } from "../vlan/vlanTable";
 
 const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const selectRef = useRef(null);
     const selectRefInterface = useRef(null);
-    const instance = interceptor();
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
     const [selectedInterfaces, setSelectedInterfaces] = useState([]);
@@ -36,8 +35,26 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     });
 
     useEffect(() => {
-        getAllVlans();
-        getAllInterfacesOfDevice();
+        setVlanNames([]);
+
+        getVlanDataCommon(selectedDeviceIp).then((res) => {
+            const names = res
+                .filter((item) => item?.name?.includes("Vlan"))
+                .map((item) => ({
+                    name: item?.name,
+                    vlanid: item?.vlanid,
+                }));
+            setVlanNames(names);
+        });
+
+        setInterfaceNames([]);
+
+        getInterfaceDataCommon(selectedDeviceIp).then((response) => {
+            const fetchedInterfaceNames = response
+                .map((item) => item.name)
+                .filter((item) => item?.includes("Ethernet"));
+            setInterfaceNames(fetchedInterfaceNames);
+        });
     }, []);
 
     const handleChange = (e) => {
@@ -60,15 +77,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         }
     };
 
-    const getAllInterfacesOfDevice = () => {
-        getInterfaceDataCommon(selectedDeviceIp).then((response) => {
-            const fetchedInterfaceNames = response
-                .map((item) => item.name)
-                .filter((item) => item?.includes("Ethernet"));
-            setInterfaceNames(fetchedInterfaceNames);
-        });
-    };
-
     const handleDropdownChangeInterface = (event) => {
         let newValue = event.target.value;
 
@@ -79,11 +87,21 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             return prev;
         });
 
-        // setInterfaceNames((prev) => prev.filter((item) => item !== newValue));
+        setInterfaceNames((prev) => prev.filter((item) => item !== newValue));
         selectRefInterface.current.value = "DEFAULT";
     };
 
     const handleRemoveInterface = (key) => {
+        setInterfaceNames((prev) => {
+            const exist = prev.some((item) => item === key);
+
+            if (!exist) {
+                return [...prev, key];
+            }
+
+            return prev;
+        });
+
         setSelectedInterfaces((prev) => {
             return prev.filter((item) => item !== key);
         });
@@ -98,26 +116,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             );
             return;
         }
-    };
-
-    const getAllVlans = () => {
-        setVlanNames([]);
-
-        const apiPUrl = getVlansURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
-            .then((res) => {
-                const names = res.data
-                    .filter((item) => item?.name?.includes("Vlan"))
-                    .map((item) => ({
-                        name: item?.name,
-                        vlanid: item?.vlanid,
-                    }));
-                setVlanNames(names);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
     };
 
     const handleRemoveVlan = (key) => {
@@ -414,7 +412,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"TRUNK"}
-                        ref={selectRef}
                     >
                         <option value="TRUNK">TRUNK</option>
                         <option value="ACCESS">ACCESS</option>
