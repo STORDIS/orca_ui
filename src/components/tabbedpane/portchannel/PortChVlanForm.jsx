@@ -25,12 +25,30 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const instance = interceptor();
 
     useEffect(() => {
-        getAllVlans();
+        let prevVlan = JSON.parse(inputData.vlan_members);
 
-        if (JSON.parse(inputData.vlan_members).vlan_ids?.length > 0) {
-            setInputVlans(JSON.parse(inputData.vlan_members));
+        if (prevVlan.vlan_ids?.length > 0) {
+            setInputVlans(prevVlan);
         }
+        getVlansWithOutSelected();
     }, []);
+
+    const getVlansWithOutSelected = () => {
+        getVlanDataCommon(selectedDeviceIp).then((res) => {
+            let names = res
+                .filter((item) => item?.name?.includes("Vlan"))
+                .map((item) => ({
+                    name: item?.name,
+                    vlanid: item?.vlanid,
+                }));
+            let prevVlan = JSON.parse(inputData.vlan_members);
+
+            let remainingVlans = names.filter(
+                (vlan) => !prevVlan.vlan_ids?.includes(vlan?.vlanid)
+            );
+            setVlanNames(remainingVlans);
+        });
+    };
 
     const getAllVlans = () => {
         getVlanDataCommon(selectedDeviceIp).then((res) => {
@@ -40,11 +58,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                     name: item?.name,
                     vlanid: item?.vlanid,
                 }));
-            let prevVlan = JSON.parse(inputData.vlan_members);
-            let remainingVlans = names.filter(
-                (vlan) => !prevVlan.vlan_ids?.includes(vlan?.vlanid)
-            );
-            setVlanNames(remainingVlans);
+            setVlanNames(names);
         });
     };
 
@@ -149,6 +163,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                 value === "ACCESS" &&
                 JSON.parse(inputData.vlan_members)?.if_mode === "ACCESS"
             ) {
+                getVlansWithOutSelected();
                 return {
                     vlan_ids: JSON.parse(inputData.vlan_members).vlan_ids,
                     if_mode: value,
@@ -157,11 +172,13 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                 value === "TRUNK" &&
                 JSON.parse(inputData.vlan_members)?.if_mode === "TRUNK"
             ) {
+                getVlansWithOutSelected();
                 return {
                     vlan_ids: JSON.parse(inputData.vlan_members).vlan_ids,
                     if_mode: value,
                 };
             } else {
+                getAllVlans();
                 return {
                     vlan_ids: [],
                     if_mode: value,

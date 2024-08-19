@@ -20,16 +20,17 @@ const PortChMemberForm = ({
     const selectRefInterface = useRef(null);
 
     useEffect(() => {
-        if (Array.isArray(inputData.members)) {
-            setSelectedInterfaces(inputData.members);
-        } else {
-            setSelectedInterfaces(inputData.members.split(","));
-        }
+        setSelectedInterfaces(inputData.members);
 
         getInterfaceDataCommon(selectedDeviceIp).then((response) => {
-            const fetchedInterfaceNames = response
+            const names = response
                 .map((item) => item.name)
                 .filter((item) => item?.includes("Ethernet"));
+
+            let fetchedInterfaceNames = names.filter(
+                (item) => !inputData.members?.includes(item)
+            );
+
             setInterfaceNames(fetchedInterfaceNames);
         });
     }, []);
@@ -62,12 +63,10 @@ const PortChMemberForm = ({
         }
 
         setInterfaceNames((prev) => {
-            const exist = prev.some((item) => console.log(item === key));
-
+            const exist = prev.some((item) => item === key);
             if (!exist) {
                 return [...prev, key];
             }
-
             return prev;
         });
     };

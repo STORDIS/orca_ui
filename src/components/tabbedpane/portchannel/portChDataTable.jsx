@@ -208,17 +208,14 @@ const PortChDataTable = (props) => {
                 obj.mgt_ip = selectedDeviceIp;
             });
             formData?.forEach((element) => {
-                console.log(element);
                 if (
                     element.hasOwnProperty("ip_address") &&
                     (element.ip_address === "" || element.ip_address === null)
                 ) {
-                    console.log("if");
                     deleteIpAddress(element);
                     delete element.ip_address;
                     putConfig(element);
                 } else {
-                    console.log("else");
                     putConfig(element);
                 }
             });

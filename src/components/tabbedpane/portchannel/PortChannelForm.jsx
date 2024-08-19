@@ -94,11 +94,9 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const handleRemoveInterface = (key) => {
         setInterfaceNames((prev) => {
             const exist = prev.some((item) => item === key);
-
             if (!exist) {
                 return [...prev, key];
             }
-
             return prev;
         });
 
