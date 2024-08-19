@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../Form.scss";
-import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
@@ -18,6 +17,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
         vlan_ids: [],
         if_mode: "TRUNK",
     });
+
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
         lag_name: undefined,

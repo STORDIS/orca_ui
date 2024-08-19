@@ -7,6 +7,7 @@ import {
     deletePortchannelVlanMemberURL,
     deletePortchannelVlanMemberAllURL,
 } from "../../../utils/backend_rest_urls";
+import { getVlanDataCommon } from "../vlan/vlanTable";
 
 const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const [vlanNames, setVlanNames] = useState([]);
@@ -32,25 +33,32 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     }, []);
 
     const getAllVlans = () => {
-        const apiPUrl = getVlansURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
-            .then((res) => {
-                const names = res.data
-                    .filter((item) => item?.name?.includes("Vlan"))
-                    .map((item) => ({
-                        name: item?.name,
-                        vlanid: item?.vlanid,
-                    }));
-                setVlanNames(names);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+        getVlanDataCommon(selectedDeviceIp).then((res) => {
+            let names = res
+                .filter((item) => item?.name?.includes("Vlan"))
+                .map((item) => ({
+                    name: item?.name,
+                    vlanid: item?.vlanid,
+                }));
+            let prevVlan = JSON.parse(inputData.vlan_members);
+            let remainingVlans = names.filter(
+                (vlan) => !prevVlan.vlan_ids?.includes(vlan?.vlanid)
+            );
+            setVlanNames(remainingVlans);
+        });
     };
 
     const handleRemove = (key) => {
         let input_mem = JSON.parse(inputData.vlan_members);
+
+        setVlanNames((prevVlans) => {
+            const vlanExists = prevVlans.some((vlan) => vlan.vlanid === key);
+            if (!vlanExists) {
+                return [...prevVlans, { name: `Vlan${key}`, vlanid: key }];
+            }
+            return prevVlans;
+        });
+
         if (input_mem?.vlan_ids?.length > 0) {
             if (input_mem.vlan_ids.includes(key)) {
                 handleRemoveOne({
@@ -172,6 +180,10 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                     if_mode: value,
                 };
             } else {
+                setVlanNames((prevVlans) =>
+                    prevVlans.filter((item) => item.vlanid !== parseInt(value))
+                );
+
                 if (prevState.if_mode === "TRUNK") {
                     const vlanExists = prevState.vlan_ids.some(
                         (vlan) => vlan === parseInt(value)
