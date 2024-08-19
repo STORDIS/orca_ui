@@ -5,7 +5,10 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
 
 import { portChannelColumns } from "../datatablesourse";
-import { getAllPortChnlsOfDeviceURL } from "../../../utils/backend_rest_urls";
+import {
+    getAllPortChnlsOfDeviceURL,
+    deletePortchannelIpURL,
+} from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import PortChannelForm from "./PortChannelForm";
 import PortChMemberForm from "./portChMemberForm";
@@ -136,7 +139,6 @@ const PortChDataTable = (props) => {
     };
 
     const handleCellValueChanged = useCallback((params) => {
-
         if (
             !isValidIPv4WithCIDR(params.data.ip_address) &&
             params.data.ip_address !== "" &&
@@ -200,14 +202,47 @@ const PortChDataTable = (props) => {
     }, []);
 
     const handleFormSubmit = (formData) => {
+        if (Array.isArray(formData)) {
+            formData.forEach((obj) => {
+                obj.mgt_ip = selectedDeviceIp;
+            });
+            formData?.forEach((element) => {
+                if (
+                    element.hasOwnProperty("ip_address") &&
+                    element.ip_address === null
+                ) {
+                    deleteIpAddress(element);
+                    delete element.ip_address;
+                    putConfig(element);
+                } else {
+                    putConfig(element);
+                }
+            });
+        } else {
+            putConfig(formData);
+        }
+    };
+
+    const deleteIpAddress = (payload) => {
         setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
+        const apiMUrl = deletePortchannelIpURL();
+        instance
+            .delete(apiMUrl, { data: payload })
+            .then((response) => {})
+            .catch((err) => {})
+            .finally(() => {
+                setUpdateLog(true);
+                setUpdateConfig(false);
+                setSelectedRows([]);
+                resetConfigStatus();
+                refreshData();
+            });
+    };
 
-        // formData.forEach((obj) => {
-        //     obj.mgt_ip = selectedDeviceIp;
-        // });
-
+    const putConfig = (formData) => {
+        setUpdateConfig(true);
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
-
         instance
             .put(apiPUrl, formData)
             .then((res) => {
