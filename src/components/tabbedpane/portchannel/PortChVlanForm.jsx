@@ -136,8 +136,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const handleInterfaceMood = (event) => {
         const value = event.target.value;
 
-        console.log("--", JSON.parse(inputData.vlan_members)?.if_mode);
-
         setInputVlans((prevState) => {
             if (
                 value === "ACCESS" &&
@@ -175,7 +173,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                 };
             } else {
                 if (prevState.if_mode === "TRUNK") {
-                    console.log("trunk");
                     const vlanExists = prevState.vlan_ids.some(
                         (vlan) => vlan === parseInt(value)
                     );
@@ -186,8 +183,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                             : [...prevState.vlan_ids, parseInt(value)],
                     };
                 } else {
-                    console.log("access");
-
                     return {
                         ...prevState,
                         vlan_ids: [parseInt(value)],

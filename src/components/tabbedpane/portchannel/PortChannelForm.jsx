@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import "../Form.scss";
-import {
-    getVlansURL,
-    getAllInterfacesOfDeviceURL,
-} from "../../../utils/backend_rest_urls";
+import { getVlansURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 
 const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const selectRef = useRef(null);
+    const selectRefInterface = useRef(null);
     const instance = interceptor();
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
@@ -62,27 +61,26 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     };
 
     const getAllInterfacesOfDevice = () => {
-        instance
-            .get(getAllInterfacesOfDeviceURL(selectedDeviceIp))
-            .then((response) => {
-                const fetchedInterfaceNames = response?.data
-                    .map((item) => item.name)
-                    .filter((item) => item?.includes("Ethernet"));
-                setInterfaceNames(fetchedInterfaceNames);
-            })
-            .catch((error) => {
-                console.error("Error fetching interface names", error);
-            });
+        getInterfaceDataCommon(selectedDeviceIp).then((response) => {
+            const fetchedInterfaceNames = response
+                .map((item) => item.name)
+                .filter((item) => item?.includes("Ethernet"));
+            setInterfaceNames(fetchedInterfaceNames);
+        });
     };
 
     const handleDropdownChangeInterface = (event) => {
+        let newValue = event.target.value;
+
         setSelectedInterfaces((prev) => {
-            const newValue = event.target.value;
             if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
         });
+
+        // setInterfaceNames((prev) => prev.filter((item) => item !== newValue));
+        selectRefInterface.current.value = "DEFAULT";
     };
 
     const handleRemoveInterface = (key) => {
@@ -123,6 +121,16 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     };
 
     const handleRemoveVlan = (key) => {
+        setVlanNames((prevVlans) => {
+            const vlanExists = prevVlans.some((vlan) => vlan.vlanid === key);
+
+            if (!vlanExists) {
+                return [...prevVlans, { name: `Vlan${key}`, vlanid: key }];
+            }
+
+            return prevVlans;
+        });
+
         setSelectedVlans((prevState) => {
             return {
                 ...prevState,
@@ -134,7 +142,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     const handleDropdownChangeVlan = (event) => {
         let value = event.target.value;
 
-
         setSelectedVlans((prevState) => {
             if (value === "TRUNK" || value === "ACCESS") {
                 return {
@@ -142,8 +149,11 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     if_mode: value,
                 };
             } else {
+                setVlanNames((prevVlans) =>
+                    prevVlans.filter((item) => item.vlanid !== parseInt(value))
+                );
+
                 if (prevState.if_mode === "TRUNK") {
-                    console.log("trunk");
                     const vlanExists = prevState.vlan_ids.some(
                         (vlan) => vlan === parseInt(value)
                     );
@@ -154,8 +164,6 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                             : [...prevState.vlan_ids, parseInt(value)],
                     };
                 } else {
-                    console.log("access");
-
                     return {
                         ...prevState,
                         vlan_ids: [parseInt(value)],
@@ -360,12 +368,13 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     <select
                         onChange={handleDropdownChangeInterface}
                         defaultValue={"DEFAULT"}
+                        ref={selectRefInterface}
                     >
                         <option value="DEFAULT" disabled>
                             Select Member Interface
                         </option>
-                        {interfaceNames.map((member) => (
-                            <option key={member} value={member}>
+                        {interfaceNames.map((member, index) => (
+                            <option key={index} value={member}>
                                 {member}
                             </option>
                         ))}

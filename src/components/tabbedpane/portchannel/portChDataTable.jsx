@@ -223,7 +223,6 @@ const PortChDataTable = (props) => {
                 }
             });
         } else {
-            console.log("last");
             putConfig(formData);
         }
     };
