@@ -136,25 +136,32 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const handleInterfaceMood = (event) => {
         const value = event.target.value;
 
+        console.log("--", JSON.parse(inputData.vlan_members)?.if_mode);
+
         setInputVlans((prevState) => {
-            if (value === "ACCESS" && prevState.vlan_ids.length === 1) {
+            if (
+                value === "ACCESS" &&
+                JSON.parse(inputData.vlan_members)?.if_mode === "ACCESS"
+            ) {
                 return {
-                    vlan_ids: [prevState.vlan_ids[0]],
+                    vlan_ids: JSON.parse(inputData.vlan_members).vlan_ids,
+                    if_mode: value,
+                };
+            } else if (
+                value === "TRUNK" &&
+                JSON.parse(inputData.vlan_members)?.if_mode === "TRUNK"
+            ) {
+                return {
+                    vlan_ids: JSON.parse(inputData.vlan_members).vlan_ids,
                     if_mode: value,
                 };
             } else {
                 return {
-                    ...prevState,
+                    vlan_ids: [],
                     if_mode: value,
                 };
             }
         });
-
-        // setInputVlans((prevState) => (
-        //     {
-        //     ...prevState,
-        //     if_mode: value, // Update the if_mode with the selected value
-        // }));
     };
 
     const handleDropdownChange = (event) => {
@@ -163,20 +170,29 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
         setInputVlans((prevState) => {
             if (value === "TRUNK" || value === "ACCESS") {
                 return {
-                    ...prevState,
+                    vlan_ids: [],
                     if_mode: value,
                 };
             } else {
-                const vlanExists = prevState?.vlan_ids?.some(
-                    (vlan) => vlan === value
-                );
+                if (prevState.if_mode === "TRUNK") {
+                    console.log("trunk");
+                    const vlanExists = prevState.vlan_ids.some(
+                        (vlan) => vlan === parseInt(value)
+                    );
+                    return {
+                        ...prevState,
+                        vlan_ids: vlanExists
+                            ? prevState.vlan_ids
+                            : [...prevState.vlan_ids, parseInt(value)],
+                    };
+                } else {
+                    console.log("access");
 
-                return {
-                    ...prevState,
-                    vlan_ids: vlanExists
-                        ? prevState.vlan_ids
-                        : [...prevState?.vlan_ids, parseInt(value)],
-                };
+                    return {
+                        ...prevState,
+                        vlan_ids: [parseInt(value)],
+                    };
+                }
             }
         });
 
@@ -206,10 +222,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                         onChange={handleDropdownChange}
                         defaultValue={"DEFAULT"}
                         ref={selectRef}
-                        disabled={
-                            inputVlans.if_mode === "ACCESS" &&
-                            inputVlans.vlan_ids.length >= 1
-                        }
                     >
                         <option value="DEFAULT" disabled>
                             Select Vlan
@@ -220,8 +232,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                             </option>
                         ))}
                     </select>
-                    {inputVlans.if_mode === "ACCESS" &&
-                    inputVlans.vlan_ids.length >= 1 ? (
+                    {inputVlans.if_mode === "ACCESS" ? (
                         <small className="mt-10">
                             Note: Access mode can only have one vlan
                         </small>
