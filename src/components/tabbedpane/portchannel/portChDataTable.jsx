@@ -174,7 +174,8 @@ const PortChDataTable = (props) => {
                     let existedIndex = prev.findIndex(
                         (val) => val.lag_name === params.data.lag_name
                     );
-                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    prev[existedIndex][params.colDef.field] =
+                        params.newValue || "";
                     latestChanges = [...prev];
                 } else {
                     latestChanges = [
@@ -182,7 +183,7 @@ const PortChDataTable = (props) => {
                         {
                             mgt_ip: selectedDeviceIp,
                             lag_name: params.data.lag_name,
-                            [params.colDef.field]: params.newValue,
+                            [params.colDef.field]: params.newValue || "",
                         },
                     ];
                 }
@@ -207,18 +208,22 @@ const PortChDataTable = (props) => {
                 obj.mgt_ip = selectedDeviceIp;
             });
             formData?.forEach((element) => {
+                console.log(element);
                 if (
                     element.hasOwnProperty("ip_address") &&
-                    element.ip_address === null
+                    (element.ip_address === "" || element.ip_address === null)
                 ) {
+                    console.log("if");
                     deleteIpAddress(element);
                     delete element.ip_address;
                     putConfig(element);
                 } else {
+                    console.log("else");
                     putConfig(element);
                 }
             });
         } else {
+            console.log("last");
             putConfig(formData);
         }
     };

@@ -538,6 +538,19 @@ export const portChannelColumns = [
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        cellRenderer: (params) => {
+            let js = JSON.parse(params.value);
+
+            if (js?.vlan_ids?.length > 0) {
+                return (
+                    js.if_mode +
+                    " - " +
+                    js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
+                );
+            } else {
+                return "";
+            }
+        },
         headerTooltip: "", // add header tooltip here
     },
 ];

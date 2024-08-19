@@ -286,9 +286,9 @@ const VlanTable = (props) => {
         }
         if (
             params?.colDef?.field === "sag_ip_address" &&
-            (params.data.ip_address === "" || params.data.ip_address === null)(
-                params.data.ip_address === "" || params.data.ip_address === null
-            )
+            (params.data.ip_address === "" ||
+                params.data.ip_address === null) &&
+            (params.data.ip_address === "" || params.data.ip_address === null)
         ) {
             setIsModalOpen("vlanSagIpForm");
         }
