@@ -197,23 +197,38 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                     if_mode: value,
                 };
             } else {
-                setVlanNames((prevVlans) =>
-                    prevVlans.filter((item) => item.vlanid !== parseInt(value))
-                );
-
                 if (prevState.if_mode === "TRUNK") {
+                    setVlanNames((prevVlans) =>
+                        prevVlans.filter(
+                            (item) => item.vlanid !== parseInt(value)
+                        )
+                    );
                     const vlanExists = prevState.vlan_ids.some(
                         (vlan) => vlan === parseInt(value)
                     );
                     return {
-                        ...prevState,
+                        if_mode: prevState.if_mode,
                         vlan_ids: vlanExists
                             ? prevState.vlan_ids
                             : [...prevState.vlan_ids, parseInt(value)],
                     };
                 } else {
+                    let temp_id = prevState?.vlan_ids[0];
+
+                    if (temp_id) {
+                        setVlanNames((prevVlans) => [
+                            ...prevVlans,
+                            { name: `Vlan${temp_id}`, vlanid: temp_id },
+                        ]);
+                    }
+
+                    setVlanNames((prevVlans) =>
+                        prevVlans.filter(
+                            (item) => item.vlanid !== parseInt(value)
+                        )
+                    );
                     return {
-                        ...prevState,
+                        if_mode: prevState.if_mode,
                         vlan_ids: [parseInt(value)],
                     };
                 }

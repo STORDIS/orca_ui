@@ -58,7 +58,6 @@ const PortChMemberForm = ({
             setSelectedInterfaces((prev) => {
                 return prev?.filter((item) => item !== key);
             });
-
             setUpdateConfig(false);
         }
 
