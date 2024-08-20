@@ -56,6 +56,7 @@ const Navbar = () => {
                     <div className="item">
                         <button
                             className="btnStyle"
+                            id="discoveryButton"
                             onClick={() => setShowForm(true)}
                             disabled={isDiscoveryBtnDisabled}
                         >

@@ -43,7 +43,8 @@ const interceptor = (
             ) {
                 alert("Invalid Token");
                 secureLocalStorage.clear();
-                window.location.href = "/login";
+                navigate("/login");
+                // window.location.href = "/login";
             } else if (
                 config &&
                 config.__retryCount >= retryCount &&
