@@ -1,11 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
-
-import {
-    getAllInterfacesOfDeviceURL,
-    deletePortchannelEthernetMemberURL,
-} from "../../../utils/backend_rest_urls";
+import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
+import { deletePortchannelEthernetMemberURL } from "../../../utils/backend_rest_urls";
 
 const PortChMemberForm = ({
     onSubmit,
@@ -20,41 +17,35 @@ const PortChMemberForm = ({
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
-    useEffect(() => {
-        getAllInterfaces();
+    const selectRefInterface = useRef(null);
 
-        if (Array.isArray(inputData.members)) {
-            setSelectedInterfaces(inputData.members);
-        } else {
-            setSelectedInterfaces(inputData.members.split(","));
-        }
+    useEffect(() => {
+        setSelectedInterfaces(inputData.members);
+
+        getInterfaceDataCommon(selectedDeviceIp).then((response) => {
+            const names = response
+                .map((item) => item.name)
+                .filter((item) => item?.includes("Ethernet"));
+
+            let fetchedInterfaceNames = names.filter(
+                (item) => !inputData.members?.includes(item)
+            );
+
+            setInterfaceNames(fetchedInterfaceNames);
+        });
     }, []);
 
-
-
-    const getAllInterfaces = () => {
-        const apiPUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        instance
-            .get(apiPUrl)
-            .then((res) => {
-                const names = res?.data
-                    .map((item) => item?.name)
-                    .filter((item) => item?.includes("Ethernet"));
-                setInterfaceNames(names);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
-    };
-
     const handleDropdownChange = (event) => {
+        let newValue = event?.target?.value;
         setSelectedInterfaces((prev) => {
-            const newValue = event?.target?.value;
             if (!prev?.includes(newValue)) {
                 return [...prev, newValue];
             }
             return prev;
         });
+
+        setInterfaceNames((prev) => prev.filter((item) => item !== newValue));
+        selectRefInterface.current.value = "DEFAULT";
     };
 
     const handleRemove = (key) => {
@@ -67,9 +58,16 @@ const PortChMemberForm = ({
             setSelectedInterfaces((prev) => {
                 return prev?.filter((item) => item !== key);
             });
-
             setUpdateConfig(false);
         }
+
+        setInterfaceNames((prev) => {
+            const exist = prev.some((item) => item === key);
+            if (!exist) {
+                return [...prev, key];
+            }
+            return prev;
+        });
     };
 
     const handelDeleteMemeber = (e) => {
@@ -115,6 +113,7 @@ const PortChMemberForm = ({
                     <select
                         onChange={handleDropdownChange}
                         defaultValue={"DEFAULT"}
+                        ref={selectRefInterface}
                     >
                         <option value="DEFAULT" disabled>
                             Select Member Interface

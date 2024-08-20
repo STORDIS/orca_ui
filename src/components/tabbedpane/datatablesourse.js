@@ -1,15 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import EditableHeaderComponent from "./EditableHeaderComponent";
-import secureLocalStorage from "react-secure-storage";
-
-export const getIsStaff = () => {
-    if (secureLocalStorage.getItem("user_details")?.is_staff) {
-        return secureLocalStorage.getItem("user_details")?.is_staff;
-    } else {
-        return false;
-    }
-};
+import { getIsStaff } from "../../utils/common";
 
 export const defaultColDef = {
     tooltipValueGetter: (params) => {
@@ -542,10 +534,31 @@ export const portChannelColumns = [
     },
     {
         field: "vlan_members",
-        headerName: "Vlan Members",
+        headerName: "Access Vlan",
         width: 130,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
+        cellRenderer: (params) => {
+            let js = JSON.parse(params.value);
+
+            if (js?.vlan_ids?.length > 0) {
+                return (
+                    js.if_mode +
+                    " - " +
+                    js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
+                );
+            } else {
+                return "";
+            }
+        },
+        tooltipValueGetter: (p) => {
+            let js = JSON.parse(p.value);
+            return (
+                js.if_mode +
+                " - " +
+                js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
+            );
+        },
         headerTooltip: "", // add header tooltip here
     },
 ];
@@ -749,7 +762,7 @@ export const stpColumn = [
         headerComponent: EditableHeaderComponent,
         cellEditor: "agSelectCellEditor",
         cellEditorParams: {
-            values: ["PVST", "MSTP", "RSTP","RAPID_PVST"],
+            values: ["PVST", "MSTP", "RSTP", "RAPID_PVST"],
         },
     },
     {

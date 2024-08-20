@@ -12,7 +12,7 @@ import { getAllMclagsOfDeviceURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import Modal from "../../modal/Modal";
 
-import { getIsStaff } from "../datatablesourse";
+import { getIsStaff } from "../../../utils/common";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreLogs from "../../../utils/store";

@@ -11,7 +11,7 @@ import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
-import { getIsStaff } from "../../../components/tabbedpane/datatablesourse";
+import { getIsStaff } from "../../../utils/common";
 import Tooltip from "@mui/material/Tooltip";
 
 import "../orcAsk.scss";
