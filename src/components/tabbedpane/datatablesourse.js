@@ -551,6 +551,14 @@ export const portChannelColumns = [
                 return "";
             }
         },
+        tooltipValueGetter: (p) => {
+            let js = JSON.parse(p.value);
+            return (
+                js.if_mode +
+                " - " +
+                js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
+            );
+        },
         headerTooltip: "", // add header tooltip here
         tooltipValueGetter: (p) => {
             let js = JSON.parse(p.value);
