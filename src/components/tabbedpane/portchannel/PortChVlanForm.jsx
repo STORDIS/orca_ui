@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import useStoreConfig from "../../../utils/configStore";
 import interceptor from "../../../utils/interceptor";
+import useStoreLogs from "../../../utils/store";
 
 import {
-    getVlansURL,
     deletePortchannelVlanMemberURL,
     deletePortchannelVlanMemberAllURL,
 } from "../../../utils/backend_rest_urls";
@@ -20,6 +20,8 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
 
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
     const selectRef = useRef(null);
 
     const instance = interceptor();
@@ -104,8 +106,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
         let payload = {
             mgt_ip: selectedDeviceIp,
             lag_name: inputData.lag_name,
-            mtu: inputData.mtu,
-            admin_status: inputData.admin_sts,
             vlan_members: e,
         };
         const apiPUrl = deletePortchannelVlanMemberURL();
@@ -119,6 +119,9 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
             .catch((err) => {
                 console.log(err);
                 setUpdateConfig(false);
+            })
+            .finally(() => {
+                setUpdateLog(true);
             });
     };
 
@@ -128,8 +131,6 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
         let dataToSubmit = {
             mgt_ip: selectedDeviceIp,
             lag_name: inputData.lag_name,
-            mtu: inputData.mtu,
-            admin_status: inputData.admin_sts,
             vlan_members: inputData.vlan_members,
         };
 
@@ -143,6 +144,9 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
             .catch((err) => {
                 console.log(err);
                 setUpdateConfig(false);
+            })
+            .finally(() => {
+                setUpdateLog(true);
             });
     };
 
