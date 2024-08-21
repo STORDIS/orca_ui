@@ -5,7 +5,7 @@ import secureLocalStorage from "react-secure-storage";
 import { getNavigate } from "./NavigationService";
 
 const interceptor = (
-    retryCount = 1, // number of retries. There will be a total of +1 retryCount API calls from the browser to the backend
+    retryCount = 2, // number of retries. There will be a total of +1 retryCount API calls from the browser to the backend
     retryDelay = 2000 // retry delay in milliseconds, 1000 = 1 sec
 ) => {
     const navigate = getNavigate();
@@ -41,10 +41,9 @@ const interceptor = (
                 error.response.statusText === "Unauthorized" &&
                 error.response.status === 401
             ) {
-                alert("Invalid Token");
+                alert("Unauthorized");
                 secureLocalStorage.clear();
                 navigate("/login");
-                // window.location.href = "/login";
             } else if (
                 config &&
                 config.__retryCount >= retryCount &&
