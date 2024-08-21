@@ -11,6 +11,7 @@ import interceptor from "../../utils/interceptor";
 
 import { deleteDevicesURL } from "../../utils/backend_rest_urls.js";
 import useStoreConfig from "../../utils/configStore.js";
+import useStoreLogs from "../../utils/store.js";
 
 const Datatable = (props) => {
     const instance = interceptor();
@@ -29,9 +30,17 @@ const Datatable = (props) => {
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
+    const updateLog = useStoreLogs((state) => state.updateLog);
+
     useEffect(() => {
         getDevices();
     }, [isTabbedPane]);
+
+    useEffect(() => {
+        if (updateLog) {
+            getDevices();
+        }
+    }, [updateLog]);
 
     const getDevices = () => {
         setUpdateConfig(true);
@@ -72,8 +81,7 @@ const Datatable = (props) => {
         const apiPUrl = deleteDevicesURL();
         instance
             .delete(apiPUrl, { data: { mgt_ip: selectedDeviceToDelete } })
-            .then((res) => {
-            })
+            .then((res) => {})
             .catch((err) => {})
             .finally(() => {
                 setUpdateConfig(false);
