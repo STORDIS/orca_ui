@@ -66,6 +66,7 @@ const DiscoveryForm = ({ handleSubmit, onClose }) => {
                 <button
                     className="btnStyle mt-10"
                     type="button"
+                    id="cancelDiscovery"
                     onClick={onClose}
                 >
                     Cancel
