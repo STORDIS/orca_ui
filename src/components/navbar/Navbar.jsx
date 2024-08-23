@@ -54,7 +54,7 @@ const Navbar = () => {
                     <div className="item">
                         <button
                             className="btnStyle"
-                            id="discoveryButton"
+                            id="discoveryBtn"
                             onClick={() => setShowForm(true)}
                             disabled={isDiscoveryBtnDisabled}
                         >
@@ -71,7 +71,7 @@ const Navbar = () => {
                     </div>
 
                     <div className="items" onClick={handleLogout}>
-                        <button className="btnStyle">Logout</button>
+                        <button id="logoutBtn" className="btnStyle">Logout</button>
                     </div>
                 </div>
             </div>

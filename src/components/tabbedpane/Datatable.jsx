@@ -31,6 +31,7 @@ const Datatable = (props) => {
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const updateLog = useStoreLogs((state) => state.updateLog);
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         getDevices();
@@ -85,6 +86,7 @@ const Datatable = (props) => {
             .catch((err) => {})
             .finally(() => {
                 setUpdateConfig(false);
+                setUpdateLog(true);
                 setSelectedDeviceToDelete("");
                 getDevices();
             });
@@ -117,6 +119,7 @@ const Datatable = (props) => {
                         </p>
                         <button
                             disabled={updateConfig}
+                            id="removeYesBtn"
                             className="btnStyle mt-10 mr-10"
                             onClick={handleDeleteConfirmation}
                         >
@@ -124,6 +127,7 @@ const Datatable = (props) => {
                         </button>
                         <button
                             disabled={updateConfig}
+                            id="removeNoBtn"
                             className="btnStyle mt-10"
                             onClick={handleDeleteCancellation}
                         >

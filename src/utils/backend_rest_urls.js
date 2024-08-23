@@ -85,7 +85,7 @@ export function deleteVlanMembersURL(device_ip) {
 // stp urls
 
 export function stpURL(device_ip) {
-    return host_addr + "/stp?mgt_ip=" + device_ip ;
+    return host_addr + "/stp?mgt_ip=" + device_ip;
 }
 
 // orcask urls
