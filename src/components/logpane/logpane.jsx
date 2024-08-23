@@ -160,6 +160,7 @@ export const LogViewer = () => {
         <div className="logPanel">
             <div className="stickyButton">
                 <button
+                    id="clearLogBtn"
                     className="clearLogBtn btnStyle"
                     onClick={handelClearLog}
                     disabled={!getIsStaff()}

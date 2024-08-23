@@ -893,9 +893,9 @@ export const deviceUserColumns = (isTabbedPane = true) => {
                 return (
                     <>
                         <Link to={`/devices/${params?.data?.mgt_ip}`}>
-                            <button className="btnStyle">Details</button>
+                            <button id="ipDetailsBtn" className="btnStyle">Details</button>
                         </Link>
-                        <button
+                        <button id="ipRemoveBtn"
                             disabled={!getIsStaff()}
                             className="ml-10 btnStyle"
                         >
