@@ -87,7 +87,7 @@ const TabbedPane = () => {
                     Undo Changes
                 </button>
             </div>
-            <div className="listContainer ">
+            <div className="listContainer" id="tabbedPane">
                 <Box
                     sx={{
                         borderBottom: 1,
