@@ -203,8 +203,8 @@ const PortChDataTable = (props) => {
                     element.hasOwnProperty("ip_address") &&
                     (element.ip_address === "" || element.ip_address === null)
                 ) {
-                    deleteIpAddress(element);
                     delete element.ip_address;
+                    deleteIpAddress(element);
                     putConfig(element);
                 } else {
                     putConfig(element);
@@ -283,7 +283,9 @@ const PortChDataTable = (props) => {
                         >
                             Apply Config
                         </button>
-                        <span className="config-status">{configStatus}</span>
+                        <span className="config-status" id="configStatus">
+                            {configStatus}
+                        </span>
                     </div>
 
                     <button
