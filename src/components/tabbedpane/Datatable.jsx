@@ -65,7 +65,6 @@ const Datatable = (props) => {
             });
     };
 
-    const onColumnResized = useCallback((params) => {}, []);
 
     const onCellClicked = useCallback((params) => {
         if (params.event.target.tagName === "BUTTON") {
@@ -93,17 +92,16 @@ const Datatable = (props) => {
     };
 
     return (
-        <div className="datatable">
+        <div className="datatable" id="dataTable">
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
                     columnDefs={deviceUserColumns(isTabbedPane)}
                     defaultColDef={defaultColDef}
-                    onColumnResized={onColumnResized}
+                    domLayout={"autoHeight"}
                     enableCellTextSelection="true"
                     onCellClicked={onCellClicked}
-                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 

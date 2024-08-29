@@ -4,7 +4,7 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
-import { stpColumn } from "../datatablesourse";
+import { stpColumn, defaultColDef } from "../datatablesourse";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
@@ -100,12 +100,7 @@ const StpDataTable = (props) => {
         setConfigStatus("");
     };
 
-    const defaultColDef = {
-        tooltipValueGetter: (params) => {
-            return params.value;
-        },
-        resizable: true,
-    };
+
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();

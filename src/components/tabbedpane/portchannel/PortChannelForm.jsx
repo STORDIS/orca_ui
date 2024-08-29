@@ -220,10 +220,10 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             <div className="form-wrapper">
                 <div className="form-field w-50">
                     <label>Device IP:</label>
-                    <input type="text" value={selectedDeviceIp} disabled />
+                    <input name="mgt_ip" type="text" value={selectedDeviceIp} disabled />
                 </div>
                 <div className="form-field w-50">
-                    <label htmlFor="lag-name">Channel Name:</label>
+                    <label for="lag_name" >Channel Name:</label>
                     <input
                         type="text"
                         name="lag_name"
@@ -236,7 +236,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label>Admin Status:</label>
+                    <label for="admin_sts" >Admin Status:</label>
                     <select
                         name="admin_sts"
                         value={formData.admin_sts}
@@ -250,7 +250,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     </select>
                 </div>
                 <div className="form-field w-50">
-                    <label>MTU:</label>
+                    <label for="mtu" >MTU:</label>
                     <input
                         type="number"
                         name="mtu"
@@ -262,7 +262,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> Static:</label>
+                    <label for="static" > Static:</label>
                     <select
                         name="static"
                         value={formData.static}
@@ -276,7 +276,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     </select>
                 </div>
                 <div className="form-field w-50">
-                    <label>Fallback:</label>
+                    <label for="fallback" >Fallback:</label>
                     <select
                         name="fallback"
                         value={formData.fallback}
@@ -293,7 +293,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> Fast Rate:</label>
+                    <label for="fast_rate" > Fast Rate:</label>
                     <select
                         name="fast_rate"
                         value={formData.fast_rate}
@@ -307,7 +307,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     </select>
                 </div>
                 <div className="form-field w-50">
-                    <label>Graceful Shutdown Mode:</label>
+                    <label for="graceful_shutdown_mode" >Graceful Shutdown Mode:</label>
                     <select
                         name="graceful_shutdown_mode"
                         value={formData.graceful_shutdown_mode}
@@ -324,7 +324,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label>
+                    <label for="min_links" >
                         Min Link <span className="note">(1-32)</span> :
                     </label>
                     <input
@@ -337,7 +337,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     />
                 </div>
                 <div className="form-field w-50">
-                    <label>Ip Address:</label>
+                    <label for="ip_address" >Ip Address:</label>
                     <input
                         type="text"
                         name="ip_address"
@@ -348,7 +348,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             </div>
 
             <div className="form-field">
-                <label>Description</label>
+                <label for="description" >Description</label>
                 <textarea
                     type="text"
                     name="description"
@@ -360,11 +360,12 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label>Ethernet Members:</label>
+                    <label for="members" >Ethernet Members:</label>
                     <select
                         onChange={handleDropdownChangeInterface}
                         defaultValue={"DEFAULT"}
                         ref={selectRefInterface}
+                        name="members"
                     >
                         <option value="DEFAULT" disabled>
                             Select Member Interface
@@ -404,7 +405,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper" style={{ alignItems: "center" }}>
                 <div className="form-field w-50">
-                    <label>Interface mode:</label>
+                    <label for="interface_mode" >Interface mode:</label>
                 </div>
                 <div className="form-field w-50">
                     <select
@@ -419,7 +420,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label>Access Vlan:</label>
+                    <label for="access_vlan" >Access Vlan:</label>
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"DEFAULT"}
@@ -470,8 +471,9 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     type="submit"
                     className="btnStyle mr-10"
                     disabled={updateConfig}
+                    id="applyConfigPortChannel"
                 >
-                    Apply Config
+                    Apply Config 
                 </button>
                 <button
                     type="button"

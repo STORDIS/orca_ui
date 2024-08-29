@@ -59,7 +59,6 @@ const PortGroupTable = (props) => {
             .catch((err) => console.log(err));
     }, [selectedDeviceIp]);
 
-    const onColumnResized = useCallback((params) => {}, []);
 
     const handleCellValueChanged = useCallback(
         (params) => {
@@ -153,12 +152,10 @@ const PortGroupTable = (props) => {
                     rowData={dataTable}
                     columnDefs={portGroupColumns}
                     defaultColDef={defaultColDef}
-                    onCellValueChanged={handleCellValueChanged}
-                    onColumnResized={onColumnResized}
-                    checkboxSelection
-                    enableCellTextSelection="true"
                     stopEditingWhenCellsLoseFocus={true}
+                    onCellValueChanged={handleCellValueChanged}
                     domLayout={"autoHeight"}
+                    enableCellTextSelection="true"
                 ></AgGridReact>
             </div>
         </div>
