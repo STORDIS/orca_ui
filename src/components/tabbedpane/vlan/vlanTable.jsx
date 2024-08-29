@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import "../tabbedPaneTable.scss";
-import { vlanColumns } from "../datatablesourse";
+import { vlanColumns, defaultColDef } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -210,13 +210,6 @@ const VlanTable = (props) => {
         setConfigStatus("");
     };
 
-    const defaultColDef = {
-        tooltipValueGetter: (params) => {
-            return params.value;
-        },
-        resizable: true,
-    };
-
     const refreshData = () => {
         getVlans();
         setChanges([]);
@@ -335,13 +328,13 @@ const VlanTable = (props) => {
                         rowData={dataTable}
                         columnDefs={vlanColumns}
                         defaultColDef={defaultColDef}
+                        stopEditingWhenCellsLoseFocus={true}
                         onCellValueChanged={handleCellValueChanged}
-                        rowSelection="multiple"
+                        domLayout={"autoHeight"}
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
-                        stopEditingWhenCellsLoseFocus={true}
                         onCellClicked={onCellClicked}
-                        domLayout={"autoHeight"}
+                        rowSelection="multiple"
                         suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>

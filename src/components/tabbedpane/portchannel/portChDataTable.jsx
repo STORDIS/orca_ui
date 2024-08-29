@@ -4,7 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
 
-import { portChannelColumns } from "../datatablesourse";
+import { portChannelColumns, defaultColDef } from "../datatablesourse";
 import {
     getAllPortChnlsOfDeviceURL,
     deletePortchannelIpURL,
@@ -79,13 +79,6 @@ const PortChDataTable = (props) => {
         });
     };
 
-    const defaultColDef = {
-        tooltipValueGetter: (params) => {
-            return params.value;
-        },
-        resizable: true,
-    };
-
     const refreshData = () => {
         setDataTable([]);
         getAllPortChanalData();
@@ -145,8 +138,6 @@ const PortChDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            setSelectedRows([]);
-            refreshData();
             return;
         }
 
@@ -277,7 +268,7 @@ const PortChDataTable = (props) => {
     };
 
     return (
-        <div className="datatable-container">
+        <div className="datatable-container" id="portChannelDataTable">
             <div className="datatable">
                 <div className="button-group stickyButton">
                     <div className="button-column">
@@ -288,6 +279,7 @@ const PortChDataTable = (props) => {
                                 Object.keys(changes).length === 0
                             }
                             className="btnStyle"
+                            id="applyConfigBtn"
                         >
                             Apply Config
                         </button>
@@ -298,6 +290,7 @@ const PortChDataTable = (props) => {
                         className="btnStyle"
                         disabled={!getIsStaff()}
                         onClick={openAddFormModal}
+                        id="addPortchannelBtn"
                     >
                         Add Port Channel
                     </button>
@@ -319,13 +312,13 @@ const PortChDataTable = (props) => {
                         rowData={dataTable}
                         columnDefs={portChannelColumns}
                         defaultColDef={defaultColDef}
+                        stopEditingWhenCellsLoseFocus={true}
                         onCellValueChanged={handleCellValueChanged}
-                        rowSelection="multiple"
+                        domLayout={"autoHeight"}
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}
-                        stopEditingWhenCellsLoseFocus={true}
-                        domLayout={"autoHeight"}
+                        rowSelection="multiple"
                         suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
@@ -337,6 +330,7 @@ const PortChDataTable = (props) => {
                         onClose={refreshData}
                         title={"Add Port Channel"}
                         onSubmit={handleFormSubmit}
+                        id="addPortchannel"
                     >
                         <PortChannelForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
