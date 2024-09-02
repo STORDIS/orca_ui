@@ -20,6 +20,9 @@ export function getUser(user) {
 export function getAllInterfacesOfDeviceURL(device_ip) {
     return host_addr + "/interfaces?mgt_ip=" + device_ip;
 }
+export function breakoutURL(device_ip) {
+    return host_addr + "/breakout?mgt_ip=" + device_ip;
+}
 
 // mclag urls
 

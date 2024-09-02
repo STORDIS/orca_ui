@@ -3,7 +3,10 @@ import { interfaceColumns, defaultColDef } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllInterfacesOfDeviceURL } from "../../../utils/backend_rest_urls";
+import {
+    getAllInterfacesOfDeviceURL,
+    breakoutURL,
+} from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 
 import useStoreLogs from "../../../utils/store";
@@ -124,6 +127,16 @@ const InterfaceDataTable = (props) => {
                                 ),
                             },
                         ];
+                    } else if (params.colDef.field === "breakout_mode") {
+                        latestChanges = [
+                            ...prev,
+                            {
+                                name: params.data.name,
+                                mgt_ip: selectedDeviceIp,
+                                alias: params.data.alias,
+                                [params.colDef.field]: params.newValue,
+                            },
+                        ];
                     } else {
                         latestChanges = [
                             ...prev,
@@ -141,15 +154,81 @@ const InterfaceDataTable = (props) => {
         }
     }, []);
 
+    function hasOnlyRequiredKeys(jsonObject) {
+        const requiredKeys = ["mgt_ip", "name", "breakout_mode", "alias"];
+        const keys = Object.keys(jsonObject);
+
+        // Check if the keys in jsonObject match exactly with the requiredKeys
+        const hasOnlyRequiredKeys =
+            keys.length === requiredKeys.length &&
+            keys.every((key) => requiredKeys.includes(key));
+
+        return hasOnlyRequiredKeys;
+    }
+
     const sendUpdates = () => {
         if (changes.length === 0) {
             return;
         }
+
+        changes.forEach((item) => {
+            if (hasOnlyRequiredKeys(item)) {
+                let payload = {
+                    mgt_ip: selectedDeviceIp,
+                    if_name: item.name,
+                    if_alias: item.alias,
+                    breakout_mode: "4xSPEED_25GB",
+                };
+                console.log("breakout");
+                putBreakout(payload);
+            } else if (
+                !hasOnlyRequiredKeys(item) &&
+                item.hasOwnProperty("breakout_mode")
+            ) {
+                let payload = {
+                    mgt_ip: selectedDeviceIp,
+                    if_name: item.name,
+                    if_alias: item.alias,
+                    breakout_mode: "4xSPEED_25GB",
+                };
+                console.log("put and breakout");
+                putBreakout(payload);
+                putConfig(changes);
+            } else {
+                console.log("put");
+                putConfig(changes);
+            }
+        });
+    };
+
+    const putConfig = (payload) => {
         setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
-            .put(apiUrl, changes)
+            .put(apiUrl, payload)
+            .then((res) => {
+                resetConfigStatus();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                resetConfigStatus();
+            })
+            .finally(() => {
+                setChanges([]);
+                setDataTable([]);
+                getInterfaceData();
+                setUpdateLog(true);
+                setUpdateConfig(false);
+            });
+    };
+
+    const putBreakout = (payload) => {
+        setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
+        const apiUrl = breakoutURL(selectedDeviceIp);
+        instance
+            .put(apiUrl, payload)
             .then((res) => {
                 resetConfigStatus();
             })

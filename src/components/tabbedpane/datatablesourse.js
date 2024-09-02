@@ -42,6 +42,50 @@ export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
         values: result,
     };
 };
+export const getCellEditorParamsInterfaceBreakout = (params) => {
+    let result = [];
+
+    if (params.data.breakout_supported) {
+        result = [
+            "None",
+            "1xSPEED_400G",
+            "1xSPEED_200G",
+            "2xSPEED_200G",
+            "1xSPEED_200G",
+            "4xSPEED_100G",
+            "2xSPEED_100G",
+            "1xSPEED_100G",
+            "8xSPEED_50G",
+            "4xSPEED_50G",
+            "2xSPEED_50G",
+            "1xSPEED_50G",
+            "2xSPEED_40G",
+            "1xSPEED_40G",
+            "8xSPEED_25G",
+            "4xSPEED_25G",
+            "2xSPEED_25G",
+            "1xSPEED_25G",
+            "8xSPEED_10G",
+            "4xSPEED_10G",
+            "2xSPEED_10G",
+            "1xSPEED_10G",
+        ];
+    } else {
+        result = ["Not supported"];
+    }
+
+    return {
+        values: result,
+    };
+};
+
+export const getBreakout = (params) => {
+    if (params.data.breakout_supported) {
+        return true;
+    } else {
+        return false;
+    }
+};
 
 export const interfaceColumns = [
     {
@@ -98,6 +142,40 @@ export const interfaceColumns = [
         cellEditor: "agSelectCellEditor",
         cellEditorParams: getCellEditorParamsInterfaceSpeed,
         headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
+    },
+    // breakout_supported: true
+    {
+        field: "breakout_mode",
+        headerName: "Breakout",
+        width: 130,
+        editable: getIsStaff() && getBreakout,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: getCellEditorParamsInterfaceBreakout,
+        headerComponent: EditableHeaderComponent,
+        cellRenderer: (params) => {
+            // if (params.data.breakout_supported) {
+                return params.value || "None";
+            // } else {
+                // return "Not supported";
+            // }
+        },
+        headerTooltip: "", // add header tooltip here
+    },
+    {
+        field: "breakout_status",
+        headerName: "Breakout Status",
+        width: 130,
+        // cellRenderer: (params) => {
+        //     console.log(params.value, params.data.breakout_supported)
+        //     if (params.data.breakout_supported) {
+        //         return "Unknown";
+        //     } else if (params.value && params.data.breakout_supported) {
+        //         return params.value;
+        //     } else {
+        //         return "Not supported";
+        //     }
+        // },
         headerTooltip: "", // add header tooltip here
     },
     {
