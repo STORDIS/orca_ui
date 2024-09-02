@@ -28,6 +28,7 @@ export const getPortChannelDataCommon = (selectedDeviceIp) => {
         .get(apiPUrl)
         .then((res) => {
             let data = res.data.map((data) => {
+                data.members = JSON.stringify(data.members);
                 data.vlan_members = JSON.stringify(data.vlan_members);
                 return data;
             });

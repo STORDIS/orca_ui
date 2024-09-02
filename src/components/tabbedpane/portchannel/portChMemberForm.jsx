@@ -20,7 +20,9 @@ const PortChMemberForm = ({
     const selectRefInterface = useRef(null);
 
     useEffect(() => {
-        setSelectedInterfaces(inputData.members);
+        let selectedMembers = JSON.parse(inputData?.members);
+
+        setSelectedInterfaces(selectedMembers);
 
         getInterfaceDataCommon(selectedDeviceIp).then((response) => {
             const names = response
@@ -28,7 +30,7 @@ const PortChMemberForm = ({
                 .filter((item) => item?.includes("Ethernet"));
 
             let fetchedInterfaceNames = names.filter(
-                (item) => !inputData.members?.includes(item)
+                (item) => !selectedMembers?.includes(item)
             );
 
             setInterfaceNames(fetchedInterfaceNames);
@@ -50,7 +52,7 @@ const PortChMemberForm = ({
 
     const handleRemove = (key) => {
         setUpdateConfig(true);
-        let selectedMembers = inputData?.members;
+        let selectedMembers = JSON.parse(inputData?.members);
 
         if (selectedMembers?.includes(key)) {
             handelDeleteMemeber(key);

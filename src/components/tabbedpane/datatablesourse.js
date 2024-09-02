@@ -631,6 +631,9 @@ export const portChannelColumns = [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
+        cellRenderer: (params) => {
+            return JSON.parse(params.value).join(", ");
+        },
     },
     {
         field: "vlan_members",
