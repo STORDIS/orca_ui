@@ -70,6 +70,11 @@ export const getCellEditorParamsInterfaceBreakout = (params) => {
             "2xSPEED_10G",
             "1xSPEED_10G",
         ];
+    } else if (
+        !params.data.breakout_supported &&
+        params.data.alias.match(/\//g).length === 2
+    ) {
+        result = ["None", params.data.breakout_mode];
     } else {
         result = ["Not supported"];
     }
@@ -81,6 +86,12 @@ export const getCellEditorParamsInterfaceBreakout = (params) => {
 
 export const getBreakout = (params) => {
     if (params.data.breakout_supported) {
+        return true;
+    } else if (
+        !params.data.breakout_supported &&
+        params.data.alias.includes("/1") &&
+        params.data.alias.match(/\//g).length === 2
+    ) {
         return true;
     } else {
         return false;
@@ -154,11 +165,16 @@ export const interfaceColumns = [
         cellEditorParams: getCellEditorParamsInterfaceBreakout,
         headerComponent: EditableHeaderComponent,
         cellRenderer: (params) => {
-            // if (params.data.breakout_supported) {
+            if (params.data.breakout_supported) {
                 return params.value || "None";
-            // } else {
-                // return "Not supported";
-            // }
+            } else if (
+                !params.data.breakout_supported &&
+                params.data.alias.match(/\//g).length === 2
+            ) {
+                return params.value;
+            } else {
+                return "Not supported";
+            }
         },
         headerTooltip: "", // add header tooltip here
     },
@@ -166,16 +182,16 @@ export const interfaceColumns = [
         field: "breakout_status",
         headerName: "Breakout Status",
         width: 130,
-        // cellRenderer: (params) => {
-        //     console.log(params.value, params.data.breakout_supported)
-        //     if (params.data.breakout_supported) {
-        //         return "Unknown";
-        //     } else if (params.value && params.data.breakout_supported) {
-        //         return params.value;
-        //     } else {
-        //         return "Not supported";
-        //     }
-        // },
+        cellRenderer: (params) => {
+            if (
+                params.data.breakout_supported ||
+                params.data.alias.match(/\//g).length === 2
+            ) {
+                return params.value || "Unknown";
+            } else {
+                return "Not supported";
+            }
+        },
         headerTooltip: "", // add header tooltip here
     },
     {

@@ -80,6 +80,7 @@ const InterfaceDataTable = (props) => {
     const resetConfigStatus = () => {
         setConfigStatus("");
         setChanges([]);
+        setDataTable([]);
     };
 
     const getAdvSpeed = (params) => {
@@ -177,10 +178,14 @@ const InterfaceDataTable = (props) => {
                     mgt_ip: selectedDeviceIp,
                     if_name: item.name,
                     if_alias: item.alias,
-                    breakout_mode: "4xSPEED_25GB",
+                    breakout_mode: item.breakout_mode,
                 };
-                console.log("breakout");
-                putBreakout(payload);
+
+                if (item.breakout_mode === "None") {
+                    deleteBreakout(payload);
+                } else {
+                    putBreakout(payload);
+                }
             } else if (
                 !hasOnlyRequiredKeys(item) &&
                 item.hasOwnProperty("breakout_mode")
@@ -189,10 +194,14 @@ const InterfaceDataTable = (props) => {
                     mgt_ip: selectedDeviceIp,
                     if_name: item.name,
                     if_alias: item.alias,
-                    breakout_mode: "4xSPEED_25GB",
+                    breakout_mode: item.breakout_mode,
                 };
                 console.log("put and breakout");
-                putBreakout(payload);
+                if (item.breakout_mode === "None") {
+                    deleteBreakout(payload);
+                } else {
+                    putBreakout(payload);
+                }
                 putConfig(changes);
             } else {
                 console.log("put");
@@ -215,8 +224,6 @@ const InterfaceDataTable = (props) => {
                 resetConfigStatus();
             })
             .finally(() => {
-                setChanges([]);
-                setDataTable([]);
                 getInterfaceData();
                 setUpdateLog(true);
                 setUpdateConfig(false);
@@ -237,8 +244,26 @@ const InterfaceDataTable = (props) => {
                 resetConfigStatus();
             })
             .finally(() => {
-                setChanges([]);
-                setDataTable([]);
+                getInterfaceData();
+                setUpdateLog(true);
+                setUpdateConfig(false);
+            });
+    };
+
+    const deleteBreakout = (payload) => {
+        setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
+        const apiUrl = breakoutURL(selectedDeviceIp);
+        instance
+            .delete(apiUrl, { data: payload })
+            .then((res) => {
+                resetConfigStatus();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                resetConfigStatus();
+            })
+            .finally(() => {
                 getInterfaceData();
                 setUpdateLog(true);
                 setUpdateConfig(false);
