@@ -8,8 +8,6 @@ export const defaultColDef = {
         return params?.value;
     },
     resizable: true,
-    rowSelection: "multiple",
-    enableCellTextSelection: "true",
     singleClickEdit: "true",
 };
 
@@ -89,7 +87,7 @@ export const interfaceColumns = [
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
     },
-    { field: "oper_sts", headerName: "Oper_STS", width: 130, sortable: true },
+    { field: "oper_sts", headerName: "Oper STS", width: 130, sortable: true },
     {
         field: "speed",
         headerName: "Speed",
@@ -145,7 +143,7 @@ export const interfaceColumns = [
     },
     {
         field: "autoneg",
-        headerName: "autoneg",
+        headerName: "Autoneg",
         width: 130,
         sortable: true,
         editable: getIsStaff(),
@@ -531,6 +529,9 @@ export const portChannelColumns = [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
+        cellRenderer: (params) => {
+            return JSON.parse(params.value).join(", ");
+        },
     },
     {
         field: "vlan_members",
@@ -893,9 +894,12 @@ export const deviceUserColumns = (isTabbedPane = true) => {
                 return (
                     <>
                         <Link to={`/devices/${params?.data?.mgt_ip}`}>
-                            <button className="btnStyle">Details</button>
+                            <button id="ipDetailsBtn" className="btnStyle">
+                                Details
+                            </button>
                         </Link>
                         <button
+                            id="ipRemoveBtn"
                             disabled={!getIsStaff()}
                             className="ml-10 btnStyle"
                         >

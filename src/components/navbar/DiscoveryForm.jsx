@@ -46,6 +46,7 @@ const DiscoveryForm = ({ handleSubmit, onClose }) => {
                 <input
                     type="text"
                     name="address"
+                    id="discoveryIpAddress"
                     onChange={handleChange}
                     placeholder="Network Address or Device IP."
                 />
@@ -55,12 +56,17 @@ const DiscoveryForm = ({ handleSubmit, onClose }) => {
                 </p>
             </div>
             <div className="">
-                <button className="btnStyle mt-10 mr-10" type="submit">
+                <button
+                    className="btnStyle mt-10 mr-10"
+                    type="submit"
+                    id="submitDiscovery"
+                >
                     Submit
                 </button>
                 <button
                     className="btnStyle mt-10"
                     type="button"
+                    id="cancelDiscovery"
                     onClick={onClose}
                 >
                     Cancel

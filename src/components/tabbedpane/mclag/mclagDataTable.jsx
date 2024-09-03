@@ -117,12 +117,6 @@ const McLagDataTable = (props) => {
             });
     };
 
-    const onSelectionChanged = () => {
-        const selectedNodes = gridRef.current.api.getSelectedNodes();
-        const selectedData = selectedNodes.map((node) => node.data);
-        setSelectedRows(selectedData);
-    };
-
     const deleteMclag = () => {
         setUpdateConfig(true);
 
@@ -155,6 +149,12 @@ const McLagDataTable = (props) => {
 
     const openAddFormModal = () => {
         setIsModalOpen("addMclag");
+    };
+
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        setSelectedRows(selectedData);
     };
 
     const handleCellValueChanged = useCallback((params) => {
@@ -226,8 +226,6 @@ const McLagDataTable = (props) => {
         }
     }, []);
 
-    const onColumnResized = useCallback((params) => {}, []);
-
     const onCellClicked = useCallback((params) => {
         if (params?.colDef?.field === "mclag_members") {
             setIsModalOpen("memberMclag");
@@ -279,14 +277,13 @@ const McLagDataTable = (props) => {
                     rowData={dataTable}
                     columnDefs={mclagColumns(ethernetPortchannelList)}
                     defaultColDef={defaultColDef}
-                    onColumnResized={onColumnResized}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
+                    domLayout={"autoHeight"}
                     enableCellTextSelection="true"
-                    rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
                     onCellClicked={onCellClicked}
-                    domLayout={"autoHeight"}
+                    rowSelection="multiple"
                     suppressRowClickSelection={true}
                 ></AgGridReact>
             </div>

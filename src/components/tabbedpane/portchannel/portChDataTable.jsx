@@ -4,7 +4,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Modal from "../../modal/Modal";
 
-import { portChannelColumns } from "../datatablesourse";
+import { portChannelColumns, defaultColDef } from "../datatablesourse";
 import {
     getAllPortChnlsOfDeviceURL,
     deletePortchannelIpURL,
@@ -28,6 +28,7 @@ export const getPortChannelDataCommon = (selectedDeviceIp) => {
         .get(apiPUrl)
         .then((res) => {
             let data = res.data.map((data) => {
+                data.members = JSON.stringify(data.members);
                 data.vlan_members = JSON.stringify(data.vlan_members);
                 return data;
             });
@@ -77,13 +78,6 @@ const PortChDataTable = (props) => {
         getPortChannelDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
         });
-    };
-
-    const defaultColDef = {
-        tooltipValueGetter: (params) => {
-            return params.value;
-        },
-        resizable: true,
     };
 
     const refreshData = () => {
@@ -145,8 +139,6 @@ const PortChDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            setSelectedRows([]);
-            refreshData();
             return;
         }
 
@@ -212,8 +204,8 @@ const PortChDataTable = (props) => {
                     element.hasOwnProperty("ip_address") &&
                     (element.ip_address === "" || element.ip_address === null)
                 ) {
-                    deleteIpAddress(element);
                     delete element.ip_address;
+                    deleteIpAddress(element);
                     putConfig(element);
                 } else {
                     putConfig(element);
@@ -277,7 +269,7 @@ const PortChDataTable = (props) => {
     };
 
     return (
-        <div className="datatable-container">
+        <div className="datatable-container" id="portChannelDataTable">
             <div className="datatable">
                 <div className="button-group stickyButton">
                     <div className="button-column">
@@ -288,16 +280,20 @@ const PortChDataTable = (props) => {
                                 Object.keys(changes).length === 0
                             }
                             className="btnStyle"
+                            id="applyConfigBtn"
                         >
                             Apply Config
                         </button>
-                        <span className="config-status">{configStatus}</span>
+                        <span className="config-status" id="configStatus">
+                            {configStatus}
+                        </span>
                     </div>
 
                     <button
                         className="btnStyle"
                         disabled={!getIsStaff()}
                         onClick={openAddFormModal}
+                        id="addPortchannelBtn"
                     >
                         Add Port Channel
                     </button>
@@ -319,13 +315,13 @@ const PortChDataTable = (props) => {
                         rowData={dataTable}
                         columnDefs={portChannelColumns}
                         defaultColDef={defaultColDef}
+                        stopEditingWhenCellsLoseFocus={true}
                         onCellValueChanged={handleCellValueChanged}
-                        rowSelection="multiple"
+                        domLayout={"autoHeight"}
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}
-                        stopEditingWhenCellsLoseFocus={true}
-                        domLayout={"autoHeight"}
+                        rowSelection="multiple"
                         suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>
@@ -337,6 +333,7 @@ const PortChDataTable = (props) => {
                         onClose={refreshData}
                         title={"Add Port Channel"}
                         onSubmit={handleFormSubmit}
+                        id="addPortchannel"
                     >
                         <PortChannelForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>

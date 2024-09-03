@@ -11,7 +11,6 @@ import useStoreLogs from "../../utils/store";
 
 const Navbar = () => {
     const auth = useAuth();
-    
 
     const [isDiscoveryBtnDisabled, disableDiscBtn] = useState(!getIsStaff());
     const [discBtnText, setDiscBtnText] = useState("Discover Network");
@@ -30,11 +29,10 @@ const Navbar = () => {
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
             setUpdateLog(true);
-
-            window.location.reload();
+            // window.location.reload();
         } catch (error) {
             console.log(error);
-            window.location.reload();
+            // window.location.reload();
             setDiscBtnText("Discover Network");
             disableDiscBtn(false);
             setUpdateLog(true);
@@ -56,6 +54,7 @@ const Navbar = () => {
                     <div className="item">
                         <button
                             className="btnStyle"
+                            id="discoveryBtn"
                             onClick={() => setShowForm(true)}
                             disabled={isDiscoveryBtnDisabled}
                         >
@@ -72,7 +71,7 @@ const Navbar = () => {
                     </div>
 
                     <div className="items" onClick={handleLogout}>
-                        <button className="btnStyle">Logout</button>
+                        <button id="logoutBtn" className="btnStyle">Logout</button>
                     </div>
                 </div>
             </div>

@@ -20,7 +20,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
-        lag_name: undefined,
+        lag_name: "PortChannel101",
         admin_sts: "up",
         mtu: 9100,
         members: undefined,
@@ -210,20 +210,19 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     };
 
     return (
-        <form
-            onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit(formData);
-            }}
-            className=""
-        >
+        <div className="">
             <div className="form-wrapper">
                 <div className="form-field w-50">
                     <label>Device IP:</label>
-                    <input type="text" value={selectedDeviceIp} disabled />
+                    <input
+                        name="mgt_ip"
+                        type="text"
+                        value={selectedDeviceIp}
+                        disabled
+                    />
                 </div>
                 <div className="form-field w-50">
-                    <label htmlFor="lag-name">Channel Name:</label>
+                    <label for="lag_name">Channel Name:</label>
                     <input
                         type="text"
                         name="lag_name"
@@ -236,7 +235,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label>Admin Status:</label>
+                    <label for="admin_sts">Admin Status:</label>
                     <select
                         name="admin_sts"
                         value={formData.admin_sts}
@@ -250,7 +249,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     </select>
                 </div>
                 <div className="form-field w-50">
-                    <label>MTU:</label>
+                    <label for="mtu">MTU:</label>
                     <input
                         type="number"
                         name="mtu"
@@ -262,7 +261,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> Static:</label>
+                    <label for="static"> Static:</label>
                     <select
                         name="static"
                         value={formData.static}
@@ -276,7 +275,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     </select>
                 </div>
                 <div className="form-field w-50">
-                    <label>Fallback:</label>
+                    <label for="fallback">Fallback:</label>
                     <select
                         name="fallback"
                         value={formData.fallback}
@@ -293,7 +292,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label> Fast Rate:</label>
+                    <label for="fast_rate"> Fast Rate:</label>
                     <select
                         name="fast_rate"
                         value={formData.fast_rate}
@@ -307,7 +306,9 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     </select>
                 </div>
                 <div className="form-field w-50">
-                    <label>Graceful Shutdown Mode:</label>
+                    <label for="graceful_shutdown_mode">
+                        Graceful Shutdown Mode:
+                    </label>
                     <select
                         name="graceful_shutdown_mode"
                         value={formData.graceful_shutdown_mode}
@@ -324,7 +325,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-50">
-                    <label>
+                    <label for="min_links">
                         Min Link <span className="note">(1-32)</span> :
                     </label>
                     <input
@@ -337,7 +338,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     />
                 </div>
                 <div className="form-field w-50">
-                    <label>Ip Address:</label>
+                    <label for="ip_address">Ip Address:</label>
                     <input
                         type="text"
                         name="ip_address"
@@ -348,7 +349,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             </div>
 
             <div className="form-field">
-                <label>Description</label>
+                <label for="description">Description</label>
                 <textarea
                     type="text"
                     name="description"
@@ -360,11 +361,12 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label>Ethernet Members:</label>
+                    <label for="members">Ethernet Members:</label>
                     <select
                         onChange={handleDropdownChangeInterface}
                         defaultValue={"DEFAULT"}
                         ref={selectRefInterface}
+                        name="members"
                     >
                         <option value="DEFAULT" disabled>
                             Select Member Interface
@@ -376,7 +378,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                         ))}
                     </select>
                 </div>
-                <div className="form-field mt-25">
+                <div className="form-field mt-25" id="memberCount">
                     {Object.keys(selectedInterfaces).length} selected
                 </div>
             </div>
@@ -384,12 +386,17 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             <div className="selected-interface-wrap mb-10 w-100">
                 {Object.entries(selectedInterfaces).map(
                     ([key, value], index) => (
-                        <div className="selected-interface-list mb-10">
-                            <div key={key} className="ml-10 w-50">
+                        <div
+                            id={value}
+                            key={key}
+                            className="selected-interface-list mb-10"
+                        >
+                            <div className="ml-10 w-50">
                                 {index + 1} &nbsp; {value}
                             </div>
                             <div className=" w-50">
                                 <button
+                                    id="removeMember"
                                     className="btnStyle ml-25"
                                     disabled={updateConfig}
                                     onClick={() => handleRemoveInterface(value)}
@@ -404,12 +411,13 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper" style={{ alignItems: "center" }}>
                 <div className="form-field w-50">
-                    <label>Interface mode:</label>
+                    <label for="interface_mode">Interface mode:</label>
                 </div>
                 <div className="form-field w-50">
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"TRUNK"}
+                        name="interface_mode"
                     >
                         <option value="TRUNK">TRUNK</option>
                         <option value="ACCESS">ACCESS</option>
@@ -419,7 +427,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label>Access Vlan:</label>
+                    <label for="access_vlan">Access Vlan:</label>
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"DEFAULT"}
@@ -447,8 +455,12 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             </div>
 
             <div className="selected-interface-wrap mb-10 w-100">
-                {selectedVlans?.vlan_ids.map((value, index) => (
-                    <div className="selected-interface-list mb-10">
+                {selectedVlans?.vlan_ids.map(([value, key], index) => (
+                    <div
+                        className="selected-interface-list mb-10"
+                        id={value}
+                        key={key}
+                    >
                         <div className="ml-10 w-75">
                             {index + 1} &nbsp; Vlan{value}
                         </div>
@@ -470,6 +482,11 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     type="submit"
                     className="btnStyle mr-10"
                     disabled={updateConfig}
+                    id="applyConfigPortChannel"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        handleSubmit(formData);
+                    }}
                 >
                     Apply Config
                 </button>
@@ -481,7 +498,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     Cancel
                 </button>
             </div>
-        </form>
+        </div>
     );
 };
 

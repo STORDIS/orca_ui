@@ -41,9 +41,9 @@ const interceptor = (
                 error.response.statusText === "Unauthorized" &&
                 error.response.status === 401
             ) {
-                alert("Invalid Token");
+                alert("Unauthorized");
                 secureLocalStorage.clear();
-                window.location.href = "/login";
+                navigate("/login");
             } else if (
                 config &&
                 config.__retryCount >= retryCount &&

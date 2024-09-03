@@ -167,16 +167,19 @@ const InterfaceDataTable = (props) => {
     };
 
     return (
-        <div className="datatable">
+        <div className="datatable" id="interfaceDataTable">
             <div className="stickyButton">
                 <button
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}
-                    className="btnStyle "
+                    className="btnStyle"
+                    id="applyConfigBtn"
                 >
                     Apply Config
                 </button>
-                <span className="config-status">{configStatus}</span>
+                <span className="config-status" id="configStatus">
+                    {configStatus}
+                </span>
             </div>
 
             <div style={gridStyle} className="ag-theme-alpine pt-60">
@@ -187,8 +190,9 @@ const InterfaceDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    quickFilterText="Ethernet"
                     domLayout={"autoHeight"}
+                    enableCellTextSelection="true"
+                    quickFilterText="Ethernet"
                 ></AgGridReact>
             </div>
         </div>

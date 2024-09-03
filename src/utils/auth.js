@@ -20,10 +20,17 @@ export const AuthProvider = ({ children }) => {
             })
             .catch((error) => {
                 console.log(error);
-                if (error.code === "ERR_BAD_RESPONSE") {
-                    alert("Invalid credential");
-                } else {
+
+                if (error.code === "ERR_NETWORK") {
                     window.location.href = "/error?message=ERR_NETWORK";
+                } else if (
+                    error.code === "ERR_BAD_RESPONSE" &&
+                    error.response.data.message ===
+                        "User matching query does not exist."
+                ) {
+                    alert("User does not exist");
+                } else {
+                    // alert("Invalid Credentials");
                 }
 
                 secureLocalStorage.clear();

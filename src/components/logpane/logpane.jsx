@@ -157,9 +157,10 @@ export const LogViewer = () => {
     const gridStyle = useMemo(() => ({ height: "440px", width: "100%" }), []);
 
     return (
-        <div className="logPanel">
+        <div className="logPanel" id="logPanel" >
             <div className="stickyButton">
                 <button
+                    id="clearLogBtn"
                     className="clearLogBtn btnStyle"
                     onClick={handelClearLog}
                     disabled={!getIsStaff()}

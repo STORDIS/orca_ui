@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Modal.css";
 
-const Modal = ({ show, onClose, onSubmit, children, title }) => {
+const Modal = ({ show, onClose, onSubmit, children, title, id }) => {
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
@@ -25,7 +25,7 @@ const Modal = ({ show, onClose, onSubmit, children, title }) => {
     }
 
     return (
-        <div className="modal" onClick={onClose}>
+        <div className="modal" onClick={onClose} id={id} >
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h4 className="modal-title">{title}</h4>

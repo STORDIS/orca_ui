@@ -11,6 +11,7 @@ import interceptor from "../../utils/interceptor";
 
 import { deleteDevicesURL } from "../../utils/backend_rest_urls.js";
 import useStoreConfig from "../../utils/configStore.js";
+import useStoreLogs from "../../utils/store.js";
 
 const Datatable = (props) => {
     const instance = interceptor();
@@ -29,9 +30,18 @@ const Datatable = (props) => {
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
+    const updateLog = useStoreLogs((state) => state.updateLog);
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
     useEffect(() => {
         getDevices();
     }, [isTabbedPane]);
+
+    useEffect(() => {
+        if (updateLog) {
+            getDevices();
+        }
+    }, [updateLog]);
 
     const getDevices = () => {
         setUpdateConfig(true);
@@ -55,7 +65,6 @@ const Datatable = (props) => {
             });
     };
 
-    const onColumnResized = useCallback((params) => {}, []);
 
     const onCellClicked = useCallback((params) => {
         if (params.event.target.tagName === "BUTTON") {
@@ -72,28 +81,27 @@ const Datatable = (props) => {
         const apiPUrl = deleteDevicesURL();
         instance
             .delete(apiPUrl, { data: { mgt_ip: selectedDeviceToDelete } })
-            .then((res) => {
-            })
+            .then((res) => {})
             .catch((err) => {})
             .finally(() => {
                 setUpdateConfig(false);
+                setUpdateLog(true);
                 setSelectedDeviceToDelete("");
                 getDevices();
             });
     };
 
     return (
-        <div className="datatable">
+        <div className="datatable" id="dataTable">
             <div style={gridStyle} className="ag-theme-alpine">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
                     columnDefs={deviceUserColumns(isTabbedPane)}
                     defaultColDef={defaultColDef}
-                    onColumnResized={onColumnResized}
+                    domLayout={"autoHeight"}
                     enableCellTextSelection="true"
                     onCellClicked={onCellClicked}
-                    domLayout={"autoHeight"}
                 ></AgGridReact>
             </div>
 
@@ -109,6 +117,7 @@ const Datatable = (props) => {
                         </p>
                         <button
                             disabled={updateConfig}
+                            id="removeYesBtn"
                             className="btnStyle mt-10 mr-10"
                             onClick={handleDeleteConfirmation}
                         >
@@ -116,6 +125,7 @@ const Datatable = (props) => {
                         </button>
                         <button
                             disabled={updateConfig}
+                            id="removeNoBtn"
                             className="btnStyle mt-10"
                             onClick={handleDeleteCancellation}
                         >
