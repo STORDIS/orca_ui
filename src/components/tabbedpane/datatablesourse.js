@@ -45,33 +45,37 @@ export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
 export const getCellEditorParamsInterfaceBreakout = (params) => {
     let result = [];
 
-    if (params.data.breakout_supported) {
+    if (
+        params.data.breakout_supported &&
+        params.data.alias.match(/\//g).length === 1
+    ) {
         result = [
             "None",
-            "1xSPEED_400G",
-            "1xSPEED_200G",
-            "2xSPEED_200G",
-            "1xSPEED_200G",
-            "4xSPEED_100G",
-            "2xSPEED_100G",
-            "1xSPEED_100G",
-            "8xSPEED_50G",
-            "4xSPEED_50G",
-            "2xSPEED_50G",
-            "1xSPEED_50G",
-            "2xSPEED_40G",
-            "1xSPEED_40G",
-            "8xSPEED_25G",
-            "4xSPEED_25G",
-            "2xSPEED_25G",
-            "1xSPEED_25G",
-            "8xSPEED_10G",
-            "4xSPEED_10G",
-            "2xSPEED_10G",
-            "1xSPEED_10G",
+            "1xSPEED_400GB",
+            "1xSPEED_200GB",
+            "2xSPEED_200GB",
+            "1xSPEED_200GB",
+            "4xSPEED_100GB",
+            "2xSPEED_100GB",
+            "1xSPEED_100GB",
+            "8xSPEED_50GB",
+            "4xSPEED_50GB",
+            "2xSPEED_50GB",
+            "1xSPEED_50GB",
+            "2xSPEED_40GB",
+            "1xSPEED_40GB",
+            "8xSPEED_25GB",
+            "4xSPEED_25GB",
+            "2xSPEED_25GB",
+            "1xSPEED_25GB",
+            "8xSPEED_10GB",
+            "4xSPEED_10GB",
+            "2xSPEED_10GB",
+            "1xSPEED_10GB",
         ];
     } else if (
-        !params.data.breakout_supported &&
+        (!params.data.breakout_supported || params.data.breakout_supported) &&
+        params.data.alias.includes("/1") &&
         params.data.alias.match(/\//g).length === 2
     ) {
         result = ["None", params.data.breakout_mode];
@@ -85,10 +89,14 @@ export const getCellEditorParamsInterfaceBreakout = (params) => {
 };
 
 export const getBreakout = (params) => {
-    if (params.data.breakout_supported) {
+
+    if (
+        params.data.breakout_supported &&
+        params.data.alias.match(/\//g).length === 1
+    ) {
         return true;
     } else if (
-        !params.data.breakout_supported &&
+        (!params.data.breakout_supported || params.data.breakout_supported) &&
         params.data.alias.includes("/1") &&
         params.data.alias.match(/\//g).length === 2
     ) {
