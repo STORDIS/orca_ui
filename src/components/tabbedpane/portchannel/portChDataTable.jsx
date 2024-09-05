@@ -348,6 +348,7 @@ const PortChDataTable = (props) => {
                         onSubmit={(data) => {
                             handleFormSubmit(data);
                         }}
+                        id="addPortchannelMembers"
                     >
                         <PortChMemberForm
                             selectedDeviceIp={selectedDeviceIp}

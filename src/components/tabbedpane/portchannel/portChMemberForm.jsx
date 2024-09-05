@@ -116,6 +116,7 @@ const PortChMemberForm = ({
                         onChange={handleDropdownChange}
                         defaultValue={"DEFAULT"}
                         ref={selectRefInterface}
+                        name="members"
                     >
                         <option value="DEFAULT" disabled>
                             Select Member Interface
@@ -127,7 +128,7 @@ const PortChMemberForm = ({
                         ))}
                     </select>
                 </div>
-                <div className="form-field mt-25">
+                <div className="form-field mt-25" id="memberCount">
                     {Object.keys(selectedInterfaces).length} selected
                 </div>
             </div>
@@ -135,8 +136,12 @@ const PortChMemberForm = ({
             <div className="selected-interface-wrap mb-10 w-100">
                 {Object.entries(selectedInterfaces).map(
                     ([key, value], index) => (
-                        <div className="selected-interface-list mb-10">
-                            <div key={key} className="ml-10 w-50">
+                        <div
+                            key={key}
+                            id={key}
+                            className="selected-interface-list mb-10"
+                        >
+                            <div className="ml-10 w-50">
                                 {index + 1} &nbsp; {value}
                             </div>
                             <div className=" w-50">
@@ -144,6 +149,7 @@ const PortChMemberForm = ({
                                     className="btnStyle ml-25"
                                     disabled={updateConfig}
                                     onClick={() => handleRemove(value)}
+                                    id="removeMember"
                                 >
                                     Remove
                                 </button>
@@ -159,6 +165,7 @@ const PortChMemberForm = ({
                     className="btnStyle mr-10"
                     disabled={updateConfig}
                     onClick={handleSubmit}
+                    id="applyConfigPortChannel"
                 >
                     Apply Config
                 </button>
