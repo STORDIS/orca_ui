@@ -338,7 +338,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     />
                 </div>
                 <div className="form-field w-50">
-                    <label for="ip_address">Ip Address:</label>
+                    <label for="ip_address">IP Address:</label>
                     <input
                         type="text"
                         name="ip_address"

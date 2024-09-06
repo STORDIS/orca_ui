@@ -135,7 +135,7 @@ export const LogViewer = () => {
                     );
                 } else {
                     return (
-                        <div className="icon">
+                        <div className="icon" id={params.data.status_code}>
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
                             &nbsp; {params.data.response} &nbsp;
                         </div>
