@@ -85,7 +85,7 @@ export const HistoryChatSection = ({
                     id: chat.id,
                     final_message: chat?.final_message,
                     user_message: chat?.user_message,
-                    viewType: getChartType(chat?.final_message), // table / graph / string
+                    viewType: getChartType(chat?.final_message), // table / graph / string / json
                 }));
 
                 setChatHistory((prevChatHistory) => {
@@ -115,8 +115,12 @@ export const HistoryChatSection = ({
     const getChartType = (e) => {
         if (typeof e === "string") {
             return "string";
-        } else {
+        } else if (Array.isArray(e)) {
             return "table";
+        } else if (typeof e === "object") {
+            return "json";
+        } else {
+            return "unknown";
         }
     };
 
@@ -292,6 +296,23 @@ export const HistoryChatSection = ({
                                                         message={
                                                             item?.final_message
                                                         }
+                                                    />
+                                                </div>
+                                            ) : null}
+                                            {item.viewType === "json" ? (
+                                                <div
+                                                    style={gridStyle}
+                                                    className="ag-theme-alpine"
+                                                >
+                                                    <AgGridReact
+                                                        rowData={[
+                                                            item?.final_message,
+                                                        ]}
+                                                        columnDefs={generateColumnDefs(
+                                                            [
+                                                                item?.final_message,
+                                                            ]
+                                                        )}
                                                     />
                                                 </div>
                                             ) : null}

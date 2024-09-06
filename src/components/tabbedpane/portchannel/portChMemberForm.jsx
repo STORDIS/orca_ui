@@ -138,7 +138,7 @@ const PortChMemberForm = ({
                     ([key, value], index) => (
                         <div
                             key={key}
-                            id={key}
+                            id={value}
                             className="selected-interface-list mb-10"
                         >
                             <div className="ml-10 w-50">
@@ -170,7 +170,12 @@ const PortChMemberForm = ({
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onClose}>
+                <button
+                    type="button"
+                    className="btnStyle"
+                    onClick={onClose}
+                    id="cancelConfigPortChannel"
+                >
                     Cancel
                 </button>
             </div>
