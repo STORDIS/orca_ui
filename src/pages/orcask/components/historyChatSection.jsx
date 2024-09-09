@@ -21,6 +21,7 @@ import {
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
+import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
 
 export const HistoryChatSection = ({
     sendBookmarkDataToParent,
@@ -204,16 +205,24 @@ export const HistoryChatSection = ({
 
     return (
         <>
-            <div className="chatSection" ref={chatContainerRef}>
+            <div
+                className="chatSection"
+                id="chatSection"
+                ref={chatContainerRef}
+            >
                 {chatHistory
                     .sort((a, b) => a.id - b.id)
                     .map((item, index) => (
-                        <React.Fragment key={item.id}>
+                        <React.Fragment key={item.id} id={item.id}>
                             {item.user_message ? (
-                                <div className="promptStyle">
+                                <div
+                                    className="promptStyle"
+                                    id={index + "-user"}
+                                >
                                     <button
                                         disabled={!getIsStaff()}
                                         className="bookmark"
+                                        id="bookmarkUser"
                                         onClick={() =>
                                             sendBookMarks(
                                                 item.user_message,
@@ -223,7 +232,7 @@ export const HistoryChatSection = ({
                                     >
                                         <FaBookmark />
                                     </button>
-                                    <span className="copy">
+                                    <span className="copy" id="copyUser">
                                         <CopyToClipboard
                                             text={item.user_message}
                                             onCopy={() => {
@@ -245,7 +254,7 @@ export const HistoryChatSection = ({
                                 </div>
                             ) : null}
                             {item.final_message ? (
-                                <div className="aiStyle">
+                                <div className="aiStyle" id={index + "-ai"}>
                                     <span className="icon">
                                         <FaRobot />
                                     </span>
@@ -259,7 +268,7 @@ export const HistoryChatSection = ({
                                             <div className="selectView">
                                                 <select
                                                     className="selectView"
-                                                    name=""
+                                                    name="selectView"
                                                     id={index.toString()}
                                                     value={item.viewType}
                                                     onChange={
@@ -279,6 +288,7 @@ export const HistoryChatSection = ({
                                                 <div
                                                     style={gridStyle}
                                                     className="ag-theme-alpine"
+                                                    id="table"
                                                 >
                                                     <AgGridReact
                                                         rowData={
@@ -287,11 +297,18 @@ export const HistoryChatSection = ({
                                                         columnDefs={generateColumnDefs(
                                                             item?.final_message
                                                         )}
+                                                        defaultColDef={
+                                                            defaultColDef
+                                                        }
+                                                        enableCellTextSelection="true"
                                                     />
                                                 </div>
                                             ) : null}
                                             {item.viewType === "graph" ? (
-                                                <div className="graph">
+                                                <div
+                                                    className="graph"
+                                                    id="graph"
+                                                >
                                                     <SigmaGraph
                                                         message={
                                                             item?.final_message
@@ -303,6 +320,7 @@ export const HistoryChatSection = ({
                                                 <div
                                                     style={gridStyle}
                                                     className="ag-theme-alpine"
+                                                    id="json"
                                                 >
                                                     <AgGridReact
                                                         rowData={[
@@ -313,12 +331,16 @@ export const HistoryChatSection = ({
                                                                 item?.final_message,
                                                             ]
                                                         )}
+                                                        defaultColDef={
+                                                            defaultColDef
+                                                        }
+                                                        enableCellTextSelection="true"
                                                     />
                                                 </div>
                                             ) : null}
                                         </div>
                                     ) : null}
-                                    <span className="copy">
+                                    <span className="copy" id="copyAi">
                                         <CopyToClipboard
                                             text={item?.final_message}
                                         >
@@ -366,7 +388,7 @@ export const HistoryChatSection = ({
                             <span className="icon">
                                 <FaRobot />
                             </span>
-                            <div className="loader">
+                            <div className="loader" id="loader">
                                 <div className="dot"></div>
                                 <div className="dot"></div>
                                 <div className="dot"></div>
@@ -376,13 +398,13 @@ export const HistoryChatSection = ({
                 ) : null}
             </div>
 
-            <div className="promptArea">
+            <div className="promptArea" id="promptArea">
                 <textarea
                     value={questionPrompt.prompt}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
                     className="textArea"
-                    name=""
+                    name="promptArea"
                     ref={textAreaRef}
                     disabled={isLoading || !getIsStaff()}
                     placeholder={`Ask me something......\nPress Enter to submit and 'shift + enter' for next Line`}
@@ -396,6 +418,7 @@ export const HistoryChatSection = ({
                         }
                         onClick={gptCompletions}
                         className="btnStyle ml-10 "
+                        id="sendMessageBtn"
                     >
                         {!isLoading ? <FaArrowUp /> : null}
                         {isLoading ? <FaSpinner /> : null}
@@ -406,6 +429,7 @@ export const HistoryChatSection = ({
                         disabled={!getIsStaff() || chatHistory.length === 1}
                         onClick={deleteHistory}
                         className="btnStyle ml-10 "
+                        id="clearChatBtn"
                     >
                         <FaRotateLeft />
                     </button>
