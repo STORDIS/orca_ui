@@ -103,7 +103,7 @@ export const LogViewer = () => {
         {
             field: "request_json",
             headerName: "Task",
-            width: 700,
+            width: 500,
             resizable: true,
             filter: true,
             sortable: true,
@@ -125,16 +125,17 @@ export const LogViewer = () => {
             width: 400,
             resizable: true,
             sortable: true,
+
             cellRenderer: (params) => {
                 if (params.value === "success") {
                     return (
-                        <div className="icon">
+                        <div className="icon" id={params.data.status_code}>
                             <FaRegCheckCircle style={{ fontSize: "24px" }} />
                         </div>
                     );
                 } else {
                     return (
-                        <div className="icon">
+                        <div className="icon" id={params.data.status_code}>
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
                             &nbsp; {params.data.response} &nbsp;
                         </div>
@@ -157,7 +158,7 @@ export const LogViewer = () => {
     const gridStyle = useMemo(() => ({ height: "440px", width: "100%" }), []);
 
     return (
-        <div className="logPanel" id="logPanel" >
+        <div className="logPanel" id="logPanel">
             <div className="stickyButton">
                 <button
                     id="clearLogBtn"

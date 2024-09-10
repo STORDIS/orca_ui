@@ -433,7 +433,7 @@ export const portChannelColumns = [
     },
     {
         field: "ip_address",
-        headerName: "ip_address",
+        headerName: "IP Address",
         width: 130,
         sortable: true,
         editable: getIsStaff(),
