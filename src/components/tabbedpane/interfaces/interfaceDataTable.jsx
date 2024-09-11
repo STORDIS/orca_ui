@@ -77,7 +77,8 @@ const InterfaceDataTable = (props) => {
 
     const gridStyle = useMemo(
         () => ({
-            height: `${props.height}px`,
+            height: props.height - 100 + "px",
+            // height: "400px",
             width: "100%",
         }),
         [props.height]
