@@ -64,9 +64,11 @@ const TabbedPane = () => {
         setUndoChanges(true);
     };
 
-    const [height, setHeight] = useState(400);
+    const [height, setHeight] = useState(500);
     const handleResize = () => {
-        setHeight(parentDivRef.current.offsetHeight);
+        if (parentDivRef.current.offsetHeight > 500) {
+            setHeight(parentDivRef.current.offsetHeight);
+        }
     };
 
     return (

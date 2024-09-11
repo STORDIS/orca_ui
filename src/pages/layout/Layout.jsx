@@ -85,7 +85,7 @@ const Layout = () => {
                 </Routes>
 
                 {token && isAI ? (
-                    <div className="listContainer mb resizable">
+                    <div className="listContainer mb ">
                         <LogViewer />
                     </div>
                 ) : null}

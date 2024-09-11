@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState, useRef } from "react";
 import "./logpane.scss";
 import Time from "react-time-format";
 import "ag-grid-community/styles/ag-grid.css";
@@ -12,6 +12,8 @@ import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 
 export const LogViewer = () => {
+    const logPannelDivRef = useRef(null);
+
     const [logEntries, setLogEntries] = useState([]);
 
     const instance = interceptor();
@@ -155,13 +157,32 @@ export const LogViewer = () => {
         },
     ]);
 
-    const gridStyle = useMemo(() => ({ height: "440px", width: "100%" }), []);
+    const [height, setHeight] = useState(300);
+
+    const handleResize = () => {
+        if (logPannelDivRef.current.offsetHeight > 300) {
+            console.log(
+                "logPannelDivRef.current.offsetHeight",
+                logPannelDivRef.current.offsetHeight
+            );
+            setHeight(logPannelDivRef.current.offsetHeight);
+        }
+    };
+
+    const gridStyle = useMemo(
+        () => ({ height: height - 100 + "px", width: "100%" }),
+        [height]
+    );
 
     return (
-        <div className="logPanel" id="logPanel" >
-            <div className="stickyButton">
+        <div
+            className="logPanel resizable"
+            id="logPanel"
+            ref={logPannelDivRef}
+            onMouseMove={handleResize}
+        >
+            <div className="mt-25 mb-25">
                 <button
-                    id="clearLogBtn"
                     id="clearLogBtn"
                     className="clearLogBtn btnStyle"
                     onClick={handelClearLog}
@@ -170,14 +191,14 @@ export const LogViewer = () => {
                     Clear Log
                 </button>
             </div>
-            <div style={gridStyle} className="ag-theme-alpine table">
+            {/* {height} */}
+            <div style={gridStyle} className="ag-theme-alpine ">
                 <AgGridReact
                     rowData={logEntries}
                     columnDefs={colDefs}
                     pagination={true}
-                    paginationPageSize={50}
+                    paginationPageSize={10}
                     paginationPageSizeSelector={[50, 100, 150, 200]}
-                    domLayout={"autoHeight"}
                 />
             </div>
         </div>
