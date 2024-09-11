@@ -9,6 +9,8 @@ import interceptor from "../../../utils/interceptor";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 
+import { isValidIPv4WithCIDR } from "../../../utils/common";
+
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -77,6 +79,7 @@ const InterfaceDataTable = (props) => {
     const resetConfigStatus = () => {
         setConfigStatus("");
         setChanges([]);
+        getInterfaceData();
     };
 
     const getAdvSpeed = (params) => {
@@ -93,6 +96,16 @@ const InterfaceDataTable = (props) => {
     };
 
     const handleCellValueChanged = useCallback((params) => {
+        if (
+            !isValidIPv4WithCIDR(params.data.ip_address) &&
+            params.data.ip_address !== "" &&
+            params.data.ip_address !== null
+        ) {
+            alert("ip_address is not valid");
+            resetConfigStatus();
+            return;
+        }
+
         if (params.newValue !== params.oldValue) {
             setChanges((prev) => {
                 let latestChanges;

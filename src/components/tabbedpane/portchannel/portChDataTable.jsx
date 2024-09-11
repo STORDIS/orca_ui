@@ -114,7 +114,6 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 refreshData();
                 setUpdateConfig(false);
-
                 setUpdateLog(true);
             });
     };
