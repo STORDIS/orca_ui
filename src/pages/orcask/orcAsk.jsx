@@ -84,7 +84,7 @@ export const AskOrca = () => {
                     copiedBookmark={copiedBookmark}
                 />
             </div>
-            <div className=" rightColumn">
+            <div className="rightColumn" id="bookmark" >
                 <div className="heading">
                     <span className="mr-10">
                         <FaBookmark />
@@ -95,6 +95,7 @@ export const AskOrca = () => {
                             disabled={!getIsStaff()}
                             onClick={deleteAllBookMark}
                             className="deleteIcon"
+                            id="deleteAllBookmark"
                         >
                             <FaTrashAlt />
                         </button>
@@ -120,7 +121,8 @@ export const AskOrca = () => {
                                         deleteBookmark(item.bookmark_id)
                                     }
                                     disabled={!getIsStaff()}
-                                    className="deleteIcon "
+                                    className="deleteIcon"
+                                    id="deleteBookmark"
                                 >
                                     <FaTrashAlt />
                                 </button>

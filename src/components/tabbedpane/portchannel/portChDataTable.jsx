@@ -84,6 +84,7 @@ const PortChDataTable = (props) => {
         setDataTable([]);
         getAllPortChanalData();
         setIsModalOpen("null");
+        setSelectedRows([]);
     };
 
     const deletePortchannel = () => {
@@ -113,7 +114,6 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 refreshData();
                 setUpdateConfig(false);
-
                 setUpdateLog(true);
             });
     };
@@ -139,6 +139,8 @@ const PortChDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
+            setSelectedRows([]);
+            refreshData();
             return;
         }
 
@@ -152,6 +154,8 @@ const PortChDataTable = (props) => {
                     return;
                 }
             }
+
+            console.log(params.colDef.field, params.newValue)
 
             setChanges((prev) => {
                 if (!Array.isArray(prev)) {
@@ -167,7 +171,7 @@ const PortChDataTable = (props) => {
                         (val) => val.lag_name === params.data.lag_name
                     );
                     prev[existedIndex][params.colDef.field] =
-                        params.newValue || "";
+                        params.newValue ;
                     latestChanges = [...prev];
                 } else {
                     latestChanges = [
@@ -175,7 +179,7 @@ const PortChDataTable = (props) => {
                         {
                             mgt_ip: selectedDeviceIp,
                             lag_name: params.data.lag_name,
-                            [params.colDef.field]: params.newValue || "",
+                            [params.colDef.field]: params.newValue ,
                         },
                     ];
                 }
@@ -235,6 +239,7 @@ const PortChDataTable = (props) => {
 
     const putConfig = (formData) => {
         setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
         const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
@@ -304,6 +309,7 @@ const PortChDataTable = (props) => {
                             selectedRows.length === 0 ||
                             selectedRows.length === undefined
                         }
+                        id="deletePortChannelBtn"
                     >
                         Delete Selected Port Channel
                     </button>
@@ -348,6 +354,7 @@ const PortChDataTable = (props) => {
                         onSubmit={(data) => {
                             handleFormSubmit(data);
                         }}
+                        id="addPortchannelMembers"
                     >
                         <PortChMemberForm
                             selectedDeviceIp={selectedDeviceIp}
@@ -365,6 +372,7 @@ const PortChDataTable = (props) => {
                         onSubmit={(data) => {
                             handleFormSubmit(data);
                         }}
+                        id="addPortchannelVlan"
                     >
                         <PortChVlanForm
                             selectedDeviceIp={selectedDeviceIp}
@@ -390,12 +398,14 @@ const PortChDataTable = (props) => {
                                     className="btnStyle"
                                     disabled={updateConfig}
                                     onClick={deletePortchannel}
+                                    id="removeYesBtn"
                                 >
                                     Yes
                                 </button>
                                 <button
                                     className="btnStyle"
                                     onClick={refreshData}
+                                    id="removeNoBtn"
                                 >
                                     No
                                 </button>

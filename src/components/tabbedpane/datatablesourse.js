@@ -216,6 +216,15 @@ export const interfaceColumns = [
         headerTooltip: "", // add header tooltip here
     },
     {
+        field: "ip_address",
+        headerName: "IP Address",
+        width: 130,
+        sortable: true,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
+    },
+    {
         field: "last_chng",
         headerName: "Last Change",
         width: 130,
@@ -535,7 +544,7 @@ export const portChannelColumns = [
     },
     {
         field: "ip_address",
-        headerName: "ip_address",
+        headerName: "IP Address",
         width: 130,
         sortable: true,
         editable: getIsStaff(),

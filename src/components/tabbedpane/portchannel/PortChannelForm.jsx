@@ -228,7 +228,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                         name="lag_name"
                         value={formData.lag_name}
                         onChange={handleChange}
-                        onBlur={handleValue}
+                        // onBlur={handleValue}
                     />
                 </div>
             </div>
@@ -338,7 +338,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     />
                 </div>
                 <div className="form-field w-50">
-                    <label for="ip_address">Ip Address:</label>
+                    <label>Ip Address:</label>
                     <input
                         type="text"
                         name="ip_address"
@@ -427,11 +427,12 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label for="access_vlan">Access Vlan:</label>
+                    <label>Access Vlan:</label>
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"DEFAULT"}
                         ref={selectRef}
+                        name="vlan_ids"
                     >
                         <option value="DEFAULT" disabled>
                             Select Vlan
@@ -449,18 +450,14 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                         </small>
                     ) : null}
                 </div>
-                <div className="form-field mt-25">
+                <div className="form-field mt-25" id="vlanCount" >
                     {selectedVlans?.vlan_ids?.length} selected
                 </div>
             </div>
 
             <div className="selected-interface-wrap mb-10 w-100">
-                {selectedVlans?.vlan_ids.map(([value, key], index) => (
-                    <div
-                        className="selected-interface-list mb-10"
-                        id={value}
-                        key={key}
-                    >
+                {selectedVlans?.vlan_ids.map((value, index) => (
+                    <div className="selected-interface-list mb-10">
                         <div className="ml-10 w-75">
                             {index + 1} &nbsp; Vlan{value}
                         </div>

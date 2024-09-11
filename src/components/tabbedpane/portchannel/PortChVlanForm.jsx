@@ -252,6 +252,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                     <select
                         onChange={handleInterfaceMood}
                         value={inputVlans.if_mode}
+                        name="interface_mode"
                     >
                         <option value="TRUNK">TRUNK</option>
                         <option value="ACCESS">ACCESS</option>
@@ -265,6 +266,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                         onChange={handleDropdownChange}
                         defaultValue={"DEFAULT"}
                         ref={selectRef}
+                        name="vlan_ids"
                     >
                         <option value="DEFAULT" disabled>
                             Select Vlan
@@ -281,14 +283,18 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                         </small>
                     ) : null}
                 </div>
-                <div className="form-field ">
+                <div className="form-field" id="vlanCount">
                     {inputVlans?.vlan_ids?.length} selected
                 </div>
             </div>
 
             <div className="selected-interface-wrap mb-10 w-100">
                 {inputVlans?.vlan_ids?.map((value, index) => (
-                    <div className="selected-interface-list mb-10">
+                    <div
+                        id={value}
+                        key={value}
+                        className="selected-interface-list mb-10"
+                    >
                         <div className="ml-10 w-75">
                             {index + 1} &nbsp; Vlan{value}
                         </div>
@@ -311,11 +317,17 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                     className="btnStyle mr-10"
                     disabled={updateConfig}
                     onClick={handleSubmit}
+                    id="applyConfigPortChannel"
                 >
                     Apply Config
                 </button>
 
-                <button type="button" className="btnStyle" onClick={onClose}>
+                <button
+                    type="button"
+                    className="btnStyle"
+                    onClick={onClose}
+                    id="cancelConfigPortChannel"
+                >
                     Cancel
                 </button>
                 <button
@@ -324,6 +336,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                         updateConfig || inputVlans?.vlan_ids?.length === 0
                     }
                     onClick={() => handleRemoveAll()}
+                     id="RemoveAllVlanPortChannel"
                 >
                     Remove All
                 </button>
