@@ -65,7 +65,6 @@ const StpDataTable = (props) => {
     const instance = interceptor();
 
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const [dataTable, setDataTable] = useState([]);
 
     const [configStatus, setConfigStatus] = useState("");
@@ -95,12 +94,6 @@ const StpDataTable = (props) => {
             setDataTable(data);
         });
     };
-
-    const resetConfigStatus = () => {
-        setConfigStatus("");
-    };
-
-
 
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
@@ -173,10 +166,18 @@ const StpDataTable = (props) => {
         });
     };
 
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
+
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group stickyButton">
+                <div className="button-group mt-15 mb-15 ">
                     <div className="button-column">
                         <button
                             onClick={() => handleFormSubmit(changes)}
@@ -207,7 +208,7 @@ const StpDataTable = (props) => {
                     </button>
                 </div>
 
-                <div style={gridStyle} className="ag-theme-alpine pt-60">
+                <div style={gridStyle} className="ag-theme-alpine ">
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
@@ -219,7 +220,6 @@ const StpDataTable = (props) => {
                         onSelectionChanged={onSelectionChanged}
                         stopEditingWhenCellsLoseFocus={true}
                         onCellClicked={onCellClicked}
-                        domLayout={"autoHeight"}
                         suppressRowClickSelection={true}
                     ></AgGridReact>
                 </div>

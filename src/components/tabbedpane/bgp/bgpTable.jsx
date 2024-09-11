@@ -18,7 +18,6 @@ const BGPTable = (props) => {
     const instance = interceptor();
 
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const selectedDeviceIp = props.selectedDeviceIp;
 
     const [dataTable, setDataTable] = useState([]);
@@ -146,11 +145,17 @@ const BGPTable = (props) => {
         }
     }, []);
 
-    const onColumnResized = useCallback((params) => {}, []);
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
 
     return (
         <div className="datatable">
-            <div className="button-group stickyButton">
+            <div className="button-group mt-15 mb-15">
                 <div className="button-column">
                     <button
                         disabled={
@@ -183,7 +188,7 @@ const BGPTable = (props) => {
                 </div>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine pt-60">
+            <div style={gridStyle} className="ag-theme-alpine ">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -194,7 +199,6 @@ const BGPTable = (props) => {
                     rowSelection="multiple"
                     onSelectionChanged={onSelectionChanged}
                     onCellValueChanged={handleCellValueChanged}
-                    domLayout={"autoHeight"}
                     suppressRowClickSelection={true}
                 ></AgGridReact>
             </div>

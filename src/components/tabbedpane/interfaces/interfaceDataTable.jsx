@@ -64,25 +64,12 @@ const InterfaceDataTable = (props) => {
     }, [selectedDeviceIp]);
 
     useEffect(() => {
-        console.log(props.height);
-    }, [props.height]);
-
-    useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getInterfaceData();
         }
         props.reset(false);
     }, [props.refresh]);
-
-    const gridStyle = useMemo(
-        () => ({
-            height: props.height - 100 + "px",
-            // height: "400px",
-            width: "100%",
-        }),
-        [props.height]
-    );
 
     const getInterfaceData = () => {
         setDataTable([]);
@@ -113,7 +100,6 @@ const InterfaceDataTable = (props) => {
     };
 
     const handleCellValueChanged = useCallback((params) => {
-        console.log(params.data.ip_address);
         if (
             !isValidIPv4WithCIDR(params.data.ip_address) &&
             params.data.ip_address !== "" &&
@@ -248,7 +234,6 @@ const InterfaceDataTable = (props) => {
                 deleteIpAddress(item);
                 putConfig(item);
             } else {
-                console.log("put");
                 putConfig(changes);
             }
         });
@@ -330,9 +315,17 @@ const InterfaceDataTable = (props) => {
             });
     };
 
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
+
     return (
         <div className="datatable " id="interfaceDataTable">
-            <div className="mt-25 mb-25">
+            <div className="mt-15 mb-15">
                 <button
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}

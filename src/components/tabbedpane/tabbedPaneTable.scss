@@ -61,17 +61,4 @@
         font-style: italic;
         color: #999;
     }
-
-    .stickyButton {
-        position: absolute;
-        z-index: 2;
-        width: calc(100vw - 301px);
-        background-color: white;
-        padding-top: 15px;
-        padding-bottom: 15px;
-    }
-
-    .pt-60 {
-        padding-top: 60px !important;
-    }
 }

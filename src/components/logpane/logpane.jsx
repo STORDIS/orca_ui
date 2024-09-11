@@ -157,14 +157,10 @@ export const LogViewer = () => {
         },
     ]);
 
-    const [height, setHeight] = useState(300);
+    const [height, setHeight] = useState(400);
 
     const handleResize = () => {
-        if (logPannelDivRef.current.offsetHeight > 300) {
-            console.log(
-                "logPannelDivRef.current.offsetHeight",
-                logPannelDivRef.current.offsetHeight
-            );
+        if (logPannelDivRef.current.offsetHeight > 400) {
             setHeight(logPannelDivRef.current.offsetHeight);
         }
     };
@@ -181,7 +177,7 @@ export const LogViewer = () => {
             ref={logPannelDivRef}
             onMouseMove={handleResize}
         >
-            <div className="mt-25 mb-25">
+            <div className=" mb-15">
                 <button
                     id="clearLogBtn"
                     className="clearLogBtn btnStyle"
@@ -197,7 +193,7 @@ export const LogViewer = () => {
                     rowData={logEntries}
                     columnDefs={colDefs}
                     pagination={true}
-                    paginationPageSize={10}
+                    paginationPageSize={50}
                     paginationPageSizeSelector={[50, 100, 150, 200]}
                 />
             </div>

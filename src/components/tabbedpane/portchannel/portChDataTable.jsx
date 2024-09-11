@@ -43,10 +43,7 @@ export const getPortChannelDataCommon = (selectedDeviceIp) => {
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(
-        () => ({ height: "90%", width: "100%", maxWidth: "100%" }),
-        []
-    );
+
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
@@ -155,7 +152,7 @@ const PortChDataTable = (props) => {
                 }
             }
 
-            console.log(params.colDef.field, params.newValue)
+            console.log(params.colDef.field, params.newValue);
 
             setChanges((prev) => {
                 if (!Array.isArray(prev)) {
@@ -170,8 +167,7 @@ const PortChDataTable = (props) => {
                     let existedIndex = prev.findIndex(
                         (val) => val.lag_name === params.data.lag_name
                     );
-                    prev[existedIndex][params.colDef.field] =
-                        params.newValue ;
+                    prev[existedIndex][params.colDef.field] = params.newValue;
                     latestChanges = [...prev];
                 } else {
                     latestChanges = [
@@ -179,7 +175,7 @@ const PortChDataTable = (props) => {
                         {
                             mgt_ip: selectedDeviceIp,
                             lag_name: params.data.lag_name,
-                            [params.colDef.field]: params.newValue ,
+                            [params.colDef.field]: params.newValue,
                         },
                     ];
                 }
@@ -273,10 +269,18 @@ const PortChDataTable = (props) => {
         );
     };
 
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
+
     return (
         <div className="datatable-container" id="portChannelDataTable">
             <div className="datatable">
-                <div className="button-group stickyButton">
+                <div className="button-group mt-15 mb-15">
                     <div className="button-column">
                         <button
                             onClick={() => handleFormSubmit(changes)}
@@ -315,7 +319,7 @@ const PortChDataTable = (props) => {
                     </button>
                 </div>
 
-                <div style={gridStyle} className="ag-theme-alpine pt-60">
+                <div style={gridStyle} className="ag-theme-alpine ">
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
@@ -323,7 +327,6 @@ const PortChDataTable = (props) => {
                         defaultColDef={defaultColDef}
                         stopEditingWhenCellsLoseFocus={true}
                         onCellValueChanged={handleCellValueChanged}
-                        domLayout={"autoHeight"}
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}

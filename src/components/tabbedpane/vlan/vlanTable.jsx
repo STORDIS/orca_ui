@@ -43,7 +43,6 @@ const VlanTable = (props) => {
     const instance = interceptor();
 
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const [dataTable, setDataTable] = useState([]);
 
     const [configStatus, setConfigStatus] = useState("");
@@ -288,10 +287,18 @@ const VlanTable = (props) => {
         setSelectedRows(params.data);
     }, []);
 
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
+
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group stickyButton">
+                <div className="button-group mt-15 mb-15 ">
                     <div className="button-column">
                         <button
                             disabled={updateConfig || changes.length === 0}
@@ -322,7 +329,7 @@ const VlanTable = (props) => {
                     </button>
                 </div>
 
-                <div style={gridStyle} className="ag-theme-alpine pt-60">
+                <div style={gridStyle} className="ag-theme-alpine ">
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}
@@ -330,7 +337,6 @@ const VlanTable = (props) => {
                         defaultColDef={defaultColDef}
                         stopEditingWhenCellsLoseFocus={true}
                         onCellValueChanged={handleCellValueChanged}
-                        domLayout={"autoHeight"}
                         enableCellTextSelection="true"
                         onSelectionChanged={onSelectionChanged}
                         onCellClicked={onCellClicked}
