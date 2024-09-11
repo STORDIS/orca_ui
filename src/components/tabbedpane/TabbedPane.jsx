@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState, useRef } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -12,7 +12,6 @@ import StpDataTable from "./stp/stpDataTable";
 
 import { useParams } from "react-router-dom";
 import { getAllDevicesURL } from "../../utils/backend_rest_urls";
-import { useState, useEffect } from "react";
 import PortGroupTable from "./portgroup/portGroupTable";
 import VlanTable from "./vlan/vlanTable";
 import "../../pages/home/home.scss";
@@ -22,9 +21,10 @@ import interceptor from "../../utils/interceptor";
 
 const TabbedPane = () => {
     const instance = interceptor();
+    const parentDivRef = useRef(null);
 
     const { deviceIP } = useParams();
-    const [tabvalue, settabvalue] = React.useState(
+    const [tabvalue, settabvalue] = useState(
         parseInt(secureLocalStorage.getItem("selectedTab")) !== null
             ? parseInt(secureLocalStorage.getItem("selectedTab"))
             : 0
@@ -62,6 +62,11 @@ const TabbedPane = () => {
     const handleDeviceChange = (event) => {
         navigate("/devices/" + event.target.value);
         setUndoChanges(true);
+    };
+
+    const [height, setHeight] = useState(400);
+    const handleResize = () => {
+        setHeight(parentDivRef.current.offsetHeight);
     };
 
     return (
@@ -120,10 +125,17 @@ const TabbedPane = () => {
                     </div>
                 )}
                 {tabvalue === 1 && (
-                    <div className="resizable" tabvalue={tabvalue} index={1}>
+                    <div
+                        className="resizable"
+                        tabvalue={tabvalue}
+                        index={1}
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                    >
                         <InterfaceDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>

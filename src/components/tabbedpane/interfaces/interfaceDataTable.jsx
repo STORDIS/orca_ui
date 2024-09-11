@@ -44,7 +44,6 @@ export const getInterfaceDataCommon = (selectedDeviceIp) => {
 
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const selectedDeviceIp = props.selectedDeviceIp;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
@@ -65,12 +64,24 @@ const InterfaceDataTable = (props) => {
     }, [selectedDeviceIp]);
 
     useEffect(() => {
+        console.log(props.height);
+    }, [props.height]);
+
+    useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             getInterfaceData();
         }
         props.reset(false);
     }, [props.refresh]);
+
+    const gridStyle = useMemo(
+        () => ({
+            height: `${props.height}px`,
+            width: "100%",
+        }),
+        [props.height]
+    );
 
     const getInterfaceData = () => {
         setDataTable([]);
@@ -319,8 +330,8 @@ const InterfaceDataTable = (props) => {
     };
 
     return (
-        <div className="datatable" id="interfaceDataTable">
-            <div className="stickyButton">
+        <div className="datatable " id="interfaceDataTable">
+            <div className="mt-25 mb-25">
                 <button
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}
@@ -334,7 +345,7 @@ const InterfaceDataTable = (props) => {
                 </span>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine pt-60">
+            <div className="ag-theme-alpine " style={gridStyle}>
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -342,7 +353,7 @@ const InterfaceDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    domLayout={"autoHeight"}
+                    // domLayout={"autoHeight"}
                     enableCellTextSelection="true"
                     quickFilterText="Ethernet"
                 ></AgGridReact>
