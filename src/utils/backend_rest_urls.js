@@ -24,6 +24,10 @@ export function breakoutURL(device_ip) {
     return host_addr + "/breakout?mgt_ip=" + device_ip;
 }
 
+export function subInterfaceURL() {
+    return host_addr + "/subinterface";
+}
+
 // mclag urls
 
 export function getAllMclagsOfDeviceURL(device_ip) {

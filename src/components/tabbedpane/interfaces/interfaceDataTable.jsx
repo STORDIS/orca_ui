@@ -6,6 +6,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
     getAllInterfacesOfDeviceURL,
     breakoutURL,
+    subInterfaceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 
@@ -100,10 +101,11 @@ const InterfaceDataTable = (props) => {
     };
 
     const handleCellValueChanged = useCallback((params) => {
+        console.log(params.data.ip_address);
         if (
             !isValidIPv4WithCIDR(params.data.ip_address) &&
             params.data.ip_address !== "" &&
-            params.data.ip_address !== null
+            params.data.ip_address !== undefined
         ) {
             alert("ip_address is not valid");
             resetConfigStatus();
@@ -209,13 +211,29 @@ const InterfaceDataTable = (props) => {
                     if_alias: item.alias,
                     breakout_mode: item.breakout_mode,
                 };
-                console.log("put and breakout");
+
                 if (item.breakout_mode === "None") {
                     deleteBreakout(payload);
                 } else {
                     putBreakout(payload);
                 }
+
+                if (
+                    item.hasOwnProperty("ip_address") &&
+                    (item.ip_address === "" || item.ip_address === null)
+                ) {
+                    delete item.ip_address;
+                    deleteIpAddress(item);
+                }
+
                 putConfig(changes);
+            } else if (
+                item.hasOwnProperty("ip_address") &&
+                (item.ip_address === "" || item.ip_address === null)
+            ) {
+                delete item.ip_address;
+                deleteIpAddress(item);
+                putConfig(item);
             } else {
                 console.log("put");
                 putConfig(changes);
@@ -260,6 +278,22 @@ const InterfaceDataTable = (props) => {
                 getInterfaceData();
                 setUpdateLog(true);
                 setUpdateConfig(false);
+            });
+    };
+
+    const deleteIpAddress = (payload) => {
+        setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
+        const apiMUrl = subInterfaceURL();
+        instance
+            .delete(apiMUrl, { data: payload })
+            .then((response) => {})
+            .catch((err) => {})
+            .finally(() => {
+                setUpdateLog(true);
+                setUpdateConfig(false);
+
+                resetConfigStatus();
             });
     };
 
