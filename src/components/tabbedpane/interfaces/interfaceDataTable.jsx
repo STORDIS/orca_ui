@@ -105,7 +105,8 @@ const InterfaceDataTable = (props) => {
         if (
             !isValidIPv4WithCIDR(params.data.ip_address) &&
             params.data.ip_address !== "" &&
-            params.data.ip_address !== undefined
+            params.data.ip_address !== undefined &&
+            params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
             resetConfigStatus();
