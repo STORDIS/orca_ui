@@ -87,7 +87,6 @@ export const getCellEditorParamsInterfaceBreakout = (params) => {
 };
 
 export const getBreakout = (params) => {
-
     if (
         params.data.breakout_supported &&
         params.data.alias.match(/\//g).length === 1
@@ -465,6 +464,65 @@ export const vlanColumns = [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
+        cellRenderer: (params) => {
+            let js;
+
+            try {
+                js = JSON.parse(params.value);
+            } catch (e) {
+                return null;
+            }
+
+            if (!js || Object.keys(js).length === 0) {
+                return null;
+            }
+
+            const grouped = {};
+
+            for (const [key, value] of Object.entries(js)) {
+                if (!grouped[value]) {
+                    grouped[value] = [];
+                }
+                grouped[value].push(key);
+            }
+
+            return (
+                "ACCESS - " +
+                (grouped?.["ACCESS"]?.join(", ") || "Null") +
+                "\n TRUNK - " +
+                (grouped?.["TRUNK"]?.join(", ") || "Null")
+            );
+        },
+
+        tooltipValueGetter: (params) => {
+            let js;
+
+            try {
+                js = JSON.parse(params.value);
+            } catch (e) {
+                return null;
+            }
+
+            if (!js || Object.keys(js).length === 0) {
+                return null;
+            }
+
+            const grouped = {};
+
+            for (const [key, value] of Object.entries(js)) {
+                if (!grouped[value]) {
+                    grouped[value] = [];
+                }
+                grouped[value].push(key);
+            }
+
+            return (
+                "ACCESS - " +
+                (grouped?.["ACCESS"]?.join(", ") || "Null") +
+                "\n TRUNK - " +
+                (grouped?.["TRUNK"]?.join(", ") || "Null")
+            );
+        },
     },
 ];
 
