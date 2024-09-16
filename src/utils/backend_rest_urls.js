@@ -1,5 +1,5 @@
 const host_addr =
-    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://10.10.130.202:8000";
+    process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
 
 // auth urls
 
@@ -19,6 +19,13 @@ export function getUser(user) {
 
 export function getAllInterfacesOfDeviceURL(device_ip) {
     return host_addr + "/interfaces?mgt_ip=" + device_ip;
+}
+export function breakoutURL(device_ip) {
+    return host_addr + "/breakout?mgt_ip=" + device_ip;
+}
+
+export function subInterfaceURL() {
+    return host_addr + "/subinterface";
 }
 
 // mclag urls

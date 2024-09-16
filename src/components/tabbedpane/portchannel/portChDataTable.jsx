@@ -114,7 +114,6 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 refreshData();
                 setUpdateConfig(false);
-
                 setUpdateLog(true);
             });
     };
@@ -140,6 +139,7 @@ const PortChDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
+            setSelectedRows([]);
             refreshData();
             return;
         }

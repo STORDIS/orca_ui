@@ -338,7 +338,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     />
                 </div>
                 <div className="form-field w-50">
-                    <label for="ip_address">IP Address:</label>
+                    <label>Ip Address:</label>
                     <input
                         type="text"
                         name="ip_address"
@@ -427,7 +427,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="form-wrapper">
                 <div className="form-field w-75">
-                    <label for="vlan_ids">Access Vlan:</label>
+                    <label>Access Vlan:</label>
                     <select
                         onChange={handleDropdownChangeVlan}
                         defaultValue={"DEFAULT"}
@@ -457,11 +457,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
             <div className="selected-interface-wrap mb-10 w-100">
                 {selectedVlans?.vlan_ids.map((value, index) => (
-                    <div
-                        className="selected-interface-list mb-10"
-                        id={value}
-                        key={value}
-                    >
+                    <div className="selected-interface-list mb-10">
                         <div className="ml-10 w-75">
                             {index + 1} &nbsp; Vlan{value}
                         </div>

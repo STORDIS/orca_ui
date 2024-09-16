@@ -218,6 +218,7 @@ export const HistoryChatSection = ({
                                 <div
                                     className="promptStyle"
                                     id={index + "-user"}
+                                    index={index}
                                 >
                                     <button
                                         disabled={!getIsStaff()}
@@ -254,7 +255,11 @@ export const HistoryChatSection = ({
                                 </div>
                             ) : null}
                             {item.final_message ? (
-                                <div className="aiStyle" id={index + "-ai"}>
+                                <div
+                                    className="aiStyle"
+                                    id={index + "-ai"}
+                                    index={index}
+                                >
                                     <span className="icon">
                                         <FaRobot />
                                     </span>

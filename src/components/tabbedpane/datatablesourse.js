@@ -40,6 +40,69 @@ export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
         values: result,
     };
 };
+export const getCellEditorParamsInterfaceBreakout = (params) => {
+    let result = [];
+
+    if (
+        params.data.breakout_supported &&
+        params.data.alias.match(/\//g).length === 1
+    ) {
+        result = [
+            "None",
+            "1xSPEED_400GB",
+            "1xSPEED_200GB",
+            "2xSPEED_200GB",
+            "1xSPEED_200GB",
+            "4xSPEED_100GB",
+            "2xSPEED_100GB",
+            "1xSPEED_100GB",
+            "8xSPEED_50GB",
+            "4xSPEED_50GB",
+            "2xSPEED_50GB",
+            "1xSPEED_50GB",
+            "2xSPEED_40GB",
+            "1xSPEED_40GB",
+            "8xSPEED_25GB",
+            "4xSPEED_25GB",
+            "2xSPEED_25GB",
+            "1xSPEED_25GB",
+            "8xSPEED_10GB",
+            "4xSPEED_10GB",
+            "2xSPEED_10GB",
+            "1xSPEED_10GB",
+        ];
+    } else if (
+        (!params.data.breakout_supported || params.data.breakout_supported) &&
+        params.data.alias.includes("/1") &&
+        params.data.alias.match(/\//g).length === 2
+    ) {
+        result = ["None", params.data.breakout_mode];
+    } else {
+        result = ["Not supported"];
+    }
+
+    return {
+        values: result,
+    };
+};
+
+export const getBreakout = (params) => {
+
+    if (
+        params.data.breakout_supported &&
+        params.data.alias.match(/\//g).length === 1
+    ) {
+        return true;
+    } else if (
+        (!params.data.breakout_supported || params.data.breakout_supported) &&
+        params.data.alias.includes("/1") &&
+        params.data.alias.match(/\//g).length === 2
+    ) {
+        return true;
+    } else {
+        return false;
+    }
+};
 
 export const interfaceColumns = [
     {
@@ -98,6 +161,45 @@ export const interfaceColumns = [
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
     },
+    // breakout_supported: true
+    {
+        field: "breakout_mode",
+        headerName: "Breakout",
+        width: 130,
+        editable: getIsStaff() && getBreakout,
+        cellEditor: "agSelectCellEditor",
+        cellEditorParams: getCellEditorParamsInterfaceBreakout,
+        headerComponent: EditableHeaderComponent,
+        cellRenderer: (params) => {
+            if (params.data.breakout_supported) {
+                return params.value || "None";
+            } else if (
+                !params.data.breakout_supported &&
+                params.data.alias.match(/\//g).length === 2
+            ) {
+                return params.value;
+            } else {
+                return "Not supported";
+            }
+        },
+        headerTooltip: "", // add header tooltip here
+    },
+    {
+        field: "breakout_status",
+        headerName: "Breakout Status",
+        width: 130,
+        cellRenderer: (params) => {
+            if (
+                params.data.breakout_supported ||
+                params.data.alias.match(/\//g).length === 2
+            ) {
+                return params.value || "Unknown";
+            } else {
+                return "Not supported";
+            }
+        },
+        headerTooltip: "", // add header tooltip here
+    },
     {
         field: "admin_sts",
         headerName: "Admin Status",
@@ -109,6 +211,15 @@ export const interfaceColumns = [
         field: "description",
         headerName: "Description",
         width: 130,
+        editable: getIsStaff(),
+        headerComponent: EditableHeaderComponent,
+        headerTooltip: "", // add header tooltip here
+    },
+    {
+        field: "ip_address",
+        headerName: "IP Address",
+        width: 130,
+        sortable: true,
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
