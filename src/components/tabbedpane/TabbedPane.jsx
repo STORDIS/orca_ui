@@ -1,4 +1,4 @@
-import React from "react";
+import { useEffect, useState, useRef } from "react";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
@@ -12,7 +12,6 @@ import StpDataTable from "./stp/stpDataTable";
 
 import { useParams } from "react-router-dom";
 import { getAllDevicesURL } from "../../utils/backend_rest_urls";
-import { useState, useEffect } from "react";
 import PortGroupTable from "./portgroup/portGroupTable";
 import VlanTable from "./vlan/vlanTable";
 import "../../pages/home/home.scss";
@@ -22,9 +21,10 @@ import interceptor from "../../utils/interceptor";
 
 const TabbedPane = () => {
     const instance = interceptor();
+    const parentDivRef = useRef(null);
 
     const { deviceIP } = useParams();
-    const [tabvalue, settabvalue] = React.useState(
+    const [tabvalue, settabvalue] = useState(
         parseInt(secureLocalStorage.getItem("selectedTab")) !== null
             ? parseInt(secureLocalStorage.getItem("selectedTab"))
             : 0
@@ -63,6 +63,23 @@ const TabbedPane = () => {
         navigate("/devices/" + event.target.value);
         setUndoChanges(true);
     };
+
+    const [height, setHeight] = useState(500);
+    const handleResize = () => {
+        if (parentDivRef.current) {
+            setHeight(parentDivRef.current.offsetHeight);
+        }
+    };
+
+    useEffect(() => {
+        if (parentDivRef.current && (tabvalue === 1 || tabvalue === 5)) {
+            parentDivRef.current.style.height = `${500}px`;
+        } else if (parentDivRef.current && (tabvalue !== 1 || tabvalue !== 5)) {
+            parentDivRef.current.style.height = `${300}px`;
+        } else if (parentDivRef.current) {
+            parentDivRef.current.style.height = `${500}px`;
+        }
+    }, [tabvalue]);
 
     return (
         <div>
@@ -111,73 +128,129 @@ const TabbedPane = () => {
                     </Tabs>
                 </Box>
                 {tabvalue === 0 && (
-                    <div className="resizable" tabvalue={tabvalue} index={0}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={0}
+                    >
                         <Deviceinfo
                             columns={2}
                             isTabbedPane={true}
                             selectedDeviceIp={deviceIP}
+                            height={height}
                         />
                     </div>
                 )}
                 {tabvalue === 1 && (
-                    <div className="resizable" tabvalue={tabvalue} index={1}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={1}
+                    >
                         <InterfaceDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>
                 )}
                 {tabvalue === 2 && (
-                    <div className="resizable" tabvalue={tabvalue} index={2}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={2}
+                    >
                         <PortChDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>
                 )}
                 {tabvalue === 3 && (
-                    <div className="resizable" tabvalue={tabvalue} index={3}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={3}
+                    >
                         <McLagDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>
                 )}
                 {tabvalue === 4 && (
-                    <div className="resizable" tabvalue={tabvalue} index={4}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={4}
+                    >
                         <BGPTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>
                 )}
                 {tabvalue === 5 && (
-                    <div className="resizable" tabvalue={tabvalue} index={5}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={5}
+                    >
                         <PortGroupTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>
                 )}
                 {tabvalue === 6 && (
-                    <div className="resizable" tabvalue={tabvalue} index={6}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={6}
+                    >
                         <VlanTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>
                 )}
                 {tabvalue === 7 && (
-                    <div className="resizable" tabvalue={tabvalue} index={6}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={6}
+                    >
                         <StpDataTable
                             selectedDeviceIp={deviceIP}
                             refresh={undoChanges}
+                            height={height}
                             reset={() => setUndoChanges(false)}
                         />
                     </div>

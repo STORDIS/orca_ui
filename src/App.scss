@@ -162,7 +162,9 @@
 }
 
 .resizable {
+    min-height: 250px;
     // background-color: red !important;
     resize: vertical;
-    overflow: auto;
+    // overflow: auto;
+    overflow: hidden;
 }

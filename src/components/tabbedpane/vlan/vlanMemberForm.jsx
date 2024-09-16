@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../Form.scss";
 import useStoreConfig from "../../../utils/configStore";
-import {
-    getAllInterfacesOfDeviceURL,
-    getAllPortChnlsOfDeviceURL,
-    deleteVlanMembersURL,
-} from "../../../utils/backend_rest_urls";
+import { deleteVlanMembersURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
@@ -16,6 +12,7 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const updateConfig = useStoreConfig((state) => state.updateConfig);
     const [selectedInterfaces, setSelectedInterfaces] = useState({});
     const [interfaceNames, setInterfaceNames] = useState([]);
+    const selectRefVlanInterface = useRef(null);
 
     const deleteMembers = (payload, key) => {
         setUpdateConfig(true);
@@ -23,12 +20,8 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
         instance
             .delete(deleteVlanMembersURL(selectedDeviceIp), { data: payload })
             .then((response) => {
-                setSelectedInterfaces((prevInterfaces) => {
-                    const newInterfaces = { ...prevInterfaces };
-                    delete newInterfaces[key];
-                    return newInterfaces;
-                });
                 setUpdateConfig(false);
+                onClose();
             })
             .catch((error) => {
                 console.error("Error fetching interface names", error);
@@ -58,13 +51,29 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
             });
             setUpdateConfig(false);
         }
+
+        setInterfaceNames((prev) => {
+            const exist = prev.some((item) => item === key);
+            if (!exist) {
+                return [...prev, key];
+            }
+            return prev;
+        });
     };
 
     const handleDropdownChange = (event) => {
+        let newValue = event?.target?.value;
+
         setSelectedInterfaces((prev) => ({
             ...prev,
             [event.target.value]: "ACCESS",
         }));
+
+        setInterfaceNames((prev) => prev.filter((item) => item !== newValue));
+
+        setTimeout(() => {
+            selectRefVlanInterface.current.value = "DEFAULT";
+        }, 100);
     };
 
     const handleCheckbox = (key, value) => {
@@ -75,7 +84,7 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     };
 
     useEffect(() => {
-        let input_mem_if = JSON.parse(inputData.mem_ifs);
+        let input_mem_if = JSON.parse(inputData?.mem_ifs);
 
         if (Object.keys(input_mem_if).length !== 0) {
             setSelectedInterfaces(input_mem_if);
@@ -83,6 +92,9 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
 
         setInterfaceNames([]);
         // getInterfaces();
+
+        let selectedInterfaces = [];
+        selectedInterfaces.push(...Object.keys(input_mem_if));
 
         getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             const ethernetInterfaces = res
@@ -92,7 +104,13 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
             getPortChannelDataCommon(selectedDeviceIp).then((res) => {
                 const portchannel = res.map((element) => element?.lag_name);
 
-                setInterfaceNames([...ethernetInterfaces, ...portchannel]);
+                let tempArray = [...ethernetInterfaces, ...portchannel];
+
+                let fetchedInterfaceNames = tempArray.filter(
+                    (item) => !selectedInterfaces?.includes(item)
+                );
+
+                setInterfaceNames(fetchedInterfaceNames);
             });
         });
     }, []);
@@ -105,6 +123,8 @@ const VlanMemberForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                     <select
                         onChange={handleDropdownChange}
                         defaultValue={"DEFAULT"}
+                        ref={selectRefVlanInterface}
+                        name="members"
                     >
                         <option value="DEFAULT" disabled>
                             Select Member Interface

@@ -12,7 +12,6 @@ import useStoreLogs from "../../../utils/store";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const [changes, setChanges] = useState([]);
     const [originalData, setOriginalData] = useState([]);
     const [dataTable, setDataTable] = useState([]);
@@ -58,7 +57,6 @@ const PortGroupTable = (props) => {
             })
             .catch((err) => console.log(err));
     }, [selectedDeviceIp]);
-
 
     const handleCellValueChanged = useCallback(
         (params) => {
@@ -130,15 +128,21 @@ const PortGroupTable = (props) => {
             });
     }, [createReqJson, selectedDeviceIp, changes]);
 
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
+
     return (
         <div className="datatable">
-            <div className="stickyButton">
+            <div className="mt-15 mb-15">
                 <button
                     type="button"
                     onClick={sendUpdates}
-                    disabled={
-                        updateConfig || Object.keys(changes).length === 0
-                    }
+                    disabled={updateConfig || Object.keys(changes).length === 0}
                     className="btnStyle"
                 >
                     Apply Config
@@ -146,7 +150,7 @@ const PortGroupTable = (props) => {
                 <span className="config-status">{configStatus}</span>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine pt-60">
+            <div style={gridStyle} className="ag-theme-alpine ">
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -154,7 +158,6 @@ const PortGroupTable = (props) => {
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    domLayout={"autoHeight"}
                     enableCellTextSelection="true"
                 ></AgGridReact>
             </div>

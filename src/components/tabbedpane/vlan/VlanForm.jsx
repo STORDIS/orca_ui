@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "../Form.scss";
 
 import interceptor from "../../../utils/interceptor";
@@ -18,6 +18,8 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
+
+    const selectRefVlanMembers = useRef(null);
 
     const [formData, setFormData] = useState({
         mgt_ip: selectedDeviceIp || "",
@@ -136,10 +138,15 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     }, []);
 
     const handleDropdownChange = (event) => {
+        let newValue = event.target.value;
+
         setSelectedInterfaces((prev) => ({
             ...prev,
             [event.target.value]: "ACCESS",
         }));
+
+        setInterfaceNames((prev) => prev.filter((item) => item !== newValue));
+        setTimeout(() => (selectRefVlanMembers.current.value = "DEFAULT"), 100);
     };
 
     const handleCheckbox = (key, value) => {
@@ -154,6 +161,14 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             const newInterfaces = { ...prevInterfaces };
             delete newInterfaces[key];
             return newInterfaces;
+        });
+
+        setInterfaceNames((prev) => {
+            const exist = prev.some((item) => item === key);
+            if (!exist) {
+                return [...prev, key];
+            }
+            return prev;
         });
     };
 
@@ -258,6 +273,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     <label>Select Member Interface </label>
                     <select
                         onChange={handleDropdownChange}
+                        ref={selectRefVlanMembers}
                         defaultValue={"DEFAULT"}
                     >
                         <option value="DEFAULT" disabled>

@@ -44,7 +44,6 @@ export const getInterfaceDataCommon = (selectedDeviceIp) => {
 
 const InterfaceDataTable = (props) => {
     const gridRef = useRef();
-    const gridStyle = useMemo(() => ({ height: "90%", width: "100%" }), []);
     const selectedDeviceIp = props.selectedDeviceIp;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
@@ -101,7 +100,6 @@ const InterfaceDataTable = (props) => {
     };
 
     const handleCellValueChanged = useCallback((params) => {
-        console.log(params.data.ip_address);
         if (
             !isValidIPv4WithCIDR(params.data.ip_address) &&
             params.data.ip_address !== "" &&
@@ -236,7 +234,6 @@ const InterfaceDataTable = (props) => {
                 deleteIpAddress(item);
                 putConfig(item);
             } else {
-                console.log("put");
                 putConfig(changes);
             }
         });
@@ -318,9 +315,17 @@ const InterfaceDataTable = (props) => {
             });
     };
 
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
+
     return (
-        <div className="datatable" id="interfaceDataTable">
-            <div className="stickyButton">
+        <div className="datatable " id="interfaceDataTable">
+            <div className="mt-15 mb-15">
                 <button
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}
@@ -334,7 +339,7 @@ const InterfaceDataTable = (props) => {
                 </span>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine pt-60">
+            <div className="ag-theme-alpine " style={gridStyle}>
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
@@ -342,7 +347,7 @@ const InterfaceDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    domLayout={"autoHeight"}
+                    // domLayout={"autoHeight"}
                     enableCellTextSelection="true"
                     quickFilterText="Ethernet"
                 ></AgGridReact>
