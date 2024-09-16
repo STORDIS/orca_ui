@@ -76,7 +76,7 @@ const TabbedPane = () => {
             parentDivRef.current.style.height = `${500}px`;
         } else if (parentDivRef.current && (tabvalue !== 1 || tabvalue !== 5)) {
             parentDivRef.current.style.height = `${300}px`;
-        } else {
+        } else if (parentDivRef.current) {
             parentDivRef.current.style.height = `${500}px`;
         }
     }, [tabvalue]);
@@ -128,11 +128,18 @@ const TabbedPane = () => {
                     </Tabs>
                 </Box>
                 {tabvalue === 0 && (
-                    <div className="resizable" tabvalue={tabvalue} index={0}>
+                    <div
+                        className="resizable"
+                        onMouseMove={handleResize}
+                        ref={parentDivRef}
+                        tabvalue={tabvalue}
+                        index={0}
+                    >
                         <Deviceinfo
                             columns={2}
                             isTabbedPane={true}
                             selectedDeviceIp={deviceIP}
+                            height={height}
                         />
                     </div>
                 )}
