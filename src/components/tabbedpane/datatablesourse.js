@@ -1051,6 +1051,12 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             width: 130,
             sortable: true,
         },
+        {
+            field: "system_status",
+            headerName: "STATUS",
+            width: 130,
+            sortable: true,
+        },
         { field: "type", headerName: "TYPE", width: 130, sortable: true },
     ];
 
