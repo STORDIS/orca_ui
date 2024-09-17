@@ -52,29 +52,6 @@ const Navbar = () => {
                 </div>
                 <div className="items">
                     <div className="item">
-                        <select
-                            className="p-5"
-                            name="admin_sts"
-                            defaultValue={"up"}
-                        >
-                            <option selected value="10.10.229.58">
-                                10.10.229.58
-                            </option>
-                            <option value="10.10.229.111">10.10.229.111</option>
-                        </select>
-                        <select
-                            name="admin_sts"
-                            className="ml-15 p-5"
-                            defaultValue={"up"}
-                        >
-                            <option selected value="10">
-                                10 min
-                            </option>
-                            <option value="20">20 min</option>
-                        </select>
-                    </div>
-
-                    <div className="item">
                         <button
                             className="btnStyle"
                             id="discoveryBtn"
