@@ -72,12 +72,12 @@ const TabbedPane = () => {
     };
 
     useEffect(() => {
-        if (parentDivRef.current && (tabvalue === 1 || tabvalue === 5)) {
+        if (parentDivRef.current && tabvalue === 0) {
+            parentDivRef.current.style.height = `${360}px`;
+        } else if (parentDivRef.current && (tabvalue === 1 || tabvalue === 5)) {
             parentDivRef.current.style.height = `${500}px`;
-        } else if (parentDivRef.current && (tabvalue !== 1 || tabvalue !== 5)) {
-            parentDivRef.current.style.height = `${300}px`;
         } else if (parentDivRef.current) {
-            parentDivRef.current.style.height = `${500}px`;
+            parentDivRef.current.style.height = `${300}px`;
         }
     }, [tabvalue]);
 
