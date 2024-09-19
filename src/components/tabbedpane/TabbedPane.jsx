@@ -136,10 +136,10 @@ const TabbedPane = () => {
                         index={0}
                     >
                         <Deviceinfo
-                            columns={2}
-                            isTabbedPane={true}
+                            refresh={undoChanges}
                             selectedDeviceIp={deviceIP}
                             height={height}
+                            reset={() => setUndoChanges(false)}
                         />
                     </div>
                 )}

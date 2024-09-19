@@ -13,6 +13,7 @@ import BgpForm from "./bgpForm";
 import { getIsStaff } from "../../../utils/common";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
+import { FaSyncAlt } from "react-icons/fa";
 
 const BGPTable = (props) => {
     const instance = interceptor();
@@ -153,10 +154,23 @@ const BGPTable = (props) => {
         [props.height]
     );
 
+    const resyncBgp = () => {
+        // setUpdateConfig(true);
+        // resetConfigStatus();
+    };
+
     return (
         <div className="datatable">
             <div className="button-group mt-15 mb-15">
                 <div className="button-column">
+                    <button
+                        className="btnStyle mr-15"
+                        onClick={resyncBgp}
+                        disabled={updateConfig}
+                    >
+                        <FaSyncAlt /> Sync
+                    </button>
+
                     <button
                         disabled={
                             updateConfig || Object.keys(changes).length === 0

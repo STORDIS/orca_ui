@@ -9,6 +9,7 @@ import { getPortGroupsURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
+import { FaSyncAlt } from "react-icons/fa";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
@@ -136,9 +137,22 @@ const PortGroupTable = (props) => {
         [props.height]
     );
 
+    const resyncPortGroup = () => {
+        // setUpdateConfig(true);
+        // resetConfigStatus();
+    };
+
     return (
         <div className="datatable">
             <div className="mt-15 mb-15">
+                <button
+                    className="btnStyle mr-15"
+                    onClick={resyncPortGroup}
+                    disabled={updateConfig}
+                >
+                    <FaSyncAlt /> Sync
+                </button>
+
                 <button
                     type="button"
                     onClick={sendUpdates}

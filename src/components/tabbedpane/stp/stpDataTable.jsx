@@ -12,6 +12,7 @@ import { getIsStaff } from "../../../utils/common";
 import { stpURL } from "../../../utils/backend_rest_urls";
 import StpForm from "./stpForm";
 import StpVlanForm from "./stpVlanForm";
+import { FaSyncAlt } from "react-icons/fa";
 
 export const getStpDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -174,11 +175,24 @@ const StpDataTable = (props) => {
         [props.height]
     );
 
+    const resyncStp = () => {
+        // setUpdateConfig(true);
+        // resetConfigStatus();
+    };
+
     return (
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group mt-15 mb-15 ">
                     <div className="button-column">
+                        <button
+                            className="btnStyle mr-15"
+                            onClick={resyncStp}
+                            disabled={updateConfig}
+                        >
+                            <FaSyncAlt /> Sync
+                        </button>
+
                         <button
                             onClick={() => handleFormSubmit(changes)}
                             disabled={updateConfig || changes.length === 0}

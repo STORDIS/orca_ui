@@ -17,6 +17,7 @@ import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
+import { FaSyncAlt } from "react-icons/fa";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -240,10 +241,23 @@ const McLagDataTable = (props) => {
         [props.height]
     );
 
+    const resyncMclag = () => {
+        // setUpdateConfig(true);
+        // resetConfigStatus();
+    };
+
     return (
         <div className="datatable">
             <div className="button-group mt-15 mb-15">
                 <div className="button-column">
+                    <button
+                        className="btnStyle mr-15"
+                        onClick={resyncMclag}
+                        disabled={updateConfig}
+                    >
+                        <FaSyncAlt /> Sync
+                    </button>
+
                     <button
                         disabled={
                             updateConfig || Object.keys(changes).length === 0

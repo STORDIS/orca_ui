@@ -20,6 +20,7 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { FaSyncAlt } from "react-icons/fa";
 
 export const getPortChannelDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -277,11 +278,24 @@ const PortChDataTable = (props) => {
         [props.height]
     );
 
+    const resyncPortchannel = () => {
+        // setUpdateConfig(true);
+        // resetConfigStatus();
+    };
+
     return (
         <div className="datatable-container" id="portChannelDataTable">
             <div className="datatable">
                 <div className="button-group mt-15 mb-15">
                     <div className="button-column">
+                        <button
+                            className="btnStyle mr-15"
+                            onClick={resyncPortchannel}
+                            disabled={updateConfig}
+                        >
+                            <FaSyncAlt /> Sync
+                        </button>
+
                         <button
                             onClick={() => handleFormSubmit(changes)}
                             disabled={

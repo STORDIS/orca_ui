@@ -14,6 +14,7 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { FaSyncAlt } from "react-icons/fa";
 
 // Function to get vlan names
 export const getVlanDataCommon = (selectedDeviceIp) => {
@@ -295,11 +296,24 @@ const VlanTable = (props) => {
         [props.height]
     );
 
+    const resyncVlan = () => {
+        // setUpdateConfig(true);
+        // resetConfigStatus();
+    };
+
     return (
         <div className="datatable-container">
             <div className="datatable">
                 <div className="button-group mt-15 mb-15 ">
                     <div className="button-column">
+                        <button
+                            className="btnStyle mr-15"
+                            onClick={resyncVlan}
+                            disabled={updateConfig}
+                        >
+                            <FaSyncAlt /> Sync
+                        </button>
+
                         <button
                             disabled={updateConfig || changes.length === 0}
                             className="btnStyle"

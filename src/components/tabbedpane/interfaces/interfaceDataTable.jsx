@@ -15,6 +15,8 @@ import useStoreConfig from "../../../utils/configStore";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 
+import { FaSyncAlt } from "react-icons/fa";
+
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -290,7 +292,6 @@ const InterfaceDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-
                 resetConfigStatus();
             });
     };
@@ -323,9 +324,22 @@ const InterfaceDataTable = (props) => {
         [props.height]
     );
 
+    const resyncInterfaces = () => {
+        // getInterfaceData();
+        // setUpdateConfig(true);
+        // resetConfigStatus();
+    };
+
     return (
-        <div className="datatable " id="interfaceDataTable">
+        <div className="datatable" id="interfaceDataTable">
             <div className="mt-15 mb-15">
+                <button
+                    className="btnStyle mr-15"
+                    onClick={resyncInterfaces}
+                    disabled={updateConfig}
+                >
+                    <FaSyncAlt /> Sync
+                </button>
                 <button
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}

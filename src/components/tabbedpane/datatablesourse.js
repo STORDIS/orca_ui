@@ -1079,5 +1079,14 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             },
         });
     }
+
+    if (isTabbedPane) {
+        dataColumn.push({
+            field: "sync_time",
+            headerName: "Sync Time",
+            width: 200,
+            editable: getIsStaff(),
+        });
+    }
     return dataColumn;
 };
