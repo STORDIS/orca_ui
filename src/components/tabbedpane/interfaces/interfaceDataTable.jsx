@@ -14,6 +14,7 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 import { FaSyncAlt } from "react-icons/fa";
 
@@ -324,10 +325,19 @@ const InterfaceDataTable = (props) => {
         [props.height]
     );
 
-    const resyncInterfaces = () => {
-        // getInterfaceData();
-        // setUpdateConfig(true);
-        // resetConfigStatus();
+    const resyncInterfaces = async () => {
+        let payload = {
+            device_ip: selectedDeviceIp,
+            feature: "interface",
+        };
+        setConfigStatus("Config In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
     };
 
     return (

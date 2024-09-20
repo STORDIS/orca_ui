@@ -3,10 +3,27 @@ import "./tabbedPaneTable.scss";
 import { deviceUserColumns } from "./datatablesourse";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllDevicesURL } from "../../utils/backend_rest_urls.js";
+import { getAllDevicesURL, syncURL } from "../../utils/backend_rest_urls.js";
 import interceptor from "../../utils/interceptor.js";
 import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore.js";
+
+export const syncFeatureCommon = (payload, status) => {
+    status(true);
+    const instance = interceptor();
+    const apiUrl = syncURL();
+    return instance
+        .put(apiUrl, payload)
+        .then((res) => {
+            status(false);
+            return true;
+        })
+        .catch((err) => {
+            console.log(err);
+            status(false);
+            return false;
+        });
+};
 
 const Deviceinfo = (props) => {
     const selectedDeviceIp = props.selectedDeviceIp;
@@ -42,12 +59,17 @@ const Deviceinfo = (props) => {
     }, [props.refresh]);
 
     const sendUpdates = () => {
-        setConfigStatus("Applying changes...");
+        setConfigStatus("Config In Progress....");
         setChanges(undefined);
     };
 
     const handleChange = (e) => {
         setChanges(e.target.value);
+        let payload = {
+            device_ip: selectedDeviceIp,
+            interval: parseInt(e.target.value),
+        };
+        console.log(payload);
     };
 
     return (
