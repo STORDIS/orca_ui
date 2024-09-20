@@ -21,6 +21,7 @@ import useStoreConfig from "../../../utils/configStore";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 export const getPortChannelDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -278,18 +279,28 @@ const PortChDataTable = (props) => {
         [props.height]
     );
 
-    const resyncPortchannel = () => {
-        // setUpdateConfig(true);
-        // resetConfigStatus();
+    const resyncPortchannel = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "port_channel",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
     };
 
     return (
         <div className="datatable-container" id="portChannelDataTable">
             <div className="datatable">
-                <div className="button-group mt-15 mb-15">
-                    <div className="button-column">
+                <div className="button-group mt-5 mb-5">
+                    <div >
                         <button
-                            className="btnStyle mr-15"
+                            className="btnStyle m-10"
                             onClick={resyncPortchannel}
                             disabled={updateConfig}
                         >
@@ -302,7 +313,7 @@ const PortChDataTable = (props) => {
                                 updateConfig ||
                                 Object.keys(changes).length === 0
                             }
-                            className="btnStyle"
+                            className="btnStyle m-10"
                             id="applyConfigBtn"
                         >
                             Apply Config
@@ -312,25 +323,27 @@ const PortChDataTable = (props) => {
                         </span>
                     </div>
 
-                    <button
-                        className="btnStyle"
-                        disabled={!getIsStaff()}
-                        onClick={openAddFormModal}
-                        id="addPortchannelBtn"
-                    >
-                        Add Port Channel
-                    </button>
-                    <button
-                        className="btnStyle"
-                        onClick={handleDelete}
-                        disabled={
-                            selectedRows.length === 0 ||
-                            selectedRows.length === undefined
-                        }
-                        id="deletePortChannelBtn"
-                    >
-                        Delete Selected Port Channel
-                    </button>
+                    <div>
+                        <button
+                            className="btnStyle m-10"
+                            disabled={!getIsStaff()}
+                            onClick={openAddFormModal}
+                            id="addPortchannelBtn"
+                        >
+                            Add Port Channel
+                        </button>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={handleDelete}
+                            disabled={
+                                selectedRows.length === 0 ||
+                                selectedRows.length === undefined
+                            }
+                            id="deletePortChannelBtn"
+                        >
+                            Delete Selected Port Channel
+                        </button>
+                    </div>
                 </div>
 
                 <div style={gridStyle} className="ag-theme-alpine ">

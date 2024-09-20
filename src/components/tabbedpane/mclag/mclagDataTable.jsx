@@ -18,6 +18,7 @@ import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -241,17 +242,27 @@ const McLagDataTable = (props) => {
         [props.height]
     );
 
-    const resyncMclag = () => {
-        // setUpdateConfig(true);
-        // resetConfigStatus();
+    const resyncMclag = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "mclag",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
     };
 
     return (
         <div className="datatable">
-            <div className="button-group mt-15 mb-15">
-                <div className="button-column">
+            <div className="button-group mt-5 mb-5">
+                <div>
                     <button
-                        className="btnStyle mr-15"
+                        className="btnStyle m-10"
                         onClick={resyncMclag}
                         disabled={updateConfig}
                     >
@@ -262,7 +273,7 @@ const McLagDataTable = (props) => {
                         disabled={
                             updateConfig || Object.keys(changes).length === 0
                         }
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         onClick={() => handleFormSubmit(changes)}
                     >
                         Apply Config
@@ -270,9 +281,9 @@ const McLagDataTable = (props) => {
                     <span className="config-status">{configStatus}</span>
                 </div>
 
-                <div className="">
+                <div>
                     <button
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         disabled={!getIsStaff()}
                         onClick={openAddFormModal}
                     >
@@ -280,7 +291,7 @@ const McLagDataTable = (props) => {
                     </button>
 
                     <button
-                        className="ml-10 btnStyle"
+                        className="btnStyle m-10"
                         disabled={
                             selectedRows.length === undefined ||
                             selectedRows.length === 0

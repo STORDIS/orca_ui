@@ -14,6 +14,7 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 const BGPTable = (props) => {
     const instance = interceptor();
@@ -154,17 +155,27 @@ const BGPTable = (props) => {
         [props.height]
     );
 
-    const resyncBgp = () => {
-        // setUpdateConfig(true);
-        // resetConfigStatus();
+    const resyncBgp = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "bgp",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
     };
 
     return (
         <div className="datatable">
-            <div className="button-group mt-15 mb-15">
-                <div className="button-column">
+            <div className="button-group mt-5 mb-5">
+                <div>
                     <button
-                        className="btnStyle mr-15"
+                        className="btnStyle m-10"
                         onClick={resyncBgp}
                         disabled={updateConfig}
                     >
@@ -175,7 +186,7 @@ const BGPTable = (props) => {
                         disabled={
                             updateConfig || Object.keys(changes).length === 0
                         }
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         onClick={() => handleFormSubmit(changes, "Updat")}
                     >
                         Apply Config
@@ -183,9 +194,9 @@ const BGPTable = (props) => {
                     <span className="config-status">{configStatus}</span>
                 </div>
 
-                <div className="">
+                <div>
                     <button
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         disabled={!getIsStaff()}
                         onClick={openAddModal}
                     >
@@ -193,7 +204,7 @@ const BGPTable = (props) => {
                     </button>
 
                     <button
-                        className="ml-10 btnStyle"
+                        className="btnStyle m-10"
                         disabled={selectedRows.length === 0}
                         onClick={deleteBgp}
                     >

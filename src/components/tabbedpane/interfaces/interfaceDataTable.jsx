@@ -327,10 +327,10 @@ const InterfaceDataTable = (props) => {
 
     const resyncInterfaces = async () => {
         let payload = {
-            device_ip: selectedDeviceIp,
+            mgt_ip : selectedDeviceIp,
             feature: "interface",
         };
-        setConfigStatus("Config In Progress....");
+        setConfigStatus("Sync In Progress....");
         await syncFeatureCommon(payload, (status) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
@@ -342,9 +342,9 @@ const InterfaceDataTable = (props) => {
 
     return (
         <div className="datatable" id="interfaceDataTable">
-            <div className="mt-15 mb-15">
+            <div className="mt-5 mb-5">
                 <button
-                    className="btnStyle mr-15"
+                    className="btnStyle m-10"
                     onClick={resyncInterfaces}
                     disabled={updateConfig}
                 >

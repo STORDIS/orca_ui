@@ -13,6 +13,7 @@ import { stpURL } from "../../../utils/backend_rest_urls";
 import StpForm from "./stpForm";
 import StpVlanForm from "./stpVlanForm";
 import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 export const getStpDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -135,12 +136,12 @@ const StpDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                refreshData();
+                resetConfigStatus();
             }
         });
     };
 
-    const refreshData = () => {
+    const resetConfigStatus = () => {
         setChanges([]);
         setDataTable([]);
         setSelectedRows([]);
@@ -162,7 +163,7 @@ const StpDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                refreshData();
+                resetConfigStatus();
             }
         });
     };
@@ -175,18 +176,28 @@ const StpDataTable = (props) => {
         [props.height]
     );
 
-    const resyncStp = () => {
-        // setUpdateConfig(true);
-        // resetConfigStatus();
+    const resyncStp = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "stp",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
     };
 
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group mt-15 mb-15 ">
-                    <div className="button-column">
+                <div className="button-group mt-5 mb-5 ">
+                    <div>
                         <button
-                            className="btnStyle mr-15"
+                            className="btnStyle m-10"
                             onClick={resyncStp}
                             disabled={updateConfig}
                         >
@@ -196,30 +207,32 @@ const StpDataTable = (props) => {
                         <button
                             onClick={() => handleFormSubmit(changes)}
                             disabled={updateConfig || changes.length === 0}
-                            className="btnStyle"
+                            className="btnStyle m-10"
                         >
                             Apply Config
                         </button>
                         <span className="config-status">{configStatus}</span>
                     </div>
 
-                    <button
-                        className="btnStyle"
-                        onClick={openAddFormModal}
-                        disabled={!getIsStaff()}
-                    >
-                        Add STP
-                    </button>
-                    <button
-                        className="btnStyle"
-                        onClick={deleteStp}
-                        disabled={
-                            selectedRows.length === 0 ||
-                            selectedRows.length === undefined
-                        }
-                    >
-                        Delete selected STP
-                    </button>
+                    <div>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={openAddFormModal}
+                            disabled={!getIsStaff()}
+                        >
+                            Add STP
+                        </button>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={deleteStp}
+                            disabled={
+                                selectedRows.length === 0 ||
+                                selectedRows.length === undefined
+                            }
+                        >
+                            Delete selected STP
+                        </button>
+                    </div>
                 </div>
 
                 <div style={gridStyle} className="ag-theme-alpine ">
@@ -242,8 +255,8 @@ const StpDataTable = (props) => {
                 {isModalOpen === "addStpForm" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
-                        onSubmit={refreshData}
+                        onClose={resetConfigStatus}
+                        onSubmit={resetConfigStatus}
                         title={"Add STP"}
                     >
                         <StpForm selectedDeviceIp={selectedDeviceIp} />
@@ -254,9 +267,9 @@ const StpDataTable = (props) => {
                 {isModalOpen === "addStpVlanForm" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={resetConfigStatus}
                         title={"Add Disabled Vlans for STP"}
-                        onSubmit={refreshData}
+                        onSubmit={resetConfigStatus}
                     >
                         <StpVlanForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>

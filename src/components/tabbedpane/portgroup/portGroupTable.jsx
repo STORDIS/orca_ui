@@ -10,6 +10,7 @@ import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
@@ -137,16 +138,26 @@ const PortGroupTable = (props) => {
         [props.height]
     );
 
-    const resyncPortGroup = () => {
-        // setUpdateConfig(true);
-        // resetConfigStatus();
+    const resyncPortGroup = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "port_group",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
     };
 
     return (
         <div className="datatable">
-            <div className="mt-15 mb-15">
+            <div className="mt-5 mb-5">
                 <button
-                    className="btnStyle mr-15"
+                    className="btnStyle m-10"
                     onClick={resyncPortGroup}
                     disabled={updateConfig}
                 >
@@ -157,7 +168,7 @@ const PortGroupTable = (props) => {
                     type="button"
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}
-                    className="btnStyle"
+                    className="btnStyle m-10"
                 >
                     Apply Config
                 </button>

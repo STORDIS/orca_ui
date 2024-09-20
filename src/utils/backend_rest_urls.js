@@ -126,7 +126,7 @@ export function logPanelDeleteURL() {
 }
 
 export function syncURL() {
-    return host_addr + "/discover/features";
+    return host_addr + "/discover/feature";
 }
 
 // ----------------

@@ -15,6 +15,7 @@ import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 // Function to get vlan names
 export const getVlanDataCommon = (selectedDeviceIp) => {
@@ -296,18 +297,28 @@ const VlanTable = (props) => {
         [props.height]
     );
 
-    const resyncVlan = () => {
-        // setUpdateConfig(true);
-        // resetConfigStatus();
+    const resyncVlan = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "vlan",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
     };
 
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group mt-15 mb-15 ">
-                    <div className="button-column">
+                <div className="button-group mt-5 mb-5 ">
+                    <div>
                         <button
-                            className="btnStyle mr-15"
+                            className="btnStyle m-10"
                             onClick={resyncVlan}
                             disabled={updateConfig}
                         >
@@ -316,31 +327,32 @@ const VlanTable = (props) => {
 
                         <button
                             disabled={updateConfig || changes.length === 0}
-                            className="btnStyle"
+                            className="btnStyle m-10"
                             onClick={() => handleFormSubmit(changes)}
                         >
                             Apply Config
                         </button>
                         <span className="config-status">{configStatus}</span>
                     </div>
-
-                    <button
-                        className="btnStyle"
-                        disabled={!getIsStaff()}
-                        onClick={openAddFormModal}
-                    >
-                        Add Vlan
-                    </button>
-                    <button
-                        className="btnStyle"
-                        onClick={handleDelete}
-                        disabled={
-                            selectedRows.length === 0 ||
-                            selectedRows.length === undefined
-                        }
-                    >
-                        Delete selected Vlan
-                    </button>
+                    <div>
+                        <button
+                            className="btnStyle m-10"
+                            disabled={!getIsStaff()}
+                            onClick={openAddFormModal}
+                        >
+                            Add Vlan
+                        </button>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={handleDelete}
+                            disabled={
+                                selectedRows.length === 0 ||
+                                selectedRows.length === undefined
+                            }
+                        >
+                            Delete selected Vlan
+                        </button>
+                    </div>
                 </div>
 
                 <div style={gridStyle} className="ag-theme-alpine ">
