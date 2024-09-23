@@ -1081,9 +1081,9 @@ export const deviceUserColumns = (isTabbedPane = true) => {
     }
 
     if (isTabbedPane) {
-        dataColumn.push({
-            field: "sync_time",
-            headerName: "Sync Time",
+        dataColumn.unshift({
+            field: "sync_in",
+            headerName: "Sync In",
             width: 200,
             editable: getIsStaff(),
         });

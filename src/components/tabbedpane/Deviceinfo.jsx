@@ -74,11 +74,11 @@ const Deviceinfo = (props) => {
 
     return (
         <div className="datatable" id="deviceDataTable">
-            <div className="mt-15 mb-15">
+            <div className="mt-5 mb-5">
                 <button
                     onClick={sendUpdates}
                     disabled={updateConfig || changes === undefined}
-                    className="btnStyle"
+                    className="btnStyle m-10"
                     id="applyConfigBtn"
                 >
                     Apply Config
@@ -113,11 +113,14 @@ const Deviceinfo = (props) => {
                                             padding: "8px",
                                         }}
                                     >
-                                        {column.headerName === "Sync Time" ? (
+                                        {column.headerName === "Sync In" ? (
                                             <select
                                                 className="p-5 w-75"
                                                 onChange={handleChange}
                                             >
+                                                <option value="none">
+                                                    None
+                                                </option>
                                                 <option value="10">
                                                     10 Minutes
                                                 </option>
