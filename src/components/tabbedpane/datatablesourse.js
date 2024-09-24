@@ -1010,13 +1010,19 @@ export const stpColumn = [
     },
 ];
 
-export const deviceUserColumns = (isTabbedPane = true) => {
+export const deviceUserColumns = (showIn) => {
     let dataColumn = [
         {
             field: "img_name",
             headerName: "Image Name",
             width: 130,
             sortable: true,
+            editable: getIsStaff() && showIn === "home",
+            headerComponent: EditableHeaderComponent,
+            cellEditor: "agSelectCellEditor",
+            cellEditorParams: {
+                values: ["1", "2"],
+            },
         },
         {
             field: "mgt_intf",
@@ -1060,7 +1066,7 @@ export const deviceUserColumns = (isTabbedPane = true) => {
         { field: "type", headerName: "TYPE", width: 130, sortable: true },
     ];
 
-    if (!isTabbedPane) {
+    if (showIn === "home" || showIn === "all") {
         dataColumn.push({
             field: "action",
             headerName: "Action",
@@ -1086,12 +1092,21 @@ export const deviceUserColumns = (isTabbedPane = true) => {
         });
     }
 
-    if (isTabbedPane) {
+    if (showIn === "info" || showIn === "all") {
         dataColumn.unshift({
             field: "sync_in",
             headerName: "Sync In",
             width: 200,
             editable: getIsStaff(),
+        });
+    }
+    if (showIn === "setup" || showIn === "all") {
+        dataColumn.unshift({
+            headerCheckboxSelection: getIsStaff() && showIn === "setup",
+            checkboxSelection: getIsStaff() && showIn === "setup",
+            width: 50,
+            sortable: true,
+            headerTooltip: "", // add header tooltip here
         });
     }
     return dataColumn;
