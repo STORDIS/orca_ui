@@ -82,12 +82,14 @@ const Deviceinfo = (props) => {
     const sendUpdates = () => {
         setConfigStatus("Config In Progress....");
 
-        console.log(changes);
-
-        if (changes.interval !== "none") {
+        if (changes !== "none") {
+            console.log("if");
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
-                .put(apiUrl, changes)
+                .put(apiUrl, {
+                    mgt_ip: selectedDeviceIp,
+                    interval: parseInt(changes),
+                })
                 .then((res) => {})
                 .catch((err) => {})
                 .finally(() => {
@@ -96,9 +98,10 @@ const Deviceinfo = (props) => {
                     setUpdateConfig(false);
                 });
         } else {
+            console.log("else");
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
-                .delete(apiUrl, { data: changes })
+                .delete(apiUrl, { data: { mgt_ip: selectedDeviceIp } })
                 .then((res) => {})
                 .catch((err) => {})
                 .finally(() => {
@@ -110,16 +113,13 @@ const Deviceinfo = (props) => {
     };
 
     const handleChange = (e) => {
-        let payload = {
-            mgt_ip : selectedDeviceIp,
-            interval: parseInt(e.target.value),
-        };
-
-        setChanges(payload);
+        console.log(e.target.value);
+        setChanges(e.target.value);
     };
 
     const reload = () => {
         getDeviceDetails();
+        getShedule();
         setConfigStatus("");
         setChanges(undefined);
     };
