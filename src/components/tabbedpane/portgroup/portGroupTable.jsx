@@ -32,17 +32,21 @@ const PortGroupTable = (props) => {
             setDataTable([]);
             setOriginalData([]);
 
-            const apiMUrl = getPortGroupsURL(selectedDeviceIp);
-            instance
-                .get(apiMUrl)
-                .then((res) => {
-                    setDataTable(res.data);
-                    setOriginalData(JSON.parse(JSON.stringify(res.data)));
-                })
-                .catch((err) => console.log(err));
+            getPortgroup();
         }
         props.reset(false);
     }, [props.refresh]);
+
+    const getPortgroup = () => {
+        const apiMUrl = getPortGroupsURL(selectedDeviceIp);
+        instance
+            .get(apiMUrl)
+            .then((res) => {
+                setDataTable(res.data);
+                setOriginalData(JSON.parse(JSON.stringify(res.data)));
+            })
+            .catch((err) => console.log(err));
+    };
 
     useEffect(() => {
         setChanges([]);
@@ -99,6 +103,7 @@ const PortGroupTable = (props) => {
     const resetConfigStatus = () => {
         setConfigStatus("");
         setChanges([]);
+        getPortgroup();
     };
 
     const createReqJson = useCallback(() => {

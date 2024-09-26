@@ -3,7 +3,11 @@ import "./tabbedPaneTable.scss";
 import { deviceUserColumns } from "./datatablesourse";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllDevicesURL, syncURL } from "../../utils/backend_rest_urls.js";
+import {
+    getAllDevicesURL,
+    syncURL,
+    sheduleURL,
+} from "../../utils/backend_rest_urls.js";
 import interceptor from "../../utils/interceptor.js";
 import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore.js";
@@ -35,6 +39,8 @@ const Deviceinfo = (props) => {
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
     useEffect(() => {
         getDeviceDetails();
     }, [selectedDeviceIp]);
@@ -60,16 +66,47 @@ const Deviceinfo = (props) => {
 
     const sendUpdates = () => {
         setConfigStatus("Config In Progress....");
-        setChanges(undefined);
+
+        console.log(changes);
+
+        if (changes.interval !== "none") {
+            const apiUrl = sheduleURL(selectedDeviceIp);
+            instance
+                .put(apiUrl, changes)
+                .then((res) => {})
+                .catch((err) => {})
+                .finally(() => {
+                    reload();
+                    setUpdateLog(true);
+                    setUpdateConfig(false);
+                });
+        } else {
+            const apiUrl = sheduleURL(selectedDeviceIp);
+            instance
+                .delete(apiUrl, { data: changes })
+                .then((res) => {})
+                .catch((err) => {})
+                .finally(() => {
+                    reload();
+                    setUpdateLog(true);
+                    setUpdateConfig(false);
+                });
+        }
     };
 
     const handleChange = (e) => {
-        setChanges(e.target.value);
         let payload = {
-            device_ip: selectedDeviceIp,
+            mgt_ip : selectedDeviceIp,
             interval: parseInt(e.target.value),
         };
-        console.log(payload);
+
+        setChanges(payload);
+    };
+
+    const reload = () => {
+        getDeviceDetails();
+        setConfigStatus("");
+        setChanges(undefined);
     };
 
     return (

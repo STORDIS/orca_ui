@@ -60,12 +60,15 @@ const BGPTable = (props) => {
                 });
                 setDataTable(res.data);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {});
     };
 
-    const refreshData = () => {
+    const reload = () => {
         getBgp();
         setIsMessageModalOpen(false);
+        setConfigStatus("");
+        setShowForm(false);
+        setSelectedRows([]);
     };
 
     const openAddModal = () => {
@@ -74,10 +77,6 @@ const BGPTable = (props) => {
 
     const handleCancel = () => {
         setShowForm(false);
-    };
-
-    const resetConfigStatus = () => {
-        setConfigStatus("");
     };
 
     const deleteBgp = () => {
@@ -98,12 +97,10 @@ const BGPTable = (props) => {
                 setModalContent("Error Deleting BGP");
             })
             .finally(() => {
-                setShowForm(false);
                 setIsMessageModalOpen(true);
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                resetConfigStatus();
+                reload();
             });
     };
 
@@ -120,12 +117,10 @@ const BGPTable = (props) => {
                 setModalContent("Error in " + status + "ing Bgp");
             })
             .finally(() => {
-                setShowForm(false);
-                setIsMessageModalOpen(true);
                 setUpdateLog(true);
                 setUpdateConfig(false);
                 setIsMessageModalOpen(true);
-                resetConfigStatus();
+                reload();
             });
     };
 
@@ -165,7 +160,7 @@ const BGPTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                resetConfigStatus();
+                reload();
             }
         });
     };
@@ -238,7 +233,7 @@ const BGPTable = (props) => {
             </Modal>
 
             {isMessageModalOpen && (
-                <Modal show={isMessageModalOpen} onClose={refreshData}>
+                <Modal show={isMessageModalOpen} onClose={reload}>
                     <div>
                         {modalContent}
                         <div
@@ -249,7 +244,7 @@ const BGPTable = (props) => {
                                 gap: "10px",
                             }}
                         >
-                            <button className="btnStyle" onClick={refreshData}>
+                            <button className="btnStyle" onClick={reload}>
                                 Close
                             </button>
                         </div>

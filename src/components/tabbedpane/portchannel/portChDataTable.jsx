@@ -79,13 +79,6 @@ const PortChDataTable = (props) => {
         });
     };
 
-    const refreshData = () => {
-        setDataTable([]);
-        getAllPortChanalData();
-        setIsModalOpen("null");
-        setSelectedRows([]);
-    };
-
     const deletePortchannel = () => {
         setUpdateConfig(true);
 
@@ -111,17 +104,18 @@ const PortChDataTable = (props) => {
             })
             .catch((err) => {})
             .finally(() => {
-                refreshData();
+                reload();
                 setUpdateConfig(false);
                 setUpdateLog(true);
             });
     };
 
-    const resetConfigStatus = () => {
+    const reload = () => {
         setConfigStatus("");
         setChanges([]);
-
-        gridRef.current.api.deselectAll();
+        setDataTable([]);
+        getAllPortChanalData();
+        setIsModalOpen("null");
         setSelectedRows([]);
     };
 
@@ -138,8 +132,7 @@ const PortChDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            setSelectedRows([]);
-            refreshData();
+            reload();
             return;
         }
 
@@ -229,9 +222,7 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                resetConfigStatus();
-                refreshData();
+                reload();
             });
     };
 
@@ -242,10 +233,10 @@ const PortChDataTable = (props) => {
         instance
             .put(apiPUrl, formData)
             .then((res) => {
-                resetConfigStatus();
+                reload();
             })
             .catch((err) => {
-                resetConfigStatus();
+                reload();
             })
             .finally(() => {
                 getAllPortChanalData();
@@ -289,7 +280,7 @@ const PortChDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                resetConfigStatus();
+                reload();
             }
         });
     };
@@ -298,7 +289,7 @@ const PortChDataTable = (props) => {
         <div className="datatable-container" id="portChannelDataTable">
             <div className="datatable">
                 <div className="button-group mt-5 mb-5">
-                    <div >
+                    <div>
                         <button
                             className="btnStyle m-10"
                             onClick={resyncPortchannel}
@@ -366,7 +357,7 @@ const PortChDataTable = (props) => {
                 {isModalOpen === "addPortchannel" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title={"Add Port Channel"}
                         onSubmit={handleFormSubmit}
                         id="addPortchannel"
@@ -379,7 +370,7 @@ const PortChDataTable = (props) => {
                 {isModalOpen === "addPortchannelMembers" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title="Select Member Interfaces"
                         onSubmit={(data) => {
                             handleFormSubmit(data);
@@ -397,7 +388,7 @@ const PortChDataTable = (props) => {
                 {isModalOpen === "addPortchannelVlan" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title="Add Access Vlan"
                         onSubmit={(data) => {
                             handleFormSubmit(data);
@@ -413,7 +404,7 @@ const PortChDataTable = (props) => {
 
                 {/* model for delete confirmation message */}
                 {isModalOpen === "deletePortChannel" && (
-                    <Modal show={true} onClose={refreshData}>
+                    <Modal show={true} onClose={reload}>
                         <div>
                             {modalContent}
                             <div
@@ -434,7 +425,7 @@ const PortChDataTable = (props) => {
                                 </button>
                                 <button
                                     className="btnStyle"
-                                    onClick={refreshData}
+                                    onClick={reload}
                                     id="removeNoBtn"
                                 >
                                     No

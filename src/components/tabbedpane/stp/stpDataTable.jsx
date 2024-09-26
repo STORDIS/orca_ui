@@ -136,12 +136,12 @@ const StpDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                resetConfigStatus();
+                reload();
             }
         });
     };
 
-    const resetConfigStatus = () => {
+    const reload = () => {
         setChanges([]);
         setDataTable([]);
         setSelectedRows([]);
@@ -163,7 +163,7 @@ const StpDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                resetConfigStatus();
+                reload();
             }
         });
     };
@@ -186,7 +186,7 @@ const StpDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                resetConfigStatus();
+                reload();
             }
         });
     };
@@ -255,8 +255,8 @@ const StpDataTable = (props) => {
                 {isModalOpen === "addStpForm" && (
                     <Modal
                         show={true}
-                        onClose={resetConfigStatus}
-                        onSubmit={resetConfigStatus}
+                        onClose={reload}
+                        onSubmit={reload}
                         title={"Add STP"}
                     >
                         <StpForm selectedDeviceIp={selectedDeviceIp} />
@@ -267,9 +267,9 @@ const StpDataTable = (props) => {
                 {isModalOpen === "addStpVlanForm" && (
                     <Modal
                         show={true}
-                        onClose={resetConfigStatus}
+                        onClose={reload}
                         title={"Add Disabled Vlans for STP"}
-                        onSubmit={resetConfigStatus}
+                        onSubmit={reload}
                     >
                         <StpVlanForm selectedDeviceIp={selectedDeviceIp} />
                     </Modal>
