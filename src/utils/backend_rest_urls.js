@@ -129,9 +129,8 @@ export function syncURL() {
     return host_addr + "/discover/feature";
 }
 
-export function sheduleURL() {
-    return host_addr + "/discover/schedule";
+export function sheduleURL(selectedDeviceIp) {
+    return host_addr + "/discover/schedule?mgt_ip=" + selectedDeviceIp;
 }
-
 
 // ----------------

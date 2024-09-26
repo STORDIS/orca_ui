@@ -32,6 +32,7 @@ export const syncFeatureCommon = (payload, status) => {
 const Deviceinfo = (props) => {
     const selectedDeviceIp = props.selectedDeviceIp;
     const [changes, setChanges] = useState(undefined);
+    const [selectedSyncTime, setSelectedSyncTime] = useState("");
     const [dataTable, setDataTable] = useState([]);
     const instance = interceptor();
     const [configStatus, setConfigStatus] = useState("");
@@ -43,6 +44,7 @@ const Deviceinfo = (props) => {
 
     useEffect(() => {
         getDeviceDetails();
+        getShedule();
     }, [selectedDeviceIp]);
 
     const getDeviceDetails = () => {
@@ -60,19 +62,34 @@ const Deviceinfo = (props) => {
         if (props.refresh && changes !== undefined) {
             setDataTable([]);
             getDeviceDetails();
+            getShedule();
         }
         props.reset(false);
     }, [props.refresh]);
 
+    const getShedule = () => {
+        const apiUrl = sheduleURL(selectedDeviceIp);
+        instance
+            .get(apiUrl)
+            .then((res) => {
+                console.log(res.data);
+                setSelectedSyncTime(res.data.interval);
+            })
+            .catch((err) => {})
+            .finally(() => {});
+    };
+
     const sendUpdates = () => {
         setConfigStatus("Config In Progress....");
 
-        console.log(changes);
-
-        if (changes.interval !== "none") {
+        if (changes !== "none") {
+            console.log("if");
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
-                .put(apiUrl, changes)
+                .put(apiUrl, {
+                    mgt_ip: selectedDeviceIp,
+                    interval: parseInt(changes),
+                })
                 .then((res) => {})
                 .catch((err) => {})
                 .finally(() => {
@@ -81,9 +98,10 @@ const Deviceinfo = (props) => {
                     setUpdateConfig(false);
                 });
         } else {
+            console.log("else");
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
-                .delete(apiUrl, { data: changes })
+                .delete(apiUrl, { data: { mgt_ip: selectedDeviceIp } })
                 .then((res) => {})
                 .catch((err) => {})
                 .finally(() => {
@@ -95,16 +113,13 @@ const Deviceinfo = (props) => {
     };
 
     const handleChange = (e) => {
-        let payload = {
-            mgt_ip : selectedDeviceIp,
-            interval: parseInt(e.target.value),
-        };
-
-        setChanges(payload);
+        console.log(e.target.value);
+        setChanges(e.target.value);
     };
 
     const reload = () => {
         getDeviceDetails();
+        getShedule();
         setConfigStatus("");
         setChanges(undefined);
     };
@@ -154,7 +169,17 @@ const Deviceinfo = (props) => {
                                             <select
                                                 className="p-5 w-75"
                                                 onChange={handleChange}
+                                                defaultValue={"DEFAULT"}
+                                                value={
+                                                    changes || selectedSyncTime
+                                                }
                                             >
+                                                <option
+                                                    value="DEFAULT"
+                                                    disabled
+                                                >
+                                                    Select Sync Time
+                                                </option>
                                                 <option value="none">
                                                     None
                                                 </option>
