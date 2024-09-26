@@ -28,10 +28,24 @@ const PortGroupTable = (props) => {
     useEffect(() => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
+            setDataTable([]);
+            setOriginalData([]);
+
             getPortgroup();
         }
         props.reset(false);
     }, [props.refresh]);
+
+    const getPortgroup = () => {
+        const apiMUrl = getPortGroupsURL(selectedDeviceIp);
+        instance
+            .get(apiMUrl)
+            .then((res) => {
+                setDataTable(res.data);
+                setOriginalData(JSON.parse(JSON.stringify(res.data)));
+            })
+            .catch((err) => console.log(err));
+    };
 
     useEffect(() => {
         setChanges([]);

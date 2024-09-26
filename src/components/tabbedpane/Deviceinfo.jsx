@@ -8,6 +8,11 @@ import {
     syncURL,
     sheduleURL,
 } from "../../utils/backend_rest_urls.js";
+import {
+    getAllDevicesURL,
+    syncURL,
+    sheduleURL,
+} from "../../utils/backend_rest_urls.js";
 import interceptor from "../../utils/interceptor.js";
 import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore.js";
@@ -82,14 +87,12 @@ const Deviceinfo = (props) => {
     const sendUpdates = () => {
         setConfigStatus("Config In Progress....");
 
-        if (changes !== "none") {
-            console.log("if");
+        console.log(changes);
+
+        if (changes.interval !== "none") {
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
-                .put(apiUrl, {
-                    mgt_ip: selectedDeviceIp,
-                    interval: parseInt(changes),
-                })
+                .put(apiUrl, changes)
                 .then((res) => {})
                 .catch((err) => {})
                 .finally(() => {
@@ -98,10 +101,9 @@ const Deviceinfo = (props) => {
                     setUpdateConfig(false);
                 });
         } else {
-            console.log("else");
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
-                .delete(apiUrl, { data: { mgt_ip: selectedDeviceIp } })
+                .delete(apiUrl, { data: changes })
                 .then((res) => {})
                 .catch((err) => {})
                 .finally(() => {
@@ -113,13 +115,16 @@ const Deviceinfo = (props) => {
     };
 
     const handleChange = (e) => {
-        console.log(e.target.value);
-        setChanges(e.target.value);
+        let payload = {
+            mgt_ip : selectedDeviceIp,
+            interval: parseInt(e.target.value),
+        };
+
+        setChanges(payload);
     };
 
     const reload = () => {
         getDeviceDetails();
-        getShedule();
         setConfigStatus("");
         setChanges(undefined);
     };
