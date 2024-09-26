@@ -82,7 +82,7 @@ const InterfaceDataTable = (props) => {
         });
     };
 
-    const resetConfigStatus = () => {
+    const reload = () => {
         setConfigStatus("");
         setChanges([]);
         setDataTable([]);
@@ -110,7 +110,7 @@ const InterfaceDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            resetConfigStatus();
+            reload();
             return;
         }
 
@@ -248,15 +248,10 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {
-                resetConfigStatus();
-            })
-            .catch((err) => {
-                getInterfaceData();
-                resetConfigStatus();
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -268,15 +263,11 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {
-                resetConfigStatus();
-            })
+            .then((res) => {})
             .catch((err) => {
-                getInterfaceData();
-                resetConfigStatus();
             })
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -293,7 +284,7 @@ const InterfaceDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                resetConfigStatus();
+                reload();
             });
     };
 
@@ -303,15 +294,10 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .delete(apiUrl, { data: payload })
-            .then((res) => {
-                resetConfigStatus();
-            })
-            .catch((err) => {
-                getInterfaceData();
-                resetConfigStatus();
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -327,7 +313,7 @@ const InterfaceDataTable = (props) => {
 
     const resyncInterfaces = async () => {
         let payload = {
-            mgt_ip : selectedDeviceIp,
+            mgt_ip: selectedDeviceIp,
             feature: "interface",
         };
         setConfigStatus("Sync In Progress....");
@@ -335,7 +321,7 @@ const InterfaceDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                resetConfigStatus();
+                reload();
             }
         });
     };

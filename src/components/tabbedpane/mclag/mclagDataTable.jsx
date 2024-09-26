@@ -82,18 +82,15 @@ const McLagDataTable = (props) => {
                     });
                 });
             })
-            .catch((err) => console.log(err))
+            .catch((err) => {})
             .finally(() => {});
     };
 
-    const refreshData = () => {
+    const reload = () => {
+        setSelectedRows([]);
         getMclag();
         setConfigStatus("");
         setIsModalOpen("null");
-    };
-
-    const resetConfigStatus = () => {
-        setConfigStatus("");
     };
 
     const handleFormSubmit = (formData) => {
@@ -113,8 +110,8 @@ const McLagDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                resetConfigStatus();
-                refreshData();
+
+                reload();
             });
     };
 
@@ -133,8 +130,8 @@ const McLagDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                refreshData();
+
+                reload();
             });
     };
 
@@ -252,7 +249,7 @@ const McLagDataTable = (props) => {
             setUpdateConfig(status);
             setUpdateLog(!status);
             if (!status) {
-                resetConfigStatus();
+                reload();
             }
         });
     };
@@ -322,7 +319,7 @@ const McLagDataTable = (props) => {
             {isModalOpen === "addMclag" && (
                 <Modal
                     show={true}
-                    onClose={refreshData}
+                    onClose={reload}
                     title={"Add Mclag"}
                     onSubmit={(e) => handleFormSubmit(e)}
                 >
@@ -333,7 +330,7 @@ const McLagDataTable = (props) => {
             {isModalOpen === "memberMclag" && (
                 <Modal
                     show={true}
-                    onClose={refreshData}
+                    onClose={reload}
                     title={"Add Mclag Members"}
                     onSubmit={(e) => handleFormSubmit(e)}
                 >
@@ -345,7 +342,7 @@ const McLagDataTable = (props) => {
             )}
 
             {isModalOpen === "deleteMclag" && (
-                <Modal show={true} onClose={refreshData}>
+                <Modal show={true} onClose={reload}>
                     <div>
                         {modalContent}
                         <div
@@ -359,7 +356,7 @@ const McLagDataTable = (props) => {
                             <button className="btnStyle" onClick={deleteMclag}>
                                 Yes
                             </button>
-                            <button className="btnStyle" onClick={refreshData}>
+                            <button className="btnStyle" onClick={reload}>
                                 No
                             </button>
                         </div>
