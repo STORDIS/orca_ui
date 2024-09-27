@@ -147,7 +147,7 @@ const Deviceinfo = (props) => {
                     }}
                 >
                     <tbody>
-                        {deviceUserColumns(true).map((column, index) => (
+                        {deviceUserColumns("info").map((column, index) => (
                             <tr key={index}>
                                 <td
                                     style={{
