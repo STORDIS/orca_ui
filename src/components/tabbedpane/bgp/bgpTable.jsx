@@ -64,15 +64,48 @@ const BGPTable = (props) => {
             .catch((err) => {});
     };
 
-    const reload = () => {
-        getBgp();
-        setConfigStatus("");
-        setIsModalOpen("");
-        setSelectedRows([]);
-    };
-
+    // create / update
     const openAddModal = () => {
         setIsModalOpen("addBGP");
+    };
+
+    const onSelectionChanged = () => {
+        const selectedNodes = gridRef.current.api.getSelectedNodes();
+        const selectedData = selectedNodes.map((node) => node.data);
+        setSelectedRows(selectedData);
+    };
+
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            let payload = {
+                mgt_ip: selectedDeviceIp,
+                vrf_name: params.data.vrf_name,
+                local_asn: params.data.local_asn,
+                router_id: params.data.router_id,
+            };
+            setChanges(payload);
+        }
+    }, []);
+
+    const handleFormSubmit = (formData) => {
+        setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
+        const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
+        instance
+            .put(apiPUrl, formData)
+            .then((res) => {})
+            .catch((err) => {})
+            .finally(() => {
+                setUpdateLog(true);
+                setUpdateConfig(false);
+                reload();
+            });
+    };
+
+    // delete
+    const handleDelete = () => {
+        setIsModalOpen("deleteBGP");
+        setModalContent("Do you want to delete BGP");
     };
 
     const deleteBgp = () => {
@@ -95,51 +128,12 @@ const BGPTable = (props) => {
             });
     };
 
-    const handleDelete = () => {
-        setIsModalOpen("deleteBGP");
-        setModalContent("Do you want to delete BGP");
+    const reload = () => {
+        getBgp();
+        setConfigStatus("");
+        setIsModalOpen("");
+        setSelectedRows([]);
     };
-
-    const handleFormSubmit = (formData) => {
-        setUpdateConfig(true);
-        setConfigStatus("Config In Progress....");
-        const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
-        instance
-            .put(apiPUrl, formData)
-            .then((res) => {})
-            .catch((err) => {})
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-                reload();
-            });
-    };
-
-    const onSelectionChanged = () => {
-        const selectedNodes = gridRef.current.api.getSelectedNodes();
-        const selectedData = selectedNodes.map((node) => node.data);
-        setSelectedRows(selectedData);
-    };
-
-    const handleCellValueChanged = useCallback((params) => {
-        if (params.newValue !== params.oldValue) {
-            let payload = {
-                mgt_ip: selectedDeviceIp,
-                vrf_name: params.data.vrf_name,
-                local_asn: params.data.local_asn,
-                router_id: params.data.router_id,
-            };
-            setChanges(payload);
-        }
-    }, []);
-
-    const gridStyle = useMemo(
-        () => ({
-            height: props.height - 75 + "px",
-            width: "100%",
-        }),
-        [props.height]
-    );
 
     const resyncBgp = async () => {
         let payload = {
@@ -155,6 +149,14 @@ const BGPTable = (props) => {
             }
         });
     };
+
+    const gridStyle = useMemo(
+        () => ({
+            height: props.height - 75 + "px",
+            width: "100%",
+        }),
+        [props.height]
+    );
 
     return (
         <div className="datatable">
