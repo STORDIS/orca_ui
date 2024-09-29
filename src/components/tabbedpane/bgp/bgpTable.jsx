@@ -23,11 +23,12 @@ const BGPTable = (props) => {
     const selectedDeviceIp = props.selectedDeviceIp;
 
     const [dataTable, setDataTable] = useState([]);
-    const [showForm, setShowForm] = useState(false);
+    // const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
-    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
+
+    const [isModalOpen, setIsModalOpen] = useState("");
     const [modalContent, setModalContent] = useState("");
 
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
@@ -65,18 +66,13 @@ const BGPTable = (props) => {
 
     const reload = () => {
         getBgp();
-        setIsMessageModalOpen(false);
         setConfigStatus("");
-        setShowForm(false);
+        setIsModalOpen("");
         setSelectedRows([]);
     };
 
     const openAddModal = () => {
-        setShowForm(true);
-    };
-
-    const handleCancel = () => {
-        setShowForm(false);
+        setIsModalOpen("addBGP");
     };
 
     const deleteBgp = () => {
@@ -90,36 +86,31 @@ const BGPTable = (props) => {
         setConfigStatus("Config In Progress....");
         instance
             .delete(apiPUrl, { data: output })
-            .then((res) => {
-                setModalContent("BGP Deleted Successfully");
-            })
-            .catch((err) => {
-                setModalContent("Error Deleting BGP");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                setIsMessageModalOpen(true);
                 setUpdateLog(true);
                 setUpdateConfig(false);
                 reload();
             });
     };
 
-    const handleFormSubmit = (formData, status) => {
+    const handleDelete = () => {
+        setIsModalOpen("deleteBGP");
+        setModalContent("Do you want to delete BGP");
+    };
+
+    const handleFormSubmit = (formData) => {
         setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
         const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiPUrl, formData)
-            .then((res) => {
-                setModalContent("Bgp " + status + "ed Successfully");
-            })
-            .catch((err) => {
-                setModalContent("Error in " + status + "ing Bgp");
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setIsMessageModalOpen(true);
                 reload();
             });
     };
@@ -182,7 +173,7 @@ const BGPTable = (props) => {
                             updateConfig || Object.keys(changes).length === 0
                         }
                         className="btnStyle m-10"
-                        onClick={() => handleFormSubmit(changes, "Updat")}
+                        onClick={() => handleFormSubmit(changes)}
                     >
                         Apply Config
                     </button>
@@ -201,7 +192,7 @@ const BGPTable = (props) => {
                     <button
                         className="btnStyle m-10"
                         disabled={selectedRows.length === 0}
-                        onClick={deleteBgp}
+                        onClick={handleDelete}
                     >
                         Delete BGP
                     </button>
@@ -223,17 +214,20 @@ const BGPTable = (props) => {
                 ></AgGridReact>
             </div>
 
-            <Modal
-                show={showForm}
-                onClose={() => setShowForm(false)}
-                title={"Add BGP"}
-                onSubmit={(e) => handleFormSubmit(e, "Add")}
-            >
-                <BgpForm selectedDeviceIp={selectedDeviceIp} />
-            </Modal>
+            {isModalOpen === "addBGP" && (
+                <Modal
+                    show={true}
+                    onClose={() => reload()}
+                    title={"Add BGP"}
+                    onSubmit={(e) => handleFormSubmit(e)}
+                >
+                    <BgpForm selectedDeviceIp={selectedDeviceIp} />
+                </Modal>
+            )}
 
-            {isMessageModalOpen && (
-                <Modal show={isMessageModalOpen} onClose={reload}>
+            {/* model for delete confirmation message */}
+            {isModalOpen === "deleteBGP" && (
+                <Modal show={true} onClose={reload}>
                     <div>
                         {modalContent}
                         <div
@@ -244,8 +238,11 @@ const BGPTable = (props) => {
                                 gap: "10px",
                             }}
                         >
+                            <button className="btnStyle" onClick={deleteBgp}>
+                                Yes
+                            </button>
                             <button className="btnStyle" onClick={reload}>
-                                Close
+                                No
                             </button>
                         </div>
                     </div>
