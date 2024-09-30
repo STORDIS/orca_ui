@@ -1,4 +1,11 @@
-import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import React, {
+    useEffect,
+    useState,
+    useRef,
+    useCallback,
+    useMemo,
+} from "react";
+
 import {
     deviceUserColumns,
     defaultColDef,
@@ -17,6 +24,27 @@ export const Home = () => {
     const [dataTable, setDataTable] = useState([]);
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+
+    const [networkList, setNetworkList] = useState({
+        "10.10.229.112": [
+            "10.10.229.112",
+            "10.10.229.113",
+            "10.10.229.114",
+            "10.10.229.115",
+            "10.10.229.116",
+            "10.10.229.117",
+            "10.10.229.118",
+        ],
+        "10.10.229.111": [
+            "10.10.229.119",
+            "10.10.229.120",
+            "10.10.229.121",
+            "10.10.229.122",
+            "10.10.229.123",
+            "10.10.229.124",
+            "10.10.229.125",
+        ],
+    });
 
     const [formData, setFormData] = useState({
         image_url: "",
@@ -79,9 +107,63 @@ export const Home = () => {
 
     return (
         <div>
-            <div className="listContainer">
-                <div className="listTitle">Selecte Devices</div>
-                <div className="resizable">
+            <div className="listContainer resizable">
+                <div className="form-wrapper align-center ">
+                    <div className="form-field w-25">
+                        <label>SONiC Image URL : </label>
+                    </div>
+                    <div className="form-field w-75">
+                        <input
+                            type="text"
+                            name="image_url"
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+                <div className="form-wrapper align-center">
+                    <div className="form-field w-25">
+                        <label>ONIE Devices for SONiC installation : </label>
+                    </div>
+                    <div className="form-field w-50">
+                        <input
+                            type="text"
+                            name="device_ips"
+                            onChange={handleChange}
+                            placeholder="Give one or more IP address or ONIE device address separated by comma"
+                        />
+                    </div>
+                    <div className="form-field w-25">
+                        <div style={{ display: "flex" }}>
+                            <label className="">Discover also </label>
+                            <input
+                                type="checkbox"
+                                className="ml-15"
+                                checked={formData.discover_also}
+                                onChange={handleCheckbox}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="form-wrapper align-center">
+                    <div className="form-field w-25">
+                        <label>User Name : </label>
+                    </div>
+                    <div className="form-field w-25">
+                        <input type="text" name="username" />
+                    </div>
+                    <div className="form-field w-25">
+                        <label> Password : </label>
+                    </div>
+                    <div className="form-field w-25">
+                        <input type="password" name="password" />
+                    </div>
+                </div>
+
+                <div className="listTitle">
+                    Select Devices for SONiC installation
+                </div>
+                <div className="">
                     <div style={gridStyle} className="ag-theme-alpine">
                         <AgGridReact
                             ref={gridRef}
@@ -95,49 +177,86 @@ export const Home = () => {
                         ></AgGridReact>
                     </div>
                 </div>
+
+                <div>
+                    <button className="btnStyle mt-15" onClick={send_update}>
+                        Update SONiC on Devices Selected
+                    </button>
+                </div>
             </div>
-            <div className="listContainer">
-                <div className="resizable p-5">
-                    <div className="form-wrapper align-center ">
-                        <div className="form-field w-25">
-                            <label>Image URL : </label>
-                        </div>
-                        <div className="form-field w-75">
-                            <input
-                                type="text"
-                                name="image_url"
-                                onChange={handleChange}
-                            />
-                        </div>
-                    </div>
-                    <div className="form-wrapper align-center">
-                        <div className="form-field w-25">
-                            <label>ONIE Devices : </label>
-                        </div>
-                        <div className="form-field w-50">
-                            <input
-                                type="text"
-                                name="device_ips"
-                                onChange={handleChange}
-                            />
-                        </div>
-                        <div className="form-field w-25">
-                            <div style={{ display: "flex" }}>
-                                <label className="">Discover also </label>
-                                <input
-                                    type="checkbox"
-                                    className="ml-15"
-                                    checked={formData.discover_also}
-                                    onChange={handleCheckbox}
-                                />
-                            </div>
-                        </div>
-                    </div>
-                    <div>
-                        <button className="btnStyle" onClick={send_update}>
-                            Update SONiC on Devices Selected
-                        </button>
-                    </div>
+
+            <div className="listContainer resizable">
+                <div className="listTitle">
+                    Following ONIE devices identified from the repective
+                    networks provided for SONiC installation
+                </div>
+
+                <div className="p-5 ">
+                    <table
+                        border="1"
+                        style={{
+                            width: "100%",
+                            borderCollapse: "collapse",
+                        }}
+                    >
+                        <thead>
+                            <tr>
+                                <th>Network Address</th>
+                                <th>IP Address</th>
+                                <th>
+                                    Select All
+                                    <input className="ml-10" type="checkbox" />
+                                </th>
+                                <th>
+                                    Discover All
+                                    <input className="ml-10" type="checkbox" />
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {Object.keys(networkList).map((key) => (
+                                <React.Fragment key={key}>
+                                    {networkList[key].map((value, index) => (
+                                        <tr
+                                            key={index}
+                                            style={{
+                                                textAlign: "center",
+                                            }}
+                                        >
+                                            {index === 0 ? (
+                                                <td
+                                                    rowSpan={
+                                                        networkList[key].length
+                                                    }
+                                                >
+                                                    {key}
+                                                </td>
+                                            ) : null}
+                                            <td>{value}</td>
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    name=""
+                                                    id=""
+                                                />
+                                            </td>
+                                            <td>
+                                                <input
+                                                    type="checkbox"
+                                                    name=""
+                                                    id=""
+                                                />
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </React.Fragment>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div>
+                    <button className="btnStyle mt-15">Apply Config</button>
                 </div>
             </div>
         </div>
