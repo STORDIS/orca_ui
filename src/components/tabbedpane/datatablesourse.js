@@ -1010,7 +1010,7 @@ export const stpColumn = [
     },
 ];
 
-export const deviceUserColumns = (isTabbedPane = true) => {
+export const deviceUserColumns = (showIn) => {
     let dataColumn = [
         {
             field: "img_name",
@@ -1057,16 +1057,11 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             width: 130,
             sortable: true,
         },
-        {
-            field: "orca_status",
-            headerName: "Orca Status",
-            width: 130,
-            sortable: true,
-        },
+
         { field: "type", headerName: "TYPE", width: 130, sortable: true },
     ];
 
-    if (!isTabbedPane) {
+    if (showIn === "home" || showIn === "all") {
         dataColumn.push({
             field: "action",
             headerName: "Action",
@@ -1092,7 +1087,7 @@ export const deviceUserColumns = (isTabbedPane = true) => {
         });
     }
 
-    if (isTabbedPane) {
+    if (showIn === "info" || showIn === "all") {
         dataColumn.unshift({
             field: "sync_in",
             headerName: "Sync In",
@@ -1100,5 +1095,14 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             editable: getIsStaff(),
         });
     }
+    if (showIn === "info" || showIn === "all") {
+        dataColumn.push({
+            field: "orca_status",
+            headerName: "Orca Status",
+            width: 130,
+            sortable: true,
+        });
+    }
+
     return dataColumn;
 };

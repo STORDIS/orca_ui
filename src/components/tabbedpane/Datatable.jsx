@@ -49,14 +49,7 @@ const Datatable = (props) => {
         setDataTable([]);
         instance(getAllDevicesURL())
             .then((res) => {
-                if (isTabbedPane) {
-                    let data = res.data.filter(
-                        (item) => item.mgt_ip === selectedDeviceIp
-                    );
-                    setDataTable(data);
-                } else {
-                    setDataTable(res.data);
-                }
+                setDataTable(res.data);
                 setUpdateConfig(false);
             })
             .catch((err) => {
@@ -64,7 +57,6 @@ const Datatable = (props) => {
                 setUpdateConfig(false);
             });
     };
-
 
     const onCellClicked = useCallback((params) => {
         if (params.event.target.tagName === "BUTTON") {
@@ -97,7 +89,7 @@ const Datatable = (props) => {
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
-                    columnDefs={deviceUserColumns(isTabbedPane)}
+                    columnDefs={deviceUserColumns("home")}
                     defaultColDef={defaultColDef}
                     domLayout={"autoHeight"}
                     enableCellTextSelection="true"
