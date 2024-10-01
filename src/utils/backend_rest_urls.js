@@ -143,4 +143,8 @@ export function sheduleURL(selectedDeviceIp) {
     return host_addr + "/discover/schedule?mgt_ip=" + selectedDeviceIp;
 }
 
+export function getStateURL(selectedDeviceIp) {
+    return host_addr + "/state/" + selectedDeviceIp;
+}
+
 // ----------------

@@ -1122,12 +1122,7 @@ export const deviceUserColumns = (showIn) => {
             width: 130,
             sortable: true,
         },
-        {
-            field: "orca_status",
-            headerName: "Orca Status",
-            width: 130,
-            sortable: true,
-        },
+
         { field: "type", headerName: "TYPE", width: 130, sortable: true },
     ];
 

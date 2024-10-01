@@ -37,7 +37,7 @@ export const syncFeatureCommon = (payload, status) => {
 const Deviceinfo = (props) => {
     const selectedDeviceIp = props.selectedDeviceIp;
     const [changes, setChanges] = useState(undefined);
-    const [selectedSyncTime, setSelectedSyncTime] = useState("");
+    const [syncData, setSyncData] = useState("");
     const [dataTable, setDataTable] = useState([]);
     const instance = interceptor();
     const [configStatus, setConfigStatus] = useState("");
@@ -47,6 +47,7 @@ const Deviceinfo = (props) => {
 
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+   
     useEffect(() => {
         getDeviceDetails();
         getShedule();
@@ -78,7 +79,7 @@ const Deviceinfo = (props) => {
             .get(apiUrl)
             .then((res) => {
                 console.log(res.data);
-                setSelectedSyncTime(res.data.interval);
+                setSyncData(res.data);
             })
             .catch((err) => {})
             .finally(() => {});
@@ -176,7 +177,7 @@ const Deviceinfo = (props) => {
                                                 onChange={handleChange}
                                                 defaultValue={"DEFAULT"}
                                                 value={
-                                                    changes || selectedSyncTime
+                                                    changes || syncData.interval
                                                 }
                                             >
                                                 <option
@@ -198,6 +199,9 @@ const Deviceinfo = (props) => {
                                                     30 Minutes
                                                 </option>
                                             </select>
+                                        ) : column.headerName ===
+                                          "Orca Status" ? (
+                                            <span> {props.orcaState} </span>
                                         ) : (
                                             dataRow[column.field]
                                         )}
