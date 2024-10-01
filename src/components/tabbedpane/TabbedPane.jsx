@@ -73,7 +73,7 @@ const TabbedPane = () => {
 
     useEffect(() => {
         if (parentDivRef.current && tabvalue === 0) {
-            parentDivRef.current.style.height = `${360}px`;
+            parentDivRef.current.style.height = `${450}px`;
         } else if (parentDivRef.current && (tabvalue === 1 || tabvalue === 5)) {
             parentDivRef.current.style.height = `${500}px`;
         } else if (parentDivRef.current) {
