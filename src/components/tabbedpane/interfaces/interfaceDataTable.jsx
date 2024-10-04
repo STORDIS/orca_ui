@@ -9,9 +9,11 @@ import {
     subInterfaceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
+import PrimarySecondaryForm from "./primarySecondaryForm";
 
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
+import Modal from "../../modal/Modal";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { syncFeatureCommon } from "../Deviceinfo";
@@ -50,7 +52,9 @@ const InterfaceDataTable = (props) => {
     const selectedDeviceIp = props.selectedDeviceIp;
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState("null");
 
     const instance = interceptor();
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
@@ -82,13 +86,6 @@ const InterfaceDataTable = (props) => {
         });
     };
 
-    const reload = () => {
-        setConfigStatus("");
-        setChanges([]);
-        setDataTable([]);
-        getInterfaceData();
-    };
-
     const getAdvSpeed = (params) => {
         let result = "all";
 
@@ -102,6 +99,21 @@ const InterfaceDataTable = (props) => {
         return result;
     };
 
+    const relode = () => {
+        setConfigStatus("");
+        setChanges([]);
+        setDataTable([]);
+        getInterfaceData();
+        setIsModalOpen("null");
+    };
+
+    const onCellClicked = useCallback((params) => {
+        if (params?.colDef?.field === "ip_address") {
+            setIsModalOpen("PrimarySecondaryForm");
+        }
+        setSelectedRows(params.data);
+    }, []);
+
     const handleCellValueChanged = useCallback((params) => {
         if (
             !isValidIPv4WithCIDR(params.data.ip_address) &&
@@ -110,7 +122,7 @@ const InterfaceDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            reload();
+            relode();
             return;
         }
 
@@ -184,62 +196,64 @@ const InterfaceDataTable = (props) => {
         return hasOnlyRequiredKeys;
     }
 
-    const sendUpdates = () => {
+    const sendUpdates = (formData) => {
         if (changes.length === 0) {
             return;
         }
 
-        changes.forEach((item) => {
-            if (hasOnlyRequiredKeys(item)) {
-                let payload = {
-                    mgt_ip: selectedDeviceIp,
-                    if_name: item.name,
-                    if_alias: item.alias,
-                    breakout_mode: item.breakout_mode,
-                };
+        console.log("changes", formData);
 
-                if (item.breakout_mode === "None") {
-                    deleteBreakout(payload);
-                } else {
-                    putBreakout(payload);
-                }
-            } else if (
-                !hasOnlyRequiredKeys(item) &&
-                item.hasOwnProperty("breakout_mode")
-            ) {
-                let payload = {
-                    mgt_ip: selectedDeviceIp,
-                    if_name: item.name,
-                    if_alias: item.alias,
-                    breakout_mode: item.breakout_mode,
-                };
+        // changes.forEach((item) => {
+        //     if (hasOnlyRequiredKeys(item)) {
+        //         let payload = {
+        //             mgt_ip: selectedDeviceIp,
+        //             if_name: item.name,
+        //             if_alias: item.alias,
+        //             breakout_mode: item.breakout_mode,
+        //         };
 
-                if (item.breakout_mode === "None") {
-                    deleteBreakout(payload);
-                } else {
-                    putBreakout(payload);
-                }
+        //         if (item.breakout_mode === "None") {
+        //             deleteBreakout(payload);
+        //         } else {
+        //             putBreakout(payload);
+        //         }
+        //     } else if (
+        //         !hasOnlyRequiredKeys(item) &&
+        //         item.hasOwnProperty("breakout_mode")
+        //     ) {
+        //         let payload = {
+        //             mgt_ip: selectedDeviceIp,
+        //             if_name: item.name,
+        //             if_alias: item.alias,
+        //             breakout_mode: item.breakout_mode,
+        //         };
 
-                if (
-                    item.hasOwnProperty("ip_address") &&
-                    (item.ip_address === "" || item.ip_address === null)
-                ) {
-                    delete item.ip_address;
-                    deleteIpAddress(item);
-                }
+        //         if (item.breakout_mode === "None") {
+        //             deleteBreakout(payload);
+        //         } else {
+        //             putBreakout(payload);
+        //         }
 
-                putConfig(changes);
-            } else if (
-                item.hasOwnProperty("ip_address") &&
-                (item.ip_address === "" || item.ip_address === null)
-            ) {
-                delete item.ip_address;
-                deleteIpAddress(item);
-                putConfig(item);
-            } else {
-                putConfig(changes);
-            }
-        });
+        //         if (
+        //             item.hasOwnProperty("ip_address") &&
+        //             (item.ip_address === "" || item.ip_address === null)
+        //         ) {
+        //             delete item.ip_address;
+        //             deleteIpAddress(item);
+        //         }
+
+        //         putConfig(changes);
+        //     } else if (
+        //         item.hasOwnProperty("ip_address") &&
+        //         (item.ip_address === "" || item.ip_address === null)
+        //     ) {
+        //         delete item.ip_address;
+        //         deleteIpAddress(item);
+        //         putConfig(item);
+        //     } else {
+        //         putConfig(changes);
+        //     }
+        // });
     };
 
     const putConfig = (payload) => {
@@ -248,8 +262,13 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {})
-            .catch((err) => {})
+            .then((res) => {
+                relode();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                relode();
+            })
             .finally(() => {
                 reload();
                 setUpdateLog(true);
@@ -263,8 +282,32 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {})
+            .then((res) => {
+                relode();
+            })
             .catch((err) => {
+                getInterfaceData();
+                relode();
+            })
+            .finally(() => {
+                getInterfaceData();
+                setUpdateLog(true);
+                setUpdateConfig(false);
+            });
+    };
+
+    const deleteBreakout = (payload) => {
+        setUpdateConfig(true);
+        setConfigStatus("Config In Progress....");
+        const apiUrl = breakoutURL(selectedDeviceIp);
+        instance
+            .delete(apiUrl, { data: payload })
+            .then((res) => {
+                relode();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                relode();
             })
             .finally(() => {
                 reload();
@@ -284,22 +327,8 @@ const InterfaceDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                reload();
-            });
-    };
 
-    const deleteBreakout = (payload) => {
-        setUpdateConfig(true);
-        setConfigStatus("Config In Progress....");
-        const apiUrl = breakoutURL(selectedDeviceIp);
-        instance
-            .delete(apiUrl, { data: payload })
-            .then((res) => {})
-            .catch((err) => {})
-            .finally(() => {
-                reload();
-                setUpdateLog(true);
-                setUpdateConfig(false);
+                relode();
             });
     };
 
@@ -337,7 +366,7 @@ const InterfaceDataTable = (props) => {
                     <FaSyncAlt /> Sync
                 </button>
                 <button
-                    onClick={sendUpdates}
+                    onClick={() => sendUpdates(changes)}
                     disabled={updateConfig || Object.keys(changes).length === 0}
                     className="btnStyle m-10"
                     id="applyConfigBtn"
@@ -357,11 +386,25 @@ const InterfaceDataTable = (props) => {
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    // domLayout={"autoHeight"}
                     enableCellTextSelection="true"
+                    onCellClicked={onCellClicked}
                     quickFilterText="Ethernet"
                 ></AgGridReact>
             </div>
+
+            {isModalOpen === "PrimarySecondaryForm" && (
+                <Modal
+                    show={true}
+                    onClose={relode}
+                    title="Select Sub Interfaces"
+                    onSubmit={(e) => sendUpdates(e)}
+                >
+                    <PrimarySecondaryForm
+                        selectedDeviceIp={selectedDeviceIp}
+                        inputData={selectedRows}
+                    />
+                </Modal>
+            )}
         </div>
     );
 };
