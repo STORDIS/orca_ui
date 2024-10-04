@@ -414,7 +414,6 @@ export const vlanColumns = [
         width: 130,
         sortable: true,
         editable: getIsStaff() && valnIp,
-
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
     },
