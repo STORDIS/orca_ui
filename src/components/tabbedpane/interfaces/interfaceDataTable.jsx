@@ -371,7 +371,7 @@ const InterfaceDataTable = (props) => {
                 <Modal
                     show={true}
                     onClose={relode}
-                    title="Select Sub Interfaces"
+                    title="Interface IP Address"
                     onSubmit={(e) => sendUpdates(e)}
                 >
                     <PrimarySecondaryForm
