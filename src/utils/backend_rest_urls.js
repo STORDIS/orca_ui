@@ -104,7 +104,7 @@ export function bookmarkDeleteAllURL() {
     return host_addr + "/orcask/bookmark/delete-all";
 }
 
-// other urls
+// devices urls
 export function getDiscoveryUrl() {
     return host_addr + "/discover";
 }
@@ -116,6 +116,16 @@ export function deleteDevicesURL() {
 export function getAllDevicesURL() {
     return host_addr + "/devices";
 }
+
+export function installSonicURL() {
+    return host_addr + "/install_image"
+}
+
+export function switchImageURL() {
+    return host_addr + "/switch_image"
+}
+
+// other urls
 
 export function logPanelURL() {
     return host_addr + "/logs/all/1?size=1000";

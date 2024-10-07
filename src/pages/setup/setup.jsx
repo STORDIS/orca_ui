@@ -11,7 +11,10 @@ import {
     defaultColDef,
 } from "../../components/tabbedpane/datatablesourse";
 import interceptor from "../../utils/interceptor";
-import { getAllDevicesURL } from "../../utils/backend_rest_urls";
+import {
+    getAllDevicesURL,
+    installSonicURL,
+} from "../../utils/backend_rest_urls";
 
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -67,10 +70,18 @@ export const Home = () => {
             });
     };
 
+
+
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data.mgt_ip);
-        console.log(selectedData);
+
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            device_ips: [selectedData, ...prevFormData.device_ips],
+        }));
+
+        // console.log(selectedData);
     };
 
     const handleChange = (e) => {
@@ -79,7 +90,7 @@ export const Home = () => {
         if (name === "device_ips") {
             setFormData((prevFormData) => ({
                 ...prevFormData,
-                [name]: value.trim(),
+                [name]: [value.trim()],
             }));
         } else {
             setFormData((prevFormData) => ({
@@ -97,12 +108,24 @@ export const Home = () => {
     };
 
     const send_update = () => {
-        if (areAllIPAddressesValid(formData.device_ips)) {
+        // if (areAllIPAddressesValid(formData.device_ips)) {
             console.log(formData);
-        } else {
-            alert("Invalid IP Address");
-            return;
-        }
+            installImage()
+        // } else {
+        //     alert("Invalid IP Address");
+        //     return;
+        // }
+    };
+
+    const installImage = () => {
+        console.log(formData);
+        // instance(installSonicURL())
+        //     .then((res) => {
+        //         console.log(res);
+        //     })
+        //     .catch((err) => {
+        //         console.log(err);
+        //     });
     };
 
     return (
