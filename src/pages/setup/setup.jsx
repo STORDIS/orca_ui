@@ -20,32 +20,29 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { areAllIPAddressesValid } from "../../utils/common";
+import useStoreLogs from "../../utils/store";
+import useStoreConfig from "../../utils/configStore";
 
 export const Home = () => {
     const instance = interceptor();
+
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
 
     const [dataTable, setDataTable] = useState([]);
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
 
     const [networkList, setNetworkList] = useState({
-        "10.10.229.112": [
-            "10.10.229.112",
-            "10.10.229.113",
-            "10.10.229.114",
-            "10.10.229.115",
-            "10.10.229.116",
-            "10.10.229.117",
-            "10.10.229.118",
-        ],
-        "10.10.229.111": [
-            "10.10.229.119",
-            "10.10.229.120",
-            "10.10.229.121",
-            "10.10.229.122",
-            "10.10.229.123",
-            "10.10.229.124",
-            "10.10.229.125",
+        "10.10.229.123/32": [
+            {
+                ip: "10.10.229.123",
+                mac_address: "0c:47:b1:91:00:00",
+                platform: "x86_64-kvm_x86_64-r0",
+                version: "master-201811170418",
+            },
         ],
     });
 
@@ -54,6 +51,8 @@ export const Home = () => {
         device_ips: "",
         discover_also: false,
     });
+
+    const [selectedDevices, setSelectedDevices] = useState([]);
 
     useEffect(() => {
         getDevices();
@@ -70,16 +69,11 @@ export const Home = () => {
             });
     };
 
-
-
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data.mgt_ip);
 
-        setFormData((prevFormData) => ({
-            ...prevFormData,
-            device_ips: [selectedData, ...prevFormData.device_ips],
-        }));
+        setSelectedDevices(selectedData);
 
         // console.log(selectedData);
     };
@@ -109,8 +103,7 @@ export const Home = () => {
 
     const send_update = () => {
         // if (areAllIPAddressesValid(formData.device_ips)) {
-            console.log(formData);
-            installImage()
+        installImage();
         // } else {
         //     alert("Invalid IP Address");
         //     return;
@@ -118,14 +111,27 @@ export const Home = () => {
     };
 
     const installImage = () => {
-        console.log(formData);
-        // instance(installSonicURL())
-        //     .then((res) => {
-        //         console.log(res);
-        //     })
-        //     .catch((err) => {
-        //         console.log(err);
-        //     });
+        let payload = {
+            image_url: formData.image_url,
+            device_ips: [...formData.device_ips, ...selectedDevices],
+            discover_also: formData.discover_also,
+        };
+        console.log(payload);
+        setUpdateConfig(true);
+        const apiUrl = installSonicURL();
+        instance
+            .put(apiUrl, payload)
+            .then((res) => {
+                console.log(res);
+                if (Object.keys(res.networks).length > 0) {
+                    setNetworkList(res.networks);
+                }
+            })
+            .catch((err) => {})
+            .finally(() => {
+                setUpdateLog(true);
+                setUpdateConfig(false);
+            });
     };
 
     return (
