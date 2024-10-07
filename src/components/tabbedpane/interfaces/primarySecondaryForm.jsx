@@ -49,7 +49,7 @@ const PrimarySecondaryForm = ({
                 </div>
 
                 <div className="form-field w-40  ml-25">
-                    <label htmlFor="">Secondary</label>
+                    <label htmlFor=""></label>
                 </div>
             </div>
 
