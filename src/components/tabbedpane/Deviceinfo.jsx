@@ -171,7 +171,7 @@ const Deviceinfo = (props) => {
                                         }}
                                     >
                                         {column.headerName ===
-                                        "Rediscover In" ? (
+                                        "Rediscovery Frequency" ? (
                                             <select
                                                 className="p-5 w-75"
                                                 onChange={handleChange}

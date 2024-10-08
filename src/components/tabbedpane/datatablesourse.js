@@ -1155,7 +1155,7 @@ export const deviceUserColumns = (showIn) => {
     if (showIn === "info" || showIn === "all") {
         dataColumn.unshift({
             field: "sync_in",
-            headerName: "Rediscover In",
+            headerName: "Rediscovery Frequency",
             width: 200,
             editable: getIsStaff(),
         });
