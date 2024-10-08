@@ -69,14 +69,12 @@ export const Home = () => {
         const selectedData = selectedNodes.map((node) => node.data.mgt_ip);
 
         setSelectedDevices(selectedData);
-
-        // console.log(selectedData);
     };
 
     const handleChange = (e) => {
         let { name, value } = e.target;
 
-        if (name === "device_ips") {
+        if (name === "device_ips" && value) {
             value = value
                 .trim()
                 .split(",")
@@ -170,8 +168,7 @@ export const Home = () => {
 
     const send_update = () => {
         let isValid = false;
-        if (formData.device_ips) {
-            console.log(formData.device_ips);
+        if (formData.device_ips.length > 0) {
             formData.device_ips.forEach((element) => {
                 if (areAllIPAddressesValid(element)) {
                     isValid = true;
@@ -181,6 +178,8 @@ export const Home = () => {
                     return;
                 }
             });
+        } else {
+            isValid = true;
         }
 
         if (isValid) {
@@ -189,7 +188,6 @@ export const Home = () => {
                 device_ips: [...formData.device_ips, ...selectedDevices],
                 discover_also: formData.discover_also,
             };
-            console.log("payload", payload);
             installImage(payload);
         }
     };
@@ -204,7 +202,6 @@ export const Home = () => {
         instance
             .put(apiUrl, payload)
             .then((res) => {
-                console.log(res);
                 if (Object.keys(res.data.networks).length > 0) {
                     setNetworkList(res.data.networks);
                 }
@@ -231,6 +228,22 @@ export const Home = () => {
                         />
                     </div>
                 </div>
+
+                <div className="form-wrapper align-center">
+                    <div className="form-field w-25">
+                        <label>User Name : </label>
+                    </div>
+                    <div className="form-field w-25">
+                        <input type="text" name="username" />
+                    </div>
+                    <div className="form-field w-25">
+                        <label> Password : </label>
+                    </div>
+                    <div className="form-field w-25">
+                        <input type="password" name="password" />
+                    </div>
+                </div>
+
                 <div className="form-wrapper align-center">
                     <div className="form-field w-25">
                         <label>ONIE Devices for SONiC installation : </label>
@@ -253,21 +266,6 @@ export const Home = () => {
                                 onChange={handleCheckbox}
                             />
                         </div>
-                    </div>
-                </div>
-
-                <div className="form-wrapper align-center">
-                    <div className="form-field w-25">
-                        <label>User Name : </label>
-                    </div>
-                    <div className="form-field w-25">
-                        <input type="text" name="username" />
-                    </div>
-                    <div className="form-field w-25">
-                        <label> Password : </label>
-                    </div>
-                    <div className="form-field w-25">
-                        <input type="password" name="password" />
                     </div>
                 </div>
 

@@ -7,7 +7,10 @@ import {
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { getAllDevicesURL } from "../../utils/backend_rest_urls.js";
+import {
+    getAllDevicesURL,
+    installSonicURL,
+} from "../../utils/backend_rest_urls.js";
 import Modal from "../../components/modal/Modal";
 
 import interceptor from "../../utils/interceptor.js";
@@ -17,6 +20,8 @@ import useStoreConfig from "../../utils/configStore.js";
 import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
 
+import { getIsStaff } from "../../utils/common";
+
 export const Home = () => {
     const instance = interceptor();
 
@@ -25,6 +30,7 @@ export const Home = () => {
 
     const [dataTable, setDataTable] = useState([]);
     const [selectedDeviceToDelete, setSelectedDeviceToDelete] = useState("");
+    const [selectedDeviceToUpdate, setSelectedDeviceToUpdate] = useState([]);
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
@@ -81,13 +87,60 @@ export const Home = () => {
             });
     };
 
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            setSelectedDeviceToUpdate((prev) => {
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (item) => item.device_ips === params.data.mgt_ip
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
+                        (item) => item.device_ips === params.data.mgt_ip
+                    );
+                    prev[existedIndex].image_url = params.newValue || "";
+                    latestChanges = [...prev];
+                } else {
+                    latestChanges = [
+                        ...prev,
+                        {
+                            device_ips: params.data.mgt_ip,
+                            image_url: params.newValue,
+                            discover_also: true,
+                        },
+                    ];
+                }
+                return latestChanges;
+            });
+        }
+    }, []);
+
+    const sendUpdates = () => {
+        const apiUrl = installSonicURL();
+        instance
+            .put(apiUrl, selectedDeviceToUpdate)
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {})
+            .finally(() => {
+                setUpdateLog(true);
+            });
+    };
+
     return (
         <div>
             <div className="listContainer">
                 <div className="listTitle">
                     Devices
                     <div>
-                        <button className="btnStyle ">Apply config</button>
+                        <button
+                            className="btnStyle "
+                            onClick={sendUpdates}
+                            disabled={updateConfig || !getIsStaff()}
+                        >
+                            Apply config
+                        </button>
                     </div>
                 </div>
                 <div className="resizable">
@@ -101,6 +154,8 @@ export const Home = () => {
                                 domLayout={"autoHeight"}
                                 enableCellTextSelection="true"
                                 onCellClicked={onCellClicked}
+                                stopEditingWhenCellsLoseFocus={true}
+                                onCellValueChanged={handleCellValueChanged}
                             ></AgGridReact>
                         </div>
 
