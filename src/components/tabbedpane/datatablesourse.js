@@ -1010,6 +1010,12 @@ export const stpColumn = [
     },
 ];
 
+export const getCellEditorParamsDeviceImageList = (params) => {
+    return {
+        values: params?.data?.image_list,
+    };
+};
+
 export const deviceUserColumns = (showIn) => {
     let dataColumn = [
         {
@@ -1020,9 +1026,7 @@ export const deviceUserColumns = (showIn) => {
             editable: getIsStaff() && showIn === "home",
             headerComponent: EditableHeaderComponent,
             cellEditor: "agSelectCellEditor",
-            cellEditorParams: {
-                values: ["1", "2"],
-            },
+            cellEditorParams: getCellEditorParamsDeviceImageList,
         },
         {
             field: "mgt_intf",
