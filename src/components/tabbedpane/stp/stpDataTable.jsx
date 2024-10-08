@@ -201,7 +201,7 @@ const StpDataTable = (props) => {
                             onClick={resyncStp}
                             disabled={updateConfig}
                         >
-                            <FaSyncAlt /> Sync
+                            <FaSyncAlt /> Rediscover
                         </button>
 
                         <button

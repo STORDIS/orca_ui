@@ -263,7 +263,7 @@ const McLagDataTable = (props) => {
                         onClick={resyncMclag}
                         disabled={updateConfig}
                     >
-                        <FaSyncAlt /> Sync
+                        <FaSyncAlt /> Rediscover
                     </button>
 
                     <button

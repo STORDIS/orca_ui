@@ -166,7 +166,7 @@ const PortGroupTable = (props) => {
                     onClick={resyncPortGroup}
                     disabled={updateConfig}
                 >
-                    <FaSyncAlt /> Sync
+                    <FaSyncAlt /> Rediscover
                 </button>
 
                 <button

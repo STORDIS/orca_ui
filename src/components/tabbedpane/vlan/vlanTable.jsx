@@ -313,7 +313,7 @@ const VlanTable = (props) => {
                             onClick={resyncVlan}
                             disabled={updateConfig}
                         >
-                            <FaSyncAlt /> Sync
+                            <FaSyncAlt /> Rediscover
                         </button>
 
                         <button

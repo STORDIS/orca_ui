@@ -174,7 +174,7 @@ const BGPTable = (props) => {
                         onClick={resyncBgp}
                         disabled={updateConfig}
                     >
-                        <FaSyncAlt /> Sync
+                        <FaSyncAlt /> Rediscover
                     </button>
 
                     <button

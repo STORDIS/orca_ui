@@ -334,7 +334,7 @@ const InterfaceDataTable = (props) => {
                     onClick={resyncInterfaces}
                     disabled={updateConfig}
                 >
-                    <FaSyncAlt /> Sync
+                    <FaSyncAlt /> Rediscover
                 </button>
                 <button
                     onClick={sendUpdates}
