@@ -71,9 +71,8 @@ const StpDataTable = (props) => {
 
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
-    const [changes, setChanges] = useState({});
+    const [changes, setChanges] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState("null");
-    const [modalContent, setModalContent] = useState("");
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
 
