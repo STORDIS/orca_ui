@@ -32,7 +32,10 @@ export const syncFeatureCommon = (payload, status) => {
 const Deviceinfo = (props) => {
     const selectedDeviceIp = props.selectedDeviceIp;
     const [changes, setChanges] = useState(undefined);
-    const [syncData, setSyncData] = useState("");
+    const [syncData, setSyncData] = useState({
+        device_ip: undefined,
+        interval: "none",
+    });
     const [dataTable, setDataTable] = useState([]);
     const instance = interceptor();
     const [configStatus, setConfigStatus] = useState("");
@@ -72,7 +75,6 @@ const Deviceinfo = (props) => {
         instance
             .get(apiUrl)
             .then((res) => {
-                console.log(res.data);
                 setSyncData(res.data);
             })
             .catch((err) => {})
@@ -83,7 +85,6 @@ const Deviceinfo = (props) => {
         setConfigStatus("Config In Progress....");
 
         if (changes !== "none") {
-            console.log("if");
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
                 .put(apiUrl, {
@@ -98,7 +99,6 @@ const Deviceinfo = (props) => {
                     setUpdateConfig(false);
                 });
         } else {
-            console.log("else");
             const apiUrl = sheduleURL(selectedDeviceIp);
             instance
                 .delete(apiUrl, { data: { mgt_ip: selectedDeviceIp } })
@@ -118,11 +118,17 @@ const Deviceinfo = (props) => {
     };
 
     const reload = () => {
+        setSyncData({
+            device_ip: undefined,
+            interval: "none",
+        });
         getDeviceDetails();
         getShedule();
         setConfigStatus("");
         setChanges(undefined);
     };
+
+    console.log(syncData);
 
     return (
         <div className="datatable" id="deviceDataTable">
@@ -171,9 +177,7 @@ const Deviceinfo = (props) => {
                                                 className="p-5 w-75"
                                                 onChange={handleChange}
                                                 defaultValue={"none"}
-                                                value={
-                                                    changes || syncData.interval
-                                                }
+                                                value={syncData.interval}
                                             >
                                                 <option value="none">
                                                     None
