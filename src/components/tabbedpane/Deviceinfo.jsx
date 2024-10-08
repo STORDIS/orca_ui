@@ -47,7 +47,6 @@ const Deviceinfo = (props) => {
 
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
-   
     useEffect(() => {
         getDeviceDetails();
         getShedule();
@@ -171,21 +170,16 @@ const Deviceinfo = (props) => {
                                             padding: "8px",
                                         }}
                                     >
-                                        {column.headerName === "Sync In" ? (
+                                        {column.headerName ===
+                                        "Rediscover In" ? (
                                             <select
                                                 className="p-5 w-75"
                                                 onChange={handleChange}
-                                                defaultValue={"DEFAULT"}
+                                                defaultValue={"none"}
                                                 value={
                                                     changes || syncData.interval
                                                 }
                                             >
-                                                <option
-                                                    value="DEFAULT"
-                                                    disabled
-                                                >
-                                                    Select Sync Time
-                                                </option>
                                                 <option value="none">
                                                     None
                                                 </option>

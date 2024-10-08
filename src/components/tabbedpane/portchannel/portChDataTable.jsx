@@ -295,7 +295,7 @@ const PortChDataTable = (props) => {
                             onClick={resyncPortchannel}
                             disabled={updateConfig}
                         >
-                            <FaSyncAlt /> Sync
+                            <FaSyncAlt /> Rediscover
                         </button>
 
                         <button
