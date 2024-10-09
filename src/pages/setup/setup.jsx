@@ -43,6 +43,8 @@ export const Home = () => {
         image_url: "",
         device_ips: "",
         discover_also: false,
+        user_name: "",
+        password: "",
     });
 
     const [selectedDevices, setSelectedDevices] = useState([]);
@@ -108,6 +110,8 @@ export const Home = () => {
                         image_url: formData.image_url,
                         device_ips: [ip],
                         discover_also: false,
+                        user_name: formData.user_name,
+                        password: formData.password,
                     },
                 ];
             } else {
@@ -144,6 +148,8 @@ export const Home = () => {
                         image_url: formData.image_url,
                         device_ips: [entry.ip],
                         discover_also: false,
+                        user_name: formData.user_name,
+                        password: formData.password,
                     });
                 });
             });
@@ -187,6 +193,8 @@ export const Home = () => {
                 image_url: formData.image_url,
                 device_ips: [...formData.device_ips, ...selectedDevices],
                 discover_also: formData.discover_also,
+                user_name: formData.user_name,
+                password: formData.password,
             };
             installImage(payload);
         }
@@ -196,21 +204,16 @@ export const Home = () => {
         installImage(selectedNetworkDevices);
     };
 
-    const installImage = (payload) => {
-        setUpdateConfig(true);
-        const apiUrl = installSonicURL();
-        instance
-            .put(apiUrl, payload)
-            .then((res) => {
-                if (Object.keys(res.data.networks).length > 0) {
-                    setNetworkList(res.data.networks);
-                }
-            })
-            .catch((err) => {})
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-            });
+    const installImage = async (payload) => {
+        try {
+            const response = await instance.put(installSonicURL(), payload);
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setUpdateLog(true);
+            setUpdateConfig(false);
+        }
     };
 
     return (
@@ -234,14 +237,28 @@ export const Home = () => {
                         <label>User Name : </label>
                     </div>
                     <div className="form-field w-25">
-                        <input type="text" name="username" />
+                        <input
+                            type="text"
+                            name="user_name"
+                            onChange={handleChange}
+                        />
                     </div>
                     <div className="form-field w-25">
                         <label> Password : </label>
                     </div>
                     <div className="form-field w-25">
-                        <input type="password" name="password" />
+                        <input
+                            type="password"
+                            name="password"
+                            onChange={handleChange}
+                        />
                     </div>
+                </div>
+                <div className="form-field w-100">
+                    <small>
+                        NOTE: The user name and password is for SONiC image
+                        specific
+                    </small>
                 </div>
 
                 <div className="form-wrapper align-center">
@@ -288,11 +305,7 @@ export const Home = () => {
                 </div>
 
                 <div>
-                    <button
-                        className="btnStyle mt-15"
-                        disabled={updateConfig}
-                        onClick={send_update}
-                    >
+                    <button className="btnStyle mt-15" onClick={send_update}>
                         Update SONiC on Devices Selected
                     </button>
                 </div>
@@ -418,7 +431,6 @@ export const Home = () => {
                         <button
                             className="btnStyle mt-15"
                             onClick={applyConfig}
-                            disabled={updateConfig}
                         >
                             Apply Config
                         </button>

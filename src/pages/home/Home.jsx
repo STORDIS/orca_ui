@@ -9,7 +9,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
     getAllDevicesURL,
-    installSonicURL,
+    switchImageURL,
 } from "../../utils/backend_rest_urls.js";
 import Modal from "../../components/modal/Modal";
 
@@ -48,17 +48,13 @@ export const Home = () => {
     }, [updateLog]);
 
     const getDevices = () => {
-        setUpdateConfig(true);
-
         setDataTable([]);
         instance(getAllDevicesURL())
             .then((res) => {
                 setDataTable(res.data);
-                setUpdateConfig(false);
             })
             .catch((err) => {
                 console.log(err);
-                setUpdateConfig(false);
             });
     };
 
@@ -92,21 +88,20 @@ export const Home = () => {
             setSelectedDeviceToUpdate((prev) => {
                 let latestChanges;
                 let isNameExsits = prev.filter(
-                    (item) => item.device_ips === params.data.mgt_ip
+                    (item) => item.mgt_ip === params.data.mgt_ip
                 );
                 if (isNameExsits.length > 0) {
                     let existedIndex = prev.findIndex(
-                        (item) => item.device_ips === params.data.mgt_ip
+                        (item) => item.mgt_ip === params.data.mgt_ip
                     );
-                    prev[existedIndex].image_url = params.newValue || "";
+                    prev[existedIndex].image_name = params.newValue || "";
                     latestChanges = [...prev];
                 } else {
                     latestChanges = [
                         ...prev,
                         {
-                            device_ips: params.data.mgt_ip,
-                            image_url: params.newValue,
-                            discover_also: true,
+                            mgt_ip: params.data.mgt_ip,
+                            image_name: params.newValue,
                         },
                     ];
                 }
@@ -116,7 +111,8 @@ export const Home = () => {
     }, []);
 
     const sendUpdates = () => {
-        const apiUrl = installSonicURL();
+        setUpdateConfig(true);
+        const apiUrl = switchImageURL();
         instance
             .put(apiUrl, selectedDeviceToUpdate)
             .then((res) => {
@@ -125,6 +121,7 @@ export const Home = () => {
             .catch((err) => {})
             .finally(() => {
                 setUpdateLog(true);
+                setUpdateConfig(false);
             });
     };
 
@@ -137,7 +134,11 @@ export const Home = () => {
                         <button
                             className="btnStyle "
                             onClick={sendUpdates}
-                            disabled={updateConfig || !getIsStaff()}
+                            disabled={
+                                updateConfig ||
+                                !getIsStaff() ||
+                                selectedDeviceToUpdate.length === 0
+                            }
                         >
                             Apply config
                         </button>
