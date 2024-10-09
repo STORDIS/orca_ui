@@ -1010,7 +1010,7 @@ export const stpColumn = [
     },
 ];
 
-export const deviceUserColumns = (isTabbedPane = true) => {
+export const deviceUserColumns = (showIn) => {
     let dataColumn = [
         {
             field: "img_name",
@@ -1053,14 +1053,15 @@ export const deviceUserColumns = (isTabbedPane = true) => {
         },
         {
             field: "system_status",
-            headerName: "STATUS",
+            headerName: "Device Status",
             width: 130,
             sortable: true,
         },
+
         { field: "type", headerName: "TYPE", width: 130, sortable: true },
     ];
 
-    if (!isTabbedPane) {
+    if (showIn === "home" || showIn === "all") {
         dataColumn.push({
             field: "action",
             headerName: "Action",
@@ -1085,5 +1086,23 @@ export const deviceUserColumns = (isTabbedPane = true) => {
             },
         });
     }
+
+    if (showIn === "info" || showIn === "all") {
+        dataColumn.unshift({
+            field: "sync_in",
+            headerName: "Rediscovery Frequency",
+            width: 200,
+            editable: getIsStaff(),
+        });
+    }
+    if (showIn === "info" || showIn === "all") {
+        dataColumn.push({
+            field: "orca_status",
+            headerName: "Orca Status",
+            width: 130,
+            sortable: true,
+        });
+    }
+
     return dataColumn;
 };

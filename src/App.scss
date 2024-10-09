@@ -84,6 +84,9 @@
     }
 }
 
+.p-5 {
+    padding: 5px 5px 5px 5px !important;
+}
 .p-10 {
     padding: 10px 10px 10px 10px !important;
 }
@@ -162,7 +165,7 @@
 }
 
 .resizable {
-    min-height: 250px;
+    min-height: auto;
     // background-color: red !important;
     resize: vertical;
     // overflow: auto;

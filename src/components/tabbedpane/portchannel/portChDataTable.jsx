@@ -20,6 +20,8 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 export const getPortChannelDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -77,13 +79,6 @@ const PortChDataTable = (props) => {
         });
     };
 
-    const refreshData = () => {
-        setDataTable([]);
-        getAllPortChanalData();
-        setIsModalOpen("null");
-        setSelectedRows([]);
-    };
-
     const deletePortchannel = () => {
         setUpdateConfig(true);
 
@@ -109,17 +104,18 @@ const PortChDataTable = (props) => {
             })
             .catch((err) => {})
             .finally(() => {
-                refreshData();
+                reload();
                 setUpdateConfig(false);
                 setUpdateLog(true);
             });
     };
 
-    const resetConfigStatus = () => {
+    const reload = () => {
         setConfigStatus("");
         setChanges([]);
-
-        gridRef.current.api.deselectAll();
+        setDataTable([]);
+        getAllPortChanalData();
+        setIsModalOpen("null");
         setSelectedRows([]);
     };
 
@@ -136,8 +132,7 @@ const PortChDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            setSelectedRows([]);
-            refreshData();
+            reload();
             return;
         }
 
@@ -227,9 +222,7 @@ const PortChDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                resetConfigStatus();
-                refreshData();
+                reload();
             });
     };
 
@@ -240,10 +233,10 @@ const PortChDataTable = (props) => {
         instance
             .put(apiPUrl, formData)
             .then((res) => {
-                resetConfigStatus();
+                reload();
             })
             .catch((err) => {
-                resetConfigStatus();
+                reload();
             })
             .finally(() => {
                 getAllPortChanalData();
@@ -277,18 +270,41 @@ const PortChDataTable = (props) => {
         [props.height]
     );
 
+    const resyncPortchannel = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "port_channel",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                reload();
+            }
+        });
+    };
+
     return (
         <div className="datatable-container" id="portChannelDataTable">
             <div className="datatable">
-                <div className="button-group mt-15 mb-15">
-                    <div className="button-column">
+                <div className="button-group mt-5 mb-5">
+                    <div>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={resyncPortchannel}
+                            disabled={updateConfig}
+                        >
+                            <FaSyncAlt /> Rediscover
+                        </button>
+
                         <button
                             onClick={() => handleFormSubmit(changes)}
                             disabled={
                                 updateConfig ||
                                 Object.keys(changes).length === 0
                             }
-                            className="btnStyle"
+                            className="btnStyle m-10"
                             id="applyConfigBtn"
                         >
                             Apply Config
@@ -298,25 +314,27 @@ const PortChDataTable = (props) => {
                         </span>
                     </div>
 
-                    <button
-                        className="btnStyle"
-                        disabled={!getIsStaff()}
-                        onClick={openAddFormModal}
-                        id="addPortchannelBtn"
-                    >
-                        Add Port Channel
-                    </button>
-                    <button
-                        className="btnStyle"
-                        onClick={handleDelete}
-                        disabled={
-                            selectedRows.length === 0 ||
-                            selectedRows.length === undefined
-                        }
-                        id="deletePortChannelBtn"
-                    >
-                        Delete Selected Port Channel
-                    </button>
+                    <div>
+                        <button
+                            className="btnStyle m-10"
+                            disabled={!getIsStaff()}
+                            onClick={openAddFormModal}
+                            id="addPortchannelBtn"
+                        >
+                            Add Port Channel
+                        </button>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={handleDelete}
+                            disabled={
+                                selectedRows.length === 0 ||
+                                selectedRows.length === undefined
+                            }
+                            id="deletePortChannelBtn"
+                        >
+                            Delete Selected Port Channel
+                        </button>
+                    </div>
                 </div>
 
                 <div style={gridStyle} className="ag-theme-alpine ">
@@ -339,7 +357,7 @@ const PortChDataTable = (props) => {
                 {isModalOpen === "addPortchannel" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title={"Add Port Channel"}
                         onSubmit={handleFormSubmit}
                         id="addPortchannel"
@@ -352,7 +370,7 @@ const PortChDataTable = (props) => {
                 {isModalOpen === "addPortchannelMembers" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title="Select Member Interfaces"
                         onSubmit={(data) => {
                             handleFormSubmit(data);
@@ -370,7 +388,7 @@ const PortChDataTable = (props) => {
                 {isModalOpen === "addPortchannelVlan" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title="Add Access Vlan"
                         onSubmit={(data) => {
                             handleFormSubmit(data);
@@ -386,7 +404,7 @@ const PortChDataTable = (props) => {
 
                 {/* model for delete confirmation message */}
                 {isModalOpen === "deletePortChannel" && (
-                    <Modal show={true} onClose={refreshData}>
+                    <Modal show={true} onClose={reload}>
                         <div>
                             {modalContent}
                             <div
@@ -407,7 +425,7 @@ const PortChDataTable = (props) => {
                                 </button>
                                 <button
                                     className="btnStyle"
-                                    onClick={refreshData}
+                                    onClick={reload}
                                     id="removeNoBtn"
                                 >
                                     No

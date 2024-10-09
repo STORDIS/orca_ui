@@ -9,6 +9,8 @@ import { getPortGroupsURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
+import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 const PortGroupTable = (props) => {
     const gridRef = useRef();
@@ -30,17 +32,21 @@ const PortGroupTable = (props) => {
             setDataTable([]);
             setOriginalData([]);
 
-            const apiMUrl = getPortGroupsURL(selectedDeviceIp);
-            instance
-                .get(apiMUrl)
-                .then((res) => {
-                    setDataTable(res.data);
-                    setOriginalData(JSON.parse(JSON.stringify(res.data)));
-                })
-                .catch((err) => console.log(err));
+            getPortgroup();
         }
         props.reset(false);
     }, [props.refresh]);
+
+    const getPortgroup = () => {
+        const apiMUrl = getPortGroupsURL(selectedDeviceIp);
+        instance
+            .get(apiMUrl)
+            .then((res) => {
+                setDataTable(res.data);
+                setOriginalData(JSON.parse(JSON.stringify(res.data)));
+            })
+            .catch((err) => console.log(err));
+    };
 
     useEffect(() => {
         setChanges([]);
@@ -97,6 +103,7 @@ const PortGroupTable = (props) => {
     const resetConfigStatus = () => {
         setConfigStatus("");
         setChanges([]);
+        getPortgroup();
     };
 
     const createReqJson = useCallback(() => {
@@ -136,14 +143,37 @@ const PortGroupTable = (props) => {
         [props.height]
     );
 
+    const resyncPortGroup = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "port_group",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                resetConfigStatus();
+            }
+        });
+    };
+
     return (
         <div className="datatable">
-            <div className="mt-15 mb-15">
+            <div className="mt-5 mb-5">
+                <button
+                    className="btnStyle m-10"
+                    onClick={resyncPortGroup}
+                    disabled={updateConfig}
+                >
+                    <FaSyncAlt /> Rediscover
+                </button>
+
                 <button
                     type="button"
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}
-                    className="btnStyle"
+                    className="btnStyle m-10"
                 >
                     Apply Config
                 </button>

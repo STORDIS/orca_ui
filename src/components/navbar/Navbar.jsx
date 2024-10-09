@@ -71,7 +71,9 @@ const Navbar = () => {
                     </div>
 
                     <div className="items" onClick={handleLogout}>
-                        <button id="logoutBtn" className="btnStyle">Logout</button>
+                        <button id="logoutBtn" className="btnStyle">
+                            Logout
+                        </button>
                     </div>
                 </div>
             </div>

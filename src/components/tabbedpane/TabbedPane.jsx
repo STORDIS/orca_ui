@@ -11,7 +11,7 @@ import BGPTable from "../../components/tabbedpane/bgp/bgpTable";
 import StpDataTable from "./stp/stpDataTable";
 
 import { useParams } from "react-router-dom";
-import { getAllDevicesURL } from "../../utils/backend_rest_urls";
+import { getAllDevicesURL, getStateURL } from "../../utils/backend_rest_urls";
 import PortGroupTable from "./portgroup/portGroupTable";
 import VlanTable from "./vlan/vlanTable";
 import "../../pages/home/home.scss";
@@ -31,12 +31,14 @@ const TabbedPane = () => {
     );
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [undoChanges, setUndoChanges] = useState(false);
+    const [orcaState, setOrcaState] = useState("");
 
     useEffect(() => {
         if (!secureLocalStorage.getItem("selectedTab")) {
             settabvalue(0);
             secureLocalStorage.setItem("selectedTab", tabvalue);
         }
+        getOrcaState();
 
         instance(getAllDevicesURL())
             .then((res) => {
@@ -51,6 +53,16 @@ const TabbedPane = () => {
     const handleTabs = (event, val) => {
         settabvalue(val);
         secureLocalStorage.setItem("selectedTab", val);
+
+        getOrcaState();
+    };
+
+    const getOrcaState = () => {
+        instance(getStateURL(deviceIP))
+            .then((res) => {
+                setOrcaState(res.data.state);
+            })
+            .catch((err) => console.log(err));
     };
 
     const onUndo = (event) => {
@@ -72,12 +84,12 @@ const TabbedPane = () => {
     };
 
     useEffect(() => {
-        if (parentDivRef.current && (tabvalue === 1 || tabvalue === 5)) {
+        if (parentDivRef.current && tabvalue === 0) {
+            parentDivRef.current.style.height = `${450}px`;
+        } else if (parentDivRef.current && (tabvalue === 1 || tabvalue === 5)) {
             parentDivRef.current.style.height = `${500}px`;
-        } else if (parentDivRef.current && (tabvalue !== 1 || tabvalue !== 5)) {
-            parentDivRef.current.style.height = `${300}px`;
         } else if (parentDivRef.current) {
-            parentDivRef.current.style.height = `${500}px`;
+            parentDivRef.current.style.height = `${300}px`;
         }
     }, [tabvalue]);
 
@@ -136,10 +148,11 @@ const TabbedPane = () => {
                         index={0}
                     >
                         <Deviceinfo
-                            columns={2}
-                            isTabbedPane={true}
+                            refresh={undoChanges}
                             selectedDeviceIp={deviceIP}
                             height={height}
+                            reset={() => setUndoChanges(false)}
+                            orcaState={orcaState}
                         />
                     </div>
                 )}

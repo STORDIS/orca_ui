@@ -2,7 +2,6 @@ const host_addr =
     process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
 
 // auth urls
-
 export function getUserDetailsURL(user) {
     return host_addr + "/auth/user/" + user;
 }
@@ -16,7 +15,6 @@ export function getUser(user) {
 }
 
 // ethernet urls
-
 export function getAllInterfacesOfDeviceURL(device_ip) {
     return host_addr + "/interfaces?mgt_ip=" + device_ip;
 }
@@ -29,7 +27,6 @@ export function subInterfaceURL() {
 }
 
 // mclag urls
-
 export function getAllMclagsOfDeviceURL(device_ip) {
     return host_addr + "/mclags?mgt_ip=" + device_ip;
 }
@@ -39,19 +36,16 @@ export function deleteMclagsMemberURL(device_ip) {
 }
 
 // bgp urls
-
 export function getAllBGPOfDeviceURL(device_ip) {
     return host_addr + "/bgp?mgt_ip=" + device_ip;
 }
 
 // portgroup urls
-
 export function getPortGroupsURL(device_ip) {
     return host_addr + "/groups?mgt_ip=" + device_ip;
 }
 
 // port channel urls
-
 export function deletePortchannelEthernetMemberURL() {
     return host_addr + "/port_chnl_mem_ethernet";
 }
@@ -73,7 +67,6 @@ export function deletePortchannelIpURL(device_ip) {
 }
 
 // vlan urls
-
 export function getVlansURL(device_ip) {
     return host_addr + "/vlans?mgt_ip=" + device_ip;
 }
@@ -87,13 +80,11 @@ export function deleteVlanMembersURL(device_ip) {
 }
 
 // stp urls
-
 export function stpURL(device_ip) {
     return host_addr + "/stp?mgt_ip=" + device_ip;
 }
 
 // orcask urls
-
 export function gptCompletionsURL(formate) {
     return host_addr + "/orcask/completions?response_format=" + formate;
 }
@@ -114,7 +105,6 @@ export function bookmarkDeleteAllURL() {
 }
 
 // other urls
-
 export function getDiscoveryUrl() {
     return host_addr + "/discover";
 }
@@ -133,6 +123,18 @@ export function logPanelURL() {
 
 export function logPanelDeleteURL() {
     return host_addr + "/logs/delete";
+}
+
+export function syncURL() {
+    return host_addr + "/discover/feature";
+}
+
+export function sheduleURL(selectedDeviceIp) {
+    return host_addr + "/discover/schedule?mgt_ip=" + selectedDeviceIp;
+}
+
+export function getStateURL(selectedDeviceIp) {
+    return host_addr + "/state/" + selectedDeviceIp;
 }
 
 // ----------------

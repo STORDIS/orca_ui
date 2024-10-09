@@ -14,6 +14,9 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { syncFeatureCommon } from "../Deviceinfo";
+
+import { FaSyncAlt } from "react-icons/fa";
 
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
@@ -79,7 +82,7 @@ const InterfaceDataTable = (props) => {
         });
     };
 
-    const resetConfigStatus = () => {
+    const reload = () => {
         setConfigStatus("");
         setChanges([]);
         setDataTable([]);
@@ -107,7 +110,7 @@ const InterfaceDataTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            resetConfigStatus();
+            reload();
             return;
         }
 
@@ -245,15 +248,10 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {
-                resetConfigStatus();
-            })
-            .catch((err) => {
-                getInterfaceData();
-                resetConfigStatus();
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -265,15 +263,11 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {
-                resetConfigStatus();
-            })
+            .then((res) => {})
             .catch((err) => {
-                getInterfaceData();
-                resetConfigStatus();
             })
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -290,8 +284,7 @@ const InterfaceDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-
-                resetConfigStatus();
+                reload();
             });
     };
 
@@ -301,15 +294,10 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .delete(apiUrl, { data: payload })
-            .then((res) => {
-                resetConfigStatus();
-            })
-            .catch((err) => {
-                getInterfaceData();
-                resetConfigStatus();
-            })
+            .then((res) => {})
+            .catch((err) => {})
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -323,13 +311,35 @@ const InterfaceDataTable = (props) => {
         [props.height]
     );
 
+    const resyncInterfaces = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "interface",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                reload();
+            }
+        });
+    };
+
     return (
-        <div className="datatable " id="interfaceDataTable">
-            <div className="mt-15 mb-15">
+        <div className="datatable" id="interfaceDataTable">
+            <div className="mt-5 mb-5">
+                <button
+                    className="btnStyle m-10"
+                    onClick={resyncInterfaces}
+                    disabled={updateConfig}
+                >
+                    <FaSyncAlt /> Rediscover
+                </button>
                 <button
                     onClick={sendUpdates}
                     disabled={updateConfig || Object.keys(changes).length === 0}
-                    className="btnStyle"
+                    className="btnStyle m-10"
                     id="applyConfigBtn"
                 >
                     Apply Config
