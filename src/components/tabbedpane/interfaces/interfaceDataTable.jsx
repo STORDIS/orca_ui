@@ -16,6 +16,7 @@ import useStoreConfig from "../../../utils/configStore";
 import Modal from "../../modal/Modal";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { json } from "react-router-dom";
 import { syncFeatureCommon } from "../Deviceinfo";
 
 import { FaSyncAlt } from "react-icons/fa";
@@ -197,63 +198,48 @@ const InterfaceDataTable = (props) => {
     }
 
     const sendUpdates = (formData) => {
-        if (changes.length === 0) {
+        if (formData.length === 0) {
             return;
         }
 
         console.log("changes", formData);
 
-        // changes.forEach((item) => {
-        //     if (hasOnlyRequiredKeys(item)) {
-        //         let payload = {
-        //             mgt_ip: selectedDeviceIp,
-        //             if_name: item.name,
-        //             if_alias: item.alias,
-        //             breakout_mode: item.breakout_mode,
-        //         };
+        formData.forEach((item) => {
+            if (hasOnlyRequiredKeys(item)) {
+                let payload = {
+                    mgt_ip: selectedDeviceIp,
+                    if_name: item.name,
+                    if_alias: item.alias,
+                    breakout_mode: item.breakout_mode,
+                };
 
-        //         if (item.breakout_mode === "None") {
-        //             deleteBreakout(payload);
-        //         } else {
-        //             putBreakout(payload);
-        //         }
-        //     } else if (
-        //         !hasOnlyRequiredKeys(item) &&
-        //         item.hasOwnProperty("breakout_mode")
-        //     ) {
-        //         let payload = {
-        //             mgt_ip: selectedDeviceIp,
-        //             if_name: item.name,
-        //             if_alias: item.alias,
-        //             breakout_mode: item.breakout_mode,
-        //         };
+                if (item.breakout_mode === "None") {
+                    deleteBreakout(payload);
+                } else {
+                    putBreakout(payload);
+                }
+            } else if (
+                !hasOnlyRequiredKeys(item) &&
+                item.hasOwnProperty("breakout_mode")
+            ) {
+                let payload = {
+                    mgt_ip: selectedDeviceIp,
+                    if_name: item.name,
+                    if_alias: item.alias,
+                    breakout_mode: item.breakout_mode,
+                };
 
-        //         if (item.breakout_mode === "None") {
-        //             deleteBreakout(payload);
-        //         } else {
-        //             putBreakout(payload);
-        //         }
+                if (item.breakout_mode === "None") {
+                    deleteBreakout(payload);
+                } else {
+                    putBreakout(payload);
+                }
 
-        //         if (
-        //             item.hasOwnProperty("ip_address") &&
-        //             (item.ip_address === "" || item.ip_address === null)
-        //         ) {
-        //             delete item.ip_address;
-        //             deleteIpAddress(item);
-        //         }
-
-        //         putConfig(changes);
-        //     } else if (
-        //         item.hasOwnProperty("ip_address") &&
-        //         (item.ip_address === "" || item.ip_address === null)
-        //     ) {
-        //         delete item.ip_address;
-        //         deleteIpAddress(item);
-        //         putConfig(item);
-        //     } else {
-        //         putConfig(changes);
-        //     }
-        // });
+                putConfig(formData);
+            } else {
+                putConfig(formData);
+            }
+        });
     };
 
     const putConfig = (payload) => {
@@ -313,22 +299,6 @@ const InterfaceDataTable = (props) => {
                 reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
-            });
-    };
-
-    const deleteIpAddress = (payload) => {
-        setUpdateConfig(true);
-        setConfigStatus("Config In Progress....");
-        const apiMUrl = subInterfaceURL();
-        instance
-            .delete(apiMUrl, { data: payload })
-            .then((response) => {})
-            .catch((err) => {})
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-
-                relode();
             });
     };
 
@@ -397,11 +367,11 @@ const InterfaceDataTable = (props) => {
                     show={true}
                     onClose={relode}
                     title="Interface IP Address"
-                    onSubmit={(e) => sendUpdates(e)}
+                    onSubmit={relode}
                 >
                     <PrimarySecondaryForm
                         selectedDeviceIp={selectedDeviceIp}
-                        inputData={selectedRows}
+                        inputData={JSON.stringify(selectedRows)}
                     />
                 </Modal>
             )}
