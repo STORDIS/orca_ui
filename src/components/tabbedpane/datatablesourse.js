@@ -222,6 +222,40 @@ export const interfaceColumns = [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
+        cellRenderer: (params) => {
+            let primary = "None";
+            let secondary = "None";
+
+            params?.value?.forEach((element) => {
+                if (element?.secondary) {
+                    secondary = element?.ip_address + "/" + element.prefix;
+                } else {
+                    primary = element?.ip_address + "/" + element.prefix;
+                }
+            });
+            if (primary !== "None" || secondary !== "None") {
+                return "Primary - " + primary + " Secondary - " + secondary;
+            } else {
+                return "None";
+            }
+        },
+        tooltipValueGetter: (params) => {
+            let primary = "None";
+            let secondary = "None";
+
+            params?.value?.forEach((element) => {
+                if (element?.secondary) {
+                    secondary = element?.ip_address + "/" + element.prefix;
+                } else {
+                    primary = element?.ip_address + "/" + element.prefix;
+                }
+            });
+            if (primary !== "None" || secondary !== "None") {
+                return "Primary - " + primary + " Secondary - " + secondary;
+            } else {
+                return "None";
+            }
+        },
     },
     {
         field: "last_chng",
