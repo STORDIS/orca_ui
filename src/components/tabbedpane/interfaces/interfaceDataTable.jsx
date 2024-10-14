@@ -113,8 +113,6 @@ const InterfaceDataTable = (props) => {
     }, []);
 
     const handleCellValueChanged = useCallback((params) => {
-      
-
         if (params.newValue !== params.oldValue) {
             setChanges((prev) => {
                 let latestChanges;
@@ -154,6 +152,16 @@ const InterfaceDataTable = (props) => {
                                 mgt_ip: selectedDeviceIp,
                                 alias: params.data.alias,
                                 [params.colDef.field]: params.newValue,
+                            },
+                        ];
+                    } else if (params.colDef.field === "description") {
+                        latestChanges = [
+                            ...prev,
+                            {
+                                name: params.data.name,
+                                mgt_ip: selectedDeviceIp,
+
+                                [params.colDef.field]: params.newValue || "",
                             },
                         ];
                     } else {
