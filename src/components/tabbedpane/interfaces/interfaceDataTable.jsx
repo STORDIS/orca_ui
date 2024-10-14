@@ -99,7 +99,7 @@ const InterfaceDataTable = (props) => {
         return result;
     };
 
-    const relode = () => {
+    const reload = () => {
         setConfigStatus("");
         setChanges([]);
         setDataTable([]);
@@ -247,11 +247,11 @@ const InterfaceDataTable = (props) => {
         instance
             .put(apiUrl, payload)
             .then((res) => {
-                relode();
+                reload();
             })
             .catch((err) => {
                 getInterfaceData();
-                relode();
+                reload();
             })
             .finally(() => {
                 reload();
@@ -267,11 +267,11 @@ const InterfaceDataTable = (props) => {
         instance
             .put(apiUrl, payload)
             .then((res) => {
-                relode();
+                reload();
             })
             .catch((err) => {
                 getInterfaceData();
-                relode();
+                reload();
             })
             .finally(() => {
                 reload();
@@ -287,11 +287,11 @@ const InterfaceDataTable = (props) => {
         instance
             .delete(apiUrl, { data: payload })
             .then((res) => {
-                relode();
+                reload();
             })
             .catch((err) => {
                 getInterfaceData();
-                relode();
+                reload();
             })
             .finally(() => {
                 reload();
@@ -363,7 +363,7 @@ const InterfaceDataTable = (props) => {
             {isModalOpen === "PrimarySecondaryForm" && (
                 <Modal
                     show={true}
-                    onClose={relode}
+                    onClose={reload}
                     title="Interface IP Address"
                     onSubmit={(e) => sendUpdates(e)}
                     id="PrimarySecondaryForm"
