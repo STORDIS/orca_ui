@@ -16,20 +16,6 @@ const PrimarySecondaryForm = ({
     onClose,
 }) => {
     const instance = interceptor();
-    const [formData, setFormData] = useState([
-        {
-            name: "",
-            mgt_ip: "",
-            ip_address: "",
-            secondary: false,
-        },
-        {
-            name: "",
-            mgt_ip: "",
-            ip_address: "",
-            secondary: true,
-        },
-    ]);
 
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
     const updateConfig = useStoreConfig((state) => state.updateConfig);
@@ -37,99 +23,62 @@ const PrimarySecondaryForm = ({
 
     const [inputDataJson, setInputDataJson] = useState(JSON.parse(inputData));
 
-    useEffect(() => {
-        // setInputDataJson(JSON.parse(inputData));
+    const [formData, setFormData] = useState({
+        ip_address: "",
+        secondary: false,
+        mgt_ip: selectedDeviceIp,
+        name: inputDataJson.name,
+    });
 
+    useEffect(() => {
         if (inputDataJson?.ip_address?.length > 0) {
-            setFormData([
-                {
-                    name: inputDataJson?.ip_address[0]?.name,
-                    mgt_ip: selectedDeviceIp,
-                    ip_address:
-                        inputDataJson?.ip_address[0]?.ip_address +
-                        "/" +
-                        inputDataJson?.ip_address[0]?.prefix,
-                    secondary: inputDataJson?.ip_address[0]?.secondary,
-                },
-                {
-                    name: inputDataJson?.ip_address[1]?.name,
-                    mgt_ip: selectedDeviceIp,
-                    ip_address:
-                        inputDataJson?.ip_address[1]?.ip_address +
-                        "/" +
-                        inputDataJson?.ip_address[1]?.prefix,
-                    secondary: inputDataJson?.ip_address[1]?.secondary,
-                },
-            ]);
         }
     }, []);
 
-    const handleChangeChekbox = (e, index) => {
-        if (e.target.checked && index === 0) {
-            setFormData((prevFormData) => {
-                const newFormData = [...prevFormData];
-                newFormData[index].secondary = true;
-                newFormData[1].secondary = false;
-                return newFormData;
-            });
-        } else {
-            setFormData((prevFormData) => {
-                const newFormData = [...prevFormData];
-                newFormData[index].secondary = true;
-                newFormData[0].secondary = false;
-                return newFormData;
-            });
-        }
-    };
-
-    const handleChange = (e, index) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
 
-        setFormData((prevFormData) => {
-            const newFormData = [...prevFormData];
-            newFormData[index][name] = value;
-            return newFormData;
-        });
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            ip_address: value,
+        }));
+    };
+
+    const handleChangeChekbox = (e) => {
+        setFormData((prevFormData) => ({
+            ...prevFormData,
+            secondary: e.target.checked,
+        }));
     };
 
     const handleSubmit = () => {
-        if (
-            !isValidIPv4WithMac(formData[0].ip_address) &&
-            !isValidIPv4WithMac(formData[1].ip_address)
-        ) {
+        if (!isValidIPv4WithMac(formData.ip_address)) {
             alert("ip_address is not valid");
             return;
         } else {
-            formData.map((item) => {
-                item.mgt_ip = selectedDeviceIp;
-                item.name = inputDataJson.name;
-            });
-
-            if (inputDataJson?.ip_address?.length > 0) {
-                let ipSet = [];
-
-                inputDataJson?.ip_address.forEach((element) => {
-                    ipSet.push(element.ip_address + "/" + element.prefix);
-                });
-
-                let temp = formData.filter(
-                    (item) => !ipSet.includes(item.ip_address)
-                );
-
-                putConfig(temp);
-            } else {
-                putConfig(formData);
-            }
+            console.log(formData);
+            onSubmit([formData]);
         }
     };
 
-    const deleteIpAddress = () => {
+    const deleteIpAddress = (item) => {
         setUpdateConfig(true);
-        let payload = {
-            mgt_ip: selectedDeviceIp,
-            name: inputDataJson.name,
-            ip_address: inputDataJson.ip_address,
-        };
+        let payload = {};
+
+        if (Object.keys(item).length > 0) {
+            payload = {
+                mgt_ip: selectedDeviceIp,
+                name: inputDataJson.name,
+                ip_address: item.ip_address + "/" + item.prefix,
+                secondary: item.secondary,
+            };
+        } else {
+            payload = {
+                mgt_ip: selectedDeviceIp,
+                name: inputDataJson.name,
+            };
+            console.log("no item");
+        }
 
         const apiMUrl = subInterfaceURL();
         instance
@@ -143,23 +92,8 @@ const PrimarySecondaryForm = ({
             });
     };
 
-    const putConfig = (payload) => {
-        setUpdateConfig(true);
-
-        const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
-        instance
-            .put(apiUrl, payload)
-            .then((res) => {})
-            .catch((err) => {})
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-                onSubmit();
-            });
-    };
-
     return (
-        <div>
+        <div id="primarySecondaryForm">
             <div className="form-wrapper" style={{ alignItems: "center" }}>
                 <div className="form-field w-60 ml-25">
                     <label htmlFor="">IP Address</label>
@@ -171,72 +105,88 @@ const PrimarySecondaryForm = ({
             </div>
 
             <div className="form-wrapper" style={{ alignItems: "center" }}>
-                <div className="form-field w-60">
+                <div className="form-field w-50">
                     <input
                         type="text"
                         className="form-control"
                         name="ip_address"
-                        value={formData[0].ip_address}
-                        onChange={(e) => handleChange(e, 0)}
+                        value={formData.ip_address}
+                        onChange={(e) => handleChange(e)}
                         disabled={updateConfig}
                     />
                 </div>
 
-                <div className="form-field w-40  ">
+                <div className="form-field  ">
                     <div>
                         <input
                             type="checkbox"
-                            className="ml-10 mr-10"
-                            checked={formData[0].secondary}
-                            onChange={(e) => handleChangeChekbox(e, 0)}
+                            className="mr-10"
+                            name="secondary"
+                            // disabled={
+                            //     updateConfig ||
+                            //     inputDataJson.ip_address === undefined
+                            // }
+                            onChange={(e) => handleChangeChekbox(e)}
                         />
                         <label htmlFor="">Secondary</label>
+                    </div>
+                </div>
+                <div className="form-field">
+                    <div>
+                        <button
+                            id="applyConfigIpBtn"
+                            className="btnStyle"
+                            disabled={updateConfig}
+                            onClick={handleSubmit}
+                        >
+                            Apply Config
+                        </button>
                     </div>
                 </div>
             </div>
-            <div className="form-wrapper" style={{ alignItems: "center" }}>
-                <div className="form-field w-60">
-                    <input
-                        type="text"
-                        className="form-control"
-                        onChange={(e) => handleChange(e, 1)}
-                        name="ip_address"
-                        value={formData[1].ip_address}
-                        disabled={updateConfig}
-                    />
-                </div>
 
-                <div className="form-field w-40  ">
-                    <div>
-                        <input
-                            type="checkbox"
-                            className="ml-10 mr-10"
-                            checked={formData[1].secondary}
-                            onChange={(e) => handleChangeChekbox(e, 1)}
-                        />
-                        <label htmlFor="">Secondary</label>
+            <div className="selected-interface-wrap mb-10 w-100">
+                {inputDataJson.ip_address?.map((item, index) => (
+                    <div
+                        className="selected-interface-list mb-10"
+                        key={item.name + item.ip_address}
+                    >
+                        <div className="w-10 pl-10">{index + 1}</div>
+                        <div className="w-50" id="ipAddress">
+                            {item.ip_address + "/" + item.prefix}
+                        </div>
+                        <div className="w-25">
+                            {item.secondary ? "Secondary" : "Primary"}
+                        </div>
+                        <div className="w-25">
+                            <button
+                                className="btnStyle"
+                                id="ipRemoveBtn"
+                                onClick={() => deleteIpAddress(item)}
+                            >
+                                Remove
+                            </button>
+                        </div>
                     </div>
-                </div>
+                ))}
             </div>
 
             <div className="">
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    onClick={handleSubmit}
+                    onClick={deleteIpAddress}
                     disabled={updateConfig}
+                    id="removeAllBtn"
                 >
-                    Apply Config
+                    Remove All
                 </button>
                 <button
                     type="button"
-                    className="btnStyle mr-10"
-                    onClick={deleteIpAddress}
-                    disabled={updateConfig}
+                    id="cancelBtn"
+                    className="btnStyle"
+                    onClick={onClose}
                 >
-                    Remove
-                </button>
-                <button type="button" className="btnStyle" onClick={onClose}>
                     Cancel
                 </button>
             </div>
