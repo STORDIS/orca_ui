@@ -65,7 +65,7 @@ const PrimarySecondaryForm = ({
         setUpdateConfig(true);
         let payload = {};
 
-        if (Object.keys(item).length > 0) {
+        if (item !== undefined) {
             payload = {
                 mgt_ip: selectedDeviceIp,
                 name: inputDataJson.name,
@@ -149,7 +149,8 @@ const PrimarySecondaryForm = ({
                 {inputDataJson.ip_address?.map((item, index) => (
                     <div
                         className="selected-interface-list mb-10"
-                        key={item.name + item.ip_address}
+                        key={item.ip_address + "/" + item.prefix}
+                        id={item.ip_address + "/" + item.prefix}
                     >
                         <div className="w-10 pl-10">{index + 1}</div>
                         <div className="w-50" id="ipAddress">
@@ -175,7 +176,7 @@ const PrimarySecondaryForm = ({
                 <button
                     type="button"
                     className="btnStyle mr-10"
-                    onClick={deleteIpAddress}
+                    onClick={() => deleteIpAddress(undefined)}
                     disabled={updateConfig}
                     id="removeAllBtn"
                 >
