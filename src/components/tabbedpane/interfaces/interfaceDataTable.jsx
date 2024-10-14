@@ -107,7 +107,7 @@ const InterfaceDataTable = (props) => {
         return result;
     };
 
-    const relode = () => {
+    const reload = () => {
         setConfigStatus("");
         setChanges([]);
         setDataTable([]);
@@ -265,8 +265,13 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {})
-            .catch((err) => {})
+            .then((res) => {
+                reload();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                reload();
+            })
             .finally(() => {
                 reload();
                 reload();
@@ -281,8 +286,12 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {})
+            .then((res) => {
+                reload();
+            })
             .catch((err) => {
+                getInterfaceData();
+                reload();
             })
             .finally(() => {
                 reload();
@@ -312,8 +321,13 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .delete(apiUrl, { data: payload })
-            .then((res) => {})
-            .catch((err) => {})
+            .then((res) => {
+                reload();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                reload();
+            })
             .finally(() => {
                 reload();
                 reload();
@@ -385,7 +399,7 @@ const InterfaceDataTable = (props) => {
             {isModalOpen === "PrimarySecondaryForm" && (
                 <Modal
                     show={true}
-                    onClose={relode}
+                    onClose={reload}
                     title="Interface IP Address"
                     onSubmit={(e) => sendUpdates(e)}
                     id="PrimarySecondaryForm"
