@@ -17,6 +17,8 @@ import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
+import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
@@ -80,18 +82,15 @@ const McLagDataTable = (props) => {
                     });
                 });
             })
-            .catch((err) => console.log(err))
+            .catch((err) => {})
             .finally(() => {});
     };
 
-    const refreshData = () => {
+    const reload = () => {
+        setSelectedRows([]);
         getMclag();
         setConfigStatus("");
         setIsModalOpen("null");
-    };
-
-    const resetConfigStatus = () => {
-        setConfigStatus("");
     };
 
     const handleFormSubmit = (formData) => {
@@ -111,8 +110,8 @@ const McLagDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                resetConfigStatus();
-                refreshData();
+
+                reload();
             });
     };
 
@@ -131,8 +130,8 @@ const McLagDataTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                refreshData();
+
+                reload();
             });
     };
 
@@ -240,15 +239,38 @@ const McLagDataTable = (props) => {
         [props.height]
     );
 
+    const resyncMclag = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "mclag",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                reload();
+            }
+        });
+    };
+
     return (
         <div className="datatable">
-            <div className="button-group mt-15 mb-15">
-                <div className="button-column">
+            <div className="button-group mt-5 mb-5">
+                <div>
+                    <button
+                        className="btnStyle m-10"
+                        onClick={resyncMclag}
+                        disabled={updateConfig}
+                    >
+                        <FaSyncAlt /> Rediscover
+                    </button>
+
                     <button
                         disabled={
                             updateConfig || Object.keys(changes).length === 0
                         }
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         onClick={() => handleFormSubmit(changes)}
                     >
                         Apply Config
@@ -256,9 +278,9 @@ const McLagDataTable = (props) => {
                     <span className="config-status">{configStatus}</span>
                 </div>
 
-                <div className="">
+                <div>
                     <button
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         disabled={!getIsStaff()}
                         onClick={openAddFormModal}
                     >
@@ -266,7 +288,7 @@ const McLagDataTable = (props) => {
                     </button>
 
                     <button
-                        className="ml-10 btnStyle"
+                        className="btnStyle m-10"
                         disabled={
                             selectedRows.length === undefined ||
                             selectedRows.length === 0
@@ -297,7 +319,7 @@ const McLagDataTable = (props) => {
             {isModalOpen === "addMclag" && (
                 <Modal
                     show={true}
-                    onClose={refreshData}
+                    onClose={reload}
                     title={"Add Mclag"}
                     onSubmit={(e) => handleFormSubmit(e)}
                 >
@@ -308,7 +330,7 @@ const McLagDataTable = (props) => {
             {isModalOpen === "memberMclag" && (
                 <Modal
                     show={true}
-                    onClose={refreshData}
+                    onClose={reload}
                     title={"Add Mclag Members"}
                     onSubmit={(e) => handleFormSubmit(e)}
                 >
@@ -320,7 +342,7 @@ const McLagDataTable = (props) => {
             )}
 
             {isModalOpen === "deleteMclag" && (
-                <Modal show={true} onClose={refreshData}>
+                <Modal show={true} onClose={reload}>
                     <div>
                         {modalContent}
                         <div
@@ -334,7 +356,7 @@ const McLagDataTable = (props) => {
                             <button className="btnStyle" onClick={deleteMclag}>
                                 Yes
                             </button>
-                            <button className="btnStyle" onClick={refreshData}>
+                            <button className="btnStyle" onClick={reload}>
                                 No
                             </button>
                         </div>

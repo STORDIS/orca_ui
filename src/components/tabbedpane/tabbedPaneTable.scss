@@ -5,12 +5,7 @@
 
     .button-group {
         display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-    }
-
-    .button-column {
-        flex: 1;
+        justify-content: space-between;
     }
 
     .selection-container {

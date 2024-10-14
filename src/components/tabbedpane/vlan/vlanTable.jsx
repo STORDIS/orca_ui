@@ -14,6 +14,8 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
+import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 // Function to get vlan names
 export const getVlanDataCommon = (selectedDeviceIp) => {
@@ -100,9 +102,7 @@ const VlanTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                resetConfigStatus();
-                refreshData();
+                reload();
             });
     };
 
@@ -172,9 +172,7 @@ const VlanTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                resetConfigStatus();
-                refreshData();
+                reload();
             });
     };
 
@@ -189,9 +187,7 @@ const VlanTable = (props) => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                resetConfigStatus();
-                refreshData();
+                reload();
             });
     };
 
@@ -205,14 +201,13 @@ const VlanTable = (props) => {
         setModalContent("Do you want to delete Vlan with id " + nameArray);
     };
 
-    const resetConfigStatus = () => {
-        setConfigStatus("");
-    };
-
-    const refreshData = () => {
+    const reload = () => {
         getVlans();
         setChanges([]);
+        setSelectedRows([]);
         setIsModalOpen("null");
+        setConfigStatus("");
+        getVlans()
     };
 
     const openAddFormModal = () => {
@@ -232,15 +227,13 @@ const VlanTable = (props) => {
             params.data.ip_address !== null
         ) {
             alert("ip_address is not valid");
-            setSelectedRows([]);
-            refreshData();
+            reload();
             return;
         }
 
         if (params.data.sag_ip_address && params.data.ip_address) {
             alert("ip_address or sag_ip_address any one must be added");
-            setSelectedRows([]);
-            refreshData();
+            reload();
             return;
         }
         if (params.newValue !== params.oldValue) {
@@ -295,38 +288,62 @@ const VlanTable = (props) => {
         [props.height]
     );
 
+    const resyncVlan = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "vlan",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                reload();
+            }
+        });
+    };
+
     return (
         <div className="datatable-container">
             <div className="datatable">
-                <div className="button-group mt-15 mb-15 ">
-                    <div className="button-column">
+                <div className="button-group mt-5 mb-5 ">
+                    <div>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={resyncVlan}
+                            disabled={updateConfig}
+                        >
+                            <FaSyncAlt /> Rediscover
+                        </button>
+
                         <button
                             disabled={updateConfig || changes.length === 0}
-                            className="btnStyle"
+                            className="btnStyle m-10"
                             onClick={() => handleFormSubmit(changes)}
                         >
                             Apply Config
                         </button>
                         <span className="config-status">{configStatus}</span>
                     </div>
-
-                    <button
-                        className="btnStyle"
-                        disabled={!getIsStaff()}
-                        onClick={openAddFormModal}
-                    >
-                        Add Vlan
-                    </button>
-                    <button
-                        className="btnStyle"
-                        onClick={handleDelete}
-                        disabled={
-                            selectedRows.length === 0 ||
-                            selectedRows.length === undefined
-                        }
-                    >
-                        Delete selected Vlan
-                    </button>
+                    <div>
+                        <button
+                            className="btnStyle m-10"
+                            disabled={!getIsStaff()}
+                            onClick={openAddFormModal}
+                        >
+                            Add Vlan
+                        </button>
+                        <button
+                            className="btnStyle m-10"
+                            onClick={handleDelete}
+                            disabled={
+                                selectedRows.length === 0 ||
+                                selectedRows.length === undefined
+                            }
+                        >
+                            Delete selected Vlan
+                        </button>
+                    </div>
                 </div>
 
                 <div style={gridStyle} className="ag-theme-alpine ">
@@ -349,9 +366,9 @@ const VlanTable = (props) => {
                 {isModalOpen === "vlanSagIpForm" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title={"Edit Sag Ip"}
-                        onSubmit={refreshData}
+                        onSubmit={reload}
                     >
                         <VlanSagIpForm
                             selectedDeviceIp={selectedDeviceIp}
@@ -364,7 +381,7 @@ const VlanTable = (props) => {
                 {isModalOpen === "addVlan" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title={"Add Vlan"}
                         onSubmit={(e) => handleFormSubmit(e)}
                     >
@@ -376,7 +393,7 @@ const VlanTable = (props) => {
                 {isModalOpen === "addMember" && (
                     <Modal
                         show={true}
-                        onClose={refreshData}
+                        onClose={reload}
                         title="Select Interfaces"
                         onSubmit={(e) => handleFormSubmit(e)}
                     >
@@ -389,7 +406,7 @@ const VlanTable = (props) => {
 
                 {/* model for delete confirmation message */}
                 {isModalOpen === "delete" && (
-                    <Modal show={true} onClose={refreshData}>
+                    <Modal show={true} onClose={reload}>
                         <div>
                             {modalContent}
                             <div
@@ -408,7 +425,7 @@ const VlanTable = (props) => {
                                 </button>
                                 <button
                                     className="btnStyle"
-                                    onClick={refreshData}
+                                    onClick={reload}
                                 >
                                     No
                                 </button>

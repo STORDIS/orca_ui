@@ -13,6 +13,8 @@ import BgpForm from "./bgpForm";
 import { getIsStaff } from "../../../utils/common";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
+import { FaSyncAlt } from "react-icons/fa";
+import { syncFeatureCommon } from "../Deviceinfo";
 
 const BGPTable = (props) => {
     const instance = interceptor();
@@ -58,12 +60,15 @@ const BGPTable = (props) => {
                 });
                 setDataTable(res.data);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {});
     };
 
-    const refreshData = () => {
+    const reload = () => {
         getBgp();
         setIsMessageModalOpen(false);
+        setConfigStatus("");
+        setShowForm(false);
+        setSelectedRows([]);
     };
 
     const openAddModal = () => {
@@ -72,10 +77,6 @@ const BGPTable = (props) => {
 
     const handleCancel = () => {
         setShowForm(false);
-    };
-
-    const resetConfigStatus = () => {
-        setConfigStatus("");
     };
 
     const deleteBgp = () => {
@@ -96,12 +97,10 @@ const BGPTable = (props) => {
                 setModalContent("Error Deleting BGP");
             })
             .finally(() => {
-                setShowForm(false);
                 setIsMessageModalOpen(true);
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                setSelectedRows([]);
-                resetConfigStatus();
+                reload();
             });
     };
 
@@ -118,12 +117,10 @@ const BGPTable = (props) => {
                 setModalContent("Error in " + status + "ing Bgp");
             })
             .finally(() => {
-                setShowForm(false);
-                setIsMessageModalOpen(true);
                 setUpdateLog(true);
                 setUpdateConfig(false);
                 setIsMessageModalOpen(true);
-                resetConfigStatus();
+                reload();
             });
     };
 
@@ -153,15 +150,38 @@ const BGPTable = (props) => {
         [props.height]
     );
 
+    const resyncBgp = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "bgp",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                reload();
+            }
+        });
+    };
+
     return (
         <div className="datatable">
-            <div className="button-group mt-15 mb-15">
-                <div className="button-column">
+            <div className="button-group mt-5 mb-5">
+                <div>
+                    <button
+                        className="btnStyle m-10"
+                        onClick={resyncBgp}
+                        disabled={updateConfig}
+                    >
+                        <FaSyncAlt /> Rediscover
+                    </button>
+
                     <button
                         disabled={
                             updateConfig || Object.keys(changes).length === 0
                         }
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         onClick={() => handleFormSubmit(changes, "Updat")}
                     >
                         Apply Config
@@ -169,9 +189,9 @@ const BGPTable = (props) => {
                     <span className="config-status">{configStatus}</span>
                 </div>
 
-                <div className="">
+                <div>
                     <button
-                        className="btnStyle"
+                        className="btnStyle m-10"
                         disabled={!getIsStaff()}
                         onClick={openAddModal}
                     >
@@ -179,7 +199,7 @@ const BGPTable = (props) => {
                     </button>
 
                     <button
-                        className="ml-10 btnStyle"
+                        className="btnStyle m-10"
                         disabled={selectedRows.length === 0}
                         onClick={deleteBgp}
                     >
@@ -213,7 +233,7 @@ const BGPTable = (props) => {
             </Modal>
 
             {isMessageModalOpen && (
-                <Modal show={isMessageModalOpen} onClose={refreshData}>
+                <Modal show={isMessageModalOpen} onClose={reload}>
                     <div>
                         {modalContent}
                         <div
@@ -224,7 +244,7 @@ const BGPTable = (props) => {
                                 gap: "10px",
                             }}
                         >
-                            <button className="btnStyle" onClick={refreshData}>
+                            <button className="btnStyle" onClick={reload}>
                                 Close
                             </button>
                         </div>

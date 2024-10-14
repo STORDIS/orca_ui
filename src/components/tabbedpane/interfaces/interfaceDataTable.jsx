@@ -16,7 +16,9 @@ import useStoreConfig from "../../../utils/configStore";
 import Modal from "../../modal/Modal";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
-import { json } from "react-router-dom";
+import { syncFeatureCommon } from "../Deviceinfo";
+
+import { FaSyncAlt } from "react-icons/fa";
 
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
@@ -252,7 +254,7 @@ const InterfaceDataTable = (props) => {
                 relode();
             })
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -272,7 +274,7 @@ const InterfaceDataTable = (props) => {
                 relode();
             })
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -292,7 +294,7 @@ const InterfaceDataTable = (props) => {
                 relode();
             })
             .finally(() => {
-                getInterfaceData();
+                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -306,13 +308,35 @@ const InterfaceDataTable = (props) => {
         [props.height]
     );
 
+    const resyncInterfaces = async () => {
+        let payload = {
+            mgt_ip: selectedDeviceIp,
+            feature: "interface",
+        };
+        setConfigStatus("Sync In Progress....");
+        await syncFeatureCommon(payload, (status) => {
+            setUpdateConfig(status);
+            setUpdateLog(!status);
+            if (!status) {
+                reload();
+            }
+        });
+    };
+
     return (
-        <div className="datatable " id="interfaceDataTable">
-            <div className="mt-15 mb-15">
+        <div className="datatable" id="interfaceDataTable">
+            <div className="mt-5 mb-5">
+                <button
+                    className="btnStyle m-10"
+                    onClick={resyncInterfaces}
+                    disabled={updateConfig}
+                >
+                    <FaSyncAlt /> Rediscover
+                </button>
                 <button
                     onClick={() => sendUpdates(changes)}
                     disabled={updateConfig || Object.keys(changes).length === 0}
-                    className="btnStyle"
+                    className="btnStyle m-10"
                     id="applyConfigBtn"
                 >
                     Apply Config
