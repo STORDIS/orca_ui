@@ -35,24 +35,30 @@ const PrimarySecondaryForm = ({
     const updateConfig = useStoreConfig((state) => state.updateConfig);
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
-    inputData = JSON.parse(inputData);
+    const [inputDataJson, setInputDataJson] = useState(JSON.parse(inputData));
 
     useEffect(() => {
-        console.log(inputData);
+        // setInputDataJson(JSON.parse(inputData));
 
-        if (inputData?.ip_address?.length > 0) {
+        if (inputDataJson?.ip_address?.length > 0) {
             setFormData([
                 {
-                    name: inputData?.ip_address[0]?.name,
+                    name: inputDataJson?.ip_address[0]?.name,
                     mgt_ip: selectedDeviceIp,
-                    ip_address: inputData?.ip_address[0]?.ip_address,
-                    secondary: inputData?.ip_address[0]?.secondary,
+                    ip_address:
+                        inputDataJson?.ip_address[0]?.ip_address +
+                        "/" +
+                        inputDataJson?.ip_address[0]?.prefix,
+                    secondary: inputDataJson?.ip_address[0]?.secondary,
                 },
                 {
-                    name: inputData?.ip_address[1]?.name,
+                    name: inputDataJson?.ip_address[1]?.name,
                     mgt_ip: selectedDeviceIp,
-                    ip_address: inputData?.ip_address[1]?.ip_address,
-                    secondary: inputData?.ip_address[1]?.secondary,
+                    ip_address:
+                        inputDataJson?.ip_address[1]?.ip_address +
+                        "/" +
+                        inputDataJson?.ip_address[1]?.prefix,
+                    secondary: inputDataJson?.ip_address[1]?.secondary,
                 },
             ]);
         }
@@ -96,11 +102,24 @@ const PrimarySecondaryForm = ({
         } else {
             formData.map((item) => {
                 item.mgt_ip = selectedDeviceIp;
-                item.name = inputData.name;
+                item.name = inputDataJson.name;
             });
-            console.log(formData);
 
-            putConfig(formData);
+            if (inputDataJson?.ip_address?.length > 0) {
+                let ipSet = [];
+
+                inputDataJson?.ip_address.forEach((element) => {
+                    ipSet.push(element.ip_address + "/" + element.prefix);
+                });
+
+                let temp = formData.filter(
+                    (item) => !ipSet.includes(item.ip_address)
+                );
+
+                putConfig(temp);
+            } else {
+                putConfig(formData);
+            }
         }
     };
 
@@ -108,8 +127,8 @@ const PrimarySecondaryForm = ({
         setUpdateConfig(true);
         let payload = {
             mgt_ip: selectedDeviceIp,
-            name: inputData.name,
-            ip_address: inputData.ip_address,
+            name: inputDataJson.name,
+            ip_address: inputDataJson.ip_address,
         };
 
         const apiMUrl = subInterfaceURL();
@@ -135,7 +154,7 @@ const PrimarySecondaryForm = ({
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
-                onSubmit()
+                onSubmit();
             });
     };
 
