@@ -113,16 +113,7 @@ const InterfaceDataTable = (props) => {
     }, []);
 
     const handleCellValueChanged = useCallback((params) => {
-        if (
-            !isValidIPv4WithCIDR(params.data.ip_address) &&
-            params.data.ip_address !== "" &&
-            params.data.ip_address !== undefined &&
-            params.data.ip_address !== null
-        ) {
-            alert("ip_address is not valid");
-            relode();
-            return;
-        }
+      
 
         if (params.newValue !== params.oldValue) {
             setChanges((prev) => {
@@ -342,7 +333,8 @@ const InterfaceDataTable = (props) => {
                     show={true}
                     onClose={relode}
                     title="Interface IP Address"
-                    onSubmit={relode}
+                    onSubmit={(e) => sendUpdates(e)}
+                    id="PrimarySecondaryForm"
                 >
                     <PrimarySecondaryForm
                         selectedDeviceIp={selectedDeviceIp}
