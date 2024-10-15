@@ -366,6 +366,7 @@ const InterfaceDataTable = (props) => {
                     className="btnStyle m-10"
                     onClick={resyncInterfaces}
                     disabled={updateConfig}
+                    id="rediscoverBtn"
                 >
                     <FaSyncAlt /> Rediscover
                 </button>
