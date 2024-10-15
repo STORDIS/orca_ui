@@ -51,6 +51,7 @@ const InterfaceDataTable = (props) => {
     const gridRef = useRef();
     const selectedDeviceIp = props.selectedDeviceIp;
     const [dataTable, setDataTable] = useState([]);
+    const [originData, setOriginData] = useState([]);
     const [changes, setChanges] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
@@ -83,6 +84,10 @@ const InterfaceDataTable = (props) => {
         setChanges([]);
         getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
+            // setOriginData(res);
+
+            const deepCopyData = JSON.parse(JSON.stringify(res));
+            setOriginData([...deepCopyData]);
         });
     };
 
@@ -103,6 +108,7 @@ const InterfaceDataTable = (props) => {
         setConfigStatus("");
         setChanges([]);
         setDataTable([]);
+        setOriginData([]);
         getInterfaceData();
         setIsModalOpen("null");
     };
@@ -112,6 +118,7 @@ const InterfaceDataTable = (props) => {
             setIsModalOpen("PrimarySecondaryForm");
         }
         setSelectedRows(params.data);
+        // console.log(originData);
     }, []);
 
     const handleCellValueChanged = useCallback((params) => {
@@ -211,7 +218,7 @@ const InterfaceDataTable = (props) => {
                     breakout_mode: item.breakout_mode,
                 };
 
-                if (item.breakout_mode === "None") {
+                if (item.breakout_mode === "Not Configured") {
                     deleteBreakout(payload);
                 } else {
                     putBreakout(payload);
@@ -227,7 +234,7 @@ const InterfaceDataTable = (props) => {
                     breakout_mode: item.breakout_mode,
                 };
 
-                if (item.breakout_mode === "None") {
+                if (item.breakout_mode === "Not Configured") {
                     deleteBreakout(payload);
                 } else {
                     putBreakout(payload);
@@ -351,7 +358,7 @@ const InterfaceDataTable = (props) => {
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
-                    columnDefs={interfaceColumns}
+                    columnDefs={interfaceColumns(originData)}
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
