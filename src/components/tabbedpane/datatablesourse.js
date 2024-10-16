@@ -1011,9 +1011,19 @@ export const stpColumn = [
 ];
 
 export const getCellEditorParamsDeviceImageList = (params) => {
-    return {
-        values: params?.data?.image_list,
-    };
+    console.log(params?.data?.img_name);
+
+    // if (params?.data?.image_list?.length > 0) {
+    //     console.log("  1");
+    //     return {
+    //         values: params?.data?.image_list,
+    //     };
+    // } else {
+    //     console.log("  2");
+    //     return {
+    //         values: [params?.data?.img_name],
+    //     };
+    // }
 };
 
 export const deviceUserColumns = (showIn) => {

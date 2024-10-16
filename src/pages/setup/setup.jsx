@@ -69,7 +69,6 @@ export const Home = () => {
     const onSelectionChanged = () => {
         const selectedNodes = gridRef.current.api.getSelectedNodes();
         const selectedData = selectedNodes.map((node) => node.data.mgt_ip);
-
         setSelectedDevices(selectedData);
     };
 
@@ -207,12 +206,27 @@ export const Home = () => {
     const installImage = async (payload) => {
         try {
             const response = await instance.put(installSonicURL(), payload);
-            console.log(response);
+            console.log(response?.data?.networks);
+
+            if(Object.keys(response?.data?.networks).length > 0) {
+                setNetworkList(response?.data?.networks);
+            }
+
         } catch (error) {
             console.log(error);
         } finally {
             setUpdateLog(true);
             setUpdateConfig(false);
+
+            setFormData({
+                image_url: "",
+                device_ips: "",
+                discover_also: false,
+                user_name: "",
+                password: "",
+            });
+            setSelectedDevices([]);
+            setSelectAll(false);
         }
     };
 
