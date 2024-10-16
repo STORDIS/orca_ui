@@ -112,7 +112,7 @@ export const LogViewer = () => {
             cellRenderer: (params) => {
                 return (
                     <span>
-                        {params.data.http_method} :{" "}
+                        {params.data.http_method} :
                         {JSON.stringify(params.value)}
                     </span>
                 );
@@ -129,17 +129,18 @@ export const LogViewer = () => {
             sortable: true,
 
             cellRenderer: (params) => {
+                console.log(params?.data?.response)
                 if (params.value === "success") {
                     return (
-                        <div className="icon" id={params.data.status_code}>
+                        <div className="icon" id={params?.data?.status_code}>
                             <FaRegCheckCircle style={{ fontSize: "24px" }} />
                         </div>
                     );
                 } else {
                     return (
-                        <div className="icon" id={params.data.status_code}>
+                        <div className="icon" id={params?.data?.status_code}>
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
-                            &nbsp; {params.data.response} &nbsp;
+                            &nbsp; {JSON.stringify(params?.data?.response)} &nbsp;
                         </div>
                     );
                 }
