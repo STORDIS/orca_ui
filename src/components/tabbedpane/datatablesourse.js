@@ -183,9 +183,7 @@ export const interfaceColumns = (originalData) => [
         },
         headerComponent: EditableHeaderComponent,
         cellRenderer: (params) => {
-            let regex = /^Eth[0-9/]+\/1$/;
-
-            console.log(params?.data?.alias)
+            console.log(params?.data?.alias);
 
             if (params.data.breakout_supported) {
                 return params.value || "Not Configured";
