@@ -208,10 +208,9 @@ export const Home = () => {
             const response = await instance.put(installSonicURL(), payload);
             console.log(response?.data?.networks);
 
-            if(Object.keys(response?.data?.networks).length > 0) {
+            if (Object.keys(response?.data?.networks).length > 0) {
                 setNetworkList(response?.data?.networks);
             }
-
         } catch (error) {
             console.log(error);
         } finally {

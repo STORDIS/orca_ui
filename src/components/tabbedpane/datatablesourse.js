@@ -1011,19 +1011,18 @@ export const stpColumn = [
 ];
 
 export const getCellEditorParamsDeviceImageList = (params) => {
-    console.log(params?.data?.img_name);
 
-    // if (params?.data?.image_list?.length > 0) {
-    //     console.log("  1");
-    //     return {
-    //         values: params?.data?.image_list,
-    //     };
-    // } else {
-    //     console.log("  2");
-    //     return {
-    //         values: [params?.data?.img_name],
-    //     };
-    // }
+    if (params?.data?.image_list?.length > 0) {
+        console.log("  1");
+        return {
+            values: params?.data?.image_list,
+        };
+    } else {
+        console.log("  2");
+        return {
+            values: [params?.data?.img_name],
+        };
+    }
 };
 
 export const deviceUserColumns = (showIn) => {
@@ -1037,6 +1036,9 @@ export const deviceUserColumns = (showIn) => {
             headerComponent: EditableHeaderComponent,
             cellEditor: "agSelectCellEditor",
             cellEditorParams: getCellEditorParamsDeviceImageList,
+            cellRenderer: (params) => {
+                return <span>{params.value}</span>;
+            },
         },
         {
             field: "mgt_intf",
