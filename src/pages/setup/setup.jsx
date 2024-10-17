@@ -24,6 +24,12 @@ import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore";
 
 export const Home = () => {
+    const imageUrlRef = useRef(null);
+    const userNameRef = useRef(null);
+    const passwordRef = useRef(null);
+    const deviceIpsRef = useRef(null);
+    const discoverAlsoRef = useRef(null);
+
     const instance = interceptor();
 
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
@@ -204,12 +210,27 @@ export const Home = () => {
     };
 
     const installImage = async (payload) => {
+        console.log("clear");
+
+        imageUrlRef.current.value = "";
+        userNameRef.current.value = "";
+        passwordRef.current.value = "";
+        deviceIpsRef.current.value = "";
+        discoverAlsoRef.current.checked = false;
+        gridRef.current.api.deselectAll();
+
         try {
             const response = await instance.put(installSonicURL(), payload);
             console.log(response?.data?.networks);
 
             if (Object.keys(response?.data?.networks).length > 0) {
                 setNetworkList(response?.data?.networks);
+
+                imageUrlRef.current.value = formData.image_url;
+                userNameRef.current.value = formData.user_name;
+                passwordRef.current.value = formData.password;
+                deviceIpsRef.current.value = formData.device_ips;
+                discoverAlsoRef.current.checked = formData.discover_also;
             }
         } catch (error) {
             console.log(error);
@@ -219,55 +240,60 @@ export const Home = () => {
 
             setFormData({
                 image_url: "",
-                device_ips: "",
+                device_ips: [],
                 discover_also: false,
                 user_name: "",
                 password: "",
             });
+
             setSelectedDevices([]);
+
             setSelectAll(false);
         }
     };
 
     return (
         <div>
-            <div className="listContainer resizable">
+            <div className="listContainer resizable" id="setupTopSection">
                 <div className="form-wrapper align-center ">
                     <div className="form-field w-25">
-                        <label>SONiC Image URL : </label>
+                        <label for="image_url">SONiC Image URL : </label>
                     </div>
                     <div className="form-field w-75">
                         <input
                             type="text"
                             name="image_url"
                             onChange={handleChange}
+                            ref={imageUrlRef}
                         />
                     </div>
                 </div>
 
                 <div className="form-wrapper align-center">
                     <div className="form-field w-25">
-                        <label>User Name : </label>
+                        <label for="user_name">User Name : </label>
                     </div>
                     <div className="form-field w-25">
                         <input
                             type="text"
                             name="user_name"
                             onChange={handleChange}
+                            ref={userNameRef}
                         />
                     </div>
                     <div className="form-field w-25">
-                        <label> Password : </label>
+                        <label for="password"> Password : </label>
                     </div>
                     <div className="form-field w-25">
                         <input
                             type="password"
                             name="password"
                             onChange={handleChange}
+                            ref={passwordRef}
                         />
                     </div>
                 </div>
-                <div className="form-field w-100">
+                <div className="form-field w-100" id="note">
                     <small>
                         NOTE: The user name and password is for SONiC image
                         specific
@@ -276,33 +302,40 @@ export const Home = () => {
 
                 <div className="form-wrapper align-center">
                     <div className="form-field w-25">
-                        <label>ONIE Devices for SONiC installation : </label>
+                        <label for="device_ips">
+                            ONIE Devices for SONiC installation :
+                        </label>
                     </div>
                     <div className="form-field w-50">
                         <input
                             type="text"
                             name="device_ips"
+                            ref={deviceIpsRef}
                             onChange={handleChange}
                             placeholder="Give one or more IP address or ONIE device address separated by comma"
                         />
                     </div>
                     <div className="form-field w-25">
                         <div style={{ display: "flex" }}>
-                            <label className="">Discover also </label>
+                            <label for="discover_also" className="">
+                                Discover also
+                            </label>
                             <input
                                 type="checkbox"
                                 className="ml-15"
-                                checked={formData.discover_also}
+                                name="discover_also"
+                                ref={discoverAlsoRef}
+                                // checked={formData.discover_also}
                                 onChange={handleCheckbox}
                             />
                         </div>
                     </div>
                 </div>
 
-                <div className="listTitle">
+                <div className="listTitle" id="sonicDeviceListHeader">
                     Select Devices for SONiC installation
                 </div>
-                <div className="">
+                <div className="" id="sonicDeviceTable">
                     <div style={gridStyle} className="ag-theme-alpine">
                         <AgGridReact
                             ref={gridRef}
@@ -318,14 +351,22 @@ export const Home = () => {
                 </div>
 
                 <div>
-                    <button className="btnStyle mt-15" onClick={send_update}>
+                    <button
+                        className="btnStyle mt-15"
+                        id="updateBtn"
+                        onClick={send_update}
+                        disabled={Object.keys(networkList).length > 0}
+                    >
                         Update SONiC on Devices Selected
                     </button>
                 </div>
             </div>
 
             {Object.keys(networkList).length > 0 && (
-                <div className="listContainer resizable">
+                <div
+                    className="listContainer resizable"
+                    id="setupBottomSection"
+                >
                     <div className="listTitle">
                         Following ONIE devices identified from the repective
                         networks provided for SONiC installation
@@ -338,12 +379,13 @@ export const Home = () => {
                                 width: "100%",
                                 borderCollapse: "collapse",
                             }}
+                            id="networkListTable"
                         >
                             <thead>
                                 <tr>
                                     <th>Network Address</th>
                                     <th>IP Address</th>
-                                    <th>
+                                    <th id="selectAll">
                                         Select All
                                         <input
                                             className="ml-10"
@@ -353,7 +395,7 @@ export const Home = () => {
                                             }}
                                         />
                                     </th>
-                                    <th>
+                                    <th id="discoverAll">
                                         Discover All
                                         <input
                                             className="ml-10"
@@ -373,6 +415,7 @@ export const Home = () => {
                                             (entry, index) => (
                                                 <tr
                                                     key={index}
+                                                    id={index}
                                                     style={{
                                                         textAlign: "center",
                                                     }}
@@ -383,6 +426,7 @@ export const Home = () => {
                                                                 networkList[key]
                                                                     .length
                                                             }
+                                                            id="deviceNameFromNetwork"
                                                         >
                                                             {key}
                                                         </td>
@@ -391,6 +435,7 @@ export const Home = () => {
                                                     <td>
                                                         <input
                                                             type="checkbox"
+                                                            id="selectDevice"
                                                             disabled={selectAll}
                                                             checked={
                                                                 selectedNetworkDevices.filter(
@@ -411,6 +456,7 @@ export const Home = () => {
                                                     <td>
                                                         <input
                                                             type="checkbox"
+                                                            id="discoverDevice"
                                                             disabled={discoverDisabled(
                                                                 entry.ip
                                                             )}
@@ -444,6 +490,7 @@ export const Home = () => {
                         <button
                             className="btnStyle mt-15"
                             onClick={applyConfig}
+                            id="applyConfigBtn"
                         >
                             Apply Config
                         </button>

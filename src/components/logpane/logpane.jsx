@@ -153,7 +153,7 @@ export const LogViewer = () => {
                 }
             },
             tooltipValueGetter: (params) => {
-                return params.data.response;
+                return JSON.stringify(params?.data?.response);
             },
         },
     ]);
