@@ -1013,12 +1013,10 @@ export const stpColumn = [
 export const getCellEditorParamsDeviceImageList = (params) => {
 
     if (params?.data?.image_list?.length > 0) {
-        console.log("  1");
         return {
             values: params?.data?.image_list,
         };
     } else {
-        console.log("  2");
         return {
             values: [params?.data?.img_name],
         };
