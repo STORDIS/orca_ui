@@ -1,6 +1,5 @@
 const host_addr =
     process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
-
 // auth urls
 export function getUserDetailsURL(user) {
     return host_addr + "/auth/user/" + user;
