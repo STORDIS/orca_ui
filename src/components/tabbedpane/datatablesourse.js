@@ -1175,14 +1175,14 @@ export const deviceUserColumns = (showIn) => {
             editable: getIsStaff(),
         });
     }
-    if (showIn === "setup" || showIn === "all") {
-        dataColumn.unshift({
-            headerCheckboxSelection: getIsStaff() && showIn === "setup",
-            checkboxSelection: getIsStaff() && showIn === "setup",
-            width: 50,
+    if (showIn === "info" || showIn === "all") {
+        dataColumn.push({
+            field: "orca_status",
+            headerName: "Orca Status",
+            width: 130,
             sortable: true,
-            headerTooltip: "", // add header tooltip here
         });
     }
+
     return dataColumn;
 };

@@ -123,17 +123,6 @@ const InterfaceDataTable = (props) => {
     }, []);
 
     const handleCellValueChanged = useCallback((params) => {
-        if (
-            !isValidIPv4WithCIDR(params.data.ip_address) &&
-            params.data.ip_address !== "" &&
-            params.data.ip_address !== undefined &&
-            params.data.ip_address !== null
-        ) {
-            alert("ip_address is not valid");
-            reload();
-            return;
-        }
-
         if (params.newValue !== params.oldValue) {
             setChanges((prev) => {
                 let latestChanges;
@@ -274,7 +263,6 @@ const InterfaceDataTable = (props) => {
             })
             .finally(() => {
                 reload();
-                reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
             });
@@ -300,21 +288,6 @@ const InterfaceDataTable = (props) => {
             });
     };
 
-    const deleteIpAddress = (payload) => {
-        setUpdateConfig(true);
-        setConfigStatus("Config In Progress....");
-        const apiMUrl = subInterfaceURL();
-        instance
-            .delete(apiMUrl, { data: payload })
-            .then((response) => {})
-            .catch((err) => {})
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-                reload();
-            });
-    };
-
     const deleteBreakout = (payload) => {
         setUpdateConfig(true);
         setConfigStatus("Config In Progress....");
@@ -329,7 +302,6 @@ const InterfaceDataTable = (props) => {
                 reload();
             })
             .finally(() => {
-                reload();
                 reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
