@@ -12,14 +12,19 @@ export const defaultColDef = {
 };
 
 export const getCellEditorParamsInterfaceSpeed = (params) => {
-    let valid_speeds = params?.data?.valid_speeds?.split(",");
     let result = [];
-    valid_speeds?.forEach((element) => {
-        const bytesInGB = 1000;
-        let converted_value = element / bytesInGB;
-        converted_value = "SPEED_" + converted_value + "GB";
-        result?.push(converted_value);
-    });
+
+    if (params?.data?.valid_speeds === null) {
+        result.push(params.data.speed);
+    } else {
+        let valid_speeds = params?.data?.valid_speeds?.split(",");
+        valid_speeds?.forEach((element) => {
+            const bytesInGB = 1000;
+            let converted_value = element / bytesInGB;
+            converted_value = "SPEED_" + converted_value + "GB";
+            result?.push(converted_value);
+        });
+    }
 
     return {
         values: result,
@@ -40,15 +45,19 @@ export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
         values: result,
     };
 };
-export const getCellEditorParamsInterfaceBreakout = (params) => {
-    let result = [];
+export const getCellEditorParamsInterfaceBreakout = (params, originalData) => {
+    let temp = originalData.find((item) => item.name === params.data.name);
 
+    console.log(params?.data?.alias, params.data.breakout_supported);
+
+    let result = [];
+    let regex = /^Eth[0-9/]+\/1$/;
     if (
         params.data.breakout_supported &&
         params.data.alias.match(/\//g).length === 1
     ) {
         result = [
-            "None",
+            "Not Configured",
             "1xSPEED_400GB",
             "1xSPEED_200GB",
             "2xSPEED_200GB",
@@ -73,10 +82,11 @@ export const getCellEditorParamsInterfaceBreakout = (params) => {
         ];
     } else if (
         (!params.data.breakout_supported || params.data.breakout_supported) &&
-        params.data.alias.includes("/1") &&
-        params.data.alias.match(/\//g).length === 2
+        regex.test(params?.data?.alias)
+        // params.data.alias.includes("/1") &&
+        // params.data.alias.match(/\//g).length === 2
     ) {
-        result = ["None", params.data.breakout_mode];
+        result = ["Not Configured", temp.breakout_mode || "None"];
     } else {
         result = ["Not supported"];
     }
@@ -87,6 +97,8 @@ export const getCellEditorParamsInterfaceBreakout = (params) => {
 };
 
 export const getBreakout = (params) => {
+    let regex = /^Eth[0-9/]+\/1$/;
+
     if (
         params.data.breakout_supported &&
         params.data.alias.match(/\//g).length === 1
@@ -94,8 +106,7 @@ export const getBreakout = (params) => {
         return true;
     } else if (
         (!params.data.breakout_supported || params.data.breakout_supported) &&
-        params.data.alias.includes("/1") &&
-        params.data.alias.match(/\//g).length === 2
+        regex.test(params?.data?.alias)
     ) {
         return true;
     } else {
@@ -103,7 +114,7 @@ export const getBreakout = (params) => {
     }
 };
 
-export const interfaceColumns = [
+export const interfaceColumns = (originalData) => [
     {
         field: "name",
         headerName: "Name",
@@ -167,16 +178,20 @@ export const interfaceColumns = [
         width: 130,
         editable: getIsStaff() && getBreakout,
         cellEditor: "agSelectCellEditor",
-        cellEditorParams: getCellEditorParamsInterfaceBreakout,
+        cellEditorParams: (params) => {
+            return getCellEditorParamsInterfaceBreakout(params, originalData);
+        },
         headerComponent: EditableHeaderComponent,
         cellRenderer: (params) => {
+            console.log(params?.data?.alias);
+
             if (params.data.breakout_supported) {
-                return params.value || "None";
+                return params.value || "Not Configured";
             } else if (
                 !params.data.breakout_supported &&
-                params.data.alias.match(/\//g).length === 2
+                params?.data?.alias.match(/\//g)?.length === 2
             ) {
-                return params.value;
+                return params.value || "None";
             } else {
                 return "Not supported";
             }
@@ -222,6 +237,52 @@ export const interfaceColumns = [
         editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
+        cellRenderer: (params) => {
+            let primary = "None";
+            let secondary = [];
+
+            params?.value?.forEach((element) => {
+                if (element?.secondary) {
+                    secondary.push(element?.ip_address + "/" + element.prefix);
+                } else {
+                    primary = element?.ip_address + "/" + element.prefix;
+                }
+            });
+
+            let secondaryString =
+                secondary.length > 0 ? secondary.join(", ") : "None";
+
+            if (primary !== "None" || secondary.length > 0) {
+                return (
+                    "Primary - " + primary + " Secondary - " + secondaryString
+                );
+            } else {
+                return "None";
+            }
+        },
+        tooltipValueGetter: (params) => {
+            let primary = "None";
+            let secondary = [];
+
+            params?.value?.forEach((element) => {
+                if (element?.secondary) {
+                    secondary.push(element?.ip_address + "/" + element.prefix);
+                } else {
+                    primary = element?.ip_address + "/" + element.prefix;
+                }
+            });
+
+            let secondaryString =
+                secondary.length > 0 ? secondary.join(", ") : "None";
+
+            if (primary !== "None" || secondary.length > 0) {
+                return (
+                    "Primary - " + primary + " Secondary - " + secondaryString
+                );
+            } else {
+                return "None";
+            }
+        },
     },
     {
         field: "last_chng",
@@ -414,7 +475,6 @@ export const vlanColumns = [
         width: 130,
         sortable: true,
         editable: getIsStaff() && valnIp,
-
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
     },

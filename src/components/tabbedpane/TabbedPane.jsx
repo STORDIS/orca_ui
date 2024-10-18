@@ -62,7 +62,7 @@ const TabbedPane = () => {
             .then((res) => {
                 setOrcaState(res.data.state);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.error(err));
     };
 
     const onUndo = (event) => {

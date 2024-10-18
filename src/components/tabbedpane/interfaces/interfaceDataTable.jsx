@@ -9,9 +9,11 @@ import {
     subInterfaceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
+import PrimarySecondaryForm from "./primarySecondaryForm";
 
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
+import Modal from "../../modal/Modal";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { syncFeatureCommon } from "../Deviceinfo";
@@ -49,8 +51,11 @@ const InterfaceDataTable = (props) => {
     const gridRef = useRef();
     const selectedDeviceIp = props.selectedDeviceIp;
     const [dataTable, setDataTable] = useState([]);
+    const [originData, setOriginData] = useState([]);
     const [changes, setChanges] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState("null");
 
     const instance = interceptor();
     const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
@@ -79,14 +84,11 @@ const InterfaceDataTable = (props) => {
         setChanges([]);
         getInterfaceDataCommon(selectedDeviceIp).then((res) => {
             setDataTable(res);
-        });
-    };
+            // setOriginData(res);
 
-    const reload = () => {
-        setConfigStatus("");
-        setChanges([]);
-        setDataTable([]);
-        getInterfaceData();
+            const deepCopyData = JSON.parse(JSON.stringify(res));
+            setOriginData([...deepCopyData]);
+        });
     };
 
     const getAdvSpeed = (params) => {
@@ -102,18 +104,24 @@ const InterfaceDataTable = (props) => {
         return result;
     };
 
-    const handleCellValueChanged = useCallback((params) => {
-        if (
-            !isValidIPv4WithCIDR(params.data.ip_address) &&
-            params.data.ip_address !== "" &&
-            params.data.ip_address !== undefined &&
-            params.data.ip_address !== null
-        ) {
-            alert("ip_address is not valid");
-            reload();
-            return;
-        }
+    const reload = () => {
+        setConfigStatus("");
+        setChanges([]);
+        setDataTable([]);
+        setOriginData([]);
+        getInterfaceData();
+        setIsModalOpen("null");
+    };
 
+    const onCellClicked = useCallback((params) => {
+        if (params?.colDef?.field === "ip_address") {
+            setIsModalOpen("PrimarySecondaryForm");
+        }
+        setSelectedRows(params.data);
+        // console.log(originData);
+    }, []);
+
+    const handleCellValueChanged = useCallback((params) => {
         if (params.newValue !== params.oldValue) {
             setChanges((prev) => {
                 let latestChanges;
@@ -155,6 +163,16 @@ const InterfaceDataTable = (props) => {
                                 [params.colDef.field]: params.newValue,
                             },
                         ];
+                    } else if (params.colDef.field === "description") {
+                        latestChanges = [
+                            ...prev,
+                            {
+                                name: params.data.name,
+                                mgt_ip: selectedDeviceIp,
+
+                                [params.colDef.field]: params.newValue || "",
+                            },
+                        ];
                     } else {
                         latestChanges = [
                             ...prev,
@@ -184,12 +202,14 @@ const InterfaceDataTable = (props) => {
         return hasOnlyRequiredKeys;
     }
 
-    const sendUpdates = () => {
-        if (changes.length === 0) {
+    const sendUpdates = (formData) => {
+        if (formData.length === 0) {
             return;
         }
 
-        changes.forEach((item) => {
+        console.log("changes", formData);
+
+        formData.forEach((item) => {
             if (hasOnlyRequiredKeys(item)) {
                 let payload = {
                     mgt_ip: selectedDeviceIp,
@@ -198,7 +218,7 @@ const InterfaceDataTable = (props) => {
                     breakout_mode: item.breakout_mode,
                 };
 
-                if (item.breakout_mode === "None") {
+                if (item.breakout_mode === "Not Configured") {
                     deleteBreakout(payload);
                 } else {
                     putBreakout(payload);
@@ -214,30 +234,15 @@ const InterfaceDataTable = (props) => {
                     breakout_mode: item.breakout_mode,
                 };
 
-                if (item.breakout_mode === "None") {
+                if (item.breakout_mode === "Not Configured") {
                     deleteBreakout(payload);
                 } else {
                     putBreakout(payload);
                 }
 
-                if (
-                    item.hasOwnProperty("ip_address") &&
-                    (item.ip_address === "" || item.ip_address === null)
-                ) {
-                    delete item.ip_address;
-                    deleteIpAddress(item);
-                }
-
-                putConfig(changes);
-            } else if (
-                item.hasOwnProperty("ip_address") &&
-                (item.ip_address === "" || item.ip_address === null)
-            ) {
-                delete item.ip_address;
-                deleteIpAddress(item);
-                putConfig(item);
+                putConfig(formData);
             } else {
-                putConfig(changes);
+                putConfig(formData);
             }
         });
     };
@@ -248,8 +253,13 @@ const InterfaceDataTable = (props) => {
         const apiUrl = getAllInterfacesOfDeviceURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {})
-            .catch((err) => {})
+            .then((res) => {
+                reload();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                reload();
+            })
             .finally(() => {
                 reload();
                 setUpdateLog(true);
@@ -263,28 +273,17 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .put(apiUrl, payload)
-            .then((res) => {})
+            .then((res) => {
+                reload();
+            })
             .catch((err) => {
+                getInterfaceData();
+                reload();
             })
             .finally(() => {
                 reload();
                 setUpdateLog(true);
                 setUpdateConfig(false);
-            });
-    };
-
-    const deleteIpAddress = (payload) => {
-        setUpdateConfig(true);
-        setConfigStatus("Config In Progress....");
-        const apiMUrl = subInterfaceURL();
-        instance
-            .delete(apiMUrl, { data: payload })
-            .then((response) => {})
-            .catch((err) => {})
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-                reload();
             });
     };
 
@@ -294,8 +293,13 @@ const InterfaceDataTable = (props) => {
         const apiUrl = breakoutURL(selectedDeviceIp);
         instance
             .delete(apiUrl, { data: payload })
-            .then((res) => {})
-            .catch((err) => {})
+            .then((res) => {
+                reload();
+            })
+            .catch((err) => {
+                getInterfaceData();
+                reload();
+            })
             .finally(() => {
                 reload();
                 setUpdateLog(true);
@@ -333,11 +337,12 @@ const InterfaceDataTable = (props) => {
                     className="btnStyle m-10"
                     onClick={resyncInterfaces}
                     disabled={updateConfig}
+                    id="rediscoverBtn"
                 >
                     <FaSyncAlt /> Rediscover
                 </button>
                 <button
-                    onClick={sendUpdates}
+                    onClick={() => sendUpdates(changes)}
                     disabled={updateConfig || Object.keys(changes).length === 0}
                     className="btnStyle m-10"
                     id="applyConfigBtn"
@@ -353,15 +358,30 @@ const InterfaceDataTable = (props) => {
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}
-                    columnDefs={interfaceColumns}
+                    columnDefs={interfaceColumns(originData)}
                     defaultColDef={defaultColDef}
                     stopEditingWhenCellsLoseFocus={true}
                     onCellValueChanged={handleCellValueChanged}
-                    // domLayout={"autoHeight"}
                     enableCellTextSelection="true"
+                    onCellClicked={onCellClicked}
                     quickFilterText="Ethernet"
                 ></AgGridReact>
             </div>
+
+            {isModalOpen === "PrimarySecondaryForm" && (
+                <Modal
+                    show={true}
+                    onClose={reload}
+                    title="Interface IP Address"
+                    onSubmit={(e) => sendUpdates(e)}
+                    id="PrimarySecondaryForm"
+                >
+                    <PrimarySecondaryForm
+                        selectedDeviceIp={selectedDeviceIp}
+                        inputData={JSON.stringify(selectedRows)}
+                    />
+                </Modal>
+            )}
         </div>
     );
 };
