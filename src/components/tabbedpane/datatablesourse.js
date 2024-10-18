@@ -1070,6 +1070,19 @@ export const stpColumn = [
     },
 ];
 
+export const getCellEditorParamsDeviceImageList = (params) => {
+
+    if (params?.data?.image_list?.length > 0) {
+        return {
+            values: params?.data?.image_list,
+        };
+    } else {
+        return {
+            values: [params?.data?.img_name],
+        };
+    }
+};
+
 export const deviceUserColumns = (showIn) => {
     let dataColumn = [
         {
@@ -1077,6 +1090,13 @@ export const deviceUserColumns = (showIn) => {
             headerName: "Image Name",
             width: 130,
             sortable: true,
+            editable: getIsStaff() && showIn === "home",
+            headerComponent: EditableHeaderComponent,
+            cellEditor: "agSelectCellEditor",
+            cellEditorParams: getCellEditorParamsDeviceImageList,
+            cellRenderer: (params) => {
+                return <span>{params.value}</span>;
+            },
         },
         {
             field: "mgt_intf",

@@ -9,6 +9,7 @@ const DiscoveryForm = ({ handleSubmit, onClose }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
+        console.log( value.trim());
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value.trim(),

@@ -18,7 +18,7 @@ import LogViewer from "../../components/logpane/logpane.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import Sidebar from "../../components/sidebar/Sidebar.jsx";
 import OrcAsk from "../orcask/orcAsk.jsx";
-
+import Setup from "../setup/setup.jsx";
 import { setNavigate } from "../../utils/NavigationService";
 
 import "./Layout.scss";
@@ -68,6 +68,14 @@ const Layout = () => {
                         element={
                             <RequireAuth>
                                 <OrcAsk />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/setup"
+                        element={
+                            <RequireAuth>
+                                <Setup />
                             </RequireAuth>
                         }
                     />
