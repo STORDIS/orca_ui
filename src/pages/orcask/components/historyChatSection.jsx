@@ -186,12 +186,42 @@ export const HistoryChatSection = ({
             return "string";
         } else if (
             Array.isArray(e?.functions_result) &&
-            e?.functions_result?.length > 0 &&
-            e?.functions_result[0] !== null
+            e?.functions_result?.length > 0
+        ) {
+            return "table";
+        } else if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length === 0
         ) {
             return "table";
         } else {
             return "unknown";
+        }
+    };
+
+    const checkValidTableRes = (e) => {
+        if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length > 0 &&
+            e?.functions_result[0] !== null
+        ) {
+            return "table_data";
+        } else if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length > 0 &&
+            e?.functions_result[0] === null
+        ) {
+            console.log("wrong_data");
+            return "no_data";
+        } else if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length === 0
+        ) {
+            console.log("no_data");
+            return "no_data";
+        } else {
+            console.log("false");
+            return false;
         }
     };
 
@@ -298,9 +328,9 @@ export const HistoryChatSection = ({
                                                 </select>
                                             </div>
                                             {item.viewType === "table" &&
-                                            item?.final_message
-                                                ?.functions_result.length >
-                                                0 ? (
+                                            checkValidTableRes(
+                                                item.final_message
+                                            ) === "table_data" ? (
                                                 <div
                                                     style={gridStyle}
                                                     className="ag-theme-alpine"
@@ -321,11 +351,13 @@ export const HistoryChatSection = ({
                                                         enableCellTextSelection="true"
                                                     />
                                                 </div>
-                                            ) : (
+                                            ) : checkValidTableRes(
+                                                  item.final_message
+                                              ) === "no_data" ? (
                                                 <div className="noData">
                                                     No data found
                                                 </div>
-                                            )}
+                                            ) : null}
                                             {item.viewType === "graph" &&
                                             item?.final_message
                                                 ?.functions_result.length >
@@ -343,13 +375,13 @@ export const HistoryChatSection = ({
                                                 </div>
                                             ) : null}
                                         </div>
-                                    ) : (
+                                    ) : item?.viewType === "unknown" ? (
                                         <div className="content">
                                             <div className="error">
-                                                Something went wrong 3
+                                                Something went wrong
                                             </div>
                                         </div>
-                                    )}
+                                    ) : null}
                                     <span className="copy" id="copyAi">
                                         <CopyToClipboard
                                             text={item?.final_message}
