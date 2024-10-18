@@ -8,11 +8,6 @@ import {
     syncURL,
     sheduleURL,
 } from "../../utils/backend_rest_urls.js";
-import {
-    getAllDevicesURL,
-    syncURL,
-    sheduleURL,
-} from "../../utils/backend_rest_urls.js";
 import interceptor from "../../utils/interceptor.js";
 import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore.js";

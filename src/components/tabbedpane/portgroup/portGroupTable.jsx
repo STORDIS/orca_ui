@@ -29,7 +29,6 @@ const PortGroupTable = (props) => {
         if (props.refresh && Object.keys(changes).length !== 0) {
             setChanges([]);
             setDataTable([]);
-            setOriginalData([]);
 
             getPortgroup();
         }
@@ -42,7 +41,6 @@ const PortGroupTable = (props) => {
             .get(apiMUrl)
             .then((res) => {
                 setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
             })
             .catch((err) => console.log(err));
     };
@@ -52,53 +50,36 @@ const PortGroupTable = (props) => {
         getPortgroup();
     }, [selectedDeviceIp]);
 
-    const getPortgroup = () => {
-        setDataTable([]);
-
-        const apiMUrl = getPortGroupsURL(selectedDeviceIp);
-        instance
-            .get(apiMUrl)
-            .then((res) => {
-                setDataTable(res.data);
-            })
-            .catch((err) => console.log(err));
-    };
-
-    const handleCellValueChanged = useCallback(
-        (params) => {
-            if (params.newValue !== params.oldValue) {
-                setChanges((prev) => {
-                    if (!Array.isArray(prev)) {
-                        console.error("Expected array but got:", prev);
-                        return [];
-                    }
-                    let latestChanges;
-                    let isNameExsits = prev.filter(
+    const handleCellValueChanged = useCallback((params) => {
+        if (params.newValue !== params.oldValue) {
+            setChanges((prev) => {
+                if (!Array.isArray(prev)) {
+                    console.error("Expected array but got:", prev);
+                    return [];
+                }
+                let latestChanges;
+                let isNameExsits = prev.filter(
+                    (val) => val.port_group_id === params.data.port_group_id
+                );
+                if (isNameExsits.length > 0) {
+                    let existedIndex = prev.findIndex(
                         (val) => val.port_group_id === params.data.port_group_id
                     );
-                    if (isNameExsits.length > 0) {
-                        let existedIndex = prev.findIndex(
-                            (val) =>
-                                val.port_group_id === params.data.port_group_id
-                        );
-                        prev[existedIndex][params.colDef.field] =
-                            params.newValue;
-                        latestChanges = [...prev];
-                    } else {
-                        latestChanges = [
-                            ...prev,
-                            {
-                                port_group_id: params.data.port_group_id,
-                                [params.colDef.field]: params.newValue,
-                            },
-                        ];
-                    }
-                    return latestChanges;
-                });
-            }
-        },
-        []
-    );
+                    prev[existedIndex][params.colDef.field] = params.newValue;
+                    latestChanges = [...prev];
+                } else {
+                    latestChanges = [
+                        ...prev,
+                        {
+                            port_group_id: params.data.port_group_id,
+                            [params.colDef.field]: params.newValue,
+                        },
+                    ];
+                }
+                return latestChanges;
+            });
+        }
+    }, []);
 
     const resetConfigStatus = () => {
         setConfigStatus("");
@@ -114,9 +95,8 @@ const PortGroupTable = (props) => {
         }));
     }, [selectedDeviceIp, changes]);
 
-    const sendUpdates =() => {
-
-        console.log(changes)
+    const sendUpdates = () => {
+        console.log(changes);
 
         // if (changes.length === 0) {
         //     return;
