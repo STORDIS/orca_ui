@@ -53,7 +53,7 @@ const BgpForm = ({
                 <div className="form-field">
                     <label htmlFor="lag-name"> Router Id :</label>
                     <input
-                        type="text"
+                        type="number"
                         name="router_id"
                         value={formData.router_id}
                         onChange={handleChange}
