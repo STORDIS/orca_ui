@@ -60,6 +60,14 @@
                         height: 300px !important;
                         position: relative;
                     }
+
+                    .noData {
+                        text-align: center;
+                    }
+                    .error {
+                        text-align: center;
+                        color: orange;
+                    }
                 }
             }
 

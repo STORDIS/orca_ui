@@ -33,8 +33,11 @@ export const HistoryChatSection = ({
     const [chatHistory, setChatHistory] = useState([
         {
             id: 0,
-            final_message:
-                "I am, ORCAsk AI developed to assist you. How can I help you?",
+            final_message: {
+                success: [
+                    "I am, ORCAsk AI developed to assist you. How can I help you?",
+                ],
+            },
             user_message: "",
             viewType: "string",
         },
@@ -113,18 +116,6 @@ export const HistoryChatSection = ({
             });
     };
 
-    const getChartType = (e) => {
-        if (typeof e === "string") {
-            return "string";
-        } else if (Array.isArray(e)) {
-            return "table";
-        } else if (typeof e === "object") {
-            return "json";
-        } else {
-            return "unknown";
-        }
-    };
-
     const deleteHistory = () => {
         instance
             .delete(deleteOrcAskHistoryURL())
@@ -132,8 +123,11 @@ export const HistoryChatSection = ({
                 setChatHistory([
                     {
                         id: 0,
-                        final_message:
-                            "I am, ORCAsk AI developed to assist you. How can I help you?",
+                        final_message: {
+                            success: [
+                                "I am, ORCAsk AI developed to assist you. How can I help you?",
+                            ],
+                        },
                         user_message: "",
                         viewType: "string",
                     },
@@ -174,7 +168,7 @@ export const HistoryChatSection = ({
     };
 
     const generateColumnDefs = (data) => {
-        if (data.length > 0) {
+        if (data?.length > 0) {
             return Object.keys(data[0]).map((key) => ({
                 headerName: key.replace(/_/g, " ").toUpperCase(),
                 field: key,
@@ -185,6 +179,20 @@ export const HistoryChatSection = ({
             }));
         }
         return [];
+    };
+
+    const getChartType = (e) => {
+        if (Array.isArray(e?.success) && e?.success?.length > 0) {
+            return "string";
+        } else if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length > 0 &&
+            e?.functions_result[0] !== null
+        ) {
+            return "table";
+        } else {
+            return "unknown";
+        }
     };
 
     const handleKeyDown = (event) => {
@@ -265,10 +273,10 @@ export const HistoryChatSection = ({
                                     </span>
                                     {item.viewType === "string" ? (
                                         <div className="content">
-                                            {item.final_message}
+                                            {item.final_message.success}
                                         </div>
-                                    ) : null}
-                                    {item.viewType !== "string" ? (
+                                    ) : item.viewType === "table" ||
+                                      item.viewType === "graph" ? (
                                         <div className="content">
                                             <div className="selectView">
                                                 <select
@@ -283,13 +291,16 @@ export const HistoryChatSection = ({
                                                     <option value="table">
                                                         Table
                                                     </option>
-                                                    item?.final_message
+
                                                     <option value="graph">
                                                         Graph
                                                     </option>
                                                 </select>
                                             </div>
-                                            {item.viewType === "table" ? (
+                                            {item.viewType === "table" &&
+                                            item?.final_message
+                                                ?.functions_result.length >
+                                                0 ? (
                                                 <div
                                                     style={gridStyle}
                                                     className="ag-theme-alpine"
@@ -298,9 +309,11 @@ export const HistoryChatSection = ({
                                                     <AgGridReact
                                                         rowData={
                                                             item?.final_message
+                                                                ?.functions_result
                                                         }
                                                         columnDefs={generateColumnDefs(
                                                             item?.final_message
+                                                                ?.functions_result
                                                         )}
                                                         defaultColDef={
                                                             defaultColDef
@@ -308,8 +321,15 @@ export const HistoryChatSection = ({
                                                         enableCellTextSelection="true"
                                                     />
                                                 </div>
-                                            ) : null}
-                                            {item.viewType === "graph" ? (
+                                            ) : (
+                                                <div className="noData">
+                                                    No data found
+                                                </div>
+                                            )}
+                                            {item.viewType === "graph" &&
+                                            item?.final_message
+                                                ?.functions_result.length >
+                                                0 ? (
                                                 <div
                                                     className="graph"
                                                     id="graph"
@@ -317,34 +337,19 @@ export const HistoryChatSection = ({
                                                     <SigmaGraph
                                                         message={
                                                             item?.final_message
+                                                                ?.functions_result
                                                         }
-                                                    />
-                                                </div>
-                                            ) : null}
-                                            {item.viewType === "json" ? (
-                                                <div
-                                                    style={gridStyle}
-                                                    className="ag-theme-alpine"
-                                                    id="json"
-                                                >
-                                                    <AgGridReact
-                                                        rowData={[
-                                                            item?.final_message,
-                                                        ]}
-                                                        columnDefs={generateColumnDefs(
-                                                            [
-                                                                item?.final_message,
-                                                            ]
-                                                        )}
-                                                        defaultColDef={
-                                                            defaultColDef
-                                                        }
-                                                        enableCellTextSelection="true"
                                                     />
                                                 </div>
                                             ) : null}
                                         </div>
-                                    ) : null}
+                                    ) : (
+                                        <div className="content">
+                                            <div className="error">
+                                                Something went wrong 3
+                                            </div>
+                                        </div>
+                                    )}
                                     <span className="copy" id="copyAi">
                                         <CopyToClipboard
                                             text={item?.final_message}
