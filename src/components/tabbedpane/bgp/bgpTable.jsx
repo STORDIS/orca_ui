@@ -62,68 +62,11 @@ const BGPTable = (props) => {
                 setDataTable(res.data);
             })
             .catch((err) => {});
-            .catch((err) => {});
     };
 
-    const reload = () => {
-        getBgp();
-        setIsMessageModalOpen(false);
-        setConfigStatus("");
-        setShowForm(false);
-        setSelectedRows([]);
-    };
-
+    // create / update
     const openAddModal = () => {
-        setShowForm(true);
-    };
-
-    const handleCancel = () => {
-        setShowForm(false);
-    };
-
-    const deleteBgp = () => {
-        const output = {
-            mgt_ip: selectedDeviceIp,
-            vrf_name: selectedRows.pop().vrf_name,
-        };
-
-        setUpdateConfig(true);
-        const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
-        setConfigStatus("Config In Progress....");
-        instance
-            .delete(apiPUrl, { data: output })
-            .then((res) => {
-                setModalContent("BGP Deleted Successfully");
-            })
-            .catch((err) => {
-                setModalContent("Error Deleting BGP");
-            })
-            .finally(() => {
-                setIsMessageModalOpen(true);
-                setUpdateLog(true);
-                setUpdateConfig(false);
-                reload();
-            });
-    };
-
-    const handleFormSubmit = (formData, status) => {
-        setUpdateConfig(true);
-        setConfigStatus("Config In Progress....");
-        const apiPUrl = getAllBGPOfDeviceURL(selectedDeviceIp);
-        instance
-            .put(apiPUrl, formData)
-            .then((res) => {
-                setModalContent("Bgp " + status + "ed Successfully");
-            })
-            .catch((err) => {
-                setModalContent("Error in " + status + "ing Bgp");
-            })
-            .finally(() => {
-                setUpdateLog(true);
-                setUpdateConfig(false);
-                setIsMessageModalOpen(true);
-                reload();
-            });
+        setIsModalOpen("addBGP");
     };
 
     const onSelectionChanged = () => {
@@ -224,7 +167,7 @@ const BGPTable = (props) => {
                         onClick={resyncBgp}
                         disabled={updateConfig}
                     >
-                        <FaSyncAlt /> Rediscover
+                        <FaSyncAlt /> Sync
                     </button>
 
                     <button
@@ -284,8 +227,9 @@ const BGPTable = (props) => {
                 </Modal>
             )}
 
-            {isMessageModalOpen && (
-                <Modal show={isMessageModalOpen} onClose={reload}>
+            {/* model for delete confirmation message */}
+            {isModalOpen === "deleteBGP" && (
+                <Modal show={true} onClose={reload}>
                     <div>
                         {modalContent}
                         <div
@@ -296,8 +240,11 @@ const BGPTable = (props) => {
                                 gap: "10px",
                             }}
                         >
+                            <button className="btnStyle" onClick={deleteBgp}>
+                                Yes
+                            </button>
                             <button className="btnStyle" onClick={reload}>
-                                Close
+                                No
                             </button>
                         </div>
                     </div>

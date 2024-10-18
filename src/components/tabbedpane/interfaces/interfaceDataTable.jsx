@@ -92,13 +92,6 @@ const InterfaceDataTable = (props) => {
         });
     };
 
-    const reload = () => {
-        setConfigStatus("");
-        setChanges([]);
-        setDataTable([]);
-        getInterfaceData();
-    };
-
     const getAdvSpeed = (params) => {
         let result = "all";
 
