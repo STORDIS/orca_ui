@@ -41,17 +41,6 @@ const PortGroupTable = (props) => {
             .get(apiMUrl)
             .then((res) => {
                 setDataTable(res.data);
-                setOriginalData(JSON.parse(JSON.stringify(res.data)));
-            })
-            .catch((err) => console.log(err));
-    };
-
-    const getPortgroup = () => {
-        const apiMUrl = getPortGroupsURL(selectedDeviceIp);
-        instance
-            .get(apiMUrl)
-            .then((res) => {
-                setDataTable(res.data);
             })
             .catch((err) => console.log(err));
     };
