@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { gptCompletionsURL } from "../../../utils/backend_rest_urls";
+import { executePlanURL } from "../../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -142,10 +142,9 @@ export const HistoryChatSection = ({
     const gptCompletions = () => {
         setIsLoading(true);
         instance
-            .post(gptCompletionsURL("json"), questionPrompt)
+            .post(executePlanURL(), questionPrompt)
             .then((response) => {
                 setQuestionPrompt({ prompt: "" });
-
                 getChatHistory();
             })
             .catch((error) => {
