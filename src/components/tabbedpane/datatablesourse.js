@@ -1183,6 +1183,14 @@ export const deviceUserColumns = (showIn) => {
             sortable: true,
         });
     }
-
+    if (showIn === "setup" || showIn === "all") {
+        dataColumn.unshift({
+            headerCheckboxSelection: getIsStaff() && showIn === "setup",
+            checkboxSelection: getIsStaff() && showIn === "setup",
+            width: 50,
+            sortable: true,
+            headerTooltip: "", // add header tooltip here
+        });
+    }
     return dataColumn;
 };
