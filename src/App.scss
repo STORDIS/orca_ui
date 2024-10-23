@@ -111,7 +111,9 @@
     margin-left: 10px !important;
 }
 
-
+.m-0{
+    margin: 0px 0px 0px 0px !important;
+}
 
 .mt-5 {
     margin-top: 5px !important;
@@ -214,11 +216,21 @@
     font-size: 12px;
 }
 
+
+.w-auto {
+    width: auto !important;
+}
 .w-25 {
     width: 25% !important;
 }
+.w-40 {
+    width: 40% !important;
+}
 .w-50 {
     width: 50% !important;
+}
+.w-60 {
+    width: 60% !important;
 }
 .w-75 {
     width: 75% !important;

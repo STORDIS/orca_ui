@@ -269,16 +269,29 @@ export const Home = () => {
 
     return (
         <div>
+            <div className="listContainer">
+                <div className="form-wrapper align-center">
+                    <div className="form-field w-25 m-0">On going Task :</div>
+                    <div className="form-field w-50 m-0">
+                        <select name="" id="">
+                            <option value="">1</option>
+                            <option value="">2</option>
+                            <option value="">3</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
             <div
                 className="listContainer resizable"
                 id="setupTopSection"
                 style={{ overflowY: "auto" }}
             >
                 <div className="form-wrapper align-center ">
-                    <div className="form-field w-25">
+                    <div className="form-field w-auto">
                         <label for="image_url">SONiC Image URL : </label>
                     </div>
-                    <div className="form-field w-75">
+                    <div className="form-field w-60">
                         <input
                             type="text"
                             name="image_url"
@@ -289,27 +302,42 @@ export const Home = () => {
                 </div>
 
                 <div className="form-wrapper align-center">
-                    <div className="form-field w-25">
-                        <label for="user_name">User Name : </label>
+                    <div className="w-50">
+                        <div className="form-wrapper align-center">
+                            <div className="form-field w-auto">
+                                <label for="user_name">User Name : </label>
+                            </div>
+                            <div className="form-field w-60">
+                                <input
+                                    type="text"
+                                    name="user_name"
+                                    onChange={handleChange}
+                                    ref={userNameRef}
+                                />
+                            </div>
+                        </div>
                     </div>
-                    <div className="form-field w-25">
-                        <input
-                            type="text"
-                            name="user_name"
-                            onChange={handleChange}
-                            ref={userNameRef}
-                        />
-                    </div>
-                    <div className="form-field w-25">
-                        <label for="password"> Password : </label>
-                    </div>
-                    <div className="form-field w-25">
-                        <input
-                            type="password"
-                            name="password"
-                            onChange={handleChange}
-                            ref={passwordRef}
-                        />
+
+                    <div className="w-50">
+                        <div
+                            className="form-wrapper align-center"
+                            style={{
+                                textAlign: "right",
+                                justifyContent: "end",
+                            }}
+                        >
+                            <div className="form-field w-auto">
+                                <label for="password"> Password : </label>
+                            </div>
+                            <div className="form-field w-60">
+                                <input
+                                    type="password"
+                                    name="password"
+                                    onChange={handleChange}
+                                    ref={passwordRef}
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className="form-field w-100" id="note">
