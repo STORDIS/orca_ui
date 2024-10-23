@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
 import "./ztpndhcp.scss";
+import { FaRegCircleXmark } from "react-icons/fa6";
 
 export const ZTPnDHCP = () => {
     const parentDivRef = useRef(null);
@@ -14,29 +15,34 @@ export const ZTPnDHCP = () => {
         width: "100%",
     });
 
-    const [fileName, setFileName] = useState("script.js");
+    const files = [
+        {
+            name: "json1",
+            language: "json",
+            value: `{"id": "1","name": "Apple","color": "red"}`,
+        },
 
-    const files = {
-        "script.js": {
-            name: "script.js",
-            language: "javascript",
-            value: "console.log('Hello World')",
+        {
+            name: "json2",
+            language: "json",
+            value: `{"id": "2","name": "Banana","color": "yellow"}`,
         },
-        "style.css": {
-            name: "style.css",
-            language: "css",
-            value: "body { color: red; }",
-        },
-        "index.html": {
-            name: "index.html",
-            language: "html",
-            value: "<!DOCTYPE html><html><body><h1>Hello World</h1></body></html>",
-        },
-    };
 
-    const file = files[fileName];
+        {
+            name: "yml1",
+            language: "yml",
+            value: `--- 
+id: 2 
+name: Orange 
+color: orange 
+---`,
+        },
+    ];
+
+    const [file, setFile] = useState(files[0]);
 
     useEffect(() => {
+        handleResize();
         window.addEventListener("resize", () => {
             handleResize();
         });
@@ -51,42 +57,76 @@ export const ZTPnDHCP = () => {
         }
     };
 
+    const [tab, setTab] = useState([files[0]]);
+
+    const addTab = (list, clickType) => {
+        if (clickType === "single") {
+            console.log(clickType);
+            const exists = tab.some((item) => item.name === list.name); // Check if the item with the same ID exists
+            if (!exists) {
+                setTab([...tab, list]); // Add the item if it doesn't already exist
+            }
+        } else {
+            setTab([list]);
+        }
+
+        setFile(list);
+    };
+
     return (
         <div className="listContainer">
-            <div
-                ref={parentDivRef}
-                className="resizable"
-                onMouseMove={handleResize}
-            >
-                <div >
-                    <button
-                        disabled={fileName === "script.js"}
-                        onClick={() => setFileName("script.js")}
+            <div className="editorContainer">
+                <div className="fileSelection">
+                    {files.map((list, index) => (
+                        <div
+                            className={`fileItem ${
+                                file.name === list.name ? "active" : ""
+                            }`}
+                            key={index}
+                            onClick={() => addTab(list, "single")}
+                            onDoubleClick={() => addTab(list, "double")}
+                        >
+                            {list.name}
+                        </div>
+                    ))}
+                </div>
+
+                <div className="editor">
+                    <div className="tab">
+                        {tab.map((list, index) => (
+                            <div
+                                className={`tabButton ${
+                                    file.name === list.name ? "tabActive" : ""
+                                }`}
+                                onClick={() => setFile(list)}
+                            >
+                                <FaRegCircleXmark
+                                    className="cancel mr-5"
+                                    onClick={() => {
+                                        setTab(
+                                            tab.filter((_, i) => i !== index)
+                                        );
+                                    }}
+                                />
+                                <span className="tabName">{list.name}</span>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div
+                        className="resizable"
+                        ref={parentDivRef}
+                        onMouseMove={handleResize}
                     >
-                        script.js
-                    </button>
-                    <button
-                        disabled={fileName === "style.css"}
-                        onClick={() => setFileName("style.css")}
-                    >
-                        style.css
-                    </button>
-                    <button
-                        disabled={fileName === "index.html"}
-                        onClick={() => setFileName("index.html")}
-                    >
-                        index.html
-                    </button>
-                    <Editor
-                        height={layout.height}
-                        width={layout.width}
-                        // defaultLanguage="json"
-                        // defaultValue={code}
-                        path={file.name}
-                        defaultLanguage={file.language}
-                        defaultValue={file.value}
-                        theme="light" // light / vs-dark
-                    />
+                        <Editor
+                            height={layout.height}
+                            width={layout.width}
+                            path={file.name}
+                            defaultLanguage={file.language}
+                            defaultValue={file.value}
+                            theme="light" // light / vs-dark
+                        />
+                    </div>
                 </div>
             </div>
         </div>

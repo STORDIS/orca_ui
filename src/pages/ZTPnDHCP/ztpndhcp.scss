@@ -1,3 +1,79 @@
-.editor{
-    border: 1px solid rgb(0, 0, 0);
+.editorContainer {
+    // border: 1px solid rgb(0, 0, 0);
+    display: flex;
+
+    .fileSelection {
+        background-color: #c0c0c0 !important;
+        width: 200px;
+        border: 1px solid rgb(0, 0, 0);
+        .fileItem {
+            margin: 5px;
+            padding: 5px;
+            cursor: pointer;
+            background-color: white;
+
+            &:hover {
+                background-color: #f5efef;
+            }
+        }
+        .active {
+            background-color: #e7dbdb !important;
+        }
+    }
+    .editor {
+        width: calc(100% - 200px);
+        border: 1px solid rgb(0, 0, 0);
+
+        .tab {
+            width: 100%;
+            background: #c0c0c0;
+            display: flex;
+            overflow-x: auto;
+
+            .tabButton {
+                display: flex;
+                align-items: center;
+                background-color: #e7dbdb;
+                padding: 5px;
+                border-right: 1px solid rgb(0, 0, 0);
+                border-bottom: 1px solid rgb(0, 0, 0);
+                cursor: pointer;
+                width: 100px;
+                min-width: 100px;
+
+                .tabName {
+                    max-width: 90%;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+
+                .cancel {
+                    color: red;
+                }
+
+                .cancel:hover ~ .tabName {
+                    color: red;
+                }
+
+                &:hover {
+                    background-color: rgba(255, 255, 255, 0.75);
+                }
+            }
+
+            .tabActive {
+                background-color: white !important;
+                border-bottom: none !important;
+            }
+        }
+        .tab::-webkit-scrollbar {
+            width: 5px;
+            height: 5px !important;
+            background-color: #ffffff;
+            display: block !important; /* for Chrome, Safari, and Opera */
+        }
+        .tab::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.5);
+        }
+    }
 }

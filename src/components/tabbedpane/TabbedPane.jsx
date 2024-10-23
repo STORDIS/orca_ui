@@ -78,6 +78,7 @@ const TabbedPane = () => {
 
     const [height, setHeight] = useState(500);
     const handleResize = () => {
+        console.log('---', parentDivRef.current.offsetHeight)
         if (parentDivRef.current) {
             setHeight(parentDivRef.current.offsetHeight);
         }
