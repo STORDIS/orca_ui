@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
 import "./ztpndhcp.scss";
 import { FaRegCircleXmark } from "react-icons/fa6";
-// import { FaCircle } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa";
 
 export const ZTPnDHCP = () => {
@@ -20,14 +19,12 @@ export const ZTPnDHCP = () => {
             value: `{"id": "1","name": "Apple","color": "red"}`,
             status: "saved",
         },
-
         {
             name: "json2",
             language: "json",
             value: `{"id": "2","name": "Banana","color": "yellow"}`,
             status: "saved",
         },
-
         {
             name: "yml1",
             language: "yml",
@@ -46,13 +43,32 @@ color: orange
         value: "Select a file",
         status: "saved",
     });
+    const [tab, setTab] = useState([]);
 
-    useEffect(() => {
-        handleResize();
-        window.addEventListener("resize", () => {
-            handleResize();
-        });
-    }, []);
+   // Keep track of unsaved changes
+   const hasUnsavedChanges = tab.some((item) => item.status === "unsaved");
+
+   useEffect(() => {
+       handleResize();
+       window.addEventListener("resize", handleResize);
+
+       // Alert before unload
+       const handleBeforeUnload = (event) => {
+        console.log(event)
+           if (hasUnsavedChanges) {
+               const confirmationMessage = "You have unsaved changes. Are you sure you want to leave?";
+               event.returnValue = confirmationMessage; // Gecko + WebKit
+               return confirmationMessage; // Webkit, Safari, Chrome
+           }
+       };
+
+       window.addEventListener("beforeunload", handleBeforeUnload);
+
+       return () => {
+           window.removeEventListener("beforeunload", handleBeforeUnload);
+           window.removeEventListener("resize", handleResize);
+       };
+   }, [tab]);
 
     const handleResize = () => {
         if (parentDivRef.current) {
@@ -63,13 +79,11 @@ color: orange
         }
     };
 
-    const [tab, setTab] = useState([]);
-
     const addTab = (list, clickType) => {
         if (clickType === "single") {
-            const exists = tab.some((item) => item.name === list.name); // Check if the item with the same ID exists
+            const exists = tab.some((item) => item.name === list.name);
             if (!exists) {
-                setTab([...tab, list]); // Add the item if it doesn't already exist
+                setTab([...tab, list]);
             }
         } else {
             setTab([list]);
@@ -79,11 +93,8 @@ color: orange
     };
 
     const remove = (list) => {
-        // setTab(tab.filter((item) => item.name !== list.name));
-
         if (list.status === "saved") {
             const updatedTab = tab.filter((item) => item.name !== list.name);
-
             if (updatedTab.length === 0) {
                 setTab([]);
                 setFile({
@@ -96,7 +107,7 @@ color: orange
                 setFile(updatedTab[0]);
             }
         } else {
-            alert("unsaved changes");
+            alert("Unsaved changes, cannot remove.");
         }
     };
 
@@ -111,7 +122,6 @@ color: orange
             }
             return item;
         });
-        // setIsSaved(false);
         setTab(updatedTab);
     };
 
@@ -125,20 +135,13 @@ color: orange
             }
             return item;
         });
-        // setIsSaved(true);
-
         setTab(updatedTab);
     };
 
     return (
         <div className="listContainer">
             <div className="pl-10 ">
-                <div
-                    className="form-wrapper"
-                    style={{
-                        alignItems: "center",
-                    }}
-                >
+                <div className="form-wrapper" style={{ alignItems: "center" }}>
                     <div className="form-field w-25">
                         <label htmlFor="">DHCP server credentials :</label>
                     </div>
@@ -179,28 +182,19 @@ color: orange
                                 className={`tabButton ${
                                     file.name === list.name ? "tabActive" : ""
                                 }`}
+                                key={index}
                             >
                                 <div className="tabName">
                                     <FaRegCircleXmark
                                         className="cancel mr-5"
-                                        onClick={() => {
-                                            remove(list);
-                                        }}
+                                        onClick={() => remove(list)}
                                     />
-                                    <div
-                                        onClick={() => {
-                                            setFile(list);
-                                        }}
-                                    >
+                                    <div onClick={() => setFile(list)}>
                                         {list.name}
                                     </div>
                                 </div>
                                 {list.status === "unsaved" && (
-                                    <div
-                                        onClick={() => {
-                                            setFile(list);
-                                        }}
-                                    >
+                                    <div onClick={() => setFile(list)}>
                                         <FaCircle />
                                     </div>
                                 )}
