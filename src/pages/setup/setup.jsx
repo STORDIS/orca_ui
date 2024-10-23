@@ -57,6 +57,8 @@ export const Home = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
+    const [configStatus, setConfigStatus] = useState("");
+
     useEffect(() => {
         getDevices();
     }, []);
@@ -146,7 +148,6 @@ export const Home = () => {
     const selectAllIp = (e) => {
         if (e.target.checked) {
             const result = [];
-
             Object.keys(networkList).forEach((network) => {
                 networkList[network].forEach((entry) => {
                     result.push({
@@ -178,6 +179,8 @@ export const Home = () => {
     };
 
     const send_update = () => {
+        setConfigStatus("Request In Progress....");
+
         let isValid = false;
         if (formData.device_ips.length > 0) {
             formData.device_ips.forEach((element) => {
@@ -249,12 +252,17 @@ export const Home = () => {
             setSelectedDevices([]);
 
             setSelectAll(false);
+            setConfigStatus("");
         }
     };
 
     return (
         <div>
-            <div className="listContainer resizable" id="setupTopSection">
+            <div
+                className="listContainer resizable"
+                id="setupTopSection"
+                style={{ overflowY: "auto" }}
+            >
                 <div className="form-wrapper align-center ">
                     <div className="form-field w-25">
                         <label for="image_url">SONiC Image URL : </label>
@@ -352,13 +360,17 @@ export const Home = () => {
 
                 <div>
                     <button
-                        className="btnStyle mt-15"
+                        className="btnStyle mt-15 mr-15"
                         id="updateBtn"
                         onClick={send_update}
                         disabled={Object.keys(networkList).length > 0}
                     >
                         Update SONiC on Devices Selected
                     </button>
+
+                    <span className="configStatus" id="configStatus">
+                        {configStatus}
+                    </span>
                 </div>
             </div>
 
@@ -488,12 +500,16 @@ export const Home = () => {
 
                     <div>
                         <button
-                            className="btnStyle mt-15"
+                            className="btnStyle mt-15 mr-15"
                             onClick={applyConfig}
                             id="applyConfigBtn"
                         >
                             Apply Config
                         </button>
+
+                        <span className="configStatus" id="configStatus">
+                            {configStatus}
+                        </span>
                     </div>
                 </div>
             )}

@@ -350,7 +350,7 @@ const InterfaceDataTable = (props) => {
                 >
                     Apply Config
                 </button>
-                <span className="config-status" id="configStatus">
+                <span className="configStatus" id="configStatus">
                     {configStatus}
                 </span>
             </div>
