@@ -179,32 +179,43 @@ export const Home = () => {
     };
 
     const send_update = () => {
-        setConfigStatus("Request In Progress....");
-
-        let isValid = false;
-        if (formData.device_ips.length > 0) {
-            formData.device_ips.forEach((element) => {
-                if (areAllIPAddressesValid(element)) {
-                    isValid = true;
-                } else {
-                    isValid = false;
-                    alert("Invalid IP Address");
-                    return;
-                }
-            });
+        if (formData.image_url === "") {
+            alert("Form fields are empty");
+            return;
+        } else if (formData.user_name === "" || formData.password === "") {
+            alert("credentials are empty");
+            return;
+        } else if (formData.device_ips.length + selectedDevices.length === 0) {
+            alert("No devices selected");
+            return;
         } else {
-            isValid = true;
-        }
+            setConfigStatus("Request In Progress....");
 
-        if (isValid) {
-            let payload = {
-                image_url: formData.image_url,
-                device_ips: [...formData.device_ips, ...selectedDevices],
-                discover_also: formData.discover_also,
-                user_name: formData.user_name,
-                password: formData.password,
-            };
-            installImage(payload);
+            let isValid = false;
+            if (formData.device_ips.length > 0) {
+                formData.device_ips.forEach((element) => {
+                    if (areAllIPAddressesValid(element)) {
+                        isValid = true;
+                    } else {
+                        isValid = false;
+                        alert("Invalid IP Address");
+                        return;
+                    }
+                });
+            } else {
+                isValid = true;
+            }
+
+            if (isValid) {
+                let payload = {
+                    image_url: formData.image_url,
+                    device_ips: [...formData.device_ips, ...selectedDevices],
+                    discover_also: formData.discover_also,
+                    user_name: formData.user_name,
+                    password: formData.password,
+                };
+                installImage(payload);
+            }
         }
     };
 
