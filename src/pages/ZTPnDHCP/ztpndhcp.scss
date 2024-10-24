@@ -8,6 +8,12 @@
         border: 1px solid rgb(0, 0, 0);
         display: flex;
         flex-direction: column;
+
+        .fileHeader {
+            padding: 5px;
+            text-align: center;
+        }
+
         .fileItem {
             margin: 5px;
             padding: 5px;
@@ -22,7 +28,7 @@
             background-color: #e7dbdb !important;
         }
 
-        .bottomSection {
+        .fileBottomSection {
             margin-top: auto;
             padding: 5px;
             text-align: right;
@@ -88,6 +94,31 @@
         }
         .tab::-webkit-scrollbar-thumb {
             background: rgba(0, 0, 0, 0.5);
+        }
+
+        .editorBottomSection {
+            // display: flex;
+            // align-items: end;
+            padding: 5px;
+            text-align: right;
+        }
+    }
+}
+.popover {
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+            padding: 5px 15px 5px 10px;
+            cursor: pointer;
+            border-bottom: 1px solid black;
+            font-size: 14px;
+
+            &:hover {
+                background-color: #f5efef;
+            }
         }
     }
 }
