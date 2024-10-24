@@ -23,6 +23,8 @@ import { areAllIPAddressesValid } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore";
 
+import Modal from "../../components/modal/Modal";
+
 export const Home = () => {
     const imageUrlRef = useRef(null);
     const userNameRef = useRef(null);
@@ -57,7 +59,7 @@ export const Home = () => {
 
     const [selectAll, setSelectAll] = useState(false);
 
-    const [configStatus, setConfigStatus] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         getDevices();
@@ -180,16 +182,13 @@ export const Home = () => {
 
     const send_update = () => {
         if (formData.image_url === "") {
-            alert("Form fields are empty");
-            return;
-        } else if (formData.user_name === "" || formData.password === "") {
-            alert("credentials are empty");
+            alert("URL is empty");
             return;
         } else if (formData.device_ips.length + selectedDevices.length === 0) {
             alert("No devices selected");
             return;
         } else {
-            setConfigStatus("Request In Progress....");
+            setIsModalOpen(true);
 
             let isValid = false;
             if (formData.device_ips.length > 0) {
@@ -263,7 +262,6 @@ export const Home = () => {
             setSelectedDevices([]);
 
             setSelectAll(false);
-            setConfigStatus("");
         }
     };
 
@@ -319,13 +317,7 @@ export const Home = () => {
                     </div>
 
                     <div className="w-50">
-                        <div
-                            className="form-wrapper align-center"
-                            style={{
-                                textAlign: "right",
-                                justifyContent: "end",
-                            }}
-                        >
+                        <div className="form-wrapper align-center">
                             <div className="form-field w-auto">
                                 <label for="password"> Password : </label>
                             </div>
@@ -406,10 +398,6 @@ export const Home = () => {
                     >
                         Update SONiC on Devices Selected
                     </button>
-
-                    <span className="configStatus" id="configStatus">
-                        {configStatus}
-                    </span>
                 </div>
             </div>
 
@@ -545,13 +533,28 @@ export const Home = () => {
                         >
                             Apply Config
                         </button>
-
-                        <span className="configStatus" id="configStatus">
-                            {configStatus}
-                        </span>
                     </div>
                 </div>
             )}
+
+            <Modal
+                show={isModalOpen}
+                title={""}
+                id={"installSonicModal"}
+                onClose={() => setIsModalOpen(false)}
+            >
+                <div>
+                    <p>Request has been submitted successfully</p>
+                    <div className="mt-15 " style={{ textAlign: "center" }}>
+                        <button
+                            className="btnStyle "
+                            onClick={() => setIsModalOpen(false)}
+                        >
+                            close
+                        </button>
+                    </div>
+                </div>
+            </Modal>
         </div>
     );
 };
