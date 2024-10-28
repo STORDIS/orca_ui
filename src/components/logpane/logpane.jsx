@@ -10,6 +10,7 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
+import GenericLogModal from "../../components/modal/genericLogModal";
 
 export const LogViewer = () => {
     const logPannelDivRef = useRef(null);
@@ -127,9 +128,8 @@ export const LogViewer = () => {
             width: 400,
             resizable: true,
             sortable: true,
-
             cellRenderer: (params) => {
-                console.log(params?.data?.response)
+                console.log(params?.data?.response);
                 if (params.value === "success") {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
@@ -140,7 +140,8 @@ export const LogViewer = () => {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
-                            &nbsp; {JSON.stringify(params?.data?.response)} &nbsp;
+                            &nbsp; {JSON.stringify(params?.data?.response)}{" "}
+                            &nbsp;
                         </div>
                     );
                 }
@@ -171,6 +172,14 @@ export const LogViewer = () => {
         [height]
     );
 
+    const [showLogDetails, setShowLogDetails] = useState(false);
+    const [logDetails, setLogDetails] = useState({});
+
+    const openLogDetails = (params) => {
+        setShowLogDetails(true);
+        setLogDetails(params.data);
+    };
+
     return (
         <div
             className="logPanel resizable"
@@ -193,11 +202,24 @@ export const LogViewer = () => {
                 <AgGridReact
                     rowData={logEntries}
                     columnDefs={colDefs}
+                    onRowClicked={(params) => {
+                        openLogDetails(params);
+                    }}
                     pagination={true}
                     paginationPageSize={50}
                     paginationPageSizeSelector={[50, 100, 150, 200]}
                 />
             </div>
+
+            {showLogDetails && (
+                <GenericLogModal
+                    logData={logDetails}
+                    onClose={() => setShowLogDetails(false)}
+                    onSubmit={() => setShowLogDetails(false)}
+                    title="Log Details"
+                    id="logDetails"
+                />
+            )}
         </div>
     );
 };
