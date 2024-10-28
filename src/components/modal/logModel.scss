@@ -19,8 +19,27 @@
         min-width: 500px;
         height: max-content;
         position: relative;
-        // .modalBody {
-            
-        // }
+
+        .modalHeader {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .modalBody {
+            table {
+                width: 100%;
+                border: 1px solid #ddd !important;
+                border-collapse: collapse;
+
+                tbody {
+                    tr {
+                        td {
+                            border: 1px solid black !important;
+                            padding: 5px;
+                        }
+                    }
+                }
+            }
+        }
     }
 }
