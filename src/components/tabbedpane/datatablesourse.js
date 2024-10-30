@@ -48,8 +48,6 @@ export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
 export const getCellEditorParamsInterfaceBreakout = (params, originalData) => {
     let temp = originalData.find((item) => item.name === params.data.name);
 
-    console.log(params?.data?.alias, params.data.breakout_supported);
-
     let result = [];
     let regex = /^Eth[0-9/]+\/1$/;
     if (
@@ -183,8 +181,6 @@ export const interfaceColumns = (originalData) => [
         },
         headerComponent: EditableHeaderComponent,
         cellRenderer: (params) => {
-            console.log(params?.data?.alias);
-
             if (params.data.breakout_supported) {
                 return params.value || "Not Configured";
             } else if (
@@ -1071,7 +1067,6 @@ export const stpColumn = [
 ];
 
 export const getCellEditorParamsDeviceImageList = (params) => {
-
     if (params?.data?.image_list?.length > 0) {
         return {
             values: params?.data?.image_list,

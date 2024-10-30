@@ -11,6 +11,7 @@ import { FaRegCircleXmark } from "react-icons/fa6";
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 import GenericLogModal from "../../components/modal/genericLogModal";
+import { FaRegPlayCircle } from "react-icons/fa";
 
 export const LogViewer = () => {
     const logPannelDivRef = useRef(null);
@@ -130,27 +131,45 @@ export const LogViewer = () => {
             sortable: true,
             cellRenderer: (params) => {
                 console.log(params?.data?.response);
-                if (params.value === "success") {
+                if (params.value.toLowerCase() === "success") {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
                             <FaRegCheckCircle style={{ fontSize: "24px" }} />
+                        </div>
+                    );
+                } else if (params.value.toLowerCase() === "started") {
+                    return (
+                        <div className="icon" id={params?.data?.status_code}>
+                            <FaRegPlayCircle style={{ fontSize: "24px" }} />
+                            &nbsp; {params.data.status}
+                        </div>
+                    );
+                } else if (params.value.toLowerCase() === "pending") {
+                    return (
+                        <div className="icon" id={params?.data?.status_code}>
+                            <FaRegPlayCircle style={{ fontSize: "24px" }} />
+                            &nbsp; {params.data.status}
                         </div>
                     );
                 } else {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
-                            &nbsp; {JSON.stringify(params?.data?.response)}{" "}
+                            &nbsp; {JSON.stringify(params?.data?.response)}
                             &nbsp;
                         </div>
                     );
                 }
             },
             cellStyle: (params) => {
-                if (params.value === "success") {
-                    return { color: "green", display: "flex" };
+                if (params.value.toLowerCase() === "success") {
+                    return { color: "#198754", display: "flex" };
+                } else if (params.value.toLowerCase() === "started") {
+                    return { color: "#FFC107", display: "flex" };
+                } else if (params.value.toLowerCase() === "pending") {
+                    return { color: "#6C757D", display: "flex" };
                 } else {
-                    return { color: "red", display: "flex" };
+                    return { color: "#DC3545", display: "flex" };
                 }
             },
             tooltipValueGetter: (params) => {
@@ -172,11 +191,22 @@ export const LogViewer = () => {
         [height]
     );
 
-    const [showLogDetails, setShowLogDetails] = useState(false);
+    const [showLogDetails, setShowLogDetails] = useState("null");
     const [logDetails, setLogDetails] = useState({});
 
     const openLogDetails = (params) => {
-        setShowLogDetails(true);
+        console.log(params.data.http_path);
+
+        switch (params.data.http_path) {
+            case "/install_image":
+                setShowLogDetails("setupDialog");
+                break;
+
+            default:
+                setShowLogDetails("genericDialog");
+                break;
+        }
+
         setLogDetails(params.data);
     };
 
@@ -187,14 +217,29 @@ export const LogViewer = () => {
             ref={logPannelDivRef}
             onMouseMove={handleResize}
         >
-            <div className=" mb-15">
+            <div
+                className=" mb-15"
+                // style={{
+                //     display: "flex",
+                //     justifyContent: "space-between",
+                // }}
+            >
                 <button
                     id="clearLogBtn"
-                    className="clearLogBtn btnStyle"
+                    className="clearLogBtn btnStyle mr-10"
+                    onClick={getLogs}
+                    disabled={!getIsStaff()}
+                >
+                    Refresh
+                </button>
+
+                <button
+                    id="clearLogBtn"
+                    className="clearLogBtn btnStyle "
                     onClick={handelClearLog}
                     disabled={!getIsStaff()}
                 >
-                    Clear Log
+                    Clear
                 </button>
             </div>
             {/* {height} */}
@@ -211,7 +256,7 @@ export const LogViewer = () => {
                 />
             </div>
 
-            {showLogDetails && (
+            {showLogDetails === "genericDialog" && (
                 <GenericLogModal
                     logData={logDetails}
                     onClose={() => setShowLogDetails(false)}

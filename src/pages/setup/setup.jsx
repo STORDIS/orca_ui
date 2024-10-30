@@ -267,19 +267,6 @@ export const Home = () => {
 
     return (
         <div>
-            <div className="listContainer">
-                <div className="form-wrapper align-center">
-                    <div className="form-field w-25 m-0">On going Task :</div>
-                    <div className="form-field w-50 m-0">
-                        <select name="" id="">
-                            <option value="">1</option>
-                            <option value="">2</option>
-                            <option value="">3</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
             <div
                 className="listContainer resizable"
                 id="setupTopSection"
