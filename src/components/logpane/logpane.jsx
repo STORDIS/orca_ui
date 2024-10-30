@@ -10,8 +10,9 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
-import GenericLogModal from "../../components/modal/genericLogModal";
 import { FaRegPlayCircle } from "react-icons/fa";
+import GenericLogModal from "../../components/modal/genericLogModal";
+import SetupLogModal from "../../components/modal/setupLogModal";
 
 export const LogViewer = () => {
     const logPannelDivRef = useRef(null);
@@ -34,6 +35,7 @@ export const LogViewer = () => {
     }, []);
 
     const getLogs = () => {
+        setLogEntries([]);
         instance
             .get(logPanelURL())
             .then((response) => {
@@ -42,6 +44,7 @@ export const LogViewer = () => {
             })
             .catch((error) => {
                 console.error("Error:", error);
+                setLogEntries([]);
             });
     };
 
@@ -256,6 +259,15 @@ export const LogViewer = () => {
                 />
             </div>
 
+            {showLogDetails === "setupDialog" && (
+                <SetupLogModal
+                    logData={logDetails}
+                    onClose={() => setShowLogDetails(false)}
+                    onSubmit={() => setShowLogDetails(false)}
+                    title="Log Details"
+                    id="logDetails"
+                />
+            )}
             {showLogDetails === "genericDialog" && (
                 <GenericLogModal
                     logData={logDetails}

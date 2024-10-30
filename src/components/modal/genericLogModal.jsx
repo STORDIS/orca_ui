@@ -16,11 +16,11 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         };
     }, [onClose]);
 
-    const formattedRequestJson = logData.request_json
-        ? Object.entries(logData.request_json)
+    const formattedRequestJson = logData?.request_json
+        ? Object.entries(logData?.request_json)
               .map(([key, value]) => `${key}: ${value}`)
               .join("\n") // Double newlines for extra space between pairs
-        : "";
+        : "waiting for process to complete";
 
     return (
         <div className="modalContainer" onClick={onClose} id={id}>
@@ -37,7 +37,65 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                     <table>
                         <tbody>
                             <tr>
-                                <td className="w-25">Time :</td>
+                                <td className="w-25">
+                                    <b>Status :</b>
+                                </td>
+                                <td className="w-75">
+                                    {logData.status.toLowerCase() ===
+                                    "success" ? (
+                                        <span className="success">
+                                            {logData.status}
+                                        </span>
+                                    ) : logData.status.toLowerCase() ===
+                                      "started" ? (
+                                        <span className="warning">
+                                            {logData.status}
+                                        </span>
+                                    ) : logData.status.toLowerCase() ===
+                                      "pending" ? (
+                                        <span className="gray">
+                                            {logData.status}
+                                        </span>
+                                    ) : (
+                                        <span className="danger">
+                                            {logData.status}
+                                        </span>
+                                    )}
+                                    &nbsp;- {logData.status_code}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td className="w-25">
+                                    {" "}
+                                    <b>HTTP method :</b>
+                                </td>
+                                <td className="w-75">{logData.http_method}</td>
+                            </tr>
+
+                            <tr>
+                                <td className="w-25">
+                                    {" "}
+                                    <b>Request JSON :</b>
+                                </td>
+                                <td className="w-75">
+                                    <pre>{formattedRequestJson}</pre>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td className="w-25">
+                                    <b>Response :</b>
+                                </td>
+                                <td className="w-75">
+                                    {logData.response ||
+                                        "waiting for process to complete"}
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td className="w-25">
+                                    <b>Date Time :</b>
+                                </td>
                                 <td className="w-75">
                                     <Time
                                         value={logData.timestamp}
@@ -46,41 +104,9 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 </td>
                             </tr>
                             <tr>
-                                <td className="w-25">Status :</td>
-                                <td className="w-75">
-                                    {logData.status === "success" ? (
-                                        <span style={{ color: "green" }}>
-                                            {logData.status}
-                                        </span>
-                                    ) : logData.status === "failed" ? (
-                                        <span style={{ color: "red" }}>
-                                            {logData.status}
-                                        </span>
-                                    ) : (
-                                        <span style={{ color: "yellow" }}>
-                                            {logData.status}
-                                        </span>
-                                    )}
-                                    - {logData.status_code}
+                                <td className="w-25">
+                                    <b>Processing Time :</b>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td className="w-25">http method :</td>
-                                <td className="w-75">{logData.http_method}</td>
-                            </tr>
-
-                            <tr>
-                                <td className="w-25">request Json :</td>
-                                <td className="w-75">
-                                    <pre>{formattedRequestJson}</pre>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td className="w-25">response :</td>
-                                <td className="w-75">{logData.response}</td>
-                            </tr>
-                            <tr>
-                                <td className="w-25">processing Time :</td>
                                 <td className="w-75">
                                     {parseFloat(
                                         logData.processing_time
@@ -90,7 +116,6 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         </tbody>
                     </table>
                 </div>
-                <div className="modalFooter">footer</div>
             </div>
         </div>
     );

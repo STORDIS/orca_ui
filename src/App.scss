@@ -111,7 +111,7 @@
     margin-left: 10px !important;
 }
 
-.m-0{
+.m-0 {
     margin: 0px 0px 0px 0px !important;
 }
 
@@ -216,7 +216,6 @@
     font-size: 12px;
 }
 
-
 .w-auto {
     width: auto !important;
 }
@@ -289,4 +288,17 @@
     color: black;
     cursor: pointer;
     align-items: center;
+}
+
+.success {
+    color: #198754 !important;
+}
+.warning {
+    color: #ffc107 !important;
+}
+.gray {
+    color: #6c757d !important;
+}
+.danger {
+    color: #dc3545 !important;
 }

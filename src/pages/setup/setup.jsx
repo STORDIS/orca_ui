@@ -45,7 +45,6 @@ export const Home = () => {
 
     const [networkList, setNetworkList] = useState({});
 
-    const [selectedNetworkDevices, setSelectedNetworkDevices] = useState([]);
 
     const [formData, setFormData] = useState({
         image_url: "",
@@ -57,7 +56,6 @@ export const Home = () => {
 
     const [selectedDevices, setSelectedDevices] = useState([]);
 
-    const [selectAll, setSelectAll] = useState(false);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -110,75 +108,9 @@ export const Home = () => {
         }));
     };
 
-    const handelNetworkChecked = (event, ip) => {
-        setSelectedNetworkDevices((prevSelectedNetworkDevices) => {
-            if (event.target.checked) {
-                return [
-                    ...prevSelectedNetworkDevices,
-                    {
-                        image_url: formData.image_url,
-                        device_ips: [ip],
-                        discover_also: false,
-                        user_name: formData.user_name,
-                        password: formData.password,
-                    },
-                ];
-            } else {
-                return prevSelectedNetworkDevices.filter(
-                    (item) => item.device_ips[0] !== ip
-                );
-            }
-        });
-    };
 
-    const handelNetworkDiscoveryChecked = (e, ip) => {
-        selectedNetworkDevices.forEach((item) => {
-            if (item.device_ips[0] === ip) {
-                item.discover_also = e.target.checked;
-            }
-        });
-        setSelectedNetworkDevices([...selectedNetworkDevices]);
-    };
 
-    const discoverDisabled = (e) => {
-        let result = selectedNetworkDevices.some((item) =>
-            item.device_ips.includes(e)
-        );
-        return !result;
-    };
 
-    const selectAllIp = (e) => {
-        if (e.target.checked) {
-            const result = [];
-            Object.keys(networkList).forEach((network) => {
-                networkList[network].forEach((entry) => {
-                    result.push({
-                        image_url: formData.image_url,
-                        device_ips: [entry.ip],
-                        discover_also: false,
-                        user_name: formData.user_name,
-                        password: formData.password,
-                    });
-                });
-            });
-            setSelectedNetworkDevices(result);
-            setSelectAll(true);
-        } else {
-            setSelectedNetworkDevices([]);
-            setSelectAll(false);
-        }
-    };
-
-    const selectDiscoverAll = (e) => {
-        setSelectedNetworkDevices(
-            selectedNetworkDevices.map((item) => {
-                return {
-                    ...item,
-                    discover_also: e.target.checked,
-                };
-            })
-        );
-    };
 
     const send_update = () => {
         if (formData.image_url === "") {
@@ -218,9 +150,7 @@ export const Home = () => {
         }
     };
 
-    const applyConfig = () => {
-        installImage(selectedNetworkDevices);
-    };
+
 
     const installImage = async (payload) => {
         console.log("clear");
@@ -261,7 +191,6 @@ export const Home = () => {
 
             setSelectedDevices([]);
 
-            setSelectAll(false);
         }
     };
 
@@ -388,142 +317,7 @@ export const Home = () => {
                 </div>
             </div>
 
-            {Object.keys(networkList).length > 0 && (
-                <div
-                    className="listContainer resizable"
-                    id="setupBottomSection"
-                >
-                    <div className="listTitle">
-                        Following ONIE devices identified from the repective
-                        networks provided for SONiC installation
-                    </div>
-
-                    <div className="p-5 ">
-                        <table
-                            border="1"
-                            style={{
-                                width: "100%",
-                                borderCollapse: "collapse",
-                            }}
-                            id="networkListTable"
-                        >
-                            <thead>
-                                <tr>
-                                    <th>Network Address</th>
-                                    <th>IP Address</th>
-                                    <th id="selectAll">
-                                        Select All
-                                        <input
-                                            className="ml-10"
-                                            type="checkbox"
-                                            onChange={(e) => {
-                                                selectAllIp(e);
-                                            }}
-                                        />
-                                    </th>
-                                    <th id="discoverAll">
-                                        Discover All
-                                        <input
-                                            className="ml-10"
-                                            type="checkbox"
-                                            disabled={!selectAll}
-                                            onChange={(e) => {
-                                                selectDiscoverAll(e);
-                                            }}
-                                        />
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Object.keys(networkList).map((key) => (
-                                    <React.Fragment key={key}>
-                                        {networkList[key].map(
-                                            (entry, index) => (
-                                                <tr
-                                                    key={index}
-                                                    id={index}
-                                                    style={{
-                                                        textAlign: "center",
-                                                    }}
-                                                >
-                                                    {index === 0 ? (
-                                                        <td
-                                                            rowSpan={
-                                                                networkList[key]
-                                                                    .length
-                                                            }
-                                                            id="deviceNameFromNetwork"
-                                                        >
-                                                            {key}
-                                                        </td>
-                                                    ) : null}
-                                                    <td>{entry.ip}</td>
-                                                    <td>
-                                                        <input
-                                                            type="checkbox"
-                                                            id="selectDevice"
-                                                            disabled={selectAll}
-                                                            checked={
-                                                                selectedNetworkDevices.filter(
-                                                                    (item) =>
-                                                                        item
-                                                                            .device_ips[0] ===
-                                                                        entry.ip
-                                                                ).length > 0
-                                                            }
-                                                            onChange={(e) => {
-                                                                handelNetworkChecked(
-                                                                    e,
-                                                                    entry.ip
-                                                                );
-                                                            }}
-                                                        />
-                                                    </td>
-                                                    <td>
-                                                        <input
-                                                            type="checkbox"
-                                                            id="discoverDevice"
-                                                            disabled={discoverDisabled(
-                                                                entry.ip
-                                                            )}
-                                                            checked={
-                                                                selectedNetworkDevices.filter(
-                                                                    (item) =>
-                                                                        item
-                                                                            .device_ips[0] ===
-                                                                            entry.ip &&
-                                                                        item.discover_also
-                                                                ).length > 0
-                                                            }
-                                                            onChange={(e) => {
-                                                                handelNetworkDiscoveryChecked(
-                                                                    e,
-                                                                    entry.ip
-                                                                );
-                                                            }}
-                                                        />
-                                                    </td>
-                                                </tr>
-                                            )
-                                        )}
-                                    </React.Fragment>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div>
-                        <button
-                            className="btnStyle mt-15 mr-15"
-                            onClick={applyConfig}
-                            id="applyConfigBtn"
-                        >
-                            Apply Config
-                        </button>
-                    </div>
-                </div>
-            )}
-
+         
             <Modal
                 show={isModalOpen}
                 title={""}
