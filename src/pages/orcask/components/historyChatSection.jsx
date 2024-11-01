@@ -3,7 +3,6 @@ import { executePlanURL } from "../../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { AgGridReact } from "ag-grid-react";
 import { FaRobot } from "react-icons/fa6";
 import { FaRegCopy } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
@@ -13,6 +12,7 @@ import { FaSpinner } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { getIsStaff } from "../../../utils/common";
 import Tooltip from "@mui/material/Tooltip";
+import DynamicRender from "./dynamicRender";
 
 import "../orcAsk.scss";
 import {
@@ -21,7 +21,6 @@ import {
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
-import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
 
 export const HistoryChatSection = ({
     sendBookmarkDataToParent,
@@ -37,13 +36,13 @@ export const HistoryChatSection = ({
                 success: [
                     "I am, ORCAsk AI developed to assist you. How can I help you?",
                 ],
+                fail: [],
+                functions_result: {},
             },
             user_message: "",
-            viewType: "string",
         },
     ]);
     const chatContainerRef = useRef(null);
-    const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
 
     const handleInputChange = (event) => {
@@ -89,7 +88,6 @@ export const HistoryChatSection = ({
                     id: chat.id,
                     final_message: chat?.final_message,
                     user_message: chat?.user_message,
-                    viewType: getChartType(chat?.final_message), // table / graph / string / json
                 }));
 
                 setChatHistory((prevChatHistory) => {
@@ -127,6 +125,8 @@ export const HistoryChatSection = ({
                             success: [
                                 "I am, ORCAsk AI developed to assist you. How can I help you?",
                             ],
+                            fail: [],
+                            functions_result: {},
                         },
                         user_message: "",
                         viewType: "string",
@@ -166,37 +166,7 @@ export const HistoryChatSection = ({
         });
     };
 
-    const generateColumnDefs = (data) => {
-        if (data?.length > 0) {
-            return Object.keys(data[0]).map((key) => ({
-                headerName: key.replace(/_/g, " ").toUpperCase(),
-                field: key,
-                resizable: true,
-                filter: true,
-                sortable: true,
-                width: 130,
-            }));
-        }
-        return [];
-    };
 
-    const getChartType = (e) => {
-        if (Array.isArray(e?.success) && e?.success?.length > 0) {
-            return "string";
-        } else if (
-            Array.isArray(e?.functions_result) &&
-            e?.functions_result?.length > 0
-        ) {
-            return "table";
-        } else if (
-            Array.isArray(e?.functions_result) &&
-            e?.functions_result?.length === 0
-        ) {
-            return "table";
-        } else {
-            return "unknown";
-        }
-    };
 
     const checkValidTableRes = (e) => {
         if (
@@ -250,7 +220,7 @@ export const HistoryChatSection = ({
                 {chatHistory
                     .sort((a, b) => a.id - b.id)
                     .map((item, index) => (
-                        <React.Fragment key={item.id} id={item.id}>
+                        <React.Fragment key={item.id} >
                             {item.user_message ? (
                                 <div
                                     className="promptStyle"
@@ -300,97 +270,14 @@ export const HistoryChatSection = ({
                                     <span className="icon">
                                         <FaRobot />
                                     </span>
-                                    {item.viewType === "string" ? (
-                                        <div className="content">
-                                            {item.final_message.success}
-                                        </div>
-                                    ) : item.viewType === "table" ||
-                                      item.viewType === "graph" ? (
-                                        <div className="content">
-                                            <div className="selectView">
-                                                <select
-                                                    className="selectView"
-                                                    name="selectView"
-                                                    id={index.toString()}
-                                                    value={item.viewType}
-                                                    onChange={
-                                                        handleOptionChange
-                                                    }
-                                                >
-                                                    <option value="table">
-                                                        Table
-                                                    </option>
-
-                                                    <option value="graph">
-                                                        Graph
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            {item.viewType === "table" &&
-                                            checkValidTableRes(
-                                                item.final_message
-                                            ) === "table_data" ? (
-                                                <div
-                                                    style={gridStyle}
-                                                    className="ag-theme-alpine"
-                                                    id="table"
-                                                >
-                                                    <AgGridReact
-                                                        rowData={
-                                                            item?.final_message
-                                                                ?.functions_result
-                                                        }
-                                                        columnDefs={generateColumnDefs(
-                                                            item?.final_message
-                                                                ?.functions_result
-                                                        )}
-                                                        defaultColDef={
-                                                            defaultColDef
-                                                        }
-                                                        enableCellTextSelection="true"
-                                                    />
-                                                </div>
-                                            ) : checkValidTableRes(
-                                                  item.final_message
-                                              ) === "no_data" ? (
-                                                <div className="noData">
-                                                    No data found
-                                                </div>
-                                            ) : null}
-                                            {item.viewType === "graph" &&
-                                            item?.final_message
-                                                ?.functions_result.length >
-                                                0 ? (
-                                                <div
-                                                    className="graph"
-                                                    id="graph"
-                                                >
-                                                    <SigmaGraph
-                                                        message={
-                                                            item?.final_message
-                                                                ?.functions_result
-                                                        }
-                                                    />
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    ) : item?.viewType === "unknown" ? (
-                                        <div className="content">
-                                            <div className="error">
-                                                Something went wrong
-                                            </div>
-                                        </div>
-                                    ) : null}
-                                    <span className="copy" id="copyAi">
-                                        <CopyToClipboard
-                                            text={item?.final_message}
-                                        >
-                                            <FaRegCopy />
-                                        </CopyToClipboard>
-                                    </span>
-                                    {/* <span className="bookmark">
-                                        <FaBookmark />
-                                    </span> */}
+                                    <div className="content">
+                                        <DynamicRender
+                                            finalMessage={item.final_message}
+                                            index={index}
+                                            // type={getChartType(item)}
+                                            // data={checkValidTableRes(item)}
+                                        />
+                                    </div>
                                 </div>
                             ) : null}
                         </React.Fragment>
