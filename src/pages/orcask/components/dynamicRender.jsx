@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import "../orcAsk.scss";
 import { AgGridReact } from "ag-grid-react";
 import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
+import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
 const DynamicRender = (props) => {
     const [displayData, setDisplayData] = useState({
@@ -34,16 +35,13 @@ const DynamicRender = (props) => {
                     props?.finalMessage?.functions_result
                 ),
             });
-        }else if (
-            props.finalMessage.fail.length > 0
-        ){
+        } else if (props.finalMessage.fail.length > 0) {
             setDisplayData({
                 message: props.finalMessage.fail,
                 responseType: "fail",
                 type: checkTypeofResponse(props.finalMessage.fail),
             });
-        } 
-        else {
+        } else {
             setDisplayData({
                 message: "Unknown error",
                 responseType: "unknown",
@@ -109,6 +107,12 @@ const DynamicRender = (props) => {
         }
     };
 
+    const [viewType, setViewType] = useState("table");
+
+    const handleOptionChange = (e) => {
+        setViewType(e.target.value);
+    };
+
     const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
 
     return (
@@ -126,17 +130,44 @@ const DynamicRender = (props) => {
             ) : displayData.type === "table_json" ? (
                 <div>
                     {Object.entries(displayData.message).map(([key, value]) => (
-                        <div key={key} style={{ marginBottom: "20px" }}>
-                            <div className="mt-5 mb-10">{key}</div>
+                        <div
+                            key={key}
+                            style={{
+                                marginBottom: "10px",
+                                paddingBottom: "10px",
+                                // borderBottom: "1px solid black",
+                            }}
+                        >
+                            <div className="mt-5 mb-10 selectView">
+                                {key}
 
-                            <div style={gridStyle} className="ag-theme-alpine">
-                                <AgGridReact
-                                    rowData={getValue(value)}
-                                    columnDefs={generateColumnDefs(value)}
-                                    defaultColDef={defaultColDef}
-                                    enableCellTextSelection="true"
-                                />
+                                <select
+                                    className="selectView"
+                                    name="selectView"
+                                    value={viewType}
+                                    onChange={handleOptionChange}
+                                >
+                                    <option value="table">Table</option>
+                                    <option value="graph">Graph</option>
+                                </select>
                             </div>
+                            {viewType === "table" ? (
+                                <div
+                                    style={gridStyle}
+                                    className="ag-theme-alpine"
+                                >
+                                    <AgGridReact
+                                        rowData={getValue(value)}
+                                        columnDefs={generateColumnDefs(value)}
+                                        defaultColDef={defaultColDef}
+                                        enableCellTextSelection="true"
+                                    />
+                                </div>
+                            ) : viewType === "graph" ? (
+                                <div className="graph" id="graph">
+                                    <SigmaGraph message={getValue(value)} />
+                                </div>
+                            ) : null}
                         </div>
                     ))}
                 </div>
