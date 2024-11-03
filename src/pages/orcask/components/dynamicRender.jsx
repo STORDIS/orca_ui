@@ -34,7 +34,16 @@ const DynamicRender = (props) => {
                     props?.finalMessage?.functions_result
                 ),
             });
-        } else {
+        }else if (
+            props.finalMessage.fail.length > 0
+        ){
+            setDisplayData({
+                message: props.finalMessage.fail,
+                responseType: "fail",
+                type: checkTypeofResponse(props.finalMessage.fail),
+            });
+        } 
+        else {
             setDisplayData({
                 message: "Unknown error",
                 responseType: "unknown",
