@@ -116,6 +116,7 @@ export function getAllDevicesURL() {
     return host_addr + "/devices";
 }
 
+// setup urls
 export function installSonicURL() {
     return host_addr + "/install_image";
 }
@@ -144,6 +145,10 @@ export function sheduleURL(selectedDeviceIp) {
 
 export function getStateURL(selectedDeviceIp) {
     return host_addr + "/state/" + selectedDeviceIp;
+}
+
+export function celeryURL() {
+    return host_addr + "/celery" ;
 }
 
 // ----------------

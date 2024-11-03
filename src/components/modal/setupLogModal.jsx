@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import "./logModel.scss";
 import Time from "react-time-format";
 
+import { celeryURL } from "../../utils/backend_rest_urls";
+import useStoreConfig from "../../utils/configStore";
+import useStoreLogs from "../../utils/store";
+import interceptor from "../../utils/interceptor";
+
 const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     const [networkList, setNetworkList] = useState({});
     const [selectedNetworkDevices, setSelectedNetworkDevices] = useState([]);
@@ -9,6 +14,12 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
 
     const [selectAll, setSelectAll] = useState(false);
     const [response, setResponse] = useState("null");
+
+    const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+    const updateConfig = useStoreConfig((state) => state.updateConfig);
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+    const instance = interceptor();
 
     useEffect(() => {
         console.log(logData);
@@ -110,6 +121,25 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     const applyConfig = () => {
         console.log(selectedNetworkDevices);
         // installImage(selectedNetworkDevices);
+    };
+
+    const revoke = () => {
+        let payload = {
+            task_id: logData.task_id,
+        };
+        console.log(payload);
+
+        setUpdateConfig(true);
+        const apiMUrl = celeryURL();
+        instance
+            .delete(apiMUrl, { data: payload })
+            .then((response) => {})
+            .catch((err) => {})
+            .finally(() => {
+                setUpdateLog(true);
+                setUpdateConfig(false);
+                onSubmit();
+            });
     };
 
     const formattedRequestJson = logData?.request_json
@@ -416,7 +446,13 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         </div>
                     )}
                 </div>
-                {/* <div className="modalFooter">footer</div> */}
+                <div className="modalFooter">
+                    {logData.status.toLowerCase() === "pending" ? (
+                        <button onClick={revoke} className="btnStyle ">
+                            revoke running task
+                        </button>
+                    ) : null}
+                </div>
             </div>
         </div>
     );
