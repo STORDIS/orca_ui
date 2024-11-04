@@ -5,48 +5,97 @@ import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
 const DynamicRender = (props) => {
-    const [displayData, setDisplayData] = useState({
-        message: "",
-        responseType: "",
-        type: "",
-    });
+    // const [displayData, setDisplayData] = useState({
+    //     message: "",
+    //     responseType: "",
+    //     type: "",
+    // });
+    const [displayData, setDisplayData] = useState([
+        {
+            message: "",
+            responseType: "",
+            type: "",
+        },
+    ]);
 
     useEffect(() => {
-        // console.log(props.message);
+        // console.log(props.finalMessage);
         checkWhichResponce(props.finalMessage);
     }, [props]);
 
     const checkWhichResponce = (res) => {
-        // console.log(props.message);
+        setDisplayData([]);
 
         if (props.finalMessage.success.length > 0) {
-            setDisplayData({
-                message: props.finalMessage.success,
-                responseType: "success",
-                type: checkTypeofResponse(props.finalMessage.success),
-            });
-        } else if (
-            Object.keys(props.finalMessage.functions_result).length > 0
+            // setDisplayData({
+            //     message: props.finalMessage.success,
+            //     responseType: "success",
+            //     type: checkTypeofResponse(props.finalMessage.success),
+            // });
+
+            setDisplayData((prevData) => [
+                ...prevData,
+                {
+                    message: props.finalMessage.success,
+                    responseType: "success",
+                    type: checkTypeofResponse(props.finalMessage.success),
+                },
+            ]);
+            console.log("1");
+        }
+        if (Object.keys(props.finalMessage.functions_result).length > 0) {
+            setDisplayData((prev) => [
+                ...prev,
+                {
+                    message: props.finalMessage.functions_result,
+                    responseType: "function",
+                    type: checkTypeofResponse(
+                        props?.finalMessage?.functions_result
+                    ),
+                },
+            ]);
+            // setDisplayData({
+            //     message: props.finalMessage.functions_result,
+            //     responseType: "function",
+            //     type: checkTypeofResponse(
+            //         props?.finalMessage?.functions_result
+            //     ),
+            // });
+            console.log("2");
+        }
+
+        if (props.finalMessage.fail.length > 0) {
+            setDisplayData((prev) => [
+                ...prev,
+                {
+                    message: props.finalMessage.fail,
+                    responseType: "fail",
+                    type: checkTypeofResponse(props.finalMessage.fail),
+                },
+            ]);
+
+            // setDisplayData({
+            //     message: props.finalMessage.fail,
+            //     responseType: "fail",
+            //     type: checkTypeofResponse(props.finalMessage.fail),
+            // });
+            console.log("3");
+        }
+
+        if (
+            props.finalMessage.success.length <= 0 &&
+            Object.keys(props.finalMessage.functions_result).length <= 0 &&
+            props.finalMessage.fail.length <= 0
         ) {
-            setDisplayData({
-                message: props.finalMessage.functions_result,
-                responseType: "function",
-                type: checkTypeofResponse(
-                    props?.finalMessage?.functions_result
-                ),
-            });
-        } else if (props.finalMessage.fail.length > 0) {
-            setDisplayData({
-                message: props.finalMessage.fail,
-                responseType: "fail",
-                type: checkTypeofResponse(props.finalMessage.fail),
-            });
-        } else {
-            setDisplayData({
-                message: "Unknown error",
-                responseType: "unknown",
-                type: checkTypeofResponse(""),
-            });
+            setDisplayData((prev) => [
+                ...prev,
+                {
+                    message: "Unknown error",
+                    responseType: "unknown",
+                    type: checkTypeofResponse(""),
+                },
+            ]);
+            console.log("4");
         }
     };
 
@@ -115,71 +164,93 @@ const DynamicRender = (props) => {
 
     const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
 
+    console.log("displayData", displayData);
+
     return (
         <div>
-            {displayData.type === "array" ? (
-                <div>
-                    <ul
-                        style={{ listStyleType: "none", padding: 0, margin: 0 }}
-                    >
-                        {displayData.message?.map((item) => (
-                            <li key={item}>{item}</li>
-                        ))}
-                    </ul>
-                </div>
-            ) : displayData.type === "table_json" ? (
-                <div>
-                    {Object.entries(displayData.message).map(([key, value]) => (
-                        <div
-                            key={key}
-                            style={{
-                                marginBottom: "10px",
-                                paddingBottom: "10px",
-                                // borderBottom: "1px solid black",
-                            }}
-                        >
-                            <div className="mt-5 mb-10 selectView">
-                                {key}
-
-                                <select
-                                    className="selectView"
-                                    name="selectView"
-                                    value={viewType}
-                                    onChange={handleOptionChange}
-                                >
-                                    <option value="table">Table</option>
-                                    <option value="graph">Graph</option>
-                                </select>
-                            </div>
-                            {viewType === "table" ? (
-                                <div
-                                    style={gridStyle}
-                                    className="ag-theme-alpine"
-                                >
-                                    <AgGridReact
-                                        rowData={getValue(value)}
-                                        columnDefs={generateColumnDefs(value)}
-                                        defaultColDef={defaultColDef}
-                                        enableCellTextSelection="true"
-                                    />
-                                </div>
-                            ) : viewType === "graph" ? (
-                                <div className="graph" id="graph">
-                                    <SigmaGraph message={getValue(value)} />
-                                </div>
-                            ) : null}
+            {displayData.map((item, index) => (
+                <>
+                    {item.type === "array" ? (
+                        <div>
+                            <ul
+                                style={{
+                                    listStyleType: "none",
+                                    padding: 0,
+                                    margin: 0,
+                                }}
+                            >
+                                {item.message?.map((item) => (
+                                    <li key={item}>{item}</li>
+                                ))}
+                            </ul>
                         </div>
-                    ))}
-                </div>
-            ) : (
-                <div>
-                    {displayData.message.toString()}
-                    <br />
-                    {displayData.responseType}
-                    <br />
-                    {displayData.type}
-                </div>
-            )}
+                    ) : item.type === "table_json" ? (
+                        <div>
+                            {Object.entries(item.message).map(
+                                ([key, value]) => (
+                                    <div
+                                        key={key}
+                                        style={{
+                                            marginBottom: "10px",
+                                            paddingBottom: "10px",
+                                            // borderBottom: "1px solid black",
+                                        }}
+                                    >
+                                        <div className="mt-5 mb-10 selectView">
+                                            {key}
+
+                                            <select
+                                                className="selectView"
+                                                name="selectView"
+                                                value={viewType}
+                                                onChange={handleOptionChange}
+                                            >
+                                                <option value="table">
+                                                    Table
+                                                </option>
+                                                <option value="graph">
+                                                    Graph
+                                                </option>
+                                            </select>
+                                        </div>
+                                        {viewType === "table" ? (
+                                            <div
+                                                style={gridStyle}
+                                                className="ag-theme-alpine"
+                                            >
+                                                <AgGridReact
+                                                    rowData={getValue(value)}
+                                                    columnDefs={generateColumnDefs(
+                                                        value
+                                                    )}
+                                                    defaultColDef={
+                                                        defaultColDef
+                                                    }
+                                                    enableCellTextSelection="true"
+                                                />
+                                            </div>
+                                        ) : viewType === "graph" ? (
+                                            <div className="graph" id="graph">
+                                                <SigmaGraph
+                                                    message={getValue(value)}
+                                                />
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                )
+                            )}
+                        </div>
+                    ) : (
+                        <div>
+                            {item.message.toString()}
+                            <br />
+                            {item.responseType}
+                            <br />
+                            {item.type}
+                        </div>
+                    )}
+                </>
+            ))}
         </div>
     );
 };
