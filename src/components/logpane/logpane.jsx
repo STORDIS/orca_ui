@@ -120,7 +120,7 @@ export const LogViewer = () => {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
-                            &nbsp; {params.data.status}
+                            &nbsp; {JSON.stringify(params?.data?.response)}
                             &nbsp;
                         </div>
                     );
