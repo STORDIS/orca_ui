@@ -79,10 +79,10 @@ const DynamicRender = (props) => {
         let temp = undefined;
 
         if (Array.isArray(data[0])) {
-            console.log("true");
+            // console.log("true");
             temp = data[0];
         } else {
-            console.log("false");
+            // console.log("false");
             temp = data;
         }
 
