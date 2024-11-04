@@ -45,7 +45,6 @@ export const Home = () => {
 
     const [networkList, setNetworkList] = useState({});
 
-
     const [formData, setFormData] = useState({
         image_url: "",
         device_ips: "",
@@ -55,7 +54,6 @@ export const Home = () => {
     });
 
     const [selectedDevices, setSelectedDevices] = useState([]);
-
 
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -108,10 +106,6 @@ export const Home = () => {
         }));
     };
 
-
-
-
-
     const send_update = () => {
         if (formData.image_url === "") {
             alert("URL is empty");
@@ -149,8 +143,6 @@ export const Home = () => {
             }
         }
     };
-
-
 
     const installImage = async (payload) => {
         console.log("clear");
@@ -190,7 +182,6 @@ export const Home = () => {
             });
 
             setSelectedDevices([]);
-
         }
     };
 
@@ -317,7 +308,6 @@ export const Home = () => {
                 </div>
             </div>
 
-         
             <Modal
                 show={isModalOpen}
                 title={""}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./logModel.scss";
 import Time from "react-time-format";
 
-import { celeryURL } from "../../utils/backend_rest_urls";
+import { celeryURL, installSonicURL } from "../../utils/backend_rest_urls";
 import useStoreConfig from "../../utils/configStore";
 import useStoreLogs from "../../utils/store";
 import interceptor from "../../utils/interceptor";
@@ -118,9 +118,21 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         );
     };
 
-    const applyConfig = () => {
+    const applyConfig = async () => {
         console.log(selectedNetworkDevices);
-        // installImage(selectedNetworkDevices);
+
+        try {
+            const response = await instance.put(
+                installSonicURL(),
+                selectedNetworkDevices
+            );
+            console.log(response);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setUpdateLog(true);
+            setUpdateConfig(false);
+        }
     };
 
     const revoke = () => {
@@ -167,18 +179,18 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                     <b>Status :</b>
                                 </td>
                                 <td className="w-75">
-                                    {logData.status.toLowerCase() ===
-                                    "success" ? (
+                                    {logData.status.toUpperCase() ===
+                                    "SUCCESS" ? (
                                         <span className="success">
                                             {logData.status}
                                         </span>
-                                    ) : logData.status.toLowerCase() ===
-                                      "started" ? (
+                                    ) : logData.status.toUpperCase() ===
+                                      "STARTED" ? (
                                         <span className="warning">
                                             {logData.status}
                                         </span>
-                                    ) : logData.status.toLowerCase() ===
-                                      "pending" ? (
+                                    ) : logData.status.toUpperCase() ===
+                                      "PENDING" ? (
                                         <span className="gray">
                                             {logData.status}
                                         </span>
@@ -447,7 +459,8 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                     )}
                 </div>
                 <div className="modalFooter">
-                    {logData.status.toLowerCase() === "pending" ? (
+                    {logData.status.toUpperCase() === "STARTED" ||
+                    logData.status.toUpperCase() === "PENDING" ? (
                         <button onClick={revoke} className="btnStyle ">
                             revoke running task
                         </button>

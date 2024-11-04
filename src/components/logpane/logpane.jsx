@@ -24,45 +24,6 @@ export const LogViewer = () => {
     const updateLog = useStoreLogs((state) => state.updateLog);
     const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
 
-    useEffect(() => {
-        if (updateLog) {
-            getLogs();
-        }
-    }, [updateLog]);
-
-    useEffect(() => {
-        getLogs();
-    }, []);
-
-    const getLogs = () => {
-        setLogEntries([]);
-        instance
-            .get(logPanelURL())
-            .then((response) => {
-                setLogEntries(response.data);
-                resetUpdateLog();
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-                setLogEntries([]);
-            });
-    };
-
-    const handelClearLog = () => {
-        instance
-            .delete(logPanelDeleteURL())
-            .then((response) => {
-                resetUpdateLog();
-            })
-            .catch((error) => {
-                console.error("Error:", error);
-            })
-            .finally(() => {
-                getLogs();
-                resetUpdateLog();
-            });
-    };
-
     // Column Definitions: Defines the columns to be displayed.
     const [colDefs] = useState([
         {
@@ -132,26 +93,35 @@ export const LogViewer = () => {
             width: 400,
             resizable: true,
             sortable: true,
+            filter: true,
             cellRenderer: (params) => {
                 console.log(params?.data?.response);
-                if (params.value.toLowerCase() === "success") {
+                if (params.value.toUpperCase() === "SUCCESS") {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
                             <FaRegCheckCircle style={{ fontSize: "24px" }} />
                         </div>
                     );
-                } else if (params.value.toLowerCase() === "started") {
+                } else if (params.value.toUpperCase() === "STARTED") {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
                             <FaRegPlayCircle style={{ fontSize: "24px" }} />
                             &nbsp; {params.data.status}
                         </div>
                     );
-                } else if (params.value.toLowerCase() === "pending") {
+                } else if (params.value.toUpperCase() === "PENDING") {
                     return (
                         <div className="icon" id={params?.data?.status_code}>
                             <FaRegPlayCircle style={{ fontSize: "24px" }} />
                             &nbsp; {params.data.status}
+                        </div>
+                    );
+                } else if (params.value.toUpperCase() === "REVOKED") {
+                    return (
+                        <div className="icon" id={params?.data?.status_code}>
+                            <FaRegCircleXmark style={{ fontSize: "24px" }} />
+                            &nbsp; {params.data.status}
+                            &nbsp;
                         </div>
                     );
                 } else {
@@ -165,23 +135,67 @@ export const LogViewer = () => {
                 }
             },
             cellStyle: (params) => {
-                if (params.value.toLowerCase() === "success") {
+                if (params.value.toUpperCase() === "SUCCESS") {
                     return { color: "#198754", display: "flex" };
-                } else if (params.value.toLowerCase() === "started") {
+                } else if (params.value.toUpperCase() === "STARTED") {
                     return { color: "#FFC107", display: "flex" };
-                } else if (params.value.toLowerCase() === "pending") {
+                } else if (params.value.toUpperCase() === "PENDING") {
                     return { color: "#6C757D", display: "flex" };
                 } else {
                     return { color: "#DC3545", display: "flex" };
                 }
             },
             tooltipValueGetter: (params) => {
-                return JSON.stringify(params?.data?.response);
+                if (params?.data?.response) {
+                    return JSON.stringify(params?.data?.response);
+                } else {
+                    return params?.data?.status;
+                }
             },
         },
     ]);
 
     const [height, setHeight] = useState(400);
+
+    useEffect(() => {
+        if (updateLog) {
+            getLogs();
+        }
+    }, [updateLog]);
+
+    useEffect(() => {
+        getLogs();
+    }, []);
+
+    const getLogs = () => {
+        // console.log("get");
+        setLogEntries([]);
+        instance
+            .get(logPanelURL())
+            .then((response) => {
+                setLogEntries(response.data);
+                resetUpdateLog();
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+                setLogEntries([]);
+            });
+    };
+
+    const handelClearLog = () => {
+        instance
+            .delete(logPanelDeleteURL())
+            .then((response) => {
+                resetUpdateLog();
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            })
+            .finally(() => {
+                getLogs();
+                resetUpdateLog();
+            });
+    };
 
     const handleResize = () => {
         if (logPannelDivRef.current.offsetHeight > 400) {
@@ -198,7 +212,8 @@ export const LogViewer = () => {
     const [logDetails, setLogDetails] = useState({});
 
     const openLogDetails = (params) => {
-        console.log(params.data.http_path);
+        getLogs();
+        // console.log(params.data);
 
         switch (params.data.http_path) {
             case "/install_image":
@@ -222,20 +237,11 @@ export const LogViewer = () => {
         >
             <div
                 className=" mb-15"
-                // style={{
-                //     display: "flex",
-                //     justifyContent: "space-between",
-                // }}
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                }}
             >
-                <button
-                    id="clearLogBtn"
-                    className="clearLogBtn btnStyle mr-10"
-                    onClick={getLogs}
-                    disabled={!getIsStaff()}
-                >
-                    Refresh
-                </button>
-
                 <button
                     id="clearLogBtn"
                     className="clearLogBtn btnStyle "
@@ -244,8 +250,16 @@ export const LogViewer = () => {
                 >
                     Clear
                 </button>
+
+                <button
+                    id="clearLogBtn"
+                    className="clearLogBtn btnStyle"
+                    onClick={getLogs}
+                    disabled={!getIsStaff()}
+                >
+                    Refresh
+                </button>
             </div>
-            {/* {height} */}
             <div style={gridStyle} className="ag-theme-alpine ">
                 <AgGridReact
                     rowData={logEntries}
