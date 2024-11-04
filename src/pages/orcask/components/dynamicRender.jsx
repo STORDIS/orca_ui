@@ -171,7 +171,7 @@ const DynamicRender = (props) => {
             {displayData.map((item, index) => (
                 <>
                     {item.type === "array" ? (
-                        <div>
+                        <div className="mb-10" >
                             <ul
                                 style={{
                                     listStyleType: "none",
