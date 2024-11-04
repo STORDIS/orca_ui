@@ -34,7 +34,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         ) {
             setInstallResponses(logData?.response?.install_responses);
         } else {
-            setResponse(logData?.response);
+            setResponse(JSON.stringify(logData?.response, null, 2));
         }
 
         const handleKeyDown = (e) => {
