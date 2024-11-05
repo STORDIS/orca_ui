@@ -219,6 +219,9 @@ export const LogViewer = () => {
             case "/install_image":
                 setShowLogDetails("setupDialog");
                 break;
+            case "/switch_image":
+                setShowLogDetails("setupDialog");
+                break;
 
             default:
                 setShowLogDetails("genericDialog");
@@ -279,7 +282,7 @@ export const LogViewer = () => {
                     onClose={() => setShowLogDetails(false)}
                     onSubmit={() => setShowLogDetails(false)}
                     title="Log Details"
-                    id="logDetails"
+                    id="setupLogDetails"
                 />
             )}
             {showLogDetails === "genericDialog" && (
@@ -288,7 +291,7 @@ export const LogViewer = () => {
                     onClose={() => setShowLogDetails(false)}
                     onSubmit={() => setShowLogDetails(false)}
                     title="Log Details"
-                    id="logDetails"
+                    id="genericLogDetails"
                 />
             )}
         </div>
