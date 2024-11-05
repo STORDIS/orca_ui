@@ -1,5 +1,6 @@
 const host_addr =
     process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
+
 // auth urls
 export function getUserDetailsURL(user) {
     return host_addr + "/auth/user/" + user;
@@ -84,8 +85,8 @@ export function stpURL(device_ip) {
 }
 
 // orcask urls
-export function gptCompletionsURL(formate) {
-    return host_addr + "/orcask/completions?response_format=" + formate;
+export function executePlanURL() {
+    return host_addr + "/orcask/execution_plan";
 }
 
 export function getOrcAskHistoryURL() {

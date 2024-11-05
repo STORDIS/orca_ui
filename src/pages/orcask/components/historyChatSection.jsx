@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-import { gptCompletionsURL } from "../../../utils/backend_rest_urls";
+import { executePlanURL } from "../../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
-import { AgGridReact } from "ag-grid-react";
 import { FaRobot } from "react-icons/fa6";
 import { FaRegCopy } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
@@ -13,6 +12,7 @@ import { FaSpinner } from "react-icons/fa";
 import { FaBookmark } from "react-icons/fa";
 import { getIsStaff } from "../../../utils/common";
 import Tooltip from "@mui/material/Tooltip";
+import DynamicRender from "./dynamicRender";
 
 import "../orcAsk.scss";
 import {
@@ -21,7 +21,6 @@ import {
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
-import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
 
 export const HistoryChatSection = ({
     sendBookmarkDataToParent,
@@ -33,14 +32,17 @@ export const HistoryChatSection = ({
     const [chatHistory, setChatHistory] = useState([
         {
             id: 0,
-            final_message:
-                "I am, ORCAsk AI developed to assist you. How can I help you?",
+            final_message: {
+                success: [
+                    "I am, ORCAsk AI developed to assist you. How can I help you?",
+                ],
+                fail: [],
+                functions_result: {},
+            },
             user_message: "",
-            viewType: "string",
         },
     ]);
     const chatContainerRef = useRef(null);
-    const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
     const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
 
     const handleInputChange = (event) => {
@@ -86,7 +88,6 @@ export const HistoryChatSection = ({
                     id: chat.id,
                     final_message: chat?.final_message,
                     user_message: chat?.user_message,
-                    viewType: getChartType(chat?.final_message), // table / graph / string / json
                 }));
 
                 setChatHistory((prevChatHistory) => {
@@ -113,18 +114,6 @@ export const HistoryChatSection = ({
             });
     };
 
-    const getChartType = (e) => {
-        if (typeof e === "string") {
-            return "string";
-        } else if (Array.isArray(e)) {
-            return "table";
-        } else if (typeof e === "object") {
-            return "json";
-        } else {
-            return "unknown";
-        }
-    };
-
     const deleteHistory = () => {
         instance
             .delete(deleteOrcAskHistoryURL())
@@ -132,8 +121,13 @@ export const HistoryChatSection = ({
                 setChatHistory([
                     {
                         id: 0,
-                        final_message:
-                            "I am, ORCAsk AI developed to assist you. How can I help you?",
+                        final_message: {
+                            success: [
+                                "I am, ORCAsk AI developed to assist you. How can I help you?",
+                            ],
+                            fail: [],
+                            functions_result: {},
+                        },
                         user_message: "",
                         viewType: "string",
                     },
@@ -148,10 +142,9 @@ export const HistoryChatSection = ({
     const gptCompletions = () => {
         setIsLoading(true);
         instance
-            .post(gptCompletionsURL("json"), questionPrompt)
+            .post(executePlanURL(), questionPrompt)
             .then((response) => {
                 setQuestionPrompt({ prompt: "" });
-
                 getChatHistory();
             })
             .catch((error) => {
@@ -173,18 +166,32 @@ export const HistoryChatSection = ({
         });
     };
 
-    const generateColumnDefs = (data) => {
-        if (data.length > 0) {
-            return Object.keys(data[0]).map((key) => ({
-                headerName: key.replace(/_/g, " ").toUpperCase(),
-                field: key,
-                resizable: true,
-                filter: true,
-                sortable: true,
-                width: 130,
-            }));
+
+
+    const checkValidTableRes = (e) => {
+        if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length > 0 &&
+            e?.functions_result[0] !== null
+        ) {
+            return "table_data";
+        } else if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length > 0 &&
+            e?.functions_result[0] === null
+        ) {
+            console.log("wrong_data");
+            return "no_data";
+        } else if (
+            Array.isArray(e?.functions_result) &&
+            e?.functions_result?.length === 0
+        ) {
+            console.log("no_data");
+            return "no_data";
+        } else {
+            console.log("false");
+            return false;
         }
-        return [];
     };
 
     const handleKeyDown = (event) => {
@@ -213,7 +220,7 @@ export const HistoryChatSection = ({
                 {chatHistory
                     .sort((a, b) => a.id - b.id)
                     .map((item, index) => (
-                        <React.Fragment key={item.id} id={item.id}>
+                        <React.Fragment key={item.id} >
                             {item.user_message ? (
                                 <div
                                     className="promptStyle"
@@ -263,98 +270,14 @@ export const HistoryChatSection = ({
                                     <span className="icon">
                                         <FaRobot />
                                     </span>
-                                    {item.viewType === "string" ? (
-                                        <div className="content">
-                                            {item.final_message}
-                                        </div>
-                                    ) : null}
-                                    {item.viewType !== "string" ? (
-                                        <div className="content">
-                                            <div className="selectView">
-                                                <select
-                                                    className="selectView"
-                                                    name="selectView"
-                                                    id={index.toString()}
-                                                    value={item.viewType}
-                                                    onChange={
-                                                        handleOptionChange
-                                                    }
-                                                >
-                                                    <option value="table">
-                                                        Table
-                                                    </option>
-                                                    item?.final_message
-                                                    <option value="graph">
-                                                        Graph
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            {item.viewType === "table" ? (
-                                                <div
-                                                    style={gridStyle}
-                                                    className="ag-theme-alpine"
-                                                    id="table"
-                                                >
-                                                    <AgGridReact
-                                                        rowData={
-                                                            item?.final_message
-                                                        }
-                                                        columnDefs={generateColumnDefs(
-                                                            item?.final_message
-                                                        )}
-                                                        defaultColDef={
-                                                            defaultColDef
-                                                        }
-                                                        enableCellTextSelection="true"
-                                                    />
-                                                </div>
-                                            ) : null}
-                                            {item.viewType === "graph" ? (
-                                                <div
-                                                    className="graph"
-                                                    id="graph"
-                                                >
-                                                    <SigmaGraph
-                                                        message={
-                                                            item?.final_message
-                                                        }
-                                                    />
-                                                </div>
-                                            ) : null}
-                                            {item.viewType === "json" ? (
-                                                <div
-                                                    style={gridStyle}
-                                                    className="ag-theme-alpine"
-                                                    id="json"
-                                                >
-                                                    <AgGridReact
-                                                        rowData={[
-                                                            item?.final_message,
-                                                        ]}
-                                                        columnDefs={generateColumnDefs(
-                                                            [
-                                                                item?.final_message,
-                                                            ]
-                                                        )}
-                                                        defaultColDef={
-                                                            defaultColDef
-                                                        }
-                                                        enableCellTextSelection="true"
-                                                    />
-                                                </div>
-                                            ) : null}
-                                        </div>
-                                    ) : null}
-                                    <span className="copy" id="copyAi">
-                                        <CopyToClipboard
-                                            text={item?.final_message}
-                                        >
-                                            <FaRegCopy />
-                                        </CopyToClipboard>
-                                    </span>
-                                    {/* <span className="bookmark">
-                                        <FaBookmark />
-                                    </span> */}
+                                    <div className="content">
+                                        <DynamicRender
+                                            finalMessage={item.final_message}
+                                            index={index}
+                                            // type={getChartType(item)}
+                                            // data={checkValidTableRes(item)}
+                                        />
+                                    </div>
                                 </div>
                             ) : null}
                         </React.Fragment>
