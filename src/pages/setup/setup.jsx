@@ -43,8 +43,6 @@ export const Home = () => {
     const gridRef = useRef();
     const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
 
-    const [networkList, setNetworkList] = useState({});
-
     const [formData, setFormData] = useState({
         image_url: "",
         device_ips: "",
@@ -145,28 +143,8 @@ export const Home = () => {
     };
 
     const installImage = async (payload) => {
-        console.log("clear");
-
-        imageUrlRef.current.value = "";
-        userNameRef.current.value = "";
-        passwordRef.current.value = "";
-        deviceIpsRef.current.value = "";
-        discoverAlsoRef.current.checked = false;
-        gridRef.current.api.deselectAll();
-
         try {
             const response = await instance.put(installSonicURL(), payload);
-            console.log(response?.data?.networks);
-
-            if (Object.keys(response?.data?.networks).length > 0) {
-                setNetworkList(response?.data?.networks);
-
-                imageUrlRef.current.value = formData.image_url;
-                userNameRef.current.value = formData.user_name;
-                passwordRef.current.value = formData.password;
-                deviceIpsRef.current.value = formData.device_ips;
-                discoverAlsoRef.current.checked = formData.discover_also;
-            }
         } catch (error) {
             console.log(error);
         } finally {
@@ -180,6 +158,13 @@ export const Home = () => {
                 user_name: "",
                 password: "",
             });
+
+            imageUrlRef.current.value = "";
+            userNameRef.current.value = "";
+            passwordRef.current.value = "";
+            deviceIpsRef.current.value = "";
+            discoverAlsoRef.current.checked = false;
+            gridRef.current.api.deselectAll();
 
             setSelectedDevices([]);
         }
@@ -301,7 +286,6 @@ export const Home = () => {
                         className="btnStyle mt-15 mr-15"
                         id="updateBtn"
                         onClick={send_update}
-                        disabled={Object.keys(networkList).length > 0}
                     >
                         Update SONiC on Devices Selected
                     </button>
