@@ -28,7 +28,7 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                 <h4 className="modalHeader">
                     {title}
 
-                    <button className="btnStyle" onClick={onClose}>
+                    <button className="btnStyle" id="genericLogModalCloseBtn" onClick={onClose}>
                         Close
                     </button>
                 </h4>
@@ -38,31 +38,36 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         <tbody>
                             <tr>
                                 <td className="w-25">
-                                    <b>Status :</b>
+                                    <b>State :</b>
                                 </td>
                                 <td className="w-75">
-                                    {logData.status.toLowerCase() ===
-                                    "success" ? (
+                                    {logData.status.toUpperCase() ===
+                                    "SUCCESS" ? (
                                         <span className="success">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
-                                    ) : logData.status.toLowerCase() ===
-                                      "started" ? (
+                                    ) : logData.status.toUpperCase() ===
+                                      "STARTED" ? (
                                         <span className="warning">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
-                                    ) : logData.status.toLowerCase() ===
-                                      "pending" ? (
+                                    ) : logData.status.toUpperCase() ===
+                                      "PENDING" ? (
                                         <span className="gray">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
                                     ) : (
                                         <span className="danger">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
                                     )}
-                                    &nbsp;- {logData.status_code}
                                 </td>
+                            </tr>
+                            <tr>
+                                <td className="w-25">
+                                    <b>HTTP Status:</b>
+                                </td>
+                                <td className="w-75">{logData.status_code}</td>
                             </tr>
                             <tr>
                                 <td className="w-25">

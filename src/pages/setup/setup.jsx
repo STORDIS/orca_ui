@@ -47,7 +47,7 @@ export const Home = () => {
         image_url: "",
         device_ips: "",
         discover_also: false,
-        user_name: "",
+        username: "",
         password: "",
     });
 
@@ -57,6 +57,8 @@ export const Home = () => {
 
     useEffect(() => {
         getDevices();
+        document.getElementById("username").setAttribute("autocomplete", "off");
+        document.getElementById("password").setAttribute("autocomplete", "off");
     }, []);
 
     const getDevices = () => {
@@ -134,7 +136,7 @@ export const Home = () => {
                     image_url: formData.image_url,
                     device_ips: [...formData.device_ips, ...selectedDevices],
                     discover_also: formData.discover_also,
-                    user_name: formData.user_name,
+                    username: formData.username,
                     password: formData.password,
                 };
                 installImage(payload);
@@ -155,7 +157,7 @@ export const Home = () => {
                 image_url: "",
                 device_ips: [],
                 discover_also: false,
-                user_name: "",
+                username: "",
                 password: "",
             });
 
@@ -195,14 +197,16 @@ export const Home = () => {
                     <div className="w-50">
                         <div className="form-wrapper align-center">
                             <div className="form-field w-auto">
-                                <label for="user_name">User Name : </label>
+                                <label for="username">User Name : </label>
                             </div>
                             <div className="form-field w-60">
                                 <input
                                     type="text"
-                                    name="user_name"
+                                    name="username"
+                                    id="username"
                                     onChange={handleChange}
                                     ref={userNameRef}
+                                    autocomplete="off"
                                 />
                             </div>
                         </div>
@@ -217,8 +221,10 @@ export const Home = () => {
                                 <input
                                     type="password"
                                     name="password"
+                                    id="password"
                                     onChange={handleChange}
                                     ref={passwordRef}
+                                    autocomplete="off"
                                 />
                             </div>
                         </div>
@@ -303,6 +309,7 @@ export const Home = () => {
                     <div className="mt-15 " style={{ textAlign: "center" }}>
                         <button
                             className="btnStyle "
+                            id="closeModalBtn"
                             onClick={() => setIsModalOpen(false)}
                         >
                             close

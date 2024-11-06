@@ -18,7 +18,9 @@
         max-width: 75vw;
         min-width: 600px;
         height: max-content;
+        max-height: 75vh;
         position: relative;
+        overflow-y: scroll;
 
         .modalHeader {
             display: flex;

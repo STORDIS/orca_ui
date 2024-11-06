@@ -84,41 +84,58 @@ export const LogViewer = () => {
                 );
             },
             tooltipValueGetter: (params) => {
-                return JSON.stringify(params.value);
+                console.log(params?.value);
+                return JSON.stringify(params?.value);
+                // return "tool";
             },
         },
         {
             field: "status",
-            headerName: "Status",
+            headerName: "State",
             width: 400,
             resizable: true,
             sortable: true,
             filter: true,
             cellRenderer: (params) => {
-                console.log(params?.data?.response);
                 if (params.value.toUpperCase() === "SUCCESS") {
                     return (
-                        <div className="icon" id={params?.data?.status_code}>
+                        <div
+                            className="icon"
+                            id={params?.data?.status_code}
+                            state="SUCCESS"
+                        >
                             <FaRegCheckCircle style={{ fontSize: "24px" }} />
                         </div>
                     );
                 } else if (params.value.toUpperCase() === "STARTED") {
                     return (
-                        <div className="icon" id={params?.data?.status_code}>
+                        <div
+                            className="icon"
+                            id={params?.data?.status_code}
+                            state="STARTED"
+                        >
                             <FaRegPlayCircle style={{ fontSize: "24px" }} />
                             &nbsp; {params.data.status}
                         </div>
                     );
                 } else if (params.value.toUpperCase() === "PENDING") {
                     return (
-                        <div className="icon" id={params?.data?.status_code}>
+                        <div
+                            className="icon"
+                            id={params?.data?.status_code}
+                            state="PENDING"
+                        >
                             <FaRegPlayCircle style={{ fontSize: "24px" }} />
                             &nbsp; {params.data.status}
                         </div>
                     );
                 } else if (params.value.toUpperCase() === "REVOKED") {
                     return (
-                        <div className="icon" id={params?.data?.status_code}>
+                        <div
+                            className="icon"
+                            id={params?.data?.status_code}
+                            state="REVOKED"
+                        >
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
                             &nbsp; {JSON.stringify(params?.data?.response)}
                             &nbsp;
@@ -126,7 +143,11 @@ export const LogViewer = () => {
                     );
                 } else {
                     return (
-                        <div className="icon" id={params?.data?.status_code}>
+                        <div
+                            className="icon"
+                            id={params?.data?.status_code}
+                            state="FAILED"
+                        >
                             <FaRegCircleXmark style={{ fontSize: "24px" }} />
                             &nbsp; {JSON.stringify(params?.data?.response)}
                             &nbsp;
@@ -239,7 +260,7 @@ export const LogViewer = () => {
             onMouseMove={handleResize}
         >
             <div
-                className=" mb-15"
+                className="mb-15"
                 style={{
                     display: "flex",
                     justifyContent: "space-between",
@@ -255,7 +276,7 @@ export const LogViewer = () => {
                 </button>
 
                 <button
-                    id="clearLogBtn"
+                    id="refreshLogBtn"
                     className="clearLogBtn btnStyle"
                     onClick={getLogs}
                     disabled={!getIsStaff()}

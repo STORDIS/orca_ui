@@ -160,13 +160,30 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
               .join("\n") // Double newlines for extra space between pairs
         : "waiting for process to complete";
 
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    // Function to toggle between expanded and collapsed
+    const handleToggle = () => {
+        setIsExpanded(!isExpanded);
+    };
+
+    const isTextOverflow = (text) => {
+        const maxLineLength = 80; // Approximate max characters per line
+        const maxLines = 5;
+        return text.length > maxLineLength * maxLines;
+    };
+
     return (
         <div className="modalContainer" onClick={onClose} id={id}>
             <div className="modalInner" onClick={(e) => e.stopPropagation()}>
                 <h4 className="modalHeader">
                     {title}
 
-                    <button className="btnStyle" onClick={onClose}>
+                    <button
+                        className="btnStyle"
+                        id="setupLogModalCloseBtn"
+                        onClick={onClose}
+                    >
                         Close
                     </button>
                 </h4>
@@ -176,31 +193,36 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         <tbody>
                             <tr>
                                 <td className="w-25">
-                                    <b>Status :</b>
+                                    <b>State :</b>
                                 </td>
                                 <td className="w-75">
                                     {logData.status.toUpperCase() ===
                                     "SUCCESS" ? (
                                         <span className="success">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
                                     ) : logData.status.toUpperCase() ===
                                       "STARTED" ? (
                                         <span className="warning">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
                                     ) : logData.status.toUpperCase() ===
                                       "PENDING" ? (
                                         <span className="gray">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
                                     ) : (
                                         <span className="danger">
-                                            {logData.status}
+                                            {logData.status.toUpperCase()}
                                         </span>
                                     )}
-                                    &nbsp;- {logData.status_code}
                                 </td>
+                            </tr>
+                            <tr>
+                                <td className="w-25">
+                                    <b>HTTP Status:</b>
+                                </td>
+                                <td className="w-75">{logData.status_code}</td>
                             </tr>
                             <tr>
                                 <td className="w-25">
@@ -434,15 +456,54 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
 
                                                 {installResponses[key]
                                                     .output ? (
-                                                    <td className="w-60">
-                                                        {
-                                                            installResponses[
-                                                                key
-                                                            ].output
-                                                        }
+                                                    <td className="w-60  ">
+                                                        <span
+                                                            className={
+                                                                isExpanded
+                                                                    ? "expanded"
+                                                                    : "textOverflow"
+                                                            }
+                                                        >
+                                                            {
+                                                                installResponses[
+                                                                    key
+                                                                ].output
+                                                            }
+                                                        </span>
+
+                                                        <div
+                                                            style={{
+                                                                textAlign:
+                                                                    "end",
+                                                            }}
+                                                        >
+                                                            {isTextOverflow(
+                                                                installResponses[
+                                                                    key
+                                                                ].output
+                                                            ) && (
+                                                                <div
+                                                                    style={{
+                                                                        textAlign:
+                                                                            "end",
+                                                                    }}
+                                                                >
+                                                                    <button
+                                                                        className="btnStyle mt-10"
+                                                                        onClick={
+                                                                            handleToggle
+                                                                        }
+                                                                    >
+                                                                        {isExpanded
+                                                                            ? "Collapse"
+                                                                            : "Expand"}
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 ) : (
-                                                    <td className="w-60 danger">
+                                                    <td className="w-60 danger textOverflow ">
                                                         {
                                                             installResponses[
                                                                 key
@@ -461,7 +522,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                 <div className="modalFooter">
                     {logData.status.toUpperCase() === "STARTED" ||
                     logData.status.toUpperCase() === "PENDING" ? (
-                        <button onClick={revoke} className="btnStyle ">
+                        <button
+                            onClick={revoke}
+                            className="btnStyle"
+                            id="revokeTaskBtn"
+                        >
                             revoke running task
                         </button>
                     ) : null}
