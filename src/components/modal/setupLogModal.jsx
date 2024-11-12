@@ -27,6 +27,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
             logData?.response?.networks &&
             Object.keys(logData?.response?.networks).length > 0
         ) {
+            console.log(logData?.response?.networks);
             setNetworkList(logData?.response?.networks);
         } else if (
             logData?.response?.install_responses &&
@@ -57,7 +58,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         image_url: logData?.request_json?.image_url,
                         device_ips: [ip],
                         discover_also: false,
-                        user_name: logData?.request_json?.user_name,
+                        username: logData?.request_json?.username,
                         password: logData?.request_json?.password,
                     },
                 ];
@@ -94,7 +95,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         image_url: logData?.request_json?.image_url,
                         device_ips: [entry.ip],
                         discover_also: false,
-                        user_name: logData?.request_json?.user_name,
+                        username: logData?.request_json?.username,
                         password: logData?.request_json?.password,
                     });
                 });
@@ -287,15 +288,8 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 installation
                             </div>
 
-                            <div className="">
-                                <table
-                                    border="1"
-                                    style={{
-                                        width: "100%",
-                                        borderCollapse: "collapse",
-                                    }}
-                                    id="networkListTable"
-                                >
+                            <div className="" style={{ overflowX: "auto" }}>
+                                <table id="networkListTable">
                                     <thead>
                                         <tr>
                                             <th>Network Address</th>
@@ -321,6 +315,20 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                     }}
                                                 />
                                             </th>
+                                            <th>Manufacture Date</th>
+                                            <th>Label Revision</th>
+                                            <th>Platform Name </th>
+                                            <th>ONIE Version </th>
+                                            <th>Manufacturer </th>
+                                            <th>Country Code </th>
+                                            <th>Diag Version </th>
+                                            <th>Base MAC Address </th>
+                                            <th>Serial Number </th>
+                                            <th>Part Number </th>
+                                            <th>Product Name </th>
+                                            <th>MAC Addresses </th>
+                                            <th>Vendor Name </th>
+                                            <th>CRC-32 </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -348,7 +356,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                     {key}
                                                                 </td>
                                                             ) : null}
-                                                            <td>{entry.ip}</td>
+
+                                                            <td>
+                                                                {entry.mgt_ip}
+                                                            </td>
+
                                                             <td>
                                                                 <input
                                                                     type="checkbox"
@@ -363,7 +375,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                             ) =>
                                                                                 item
                                                                                     .device_ips[0] ===
-                                                                                entry.ip
+                                                                                entry.mgt_ip
                                                                         )
                                                                             .length >
                                                                         0
@@ -373,7 +385,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                     ) => {
                                                                         handelNetworkChecked(
                                                                             e,
-                                                                            entry.ip
+                                                                            entry.mgt_ip
                                                                         );
                                                                     }}
                                                                 />
@@ -383,7 +395,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                     type="checkbox"
                                                                     id="discoverDevice"
                                                                     disabled={discoverDisabled(
-                                                                        entry.ip
+                                                                        entry.mgt_ip
                                                                     )}
                                                                     checked={
                                                                         selectedNetworkDevices.filter(
@@ -392,7 +404,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                             ) =>
                                                                                 item
                                                                                     .device_ips[0] ===
-                                                                                    entry.ip &&
+                                                                                    entry.mgt_ip &&
                                                                                 item.discover_also
                                                                         )
                                                                             .length >
@@ -403,10 +415,108 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                     ) => {
                                                                         handelNetworkDiscoveryChecked(
                                                                             e,
-                                                                            entry.ip
+                                                                            entry.mgt_ip
                                                                         );
                                                                     }}
                                                                 />
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Manufacture Date"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Label Revision"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Platform Name"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "ONIE Version"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Manufacturer"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Country Code"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Diag Version"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Base MAC Address"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Serial Number"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Part Number"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Product Name"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "MAC Addresses"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "Vendor Name"
+                                                                    ]
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                {
+                                                                    entry[
+                                                                        "CRC-32"
+                                                                    ]
+                                                                }
                                                             </td>
                                                         </tr>
                                                     )
