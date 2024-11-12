@@ -4,13 +4,12 @@ import Time from "react-time-format";
 
 const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     useEffect(() => {
-        console.log(logData);
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
                 onClose();
             }
         };
-
+        document.addEventListener("keydown", handleKeyDown);
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
         };
@@ -28,7 +27,11 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                 <h4 className="modalHeader">
                     {title}
 
-                    <button className="btnStyle" id="genericLogModalCloseBtn" onClick={onClose}>
+                    <button
+                        className="btnStyle"
+                        id="genericLogModalCloseBtn"
+                        onClick={onClose}
+                    >
                         Close
                     </button>
                 </h4>

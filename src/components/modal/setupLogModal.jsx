@@ -22,12 +22,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     const instance = interceptor();
 
     useEffect(() => {
-        console.log(logData);
+        // console.log(logData);
         if (
             logData?.response?.networks &&
             Object.keys(logData?.response?.networks).length > 0
         ) {
-            console.log(logData?.response?.networks);
             setNetworkList(logData?.response?.networks);
         } else if (
             logData?.response?.install_responses &&
@@ -43,6 +42,8 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                 onClose();
             }
         };
+
+        document.addEventListener("keydown", handleKeyDown);
 
         return () => {
             document.removeEventListener("keydown", handleKeyDown);
@@ -133,6 +134,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         } finally {
             setUpdateLog(true);
             setUpdateConfig(false);
+            onClose();
         }
     };
 
@@ -199,6 +201,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 <td className="w-75">
                                     {logData.status.toUpperCase() ===
                                     "SUCCESS" ? (
+                                        <span className="success">
+                                            {logData.status.toUpperCase()}
+                                        </span>
+                                    ) : logData.status.toUpperCase() ===
+                                      "REVOKED" ? (
                                         <span className="success">
                                             {logData.status.toUpperCase()}
                                         </span>
@@ -295,7 +302,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                             <th>Network Address</th>
                                             <th>IP Address</th>
                                             <th id="selectAll">
-                                                Select All
+                                                Install on All
                                                 <input
                                                     className="ml-10"
                                                     type="checkbox"
@@ -531,6 +538,9 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 <button
                                     className="btnStyle mt-15 mr-15"
                                     onClick={applyConfig}
+                                    disabled={
+                                        selectedNetworkDevices.length === 0
+                                    }
                                     id="applyConfigBtn"
                                 >
                                     Apply Config
@@ -538,6 +548,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                             </div>
                         </div>
                     )}
+
                     {Object.keys(installResponses).length > 0 && (
                         <div id="installResponse">
                             <div className="mt-10 mb-10">
@@ -566,7 +577,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
 
                                                 {installResponses[key]
                                                     .output ? (
-                                                    <td className="w-60  ">
+                                                    <td className="w-60">
                                                         <span
                                                             className={
                                                                 isExpanded
@@ -613,12 +624,14 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                         </div>
                                                     </td>
                                                 ) : (
-                                                    <td className="w-60 danger textOverflow ">
-                                                        {
-                                                            installResponses[
-                                                                key
-                                                            ].error
-                                                        }
+                                                    <td className="w-60">
+                                                        <span className="danger textOverflow">
+                                                            {
+                                                                installResponses[
+                                                                    key
+                                                                ].error
+                                                            }
+                                                        </span>
                                                     </td>
                                                 )}
                                             </tr>

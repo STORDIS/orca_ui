@@ -13,6 +13,7 @@ import useStoreLogs from "../../utils/store";
 import { FaRegPlayCircle } from "react-icons/fa";
 import GenericLogModal from "../../components/modal/genericLogModal";
 import SetupLogModal from "../../components/modal/setupLogModal";
+import { FaRotateLeft } from "react-icons/fa6";
 
 export const LogViewer = () => {
     const logPannelDivRef = useRef(null);
@@ -84,7 +85,6 @@ export const LogViewer = () => {
                 );
             },
             tooltipValueGetter: (params) => {
-                console.log(params?.value);
                 return JSON.stringify(params?.value);
                 // return "tool";
             },
@@ -136,7 +136,7 @@ export const LogViewer = () => {
                             id={params?.data?.status_code}
                             state="REVOKED"
                         >
-                            <FaRegCircleXmark style={{ fontSize: "24px" }} />
+                            <FaRotateLeft style={{ fontSize: "24px" }} />
                             &nbsp; {JSON.stringify(params?.data?.response)}
                             &nbsp;
                         </div>
@@ -162,6 +162,8 @@ export const LogViewer = () => {
                     return { color: "#FFC107", display: "flex" };
                 } else if (params.value.toUpperCase() === "PENDING") {
                     return { color: "#6C757D", display: "flex" };
+                } else if (params.value.toUpperCase() === "REVOKED") {
+                    return { color: "#198754", display: "flex" };
                 } else {
                     return { color: "#DC3545", display: "flex" };
                 }
@@ -236,20 +238,22 @@ export const LogViewer = () => {
         getLogs();
         // console.log(params.data);
 
-        switch (params.data.http_path) {
-            case "/install_image":
-                setShowLogDetails("setupDialog");
-                break;
-            case "/switch_image":
-                setShowLogDetails("setupDialog");
-                break;
+        setTimeout(() => {
+            switch (params.data.http_path) {
+                case "/install_image":
+                    setShowLogDetails("setupDialog");
+                    break;
+                case "/switch_image":
+                    setShowLogDetails("setupDialog");
+                    break;
 
-            default:
-                setShowLogDetails("genericDialog");
-                break;
-        }
+                default:
+                    setShowLogDetails("genericDialog");
+                    break;
+            }
 
-        setLogDetails(params.data);
+            setLogDetails(params.data);
+        }, 500);
     };
 
     return (

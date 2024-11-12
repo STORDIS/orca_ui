@@ -13,7 +13,7 @@ import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { Chart } from "react-google-charts";
-
+import { AiOutlineClear } from "react-icons/ai";
 import "../orcAsk.scss";
 
 import interceptor from "../../../utils/interceptor";

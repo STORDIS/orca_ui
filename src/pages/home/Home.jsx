@@ -111,6 +111,8 @@ export const Home = () => {
     }, []);
 
     const sendUpdates = () => {
+        console.log(selectedDeviceToUpdate);
+
         setUpdateConfig(true);
         const apiUrl = switchImageURL();
         instance
@@ -122,6 +124,7 @@ export const Home = () => {
             .finally(() => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
+                setSelectedDeviceToUpdate([]);
             });
     };
 
