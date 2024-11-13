@@ -137,11 +137,7 @@ export const Home = () => {
                         <button
                             className="btnStyle "
                             onClick={sendUpdates}
-                            disabled={
-                                updateConfig ||
-                                !getIsStaff() ||
-                                selectedDeviceToUpdate.length === 0
-                            }
+                            disabled={updateConfig || !getIsStaff()}
                         >
                             Apply config
                         </button>

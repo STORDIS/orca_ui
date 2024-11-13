@@ -28,13 +28,17 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
             Object.keys(logData?.response?.networks).length > 0
         ) {
             setNetworkList(logData?.response?.networks);
-        } else if (
+        } else {
+            setResponse(JSON.stringify(logData?.response, null, 2));
+        }
+
+        if (
             logData?.response?.install_responses &&
             Object.keys(logData?.response?.install_responses).length > 0
         ) {
             setInstallResponses(logData?.response?.install_responses);
         } else {
-            setResponse(JSON.stringify(logData?.response, null, 2));
+            setInstallResponses([]);
         }
 
         const handleKeyDown = (e) => {
@@ -176,6 +180,8 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         return text.length > maxLineLength * maxLines;
     };
 
+    console.log(Object.values(networkList)[0]);
+
     return (
         <div className="modalContainer" onClick={onClose} id={id}>
             <div className="modalInner" onClick={(e) => e.stopPropagation()}>
@@ -282,6 +288,99 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                             </tr>
                         </tbody>
                     </table>
+
+                    {Object.keys(installResponses).length > 0 && (
+                        <div id="installResponse">
+                            <div className="mt-10 mb-10">
+                                <b>Response :</b>
+                            </div>
+
+                            <table
+                                border="1"
+                                style={{
+                                    width: "100%",
+                                    borderCollapse: "collapse",
+                                }}
+                                id="networkListTable"
+                            >
+                                <thead>
+                                    <tr>
+                                        <th className="w-40">IP Address</th>
+                                        <th className="w-60">response</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.keys(installResponses).map(
+                                        (key) => (
+                                            <tr key={key}>
+                                                <td className="w-40">{key}</td>
+
+                                                {installResponses[key]
+                                                    .output ? (
+                                                    <td className="w-60">
+                                                        <span
+                                                            className={
+                                                                isExpanded
+                                                                    ? "expanded"
+                                                                    : "textOverflow"
+                                                            }
+                                                        >
+                                                            {
+                                                                installResponses[
+                                                                    key
+                                                                ].output
+                                                            }
+                                                        </span>
+
+                                                        <div
+                                                            style={{
+                                                                textAlign:
+                                                                    "end",
+                                                            }}
+                                                        >
+                                                            {isTextOverflow(
+                                                                installResponses[
+                                                                    key
+                                                                ].output
+                                                            ) && (
+                                                                <div
+                                                                    style={{
+                                                                        textAlign:
+                                                                            "end",
+                                                                    }}
+                                                                >
+                                                                    <button
+                                                                        className="btnStyle mt-10"
+                                                                        onClick={
+                                                                            handleToggle
+                                                                        }
+                                                                    >
+                                                                        {isExpanded
+                                                                            ? "Collapse"
+                                                                            : "Expand"}
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                ) : (
+                                                    <td className="w-60">
+                                                        <span className="danger textOverflow">
+                                                            {
+                                                                installResponses[
+                                                                    key
+                                                                ].error
+                                                            }
+                                                        </span>
+                                                    </td>
+                                                )}
+                                            </tr>
+                                        )
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
 
                     {Object.keys(networkList).length > 0 && (
                         <div className="mt-10" id="networkList">
@@ -530,6 +629,17 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                 )}
                                             </React.Fragment>
                                         ))}
+
+                                        {Object.values(networkList)[0]
+                                            .length === 0 ? (
+                                            <tr>
+                                                <td colSpan="18">
+                                                    <span className="ml-25" >
+                                                    No network devices found
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ) : null}
                                     </tbody>
                                 </table>
                             </div>
@@ -546,99 +656,6 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                     Apply Config
                                 </button>
                             </div>
-                        </div>
-                    )}
-
-                    {Object.keys(installResponses).length > 0 && (
-                        <div id="installResponse">
-                            <div className="mt-10 mb-10">
-                                <b>Response :</b>
-                            </div>
-
-                            <table
-                                border="1"
-                                style={{
-                                    width: "100%",
-                                    borderCollapse: "collapse",
-                                }}
-                                id="networkListTable"
-                            >
-                                <thead>
-                                    <tr>
-                                        <th className="w-40">IP Address</th>
-                                        <th className="w-60">response</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.keys(installResponses).map(
-                                        (key) => (
-                                            <tr key={key}>
-                                                <td className="w-40">{key}</td>
-
-                                                {installResponses[key]
-                                                    .output ? (
-                                                    <td className="w-60">
-                                                        <span
-                                                            className={
-                                                                isExpanded
-                                                                    ? "expanded"
-                                                                    : "textOverflow"
-                                                            }
-                                                        >
-                                                            {
-                                                                installResponses[
-                                                                    key
-                                                                ].output
-                                                            }
-                                                        </span>
-
-                                                        <div
-                                                            style={{
-                                                                textAlign:
-                                                                    "end",
-                                                            }}
-                                                        >
-                                                            {isTextOverflow(
-                                                                installResponses[
-                                                                    key
-                                                                ].output
-                                                            ) && (
-                                                                <div
-                                                                    style={{
-                                                                        textAlign:
-                                                                            "end",
-                                                                    }}
-                                                                >
-                                                                    <button
-                                                                        className="btnStyle mt-10"
-                                                                        onClick={
-                                                                            handleToggle
-                                                                        }
-                                                                    >
-                                                                        {isExpanded
-                                                                            ? "Collapse"
-                                                                            : "Expand"}
-                                                                    </button>
-                                                                </div>
-                                                            )}
-                                                        </div>
-                                                    </td>
-                                                ) : (
-                                                    <td className="w-60">
-                                                        <span className="danger textOverflow">
-                                                            {
-                                                                installResponses[
-                                                                    key
-                                                                ].error
-                                                            }
-                                                        </span>
-                                                    </td>
-                                                )}
-                                            </tr>
-                                        )
-                                    )}
-                                </tbody>
-                            </table>
                         </div>
                     )}
                 </div>

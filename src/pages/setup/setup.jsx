@@ -114,24 +114,30 @@ export const Home = () => {
             alert("No devices selected");
             return;
         } else {
-            setIsModalOpen(true);
-
-            let isValid = false;
             if (formData.device_ips.length > 0) {
                 formData.device_ips.forEach((element) => {
                     if (areAllIPAddressesValid(element)) {
-                        isValid = true;
+                        let payload = {
+                            image_url: formData.image_url,
+                            device_ips: [
+                                ...formData.device_ips,
+                                ...selectedDevices,
+                            ],
+                            discover_also: formData.discover_also,
+                            username: formData.username,
+                            password: formData.password,
+                        };
+
+                        installImage(payload);
                     } else {
-                        isValid = false;
-                        alert("Invalid IP Address");
+                        alert(
+                            "Invalid IP Address or Mask must be greater than /21"
+                        );
                         return;
                     }
                 });
             } else {
-                isValid = true;
-            }
 
-            if (isValid) {
                 let payload = {
                     image_url: formData.image_url,
                     device_ips: [...formData.device_ips, ...selectedDevices],
@@ -146,6 +152,7 @@ export const Home = () => {
 
     const installImage = async (payload) => {
         try {
+            setIsModalOpen(true);
             const response = await instance.put(installSonicURL(), payload);
         } catch (error) {
             console.log(error);
@@ -240,7 +247,7 @@ export const Home = () => {
                 <div className="form-wrapper align-center">
                     <div className="form-field w-25">
                         <label for="device_ips">
-                            ONIE Devices for SONiC installation :
+                            Devices for SONiC installation :
                         </label>
                     </div>
                     <div className="form-field w-50">
@@ -249,7 +256,7 @@ export const Home = () => {
                             name="device_ips"
                             ref={deviceIpsRef}
                             onChange={handleChange}
-                            placeholder="Give one or more IP address or ONIE device address separated by comma"
+                            placeholder="Give one or more IP address or ONIE / SONiC device address separated by comma"
                         />
                     </div>
                     <div className="form-field w-25">

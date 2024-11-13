@@ -32,10 +32,23 @@ export const isValidIPv4 = (ip) => {
     return ipv4Pattern.test(ip);
 };
 
+// export const isValidCIDR = (cidr) => {
+//     const cidrPattern =
+//         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|[1-2][0-9]|3[0-2])$/;
+//     return cidrPattern.test(cidr);
+// };
+
 export const isValidCIDR = (cidr) => {
     const cidrPattern =
         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|[1-2][0-9]|3[0-2])$/;
-    return cidrPattern.test(cidr);
+    
+    // Check if input matches IPv4 CIDR format
+    const match = cidr.match(cidrPattern);
+    if (!match) return false;
+    
+    // Extract the subnet mask and check if it's greater than or equal to 22
+    const subnet = parseInt(match[5], 10);
+    return subnet >= 22;
 };
 
 export const areAllIPAddressesValid = (input) => {
