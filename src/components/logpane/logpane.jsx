@@ -14,6 +14,7 @@ import { FaRegPlayCircle } from "react-icons/fa";
 import GenericLogModal from "../../components/modal/genericLogModal";
 import SetupLogModal from "../../components/modal/setupLogModal";
 import { FaRotateLeft } from "react-icons/fa6";
+import { FaHourglassHalf } from "react-icons/fa";
 
 export const LogViewer = () => {
     const logPannelDivRef = useRef(null);
@@ -125,7 +126,7 @@ export const LogViewer = () => {
                             id={params?.data?.status_code}
                             state="PENDING"
                         >
-                            <FaRegPlayCircle style={{ fontSize: "24px" }} />
+                            <FaHourglassHalf style={{ fontSize: "24px" }} />
                             &nbsp; {params.data.status}
                         </div>
                     );
