@@ -8,11 +8,18 @@ import useStoreLogs from "../../utils/store";
 import interceptor from "../../utils/interceptor";
 
 const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
-    const [networkList, setNetworkList] = useState({});
-    const [selectedNetworkDevices, setSelectedNetworkDevices] = useState([]);
+    // const [selectedNetworkDevices, setSelectedNetworkDevices] = useState([]);
+
     const [installResponses, setInstallResponses] = useState([]);
 
-    const [selectAll, setSelectAll] = useState(false);
+    // const [networkList, setNetworkList] = useState({});
+    const [onieDevices, setOnieDevices] = useState([]);
+    const [selectedDevicesOnie, setSelectedDevicesOnie] = useState([]);
+    const [sonicDevices, setSonicDevices] = useState([]);
+    const [selectedDevicesSonic, setSelectedDevicesSonic] = useState([]);
+
+    const [selectAllOnie, setSelectAllOnie] = useState(false);
+    const [selectAllSonic, setSelectAllSonic] = useState(false);
     const [response, setResponse] = useState("null");
 
     const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
@@ -22,24 +29,38 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     const instance = interceptor();
 
     useEffect(() => {
-        // console.log(logData);
-        if (
-            logData?.response?.networks &&
-            Object.keys(logData?.response?.networks).length > 0
-        ) {
-            setNetworkList(logData?.response?.networks);
+        console.log(logData.response);
+        console.log(
+            Object.keys(logData?.response).includes("onie_devices") ||
+                Object.keys(logData?.response).includes("sonic_devices")
+        );
+
+        if (Object.keys(logData?.response).includes("onie_devices")) {
+            setOnieDevices(logData?.response?.onie_devices);
         } else {
-            setResponse(JSON.stringify(logData?.response, null, 2));
+        }
+        if (Object.keys(logData?.response).includes("sonic_devices")) {
+            setSonicDevices(logData?.response?.sonic_devices);
+        } else {
         }
 
-        if (
-            logData?.response?.install_responses &&
-            Object.keys(logData?.response?.install_responses).length > 0
-        ) {
-            setInstallResponses(logData?.response?.install_responses);
-        } else {
-            setInstallResponses([]);
-        }
+        // if (
+        //     logData?.response?.networks &&
+        //     Object.keys(logData?.response?.networks).length > 0
+        // ) {
+        //     setNetworkList(logData?.response?.networks);
+        // } else {
+        //     setResponse(JSON.stringify(logData?.response, null, 2));
+        // }
+
+        // if (
+        //     logData?.response?.install_responses &&
+        //     Object.keys(logData?.response?.install_responses).length > 0
+        // ) {
+        //     setInstallResponses(logData?.response?.install_responses);
+        // } else {
+        //     setInstallResponses([]);
+        // }
 
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
@@ -54,8 +75,8 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         };
     }, [onClose]);
 
-    const handelNetworkChecked = (event, ip) => {
-        setSelectedNetworkDevices((prevSelectedNetworkDevices) => {
+    const handelCheckedOnie = (event, ip) => {
+        setSelectedDevicesOnie((prevSelectedNetworkDevices) => {
             if (event.target.checked) {
                 return [
                     ...prevSelectedNetworkDevices,
@@ -75,47 +96,118 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         });
     };
 
-    const handelNetworkDiscoveryChecked = (e, ip) => {
-        selectedNetworkDevices.forEach((item) => {
+    const handelDiscoveryCheckedOnie = (e, ip) => {
+        selectedDevicesOnie.forEach((item) => {
             if (item.device_ips[0] === ip) {
                 item.discover_also = e.target.checked;
             }
         });
-        setSelectedNetworkDevices([...selectedNetworkDevices]);
+        setSelectedDevicesOnie([...selectedDevicesOnie]);
     };
 
-    const discoverDisabled = (e) => {
-        let result = selectedNetworkDevices.some((item) =>
+    const discoverDisabledOnie = (e) => {
+        let result = selectedDevicesOnie.some((item) =>
             item.device_ips.includes(e)
         );
         return !result;
     };
 
-    const selectAllIp = (e) => {
+    const selectAllIpOnie = (e) => {
         if (e.target.checked) {
             const result = [];
-            Object.keys(networkList).forEach((network) => {
-                networkList[network].forEach((entry) => {
+            Object.keys(onieDevices).forEach((network) => {
+                onieDevices[network].forEach((entry) => {
                     result.push({
                         image_url: logData?.request_json?.image_url,
-                        device_ips: [entry.ip],
+                        device_ips: [entry.mgt_ip],
                         discover_also: false,
                         username: logData?.request_json?.username,
                         password: logData?.request_json?.password,
                     });
                 });
             });
-            setSelectedNetworkDevices(result);
-            setSelectAll(true);
+            setSelectedDevicesOnie(result);
+            setSelectAllOnie(true);
         } else {
-            setSelectedNetworkDevices([]);
-            setSelectAll(false);
+            setSelectedDevicesOnie([]);
+            setSelectAllOnie(false);
         }
     };
 
-    const selectDiscoverAll = (e) => {
-        setSelectedNetworkDevices(
-            selectedNetworkDevices.map((item) => {
+    const selectDiscoverAllOnie = (e) => {
+        setSelectedDevicesOnie(
+            selectedDevicesOnie.map((item) => {
+                return {
+                    ...item,
+                    discover_also: e.target.checked,
+                };
+            })
+        );
+    };
+
+    // sonic function
+    const handelCheckedSonic = (event, ip) => {
+        setSelectedDevicesSonic((prevSelectedNetworkDevices) => {
+            if (event.target.checked) {
+                return [
+                    ...prevSelectedNetworkDevices,
+                    {
+                        image_url: logData?.request_json?.image_url,
+                        device_ips: [ip],
+                        discover_also: false,
+                        username: logData?.request_json?.username,
+                        password: logData?.request_json?.password,
+                    },
+                ];
+            } else {
+                return prevSelectedNetworkDevices.filter(
+                    (item) => item.device_ips[0] !== ip
+                );
+            }
+        });
+    };
+
+    const handelDiscoveryCheckedSonic = (e, ip) => {
+        selectedDevicesSonic.forEach((item) => {
+            if (item.device_ips[0] === ip) {
+                item.discover_also = e.target.checked;
+            }
+        });
+        setSelectedDevicesSonic([...selectedDevicesSonic]);
+    };
+
+    const discoverDisabledSonic = (e) => {
+        let result = selectedDevicesSonic.some((item) =>
+            item.device_ips.includes(e)
+        );
+        return !result;
+    };
+
+    const selectAllIpSonic = (e) => {
+        if (e.target.checked) {
+            const result = [];
+            Object.keys(sonicDevices).forEach((network) => {
+                sonicDevices[network].forEach((entry) => {
+                    result.push({
+                        image_url: logData?.request_json?.image_url,
+                        device_ips: [entry.mgt_ip],
+                        discover_also: false,
+                        username: logData?.request_json?.username,
+                        password: logData?.request_json?.password,
+                    });
+                });
+            });
+            setSelectedDevicesSonic(result);
+            setSelectAllSonic(true);
+        } else {
+            setSelectedDevicesSonic([]);
+            setSelectAllSonic(false);
+        }
+    };
+
+    const selectDiscoverAllSonic = (e) => {
+        setSelectedDevicesSonic(
+            selectedDevicesSonic.map((item) => {
                 return {
                     ...item,
                     discover_also: e.target.checked,
@@ -125,13 +217,10 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     };
 
     const applyConfig = async () => {
-        console.log(selectedNetworkDevices);
-
+        console.log([...selectedDevicesOnie, ...selectedDevicesSonic]);
+        let appIpis = [...selectedDevicesOnie, ...selectedDevicesSonic];
         try {
-            const response = await instance.put(
-                installSonicURL(),
-                selectedNetworkDevices
-            );
+            const response = await instance.put(installSonicURL(), appIpis);
             console.log(response);
         } catch (error) {
             console.log(error);
@@ -180,14 +269,13 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         return text.length > maxLineLength * maxLines;
     };
 
-    console.log(Object.values(networkList)[0]);
+    console.log(Object.values(onieDevices)[0]);
 
     return (
         <div className="modalContainer" onClick={onClose} id={id}>
             <div className="modalInner" onClick={(e) => e.stopPropagation()}>
                 <h4 className="modalHeader">
-                    {title}
-
+                    {title} - setup
                     <button
                         className="btnStyle"
                         id="setupLogModalCloseBtn"
@@ -382,8 +470,8 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         </div>
                     )}
 
-                    {Object.keys(networkList).length > 0 && (
-                        <div className="mt-10" id="networkList">
+                    {Object.keys(onieDevices).length > 0 && (
+                        <div className="mt-10" id="onieDevices">
                             <div className="mt-10 mb-10">
                                 <b>Response :</b>
                             </div>
@@ -395,18 +483,18 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                             </div>
 
                             <div className="" style={{ overflowX: "auto" }}>
-                                <table id="networkListTable">
+                                <table id="onieDevicesTable">
                                     <thead>
                                         <tr>
                                             <th>Network Address</th>
                                             <th>IP Address</th>
-                                            <th id="selectAll">
+                                            <th id="">
                                                 Install on All
                                                 <input
                                                     className="ml-10"
                                                     type="checkbox"
                                                     onChange={(e) => {
-                                                        selectAllIp(e);
+                                                        selectAllIpOnie(e);
                                                     }}
                                                 />
                                             </th>
@@ -415,9 +503,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                 <input
                                                     className="ml-10"
                                                     type="checkbox"
-                                                    disabled={!selectAll}
+                                                    disabled={!selectAllOnie}
                                                     onChange={(e) => {
-                                                        selectDiscoverAll(e);
+                                                        selectDiscoverAllOnie(
+                                                            e
+                                                        );
                                                     }}
                                                 />
                                             </th>
@@ -438,9 +528,9 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {Object.keys(networkList).map((key) => (
+                                        {Object.keys(onieDevices).map((key) => (
                                             <React.Fragment key={key}>
-                                                {networkList[key].map(
+                                                {onieDevices[key].map(
                                                     (entry, index) => (
                                                         <tr
                                                             key={index}
@@ -453,7 +543,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                             {index === 0 ? (
                                                                 <td
                                                                     rowSpan={
-                                                                        networkList[
+                                                                        onieDevices[
                                                                             key
                                                                         ].length
                                                                     }
@@ -472,10 +562,10 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                     type="checkbox"
                                                                     id="selectDevice"
                                                                     disabled={
-                                                                        selectAll
+                                                                        selectAllOnie
                                                                     }
                                                                     checked={
-                                                                        selectedNetworkDevices.filter(
+                                                                        selectedDevicesOnie.filter(
                                                                             (
                                                                                 item
                                                                             ) =>
@@ -489,7 +579,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                     onChange={(
                                                                         e
                                                                     ) => {
-                                                                        handelNetworkChecked(
+                                                                        handelCheckedOnie(
                                                                             e,
                                                                             entry.mgt_ip
                                                                         );
@@ -500,11 +590,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                 <input
                                                                     type="checkbox"
                                                                     id="discoverDevice"
-                                                                    disabled={discoverDisabled(
+                                                                    disabled={discoverDisabledOnie(
                                                                         entry.mgt_ip
                                                                     )}
                                                                     checked={
-                                                                        selectedNetworkDevices.filter(
+                                                                        selectedDevicesOnie.filter(
                                                                             (
                                                                                 item
                                                                             ) =>
@@ -519,7 +609,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                                                     onChange={(
                                                                         e
                                                                     ) => {
-                                                                        handelNetworkDiscoveryChecked(
+                                                                        handelDiscoveryCheckedOnie(
                                                                             e,
                                                                             entry.mgt_ip
                                                                         );
@@ -630,12 +720,12 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                             </React.Fragment>
                                         ))}
 
-                                        {Object.values(networkList)[0]
+                                        {Object.values(onieDevices)[0]
                                             .length === 0 ? (
                                             <tr>
                                                 <td colSpan="18">
-                                                    <span className="ml-25" >
-                                                    No network devices found
+                                                    <span className="ml-25">
+                                                        No network devices found
                                                     </span>
                                                 </td>
                                             </tr>
@@ -643,19 +733,229 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                     </tbody>
                                 </table>
                             </div>
+                        </div>
+                    )}
 
-                            <div>
-                                <button
-                                    className="btnStyle mt-15 mr-15"
-                                    onClick={applyConfig}
-                                    disabled={
-                                        selectedNetworkDevices.length === 0
-                                    }
-                                    id="applyConfigBtn"
-                                >
-                                    Apply Config
-                                </button>
+                    {Object.keys(sonicDevices).length > 0 && (
+                        <div className="mt-10" id="sonicDevices">
+                            <div className="mt-10 mb-10">
+                                <b>Response :</b>
                             </div>
+                            <div className="listTitle">
+                                Following SONiC devices identified from the
+                                respective networks provided for SONiC
+                                installation
+                            </div>
+
+                            <div className="" style={{ overflowX: "auto" }}>
+                                <table id="sonicDevicesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Network Address</th>
+                                            <th>IP Address</th>
+                                            <th id="selectAll">
+                                                Install on All
+                                                <input
+                                                    className="ml-10"
+                                                    type="checkbox"
+                                                    onChange={(e) => {
+                                                        selectAllIpSonic(e);
+                                                    }}
+                                                />
+                                            </th>
+                                            <th id="discoverAll">
+                                                Discover All
+                                                <input
+                                                    className="ml-10"
+                                                    type="checkbox"
+                                                    disabled={!selectAllSonic}
+                                                    onChange={(e) => {
+                                                        selectDiscoverAllSonic(
+                                                            e
+                                                        );
+                                                    }}
+                                                />
+                                            </th>
+                                            <th>Image Name</th>
+                                            <th>Management Intf</th>
+                                            <th>HWSKU </th>
+                                            <th>MAC </th>
+                                            <th>Platform </th>
+                                            <th>Type </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {Object.keys(sonicDevices).map(
+                                            (key) => (
+                                                <React.Fragment key={key}>
+                                                    {sonicDevices[key].map(
+                                                        (entry, index) => (
+                                                            <tr
+                                                                key={index}
+                                                                id={index}
+                                                                style={{
+                                                                    textAlign:
+                                                                        "center",
+                                                                }}
+                                                            >
+                                                                {index === 0 ? (
+                                                                    <td
+                                                                        rowSpan={
+                                                                            sonicDevices[
+                                                                                key
+                                                                            ]
+                                                                                .length
+                                                                        }
+                                                                        id="deviceNameFromNetwork"
+                                                                    >
+                                                                        {key}
+                                                                    </td>
+                                                                ) : null}
+
+                                                                <td>
+                                                                    {
+                                                                        entry.mgt_ip
+                                                                    }
+                                                                </td>
+
+                                                                <td>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        id="selectDevice"
+                                                                        disabled={
+                                                                            selectAllSonic
+                                                                        }
+                                                                        checked={
+                                                                            selectedDevicesSonic.filter(
+                                                                                (
+                                                                                    item
+                                                                                ) =>
+                                                                                    item
+                                                                                        .device_ips[0] ===
+                                                                                    entry.mgt_ip
+                                                                            )
+                                                                                .length >
+                                                                            0
+                                                                        }
+                                                                        onChange={(
+                                                                            e
+                                                                        ) => {
+                                                                            handelCheckedSonic(
+                                                                                e,
+                                                                                entry.mgt_ip
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    <input
+                                                                        type="checkbox"
+                                                                        id="discoverDevice"
+                                                                        disabled={discoverDisabledSonic(
+                                                                            entry.mgt_ip
+                                                                        )}
+                                                                        checked={
+                                                                            selectedDevicesSonic.filter(
+                                                                                (
+                                                                                    item
+                                                                                ) =>
+                                                                                    item
+                                                                                        .device_ips[0] ===
+                                                                                        entry.mgt_ip &&
+                                                                                    item.discover_also
+                                                                            )
+                                                                                .length >
+                                                                            0
+                                                                        }
+                                                                        onChange={(
+                                                                            e
+                                                                        ) => {
+                                                                            handelDiscoveryCheckedSonic(
+                                                                                e,
+                                                                                entry.mgt_ip
+                                                                            );
+                                                                        }}
+                                                                    />
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        entry[
+                                                                            "img_name"
+                                                                        ]
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        entry[
+                                                                            "mgt_intf"
+                                                                        ]
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        entry[
+                                                                            "hwsku"
+                                                                        ]
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        entry[
+                                                                            "mac"
+                                                                        ]
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        entry[
+                                                                            "platform"
+                                                                        ]
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        entry[
+                                                                            "type"
+                                                                        ]
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    )}
+                                                </React.Fragment>
+                                            )
+                                        )}
+
+                                        {Object.values(sonicDevices)[0]
+                                            .length === 0 ? (
+                                            <tr>
+                                                <td colSpan="18">
+                                                    <span className="ml-25">
+                                                        No network devices found
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ) : null}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {(Object.keys(onieDevices).length > 0 ||
+                        Object.keys(sonicDevices).length > 0) && (
+                        <div>
+                            <button
+                                className="btnStyle mt-15 mr-15"
+                                onClick={applyConfig}
+                                disabled={
+                                    selectedDevicesOnie.length === 0 &&
+                                    selectedDevicesSonic.length === 0
+                                }
+                                id="applyConfigBtn"
+                            >
+                                Apply Config
+                            </button>
                         </div>
                     )}
                 </div>
