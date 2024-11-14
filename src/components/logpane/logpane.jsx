@@ -26,97 +26,6 @@ export const LogViewer = () => {
     const updateLog = useStoreLogs((state) => state.updateLog);
     const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
 
-    const test = [
-        {
-            status: "SUCCESS",
-            timestamp: "2024-11-14 09:16:27",
-            status_code: 200,
-            http_method: "PUT",
-            processing_time: 714.823822,
-            response: {
-                "10.10.229.112": {
-                    output: "",
-                    error: "timed out",
-                },
-            },
-            request_json: {
-                device_ips: ["10.10.229.112"],
-                image_url:
-                    "http://10.10.128.249/sonic/release/4.2.2/sonic-vs.bin",
-                discover_also: false,
-                username: null,
-                password: null,
-            },
-            http_path: "/install_image",
-            task_id: "19b01f67-7e2e-4cb2-870b-591870c48c08",
-        },
-        {
-            status: "SUCCESS",
-            timestamp: "2024-11-14 09:16:27",
-            status_code: 200,
-            http_method: "PUT",
-            processing_time: 710.77447,
-            response: {
-                onie_devices: {
-                    "10.10.229.123/28": [
-                        {
-                            "ONIE Version": "master-201811170418",
-                            "CRC-32": "0x75709CF2",
-                            mgt_ip: "10.10.229.123",
-                        },
-                    ],
-                },
-                sonic_devices: {
-                    "10.10.229.123/28": [
-                        {
-                            img_name: "SONiC-OS-4.4.0-Enterprise_Base",
-                            mgt_intf: "Management0",
-                            mgt_ip: "10.10.229.114",
-                            hwsku: "DellEMC-S5248f-P-25G-DPB",
-                            mac: "0c:70:d3:24:00:0a",
-                            platform: "x86_64-kvm_x86_64-r0",
-                            type: "LeafRouter",
-                        },
-                        {
-                            img_name: "SONiC-OS-4.1.4-Enterprise_Base",
-                            mgt_intf: "Management0",
-                            mgt_ip: "10.10.229.118",
-                            hwsku: "DellEMC-S5248f-P-25G-DPB",
-                            mac: "0c:33:fb:e0:00:0a",
-                            platform: "x86_64-kvm_x86_64-r0",
-                            type: "LeafRouter",
-                        },
-                        {
-                            img_name: "SONiC-OS-4.4.0-Enterprise_Base",
-                            mgt_intf: "Management0",
-                            mgt_ip: "10.10.229.120",
-                            hwsku: "DellEMC-S5248f-P-25G-DPB",
-                            mac: "0c:29:e5:ca:00:0a",
-                            platform: "x86_64-kvm_x86_64-r0",
-                            type: "LeafRouter",
-                        },
-                        {
-                            img_name: "SONiC-OS-4.2.2-Enterprise_Base",
-                            mgt_intf: "Management0",
-                            mgt_ip: "10.10.229.124",
-                            hwsku: "DellEMC-S5248f-P-25G-DPB",
-                            mac: "0c:17:33:aa:00:0a",
-                            platform: "x86_64-kvm_x86_64-r0",
-                            type: "LeafRouter",
-                            system_status: "System is ready",
-                            image_list: [
-                                "SONiC-OS-4.2.2-Enterprise_Base",
-                                "SONiC-OS-4.4.0-Enterprise_Base",
-                            ],
-                            element_id_property:
-                                "4:94045296-2953-4cfc-b734-c86a65193436:563",
-                        },
-                    ],
-                },
-            },
-        },
-    ];
-
     // Column Definitions: Defines the columns to be displayed.
     const [colDefs] = useState([
         {
@@ -344,8 +253,7 @@ export const LogViewer = () => {
                     break;
             }
 
-            setLogDetails(test[1]);
-            // setLogDetails(params.data);
+            setLogDetails(params.data);
         }, 500);
     };
 
