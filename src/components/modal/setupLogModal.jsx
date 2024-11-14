@@ -6,6 +6,7 @@ import { celeryURL, installSonicURL } from "../../utils/backend_rest_urls";
 import useStoreConfig from "../../utils/configStore";
 import useStoreLogs from "../../utils/store";
 import interceptor from "../../utils/interceptor";
+import { isValidIPv4WithCIDR } from "../../utils/common";
 
 const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     // const [selectedNetworkDevices, setSelectedNetworkDevices] = useState([]);
@@ -29,11 +30,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     const instance = interceptor();
 
     useEffect(() => {
-        console.log(logData.response);
-        console.log(
-            Object.keys(logData?.response).includes("onie_devices") ||
-                Object.keys(logData?.response).includes("sonic_devices")
-        );
+        console.log(logData?.response);
 
         if (Object.keys(logData?.response).includes("onie_devices")) {
             setOnieDevices(logData?.response?.onie_devices);
@@ -42,22 +39,25 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         if (Object.keys(logData?.response).includes("sonic_devices")) {
             setSonicDevices(logData?.response?.sonic_devices);
         } else {
+            let is_ip = false;
+            Object.keys(logData?.response).forEach((element) => {
+                console.log(element);
+
+                if (isValidIPv4WithCIDR(element)) {
+                    is_ip = true;
+                }
+            });
+
+            if (is_ip) {
+                setInstallResponses(logData?.response);
+            } else {
+                setInstallResponses([]);
+                setResponse(JSON.stringify(logData?.response, null, 2));
+            }
         }
 
-        // if (
-        //     logData?.response?.networks &&
-        //     Object.keys(logData?.response?.networks).length > 0
-        // ) {
-        //     setNetworkList(logData?.response?.networks);
-        // } else {
-        //     setResponse(JSON.stringify(logData?.response, null, 2));
-        // }
-
-        // if (
-        //     logData?.response?.install_responses &&
-        //     Object.keys(logData?.response?.install_responses).length > 0
-        // ) {
-        //     setInstallResponses(logData?.response?.install_responses);
+        // if (logData?.response && Object.keys(logData?.response).length > 0) {
+        //     setInstallResponses(logData?.response);
         // } else {
         //     setInstallResponses([]);
         // }

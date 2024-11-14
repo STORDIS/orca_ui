@@ -15,8 +15,6 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 import Modal from "../../modal/Modal";
 
-import { isValidIPv4WithCIDR } from "../../../utils/common";
-import { json } from "react-router-dom";
 import { syncFeatureCommon } from "../Deviceinfo";
 
 import { FaSyncAlt } from "react-icons/fa";
