@@ -300,7 +300,7 @@ export const LogViewer = () => {
 
             {showLogDetails === "setupDialog" && (
                 <SetupLogModal
-                    taskId={logDetails.task_id}
+                    logData={logDetails}
                     onClose={() => setShowLogDetails(false)}
                     onSubmit={() => setShowLogDetails(false)}
                     title="Log Details"
