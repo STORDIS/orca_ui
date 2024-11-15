@@ -152,5 +152,8 @@ export function getStateURL(selectedDeviceIp) {
 export function celeryURL() {
     return host_addr + "/celery" ;
 }
+export function celeryTaskURL(id) {
+    return host_addr + "/celery?task_id=" + id;
+}
 
 // ----------------

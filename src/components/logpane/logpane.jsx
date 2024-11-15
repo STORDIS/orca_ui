@@ -170,6 +170,7 @@ export const LogViewer = () => {
                 }
             },
             tooltipValueGetter: (params) => {
+                // console.log(params?.data?.response)
                 if (params?.data?.response) {
                     return JSON.stringify(params?.data?.response);
                 } else {
@@ -192,7 +193,6 @@ export const LogViewer = () => {
     }, []);
 
     const getLogs = () => {
-        // console.log("get");
         setLogEntries([]);
         instance
             .get(logPanelURL())
@@ -236,25 +236,20 @@ export const LogViewer = () => {
     const [logDetails, setLogDetails] = useState({});
 
     const openLogDetails = (params) => {
-        getLogs();
-        // console.log(params.data);
+        switch (params.data.http_path) {
+            case "/install_image":
+                setShowLogDetails("setupDialog");
+                break;
+            case "/switch_image":
+                setShowLogDetails("setupDialog");
+                break;
 
-        setTimeout(() => {
-            switch (params.data.http_path) {
-                case "/install_image":
-                    setShowLogDetails("setupDialog");
-                    break;
-                case "/switch_image":
-                    setShowLogDetails("setupDialog");
-                    break;
+            default:
+                setShowLogDetails("genericDialog");
+                break;
+        }
 
-                default:
-                    setShowLogDetails("genericDialog");
-                    break;
-            }
-
-            setLogDetails(params.data);
-        }, 500);
+        setLogDetails(params.data);
     };
 
     return (
@@ -304,7 +299,7 @@ export const LogViewer = () => {
 
             {showLogDetails === "setupDialog" && (
                 <SetupLogModal
-                    logData={logDetails}
+                    taskId={logDetails.task_id}
                     onClose={() => setShowLogDetails(false)}
                     onSubmit={() => setShowLogDetails(false)}
                     title="Log Details"

@@ -3,6 +3,8 @@ import "./logModel.scss";
 import Time from "react-time-format";
 
 const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
+
+    console.log(logData)
     useEffect(() => {
         const handleKeyDown = (e) => {
             if (e.key === "Escape") {
@@ -44,24 +46,24 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                     <b>State :</b>
                                 </td>
                                 <td className="w-75">
-                                    {logData.status.toUpperCase() ===
+                                    {logData?.status.toUpperCase() ===
                                     "SUCCESS" ? (
                                         <span className="success">
-                                            {logData.status.toUpperCase()}
+                                            {logData?.status.toUpperCase()}
                                         </span>
-                                    ) : logData.status.toUpperCase() ===
+                                    ) : logData?.status.toUpperCase() ===
                                       "STARTED" ? (
                                         <span className="warning">
-                                            {logData.status.toUpperCase()}
+                                            {logData?.status.toUpperCase()}
                                         </span>
-                                    ) : logData.status.toUpperCase() ===
+                                    ) : logData?.status.toUpperCase() ===
                                       "PENDING" ? (
                                         <span className="gray">
-                                            {logData.status.toUpperCase()}
+                                            {logData?.status.toUpperCase()}
                                         </span>
                                     ) : (
                                         <span className="danger">
-                                            {logData.status.toUpperCase()}
+                                            {logData?.status.toUpperCase()}
                                         </span>
                                     )}
                                 </td>
@@ -70,14 +72,14 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 <td className="w-25">
                                     <b>HTTP Status:</b>
                                 </td>
-                                <td className="w-75">{logData.status_code}</td>
+                                <td className="w-75">{logData?.status_code}</td>
                             </tr>
                             <tr>
                                 <td className="w-25">
                                     {" "}
                                     <b>HTTP method :</b>
                                 </td>
-                                <td className="w-75">{logData.http_method}</td>
+                                <td className="w-75">{logData?.http_method}</td>
                             </tr>
 
                             <tr>
@@ -95,7 +97,7 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                     <b>Response :</b>
                                 </td>
                                 <td className="w-75">
-                                    {logData.response ||
+                                    {logData?.response ||
                                         "waiting for process to complete"}
                                 </td>
                             </tr>
@@ -106,7 +108,7 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 </td>
                                 <td className="w-75">
                                     <Time
-                                        value={logData.timestamp}
+                                        value={logData?.timestamp}
                                         format="hh:mm:ss DD-MM-YYYY"
                                     />
                                 </td>
@@ -117,7 +119,7 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 </td>
                                 <td className="w-75">
                                     {parseFloat(
-                                        logData.processing_time
+                                        logData?.processing_time
                                     ).toFixed(4)}
                                 </td>
                             </tr>
