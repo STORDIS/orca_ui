@@ -236,6 +236,7 @@ export const LogViewer = () => {
     const [logDetails, setLogDetails] = useState({});
 
     const openLogDetails = (params) => {
+        getLogs();
         switch (params.data.http_path) {
             case "/install_image":
                 setShowLogDetails("setupDialog");
