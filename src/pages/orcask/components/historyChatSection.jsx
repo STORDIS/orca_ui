@@ -13,6 +13,7 @@ import { FaBookmark } from "react-icons/fa";
 import { getIsStaff } from "../../../utils/common";
 import Tooltip from "@mui/material/Tooltip";
 import DynamicRender from "./dynamicRender";
+import { AiOutlineClear } from "react-icons/ai";
 
 import "../orcAsk.scss";
 import {
@@ -166,8 +167,6 @@ export const HistoryChatSection = ({
         });
     };
 
-
-
     const checkValidTableRes = (e) => {
         if (
             Array.isArray(e?.functions_result) &&
@@ -220,7 +219,7 @@ export const HistoryChatSection = ({
                 {chatHistory
                     .sort((a, b) => a.id - b.id)
                     .map((item, index) => (
-                        <React.Fragment key={item.id} >
+                        <React.Fragment key={item.id}>
                             {item.user_message ? (
                                 <div
                                     className="promptStyle"
@@ -359,7 +358,7 @@ export const HistoryChatSection = ({
                         className="btnStyle ml-10 "
                         id="clearChatBtn"
                     >
-                        <FaRotateLeft />
+                        <AiOutlineClear />
                     </button>
                 </Tooltip>
             </div>

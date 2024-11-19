@@ -15,7 +15,6 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 import Modal from "../../modal/Modal";
 
-import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { syncFeatureCommon } from "../Deviceinfo";
 
 import { FaSyncAlt } from "react-icons/fa";
@@ -349,7 +348,7 @@ const InterfaceDataTable = (props) => {
                 >
                     Apply Config
                 </button>
-                <span className="config-status" id="configStatus">
+                <span className="configStatus" id="configStatus">
                     {configStatus}
                 </span>
             </div>

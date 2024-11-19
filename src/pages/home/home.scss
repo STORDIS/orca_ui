@@ -13,5 +13,11 @@
         font-weight: 500;
         color: gray;
         margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .datatable {
+        width: 100%;
     }
 }

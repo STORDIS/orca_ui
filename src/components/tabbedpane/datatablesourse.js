@@ -48,8 +48,6 @@ export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
 export const getCellEditorParamsInterfaceBreakout = (params, originalData) => {
     let temp = originalData.find((item) => item.name === params.data.name);
 
-    console.log(params?.data?.alias, params.data.breakout_supported);
-
     let result = [];
     let regex = /^Eth[0-9/]+\/1$/;
     if (
@@ -183,8 +181,6 @@ export const interfaceColumns = (originalData) => [
         },
         headerComponent: EditableHeaderComponent,
         cellRenderer: (params) => {
-            console.log(params?.data?.alias);
-
             if (params.data.breakout_supported) {
                 return params.value || "Not Configured";
             } else if (
@@ -1070,6 +1066,18 @@ export const stpColumn = [
     },
 ];
 
+export const getCellEditorParamsDeviceImageList = (params) => {
+    if (params?.data?.image_list?.length > 0) {
+        return {
+            values: params?.data?.image_list,
+        };
+    } else {
+        return {
+            values: [params?.data?.img_name],
+        };
+    }
+};
+
 export const deviceUserColumns = (showIn) => {
     let dataColumn = [
         {
@@ -1077,6 +1085,13 @@ export const deviceUserColumns = (showIn) => {
             headerName: "Image Name",
             width: 130,
             sortable: true,
+            editable: getIsStaff() && showIn === "home",
+            headerComponent: EditableHeaderComponent,
+            cellEditor: "agSelectCellEditor",
+            cellEditorParams: getCellEditorParamsDeviceImageList,
+            cellRenderer: (params) => {
+                return <span>{params.value}</span>;
+            },
         },
         {
             field: "mgt_intf",
@@ -1163,6 +1178,14 @@ export const deviceUserColumns = (showIn) => {
             sortable: true,
         });
     }
-
+    if (showIn === "setup" || showIn === "all") {
+        dataColumn.unshift({
+            headerCheckboxSelection: getIsStaff() && showIn === "setup",
+            checkboxSelection: getIsStaff() && showIn === "setup",
+            width: 50,
+            sortable: true,
+            headerTooltip: "", // add header tooltip here
+        });
+    }
     return dataColumn;
 };

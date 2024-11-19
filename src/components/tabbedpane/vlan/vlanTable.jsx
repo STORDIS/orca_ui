@@ -323,7 +323,7 @@ const VlanTable = (props) => {
                         >
                             Apply Config
                         </button>
-                        <span className="config-status">{configStatus}</span>
+                        <span className="configStatus">{configStatus}</span>
                     </div>
                     <div>
                         <button

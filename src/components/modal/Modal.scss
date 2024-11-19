@@ -53,3 +53,17 @@
         padding: 10px;
     }
 }
+
+.textOverflow {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.textOverflow.expanded {
+    -webkit-line-clamp: unset; // Removes the line clamp
+    overflow: visible;
+    white-space: normal;
+  }
