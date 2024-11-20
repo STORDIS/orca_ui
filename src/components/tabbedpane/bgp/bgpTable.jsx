@@ -13,7 +13,7 @@ import BgpForm from "./bgpForm";
 import { getIsStaff } from "../../../utils/common";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
-import { FaSyncAlt } from "react-icons/fa";
+
 import { syncFeatureCommon } from "../Deviceinfo";
 
 const BGPTable = (props) => {
@@ -167,7 +167,7 @@ const BGPTable = (props) => {
                         onClick={resyncBgp}
                         disabled={updateConfig}
                     >
-                        <FaSyncAlt /> Sync
+                         Sync
                     </button>
 
                     <button

@@ -479,7 +479,7 @@ export const vlanColumns = [
         headerName: "Anycast Address",
         width: 130,
         sortable: true,
-        editable: getIsStaff() && valnSagIp,
+        
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
     },
@@ -517,7 +517,6 @@ export const vlanColumns = [
         field: "mem_ifs",
         headerName: "Member IFs",
         width: 130,
-        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
         cellRenderer: (params) => {
@@ -751,7 +750,6 @@ export const portChannelColumns = [
         field: "members",
         headerName: "Members",
         width: 130,
-        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         headerTooltip: "", // add header tooltip here
         cellRenderer: (params) => {
@@ -762,7 +760,6 @@ export const portChannelColumns = [
         field: "vlan_members",
         headerName: "Access Vlan",
         width: 130,
-        editable: getIsStaff(),
         headerComponent: EditableHeaderComponent,
         cellRenderer: (params) => {
             let js = JSON.parse(params.value);

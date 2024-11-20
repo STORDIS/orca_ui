@@ -158,11 +158,8 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     <div className="modalContainer" onClick={onClose} id={id}>
       <div className="modalInner" onClick={(e) => e.stopPropagation()}>
         <h4 className="modalHeader">
-          {title} - discoveryLogModal
-          <FaSquareXmark
-            style={{ fontSize: "30px", cursor: "pointer" }}
-            onClick={onClose}
-          />
+          {title}
+          <FaSquareXmark className="closeBtn danger" onClick={onClose} />
         </h4>
 
         <div className="modalBody mt-10 mb-10">

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import "./logModel.scss";
 import Time from "react-time-format";
+import { FaRotateLeft } from "react-icons/fa6";
+import { FaHourglassHalf } from "react-icons/fa";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { FaRegCircleXmark } from "react-icons/fa6";
+import { FaRegPlayCircle } from "react-icons/fa";
 
 const CommonLogTable = ({ logData, showResponse, response }) => {
   const formattedRequestJson = logData?.request_json
@@ -18,15 +23,30 @@ const CommonLogTable = ({ logData, showResponse, response }) => {
           </td>
           <td className="w-75">
             {logData?.status.toUpperCase() === "SUCCESS" ? (
-              <span className="success">{logData?.status.toUpperCase()}</span>
+              <span className="success" style={{ display: "flex" }}>
+                <FaRegCheckCircle className="mr-5 ml-5" />
+                {logData?.status.toUpperCase()}
+              </span>
             ) : logData?.status.toUpperCase() === "REVOKED" ? (
-              <span className="success">{logData?.status.toUpperCase()}</span>
+              <span className="success" style={{ display: "flex" }}>
+                <FaRotateLeft className="mr-5 ml-5" />
+                {logData?.status.toUpperCase()}
+              </span>
             ) : logData?.status.toUpperCase() === "STARTED" ? (
-              <span className="warning">{logData?.status.toUpperCase()}</span>
+              <span className="warning" style={{ display: "flex" }}>
+                <FaRegPlayCircle className="mr-5 ml-5" />
+                {logData?.status.toUpperCase()}
+              </span>
             ) : logData?.status.toUpperCase() === "PENDING" ? (
-              <span className="gray">{logData?.status.toUpperCase()}</span>
+              <span className="gray" style={{ display: "flex" }}>
+                <FaHourglassHalf className="mr-5 ml-5" />
+                {logData?.status.toUpperCase()}
+              </span>
             ) : (
-              <span className="danger">{logData?.status.toUpperCase()}</span>
+              <span className="danger" style={{ display: "flex" }}>
+                <FaRegCircleXmark className="mr-5 ml-5" />
+                {logData?.status.toUpperCase()}
+              </span>
             )}
           </td>
         </tr>

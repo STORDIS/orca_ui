@@ -12,7 +12,7 @@ import { getIsStaff } from "../../../utils/common";
 import { stpURL } from "../../../utils/backend_rest_urls";
 import StpForm from "./stpForm";
 import StpVlanForm from "./stpVlanForm";
-import { FaSyncAlt } from "react-icons/fa";
+
 import { syncFeatureCommon } from "../Deviceinfo";
 
 export const getStpDataCommon = (selectedDeviceIp) => {
@@ -200,7 +200,7 @@ const StpDataTable = (props) => {
                             onClick={resyncStp}
                             disabled={updateConfig}
                         >
-                            <FaSyncAlt /> Rediscover
+                             Rediscover
                         </button>
 
                         <button

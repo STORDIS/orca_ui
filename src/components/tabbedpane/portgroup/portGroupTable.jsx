@@ -9,7 +9,7 @@ import { getPortGroupsURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
-import { FaSyncAlt } from "react-icons/fa";
+
 import { syncFeatureCommon } from "../Deviceinfo";
 
 const PortGroupTable = (props) => {
@@ -149,7 +149,7 @@ const PortGroupTable = (props) => {
                     onClick={resyncPortGroup}
                     disabled={updateConfig}
                 >
-                    <FaSyncAlt /> Rediscover
+                     Rediscover
                 </button>
 
                 <button

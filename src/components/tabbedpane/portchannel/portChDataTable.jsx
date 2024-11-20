@@ -20,7 +20,7 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 
 import { isValidIPv4WithCIDR } from "../../../utils/common";
-import { FaSyncAlt } from "react-icons/fa";
+
 import { syncFeatureCommon } from "../Deviceinfo";
 
 export const getPortChannelDataCommon = (selectedDeviceIp) => {
@@ -295,7 +295,7 @@ const PortChDataTable = (props) => {
                             onClick={resyncPortchannel}
                             disabled={updateConfig}
                         >
-                            <FaSyncAlt /> Rediscover
+                             Rediscover
                         </button>
 
                         <button

@@ -23,10 +23,7 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         <h4 className="modalHeader">
           {title}
 
-          <FaSquareXmark
-            style={{ fontSize: "30px", cursor: "pointer" }}
-            onClick={onClose}
-          />
+          <FaSquareXmark className="closeBtn danger" onClick={onClose} />
         </h4>
 
         <div className="modalBody mt-10 mb-10">

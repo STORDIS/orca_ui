@@ -17,7 +17,7 @@ import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
-import { FaSyncAlt } from "react-icons/fa";
+
 import { syncFeatureCommon } from "../Deviceinfo";
 
 const McLagDataTable = (props) => {
@@ -263,7 +263,7 @@ const McLagDataTable = (props) => {
                         onClick={resyncMclag}
                         disabled={updateConfig}
                     >
-                        <FaSyncAlt /> Rediscover
+                         Rediscover
                     </button>
 
                     <button

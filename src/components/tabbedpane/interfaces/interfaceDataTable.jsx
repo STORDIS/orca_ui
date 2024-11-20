@@ -17,7 +17,6 @@ import Modal from "../../modal/Modal";
 
 import { syncFeatureCommon } from "../Deviceinfo";
 
-import { FaSyncAlt } from "react-icons/fa";
 
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
@@ -338,7 +337,7 @@ const InterfaceDataTable = (props) => {
                     disabled={updateConfig}
                     id="rediscoverBtn"
                 >
-                    <FaSyncAlt /> Rediscover
+                     Rediscover
                 </button>
                 <button
                     onClick={() => sendUpdates(changes)}

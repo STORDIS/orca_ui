@@ -6,16 +6,17 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { AgGridReact } from "ag-grid-react";
 import interceptor from "../../utils/interceptor";
 import { logPanelURL, logPanelDeleteURL } from "../../utils/backend_rest_urls";
-import { FaRegCheckCircle } from "react-icons/fa";
-import { FaRegCircleXmark } from "react-icons/fa6";
+
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
-import { FaRegPlayCircle } from "react-icons/fa";
 import GenericLogModal from "../../components/modal/genericLogModal";
 import SetupLogModal from "../../components/modal/setupLogModal";
 import DiscoveryLogModal from "../../components/modal/discoveryLogModal";
+import { FaRegPlayCircle } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaHourglassHalf } from "react-icons/fa";
+import { FaRegCheckCircle } from "react-icons/fa";
+import { FaRegCircleXmark } from "react-icons/fa6";
 
 export const LogViewer = () => {
   const logPannelDivRef = useRef(null);
@@ -264,23 +265,28 @@ export const LogViewer = () => {
           justifyContent: "space-between",
         }}
       >
-        <button
-          id="clearLogBtn"
-          className="clearLogBtn btnStyle "
-          onClick={handelClearLog}
-          disabled={!getIsStaff()}
-        >
-          Clear
-        </button>
+        <div>
+          <h4>Task</h4>
+        </div>
+        <div>
+          <button
+            id="clearLogBtn"
+            className="clearLogBtn btnStyle ml-10"
+            onClick={handelClearLog}
+            disabled={!getIsStaff()}
+          >
+            Remove All Tasks
+          </button>
 
-        <button
-          id="refreshLogBtn"
-          className="clearLogBtn btnStyle"
-          onClick={getLogs}
-          disabled={!getIsStaff()}
-        >
-          Refresh
-        </button>
+          <button
+            id="refreshLogBtn"
+            className="clearLogBtn btnStyle ml-10"
+            onClick={getLogs}
+            disabled={!getIsStaff()}
+          >
+            Refresh
+          </button>
+        </div>
       </div>
       <div style={gridStyle} className="ag-theme-alpine ">
         <AgGridReact

@@ -14,7 +14,7 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
-import { FaSyncAlt } from "react-icons/fa";
+
 import { syncFeatureCommon } from "../Deviceinfo";
 
 // Function to get vlan names
@@ -313,7 +313,7 @@ const VlanTable = (props) => {
                             onClick={resyncVlan}
                             disabled={updateConfig}
                         >
-                            <FaSyncAlt /> Rediscover
+                             Rediscover
                         </button>
 
                         <button
