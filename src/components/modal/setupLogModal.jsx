@@ -654,7 +654,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
             Object.keys(sonicDevices).length > 0) && (
             <div>
               <button
-                className="btnStyle mt-15 mr-15"
+                className="btnStyle mr-15"
                 onClick={applyConfig}
                 disabled={
                   selectedDevicesOnie.length === 0 &&
@@ -669,7 +669,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
 
           {logData?.status.toUpperCase() === "STARTED" ||
           logData?.status.toUpperCase() === "PENDING" ? (
-            <button onClick={revoke} className="btnStyle" id="revokeTaskBtn">
+            <button
+              onClick={revoke}
+              className="btnStyle mr-15"
+              id="revokeTaskBtn"
+            >
               revoke running task
             </button>
           ) : null}

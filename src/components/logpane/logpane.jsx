@@ -265,13 +265,11 @@ export const LogViewer = () => {
           justifyContent: "space-between",
         }}
       >
-        <div>
-          <h4>Task</h4>
-        </div>
+        <div className="listTitle">Task</div>
         <div>
           <button
             id="clearLogBtn"
-            className="clearLogBtn btnStyle ml-10"
+            className="clearLogBtn btnStyle ml-15"
             onClick={handelClearLog}
             disabled={!getIsStaff()}
           >
@@ -280,7 +278,7 @@ export const LogViewer = () => {
 
           <button
             id="refreshLogBtn"
-            className="clearLogBtn btnStyle ml-10"
+            className="clearLogBtn btnStyle ml-15"
             onClick={getLogs}
             disabled={!getIsStaff()}
           >
