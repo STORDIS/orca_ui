@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../Form.scss";
+
 import useStoreConfig from "../../../utils/configStore";
 import { deleteVlanMembersURL } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";

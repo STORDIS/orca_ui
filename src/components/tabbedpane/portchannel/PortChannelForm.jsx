@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../Form.scss";
+
 import useStoreConfig from "../../../utils/configStore";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";

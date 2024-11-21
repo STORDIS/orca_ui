@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import "../Form.scss";
+
 
 import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
