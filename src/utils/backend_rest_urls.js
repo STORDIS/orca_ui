@@ -1,5 +1,6 @@
 const host_addr =
     process.env.REACT_APP_HOST_ADDR_BACKEND || "http://localhost:8000";
+
 // auth urls
 export function getUserDetailsURL(user) {
     return host_addr + "/auth/user/" + user;
@@ -84,8 +85,8 @@ export function stpURL(device_ip) {
 }
 
 // orcask urls
-export function gptCompletionsURL(formate) {
-    return host_addr + "/orcask/completions?response_format=" + formate;
+export function executePlanURL() {
+    return host_addr + "/orcask/execution_plan";
 }
 
 export function getOrcAskHistoryURL() {
@@ -103,7 +104,7 @@ export function bookmarkDeleteAllURL() {
     return host_addr + "/orcask/bookmark/delete-all";
 }
 
-// other urls
+// devices urls
 export function getDiscoveryUrl() {
     return host_addr + "/discover";
 }
@@ -115,6 +116,17 @@ export function deleteDevicesURL() {
 export function getAllDevicesURL() {
     return host_addr + "/devices";
 }
+
+// setup urls
+export function installSonicURL() {
+    return host_addr + "/install_image";
+}
+
+export function switchImageURL() {
+    return host_addr + "/switch_image";
+}
+
+// other urls
 
 export function logPanelURL() {
     return host_addr + "/logs/all/1?size=1000";
@@ -134,6 +146,13 @@ export function sheduleURL(selectedDeviceIp) {
 
 export function getStateURL(selectedDeviceIp) {
     return host_addr + "/state/" + selectedDeviceIp;
+}
+
+export function celeryURL() {
+    return host_addr + "/celery" ;
+}
+export function celeryTaskURL(id) {
+    return host_addr + "/celery?task_id=" + id;
 }
 
 // ----------------

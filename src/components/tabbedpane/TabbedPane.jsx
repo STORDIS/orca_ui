@@ -18,6 +18,7 @@ import "../../pages/home/home.scss";
 import { useNavigate } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 import interceptor from "../../utils/interceptor";
+import useStoreLogs from "../../utils/store";
 
 const TabbedPane = () => {
     const instance = interceptor();
@@ -32,6 +33,8 @@ const TabbedPane = () => {
     const [dropdownOptions, setDropdownOptions] = useState([]);
     const [undoChanges, setUndoChanges] = useState(false);
     const [orcaState, setOrcaState] = useState("");
+
+    const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
     useEffect(() => {
         if (!secureLocalStorage.getItem("selectedTab")) {
@@ -53,8 +56,8 @@ const TabbedPane = () => {
     const handleTabs = (event, val) => {
         settabvalue(val);
         secureLocalStorage.setItem("selectedTab", val);
-
         getOrcaState();
+        setUpdateLog(true);
     };
 
     const getOrcaState = () => {

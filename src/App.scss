@@ -74,6 +74,14 @@
     animation-delay: 0.4s;
 }
 
+.configStatus {
+    margin-left: 10px;
+    font-weight: bold;
+
+    font-style: italic;
+    color: #999;
+}
+
 @keyframes dance {
     0%,
     100% {
@@ -102,6 +110,10 @@
 }
 .pl-10 {
     margin-left: 10px !important;
+}
+
+.m-0 {
+    margin: 0px 0px 0px 0px !important;
 }
 
 .mt-5 {
@@ -183,4 +195,111 @@
     resize: vertical;
     // overflow: auto;
     overflow: hidden;
+}
+
+.form-wrapper {
+    display: flex;
+    gap: 10px;
+    // align-items: center;
+}
+
+.align-center {
+    align-items: center;
+}
+
+.form-field {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.note {
+    font-size: 12px;
+}
+
+.w-auto {
+    width: auto !important;
+}
+.w-25 {
+    width: 25% !important;
+}
+.w-40 {
+    width: 40% !important;
+}
+.w-50 {
+    width: 50% !important;
+}
+.w-60 {
+    width: 60% !important;
+}
+.w-75 {
+    width: 75% !important;
+}
+.w-100 {
+    width: 100% !important;
+}
+
+.form-field label {
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.form-field input[type="text"],
+.form-field input[type="number"],
+.form-field input[type="checkbox"],
+.form-field input[type="password"],
+.form-field textarea,
+.form-field select {
+    padding: 6px;
+    border: 1px solid #a7a7a7 !important;
+    border-radius: 4px;
+}
+
+.form-field input:disabled {
+    background-color: #dbdbdb;
+}
+
+.form-field select:disabled {
+    background-color: #dbdbdb;
+}
+
+.form-field input[type="submit"]:hover,
+.form-field button:hover {
+    opacity: 0.9;
+}
+
+.selected-interface-list {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+
+.selected-interface-wrap {
+    min-height: 100px;
+    max-height: 250px;
+    border: 1px solid #ccc;
+    overflow-y: auto;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.increadeDecrease {
+    border: none;
+    background-color: transparent;
+    color: black;
+    cursor: pointer;
+    align-items: center;
+}
+
+.success {
+    color: #198754 !important;
+}
+.warning {
+    color: #ffc107 !important;
+}
+.gray {
+    color: #6c757d !important;
+}
+.danger {
+    color: #dc3545 !important;
 }

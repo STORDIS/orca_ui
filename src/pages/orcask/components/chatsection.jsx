@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 
-import { gptCompletionsURL } from "../../../utils/backend_rest_urls";
+import { executePlanURL } from "../../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
@@ -13,7 +13,7 @@ import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { Chart } from "react-google-charts";
-
+import { AiOutlineClear } from "react-icons/ai";
 import "../orcAsk.scss";
 
 import interceptor from "../../../utils/interceptor";
@@ -70,7 +70,7 @@ export const ChatSection = ({sendDataToParent}) => {
         textAreaRef.current.value = "";
 
         instance
-            .post(gptCompletionsURL("json"), questionPrompt)
+            .post(executePlanURL(), questionPrompt)
             .then((response) => {
                 setCurrentChatHistory((prevChatHistory) => {
                     const updatedHistory = [...prevChatHistory];
@@ -148,7 +148,7 @@ export const ChatSection = ({sendDataToParent}) => {
             setIsLoadingChart(true);
 
             instance
-                .post(gptCompletionsURL("google chart json for table"), {
+                .post(executePlanURL(), {
                     prompt: currentChatHistory[index - 1],
                 })
                 .then((response) => {
