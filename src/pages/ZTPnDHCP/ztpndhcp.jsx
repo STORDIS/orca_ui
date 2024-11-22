@@ -299,34 +299,19 @@ export const ZTPnDHCP = () => {
       >
         <div className="pl-10 ">
           <div className="form-wrapper" style={{ alignItems: "center" }}>
-            <div className="form-field w-33">
+            <div className="form-field w-25">
               <label htmlFor=""> Server IP :</label>
               <input type="text" placeholder="" />
             </div>
-            <div className="form-field w-33">
+            <div className="form-field w-25">
               <label htmlFor=""> SSH User Name :</label>
               <input type="text" placeholder="" />
             </div>
-            <div className="form-field w-33">
+            <div className="form-field w-25">
               <label htmlFor=""> SSH Password :</label>
               <input type="password" placeholder="" />
             </div>
-          </div>
-
-          <div className="form-wrapper" style={{ alignItems: "center" }}>
-            <div className="form-field w-auto">
-              <label htmlFor=""> SSH Key :</label>
-            </div>
-            <div className="form-field w-60 ">
-              <input type="text" placeholder="" />
-            </div>
-            <div
-              className="form-field w-25"
-              style={{
-                alignItems: "center",
-                textAlign: "center",
-              }}
-            >
+            <div className="form-field w-25">
               <span
                 style={{
                   display: "flex",
@@ -334,7 +319,7 @@ export const ZTPnDHCP = () => {
                   textAlign: "center",
                 }}
               >
-                <label htmlFor=""> SSH Connection :</label>
+                SSH Connection :
                 <FaCircle className="ml-5" />
               </span>
             </div>
