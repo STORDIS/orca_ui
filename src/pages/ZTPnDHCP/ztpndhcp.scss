@@ -1,124 +1,125 @@
 .editorContainer {
-    // border: 1px solid rgb(0, 0, 0);
+  // border: 1px solid rgb(0, 0, 0);
+  display: flex;
+  width: 100%;
+
+  .fileSelection {
+    background-color: #c0c0c0 !important;
+    width: 200px;
+    border: 1px solid rgb(0, 0, 0);
     display: flex;
+    flex-direction: column;
 
-    .fileSelection {
-        background-color: #c0c0c0 !important;
-        width: 200px;
-        border: 1px solid rgb(0, 0, 0);
+    .fileHeader {
+      padding: 5px;
+      text-align: center;
+    }
+
+    .fileItem {
+      margin: 5px;
+      padding: 5px;
+      cursor: pointer;
+      background-color: white;
+
+      &:hover {
+        background-color: #f5efef;
+      }
+    }
+    .active {
+      background-color: #e7dbdb !important;
+    }
+
+    .fileBottomSection {
+      margin-top: auto;
+      padding: 5px;
+      text-align: right;
+    }
+  }
+  .editor {
+    width: calc(100% - 205px);
+    border: 1px solid rgb(0, 0, 0);
+
+    .tab {
+      width: 100%;
+      background: #c0c0c0;
+      display: flex;
+      overflow-x: auto;
+      min-height: 25px;
+
+      .tabButton {
         display: flex;
-        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
 
-        .fileHeader {
-            padding: 5px;
-            text-align: center;
+        background-color: #e7dbdb;
+        padding: 5px;
+        border-right: 1px solid rgb(0, 0, 0);
+        border-bottom: 1px solid rgb(0, 0, 0);
+        cursor: pointer;
+        width: 100px;
+        min-width: 100px;
+        height: 20px;
+
+        .tabName {
+          display: flex;
+          max-width: 90%;
+          min-height: auto;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
-        .fileItem {
-            margin: 5px;
-            padding: 5px;
-            cursor: pointer;
-            background-color: white;
+        // .cancel {
+        //     color: red;
+        // }
 
-            &:hover {
-                background-color: #f5efef;
-            }
-        }
-        .active {
-            background-color: #e7dbdb !important;
-        }
+        // .cancel:hover ~ .tabName {
+        //     color: red;
+        // }
 
-        .fileBottomSection {
-            margin-top: auto;
-            padding: 5px;
-            text-align: right;
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.75);
         }
+      }
+
+      .tabActive {
+        background-color: white !important;
+        border-bottom: none !important;
+      }
     }
-    .editor {
-        width: calc(100% - 200px);
-        border: 1px solid rgb(0, 0, 0);
-
-        .tab {
-            width: 100%;
-            background: #c0c0c0;
-            display: flex;
-            overflow-x: auto;
-            min-height: 25px;
-
-            .tabButton {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-
-                background-color: #e7dbdb;
-                padding: 5px;
-                border-right: 1px solid rgb(0, 0, 0);
-                border-bottom: 1px solid rgb(0, 0, 0);
-                cursor: pointer;
-                width: 100px;
-                min-width: 100px;
-                height: 20px;
-
-                .tabName {
-                    display: flex;
-                    max-width: 90%;
-                    min-height: auto;
-                    white-space: nowrap;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                }
-
-                // .cancel {
-                //     color: red;
-                // }
-
-                // .cancel:hover ~ .tabName {
-                //     color: red;
-                // }
-
-                &:hover {
-                    background-color: rgba(255, 255, 255, 0.75);
-                }
-            }
-
-            .tabActive {
-                background-color: white !important;
-                border-bottom: none !important;
-            }
-        }
-        .tab::-webkit-scrollbar {
-            width: 5px;
-            height: 5px !important;
-            background-color: #ffffff;
-            display: block !important; /* for Chrome, Safari, and Opera */
-        }
-        .tab::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .editorBottomSection {
-            // display: flex;
-            // align-items: end;
-            padding: 5px;
-            text-align: right;
-        }
+    .tab::-webkit-scrollbar {
+      width: 5px;
+      height: 5px !important;
+      background-color: #ffffff;
+      display: block !important; /* for Chrome, Safari, and Opera */
     }
-}
-.popover {
+    .tab::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .editorBottomSection {
+      // display: flex;
+      // align-items: end;
+      padding: 5px;
+      text-align: right;
+    }
+  }
+  .popover {
     ul {
-        list-style: none;
-        padding: 0;
-        margin: 0;
+      list-style: none;
+      padding: 0;
+      margin: 0;
 
-        li {
-            padding: 5px 15px 5px 10px;
-            cursor: pointer;
-            border-bottom: 1px solid black;
-            font-size: 14px;
+      li {
+        padding: 5px 15px 5px 10px;
+        cursor: pointer;
+        border-bottom: 1px solid black;
+        font-size: 14px;
 
-            &:hover {
-                background-color: #f5efef;
-            }
+        &:hover {
+          background-color: #f5efef;
         }
+      }
     }
+  }
 }

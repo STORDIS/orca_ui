@@ -1,28 +1,28 @@
 .mainContainer {
-    display: flex;
+  display: flex;
 
-    .sideBar {
-        width: 220px;
+  .sideBar {
+    width: 220px;
+  }
+
+  .container {
+    width: calc(100% - 205px);
+
+    .listContainer {
+      padding: 15px !important;
+      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      margin: 10px !important;
+
+      .listTitle {
+        font-weight: 500;
+        color: gray;
+        margin-bottom: 15px;
+      }
     }
 
-    .container {
-        width: calc(100% - 205px);
-        
-        .listContainer {
-            padding: 15px;
-            -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-            box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-            margin: 10px;
-
-            .listTitle {
-                font-weight: 500;
-                color: gray;
-                margin-bottom: 15px;
-            }
-        }
-
-        .mb {
-            margin-bottom: 50px !important;
-        }
+    .mb {
+      margin-bottom: 50px !important;
     }
+  }
 }
