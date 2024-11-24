@@ -1,0 +1,135 @@
+import React, { useRef, useEffect, useState } from "react";
+import { FaCircle } from "react-icons/fa";
+import { dhcpCredentialsURL } from "../../utils/backend_rest_urls";
+import interceptor from "../../utils/interceptor";
+import Tooltip from "@mui/material/Tooltip";
+
+export const CredentialForm = () => {
+  const instance = interceptor();
+  const [configStatus, setConfigStatus] = useState("");
+
+  const [formData, setFormData] = useState({
+    mgt_ip: "",
+    username: "",
+    password: "",
+  });
+
+  useEffect(() => {
+    getCredentials();
+  }, []);
+
+  const getCredentials = () => {
+    instance
+      .get(dhcpCredentialsURL())
+      .then((res) => {
+        console.log(res.data[0]);
+        setFormData({
+          mgt_ip: res.data[0].device_ip,
+          username: res.data[0].username,
+          password: res.data[0].password,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setConfigStatus("Config Success");
+        setTimeout(() => {
+          setConfigStatus("");
+        }, 2500);
+      });
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
+
+  const putCredentials = (payload) => {
+    setConfigStatus("Config In Progress....");
+    instance
+      .put(dhcpCredentialsURL(), payload)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        setConfigStatus("");
+      })
+      .finally(() => {
+        setConfigStatus("");
+        getCredentials();
+      });
+  };
+
+  return (
+    <div className="listContainer">
+      <div className="form-wrapper" style={{ alignItems: "center" }}>
+        <div className="form-field w-25">
+          <Tooltip placement="top" title="tool tip here">
+            <label htmlFor=""> Server IP :</label>
+          </Tooltip>
+
+          <input
+            type="text"
+            placementholder=""
+            onChange={handleChange}
+            name="mgt_ip"
+            value={formData.mgt_ip}
+          />
+        </div>
+        <div className="form-field w-25">
+          <Tooltip placement="top" title="tool tip here">
+            <label htmlFor=""> SSH User Name :</label>
+          </Tooltip>
+
+          <input
+            type="text"
+            placementholder=""
+            onChange={handleChange}
+            name="username"
+            value={formData.username}
+          />
+        </div>
+        <div className="form-field w-25">
+          <Tooltip placement="top" title="tool tip here">
+            <label htmlFor=""> SSH Password :</label>
+          </Tooltip>
+          <input
+            type="password"
+            placementholder=""
+            onChange={handleChange}
+            name="password"
+            value={formData.password}
+          />
+        </div>
+        <div className="form-field w-25">
+          <span
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textAlign: "center",
+            }}
+          >
+            <Tooltip placement="top" title="tool tip here">
+              SSH Connection :
+              <FaCircle className="ml-5" />
+            </Tooltip>
+          </span>
+        </div>
+      </div>
+
+      <div className="form-wrapper">
+        <button onClick={() => putCredentials(formData)} className="btnStyle">
+          Apply Config
+        </button>
+        <span className="configStatus">{configStatus}</span>
+      </div>
+    </div>
+  );
+};
+
+export default CredentialForm;

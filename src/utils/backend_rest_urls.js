@@ -126,13 +126,21 @@ export function switchImageURL() {
   return host_addr + "/switch_image";
 }
 
-// ztp urls
+// ztp and DHCP urls
 export function ztpURL(fileName) {
   if (fileName) {
     return host_addr + "/files/ztp?filename=" + fileName;
   } else {
     return host_addr + "/files/ztp";
   }
+}
+
+export function dhcpCredentialsURL() {
+  return host_addr + "/files/dhcp/credentials";
+}
+
+export function dhcpConfigURL(device_ip) {
+  return host_addr + "/files/dhcp/config?mgt_ip=" + device_ip;
 }
 
 // other urls

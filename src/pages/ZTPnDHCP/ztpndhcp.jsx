@@ -4,9 +4,9 @@ import "./ztpndhcp.scss";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa";
 import { FaFolderPlus } from "react-icons/fa";
-import { ListItem } from "@mui/material";
 import { ztpURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
+import CredentialForm from "./CredentialsForm";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
@@ -73,7 +73,16 @@ export const ZTPnDHCP = () => {
 
         setFiles(list);
         setFile(list[0]);
-        setTab(list);
+
+        let tabList = res.data.map((item) => {
+          return {
+            filename: item.filename,
+            language: getFileLangauge(item.filename),
+            status: "saved",
+          };
+        });
+
+        setTab(tabList);
       })
       .catch((err) => {
         console.error(err);
@@ -174,14 +183,24 @@ export const ZTPnDHCP = () => {
       if (item.filename === file.filename) {
         return {
           ...item,
+          status: "unsaved",
+        };
+      }
+      return item;
+    });
+    const updatedFileList = tab.map((item) => {
+      if (item.filename === file.filename) {
+        return {
+          ...item,
           content: e,
           status: "unsaved",
         };
       }
       return item;
     });
+
     setTab(updatedTab);
-    setFiles(updatedTab);
+    setFiles(updatedFileList);
     setFile({
       filename: file.filename,
       language: file.language,
@@ -199,9 +218,9 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
+
     setTab(updatedTab);
     setFiles(updatedTab);
-
     const payload = {
       filename: list.filename,
       content: list.content,
@@ -240,7 +259,6 @@ export const ZTPnDHCP = () => {
           {
             filename: uploadedFile.name,
             language: uploadedFile.type.split("/")[1],
-            content: fileText,
             status: "unsaved",
           },
         ]);
@@ -292,40 +310,11 @@ export const ZTPnDHCP = () => {
   };
 
   return (
-    <>
-      <div
-        className="listContainer"
-        onClick={() => setPopover({ ...popover, visible: false })}
-      >
-        <div className="pl-10 ">
-          <div className="form-wrapper" style={{ alignItems: "center" }}>
-            <div className="form-field w-25">
-              <label htmlFor=""> Server IP :</label>
-              <input type="text" placeholder="" />
-            </div>
-            <div className="form-field w-25">
-              <label htmlFor=""> SSH User Name :</label>
-              <input type="text" placeholder="" />
-            </div>
-            <div className="form-field w-25">
-              <label htmlFor=""> SSH Password :</label>
-              <input type="password" placeholder="" />
-            </div>
-            <div className="form-field w-25">
-              <span
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  textAlign: "center",
-                }}
-              >
-                SSH Connection :
-                <FaCircle className="ml-5" />
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+    <div
+      className=""
+      onClick={() => setPopover({ ...popover, visible: false })}
+    >
+      <CredentialForm />
 
       <div className="listContainer">
         <div className="editorContainer">
@@ -437,7 +426,7 @@ export const ZTPnDHCP = () => {
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
