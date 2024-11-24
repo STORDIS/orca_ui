@@ -4,13 +4,15 @@ import "./ztpndhcp.scss";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa";
 import { FaFolderPlus } from "react-icons/fa";
-import { ztpURL } from "../../utils/backend_rest_urls";
+import { ztpURL, dhcpConfigURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import CredentialForm from "./CredentialsForm";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  const [dhcpCredentials, setDhcpCredentials] = useState({});
 
   const instance = interceptor();
 
@@ -309,12 +311,29 @@ export const ZTPnDHCP = () => {
     });
   };
 
+  const getCredentials = (e) => {
+    setDhcpCredentials(e);
+    console.log(e.device_ip);
+    getDhcpFiles(e.device_ip);
+  };
+  const getDhcpFiles = (device_ip) => {
+    instance
+      .get(dhcpConfigURL(device_ip))
+      .then((res) => {
+        console.log(res.data);
+        // setFiles(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div
       className=""
       onClick={() => setPopover({ ...popover, visible: false })}
     >
-      <CredentialForm />
+      <CredentialForm sendCredentialsToParent={getCredentials} />
 
       <div className="listContainer">
         <div className="editorContainer">

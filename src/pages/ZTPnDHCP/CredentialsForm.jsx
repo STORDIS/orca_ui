@@ -4,7 +4,7 @@ import { dhcpCredentialsURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import Tooltip from "@mui/material/Tooltip";
 
-export const CredentialForm = () => {
+export const CredentialForm = ({ sendCredentialsToParent }) => {
   const instance = interceptor();
   const [configStatus, setConfigStatus] = useState("");
 
@@ -22,12 +22,12 @@ export const CredentialForm = () => {
     instance
       .get(dhcpCredentialsURL())
       .then((res) => {
-        console.log(res.data[0]);
         setFormData({
           mgt_ip: res.data[0].device_ip,
           username: res.data[0].username,
           password: res.data[0].password,
         });
+        sendCredentialsToParent(res.data[0]);
       })
       .catch((err) => {
         console.log(err);
