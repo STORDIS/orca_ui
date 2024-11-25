@@ -10,7 +10,8 @@ import CredentialForm from "./CredentialsForm";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
-  const fileInputRef = useRef(null);
+  const fileInputZTPRef = useRef(null);
+  const fileInputDHCPRef = useRef(null);
 
   const [dhcpCredentials, setDhcpCredentials] = useState({});
 
@@ -29,7 +30,7 @@ export const ZTPnDHCP = () => {
   // Keep track of unsaved changes
   const hasUnsavedChanges = tab.some((item) => item.status === "unsaved");
 
-  const getFileLangauge = (filename) => {
+  const getFileLanguage = (filename) => {
     const extension = filename.split(".").pop();
     // return 'json';
     return extension;
@@ -60,6 +61,7 @@ export const ZTPnDHCP = () => {
     getStpFileList();
   }, []);
 
+  // ztp apis
   const getStpFileList = () => {
     instance
       .get(ztpURL())
@@ -67,24 +69,24 @@ export const ZTPnDHCP = () => {
         let list = res.data.map((item) => {
           return {
             filename: item.filename,
-            language: getFileLangauge(item.filename),
+            language: getFileLanguage(item.filename),
             content: item.content,
             status: "saved",
           };
         });
 
         setFiles(list);
-        setFile(list[0]);
+        // setFile(list[0]);
 
-        let tabList = res.data.map((item) => {
+        let tabList = res.data[0].map((item) => {
           return {
             filename: item.filename,
-            language: getFileLangauge(item.filename),
+            language: getFileLanguage(item.filename),
             status: "saved",
           };
         });
 
-        setTab(tabList);
+        setTab([]);
       })
       .catch((err) => {
         console.error(err);
@@ -139,6 +141,104 @@ export const ZTPnDHCP = () => {
       .finally(() => {});
   };
 
+  const handleFileChangeZTP = (event) => {
+    const uploadedFile = event.target.files[0];
+
+    if (uploadedFile) {
+      const reader = new FileReader();
+      let fileText = "";
+      reader.onload = (e) => {
+        fileText = e.target.result;
+
+        setFiles([
+          ...files,
+          {
+            filename: uploadedFile.name,
+            language: uploadedFile.type.split("/")[1],
+            content: fileText,
+            status: "unsaved",
+          },
+        ]);
+
+        setFile({
+          filename: uploadedFile.name,
+          language: uploadedFile.type.split("/")[1],
+          content: fileText,
+          status: "unsaved",
+        });
+
+        setTab([
+          ...tab,
+          {
+            filename: uploadedFile.name,
+            language: uploadedFile.type.split("/")[1],
+            status: "unsaved",
+          },
+        ]);
+      };
+      reader.readAsText(uploadedFile);
+    }
+  };
+
+  // dhcp apis
+
+  const putDhcpFiles = (device_ip, payload) => {
+    instance
+      .put(dhcpConfigURL(device_ip), payload)
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getDhcpFiles = (device_ip) => {
+    instance
+      .get(dhcpConfigURL(device_ip))
+      .then((res) => {
+        console.log(res.data);
+
+        setFiles((prevFiles) => [
+          ...prevFiles,
+          {
+            filename: res.data.filename,
+            language: getFileLanguage(res.data.filename),
+            content: res.data.content,
+            status: "saved",
+          },
+        ]);
+
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleFileChangeDHCP = (event) => {
+    const uploadedFile = event.target.files[0];
+
+    if (uploadedFile) {
+      const reader = new FileReader();
+      let fileText = "";
+      reader.onload = (e) => {
+        fileText = e.target.result;
+        console.log({
+          filename: uploadedFile.name,
+          content: fileText,
+        });
+
+        putDhcpFiles(dhcpCredentials.device_ip, {
+          mgt_ip: dhcpCredentials.device_ip,
+          content: fileText,
+        });
+      };
+      reader.readAsText(uploadedFile);
+    }
+  };
+
+  // other functions
+
   const handleResize = () => {
     if (parentDivRef.current) {
       setLayout({
@@ -190,7 +290,8 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
-    const updatedFileList = tab.map((item) => {
+    setTab(updatedTab);
+    const updatedFileList = files.map((item) => {
       if (item.filename === file.filename) {
         return {
           ...item,
@@ -200,8 +301,6 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
-
-    setTab(updatedTab);
     setFiles(updatedFileList);
     setFile({
       filename: file.filename,
@@ -228,45 +327,6 @@ export const ZTPnDHCP = () => {
       content: list.content,
     };
     putZtpFile(payload, true);
-  };
-
-  const handleFileChange = (event) => {
-    const uploadedFile = event.target.files[0];
-
-    if (uploadedFile) {
-      const reader = new FileReader();
-      let fileText = "";
-      reader.onload = (e) => {
-        fileText = e.target.result;
-
-        setFiles([
-          ...files,
-          {
-            filename: uploadedFile.name,
-            language: uploadedFile.type.split("/")[1],
-            content: fileText,
-            status: "unsaved",
-          },
-        ]);
-
-        setFile({
-          filename: uploadedFile.name,
-          language: uploadedFile.type.split("/")[1],
-          content: fileText,
-          status: "unsaved",
-        });
-
-        setTab([
-          ...tab,
-          {
-            filename: uploadedFile.name,
-            language: uploadedFile.type.split("/")[1],
-            status: "unsaved",
-          },
-        ]);
-      };
-      reader.readAsText(uploadedFile);
-    }
   };
 
   const removeFile = (list) => {
@@ -316,17 +376,6 @@ export const ZTPnDHCP = () => {
     console.log(e.device_ip);
     getDhcpFiles(e.device_ip);
   };
-  const getDhcpFiles = (device_ip) => {
-    instance
-      .get(dhcpConfigURL(device_ip))
-      .then((res) => {
-        console.log(res.data);
-        // setFiles(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   return (
     <div
@@ -356,25 +405,43 @@ export const ZTPnDHCP = () => {
             <div className="fileBottomSection">
               <button
                 onClick={() => {
-                  fileInputRef.current.click();
+                  fileInputZTPRef.current.click();
                 }}
+                className="ml-5"
               >
-                Add File
+                ZTP
                 <FaFolderPlus className="ml-5" />
               </button>
               <input
                 type="file"
                 // multiple
-                accept=".txt, .yml, .json"
-                ref={fileInputRef}
+                accept=".txt, .yml, .json, .conf"
+                ref={fileInputZTPRef}
                 style={{ display: "none" }} // Hide the input element
-                onChange={handleFileChange}
+                onChange={handleFileChangeZTP}
+              />
+              <button
+                onClick={() => {
+                  fileInputDHCPRef.current.click();
+                }}
+                className="ml-5"
+              >
+                DHCP
+                <FaFolderPlus className="ml-5" />
+              </button>
+              <input
+                type="file"
+                // multiple
+                accept=".txt, .yml, .json, .conf"
+                ref={fileInputDHCPRef}
+                style={{ display: "none" }} // Hide the input element
+                onChange={handleFileChangeDHCP}
               />
             </div>
           </div>
 
           <div className="editor">
-            <div className="tab">
+            <div className="tab" id="tabContainer">
               {tab.map((list, index) => (
                 <div
                   className={`tabButton ${
@@ -400,6 +467,7 @@ export const ZTPnDHCP = () => {
 
             <div
               className="resizable"
+              id="editorContainer"
               ref={parentDivRef}
               onMouseMove={handleResize}
             >
@@ -417,7 +485,7 @@ export const ZTPnDHCP = () => {
             </div>
 
             <div className="editorBottomSection">
-              <button className="addFileButton" onClick={() => save(file)}>
+              <button className="" onClick={() => save(file)}>
                 Save
               </button>
             </div>

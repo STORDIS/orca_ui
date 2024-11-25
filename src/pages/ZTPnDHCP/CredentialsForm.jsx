@@ -9,7 +9,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
   const [configStatus, setConfigStatus] = useState("");
 
   const [formData, setFormData] = useState({
-    mgt_ip: "",
+    device_ip: "",
     username: "",
     password: "",
   });
@@ -23,7 +23,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
       .get(dhcpCredentialsURL())
       .then((res) => {
         setFormData({
-          mgt_ip: res.data[0].device_ip,
+          device_ip: res.data[0].device_ip,
           username: res.data[0].username,
           password: res.data[0].password,
         });
@@ -77,8 +77,8 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
             type="text"
             placementholder=""
             onChange={handleChange}
-            name="mgt_ip"
-            value={formData.mgt_ip}
+            name="device_ip"
+            value={formData.device_ip}
           />
         </div>
         <div className="form-field w-25">
