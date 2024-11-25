@@ -13,7 +13,7 @@ export const ZTPnDHCP = () => {
   const fileInputZTPRef = useRef(null);
   const fileInputDHCPRef = useRef(null);
 
-  const [dhcpCredentials, setDhcpCredentials] = useState({});
+  const [deviceIp, setDeviceIp] = useState("");
 
   const instance = interceptor();
 
@@ -59,8 +59,13 @@ export const ZTPnDHCP = () => {
 
   useEffect(() => {
     getStpFileList();
-    getDhcpFiles();
   }, []);
+
+  useEffect(() => {
+    if (deviceIp) {
+      getDhcpFiles(deviceIp);
+    }
+  }, [deviceIp]);
 
   // ztp apis
   const getStpFileList = () => {
@@ -206,14 +211,14 @@ export const ZTPnDHCP = () => {
 
   const putDhcpFiles = (payload, getfile) => {
     instance
-      .put(dhcpConfigURL(dhcpCredentials.device_ip), payload)
+      .put(dhcpConfigURL(deviceIp), payload)
       .then((res) => {})
       .catch((err) => {
         console.log(err);
       })
       .finally(() => {
         if (getfile) {
-          getDhcpFiles(dhcpCredentials.device_ip);
+          getDhcpFiles(deviceIp);
         }
       });
   };
@@ -303,15 +308,23 @@ export const ZTPnDHCP = () => {
 
     setTab(updatedTab);
     setFiles(updatedTab);
-    const payload = {
-      filename: list.filename,
-      content: list.content,
-    };
 
     if (list.filename === "dhcpd.conf") {
-      putDhcpFiles(payload, true);
+      putDhcpFiles(
+        {
+          mgt_ip: deviceIp,
+          content: list.content,
+        },
+        true
+      );
     } else {
-      putZtpFile(payload, true);
+      putZtpFile(
+        {
+          filename: list.filename,
+          content: list.content,
+        },
+        true
+      );
     }
   };
 
@@ -357,10 +370,9 @@ export const ZTPnDHCP = () => {
     });
   };
 
-  const getCredentials = (e) => {
-    setDhcpCredentials(e);
-    console.log(e.device_ip);
-    getDhcpFiles(e.device_ip);
+  const getDeviceIp = (e) => {
+    setDeviceIp(e);
+    // console.log(e.device_ip);
   };
 
   return (
@@ -368,7 +380,7 @@ export const ZTPnDHCP = () => {
       className=""
       onClick={() => setPopover({ ...popover, visible: false })}
     >
-      <CredentialForm sendCredentialsToParent={getCredentials} />
+      <CredentialForm sendCredentialsToParent={getDeviceIp} />
 
       <div className="listContainer">
         <div className="editorContainer">

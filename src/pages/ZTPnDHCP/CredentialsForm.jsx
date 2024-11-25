@@ -27,7 +27,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
           username: res.data[0].username,
           password: res.data[0].password,
         });
-        sendCredentialsToParent(res.data[0]);
+        sendCredentialsToParent(res.data[0].device_ip);
       })
       .catch((err) => {
         console.log(err);
