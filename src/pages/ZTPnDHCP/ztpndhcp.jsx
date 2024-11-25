@@ -59,6 +59,7 @@ export const ZTPnDHCP = () => {
 
   useEffect(() => {
     getStpFileList();
+    getDhcpFiles();
   }, []);
 
   // ztp apis
@@ -182,17 +183,6 @@ export const ZTPnDHCP = () => {
 
   // dhcp apis
 
-  const putDhcpFiles = (device_ip, payload) => {
-    instance
-      .put(dhcpConfigURL(device_ip), payload)
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   const getDhcpFiles = (device_ip) => {
     instance
       .get(dhcpConfigURL(device_ip))
@@ -208,33 +198,24 @@ export const ZTPnDHCP = () => {
             status: "saved",
           },
         ]);
-
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const handleFileChangeDHCP = (event) => {
-    const uploadedFile = event.target.files[0];
-
-    if (uploadedFile) {
-      const reader = new FileReader();
-      let fileText = "";
-      reader.onload = (e) => {
-        fileText = e.target.result;
-        console.log({
-          filename: uploadedFile.name,
-          content: fileText,
-        });
-
-        putDhcpFiles(dhcpCredentials.device_ip, {
-          mgt_ip: dhcpCredentials.device_ip,
-          content: fileText,
-        });
-      };
-      reader.readAsText(uploadedFile);
-    }
+  const putDhcpFiles = (payload, getfile) => {
+    instance
+      .put(dhcpConfigURL(dhcpCredentials.device_ip), payload)
+      .then((res) => {})
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        if (getfile) {
+          getDhcpFiles(dhcpCredentials.device_ip);
+        }
+      });
   };
 
   // other functions
@@ -326,7 +307,12 @@ export const ZTPnDHCP = () => {
       filename: list.filename,
       content: list.content,
     };
-    putZtpFile(payload, true);
+
+    if (list.filename === "dhcpd.conf") {
+      putDhcpFiles(payload, true);
+    } else {
+      putZtpFile(payload, true);
+    }
   };
 
   const removeFile = (list) => {
@@ -420,23 +406,6 @@ export const ZTPnDHCP = () => {
                 style={{ display: "none" }} // Hide the input element
                 onChange={handleFileChangeZTP}
               />
-              <button
-                onClick={() => {
-                  fileInputDHCPRef.current.click();
-                }}
-                className="ml-5"
-              >
-                DHCP
-                <FaFolderPlus className="ml-5" />
-              </button>
-              <input
-                type="file"
-                // multiple
-                accept=".txt, .yml, .json, .conf"
-                ref={fileInputDHCPRef}
-                style={{ display: "none" }} // Hide the input element
-                onChange={handleFileChangeDHCP}
-              />
             </div>
           </div>
 
@@ -454,11 +423,13 @@ export const ZTPnDHCP = () => {
                       className="cancel mr-5"
                       onClick={() => removeTab(list)}
                     />
-                    <div onClick={() => setFile(list)}>{list.filename}</div>
+                    <div className="mr-5" onClick={() => setFile(list)}>
+                      {list.filename}
+                    </div>
                   </div>
                   {list.status === "unsaved" && (
                     <div onClick={() => setFile(list)}>
-                      <FaCircle />
+                      <FaCircle style={{ color: "#c0c0c0" }} />
                     </div>
                   )}
                 </div>
