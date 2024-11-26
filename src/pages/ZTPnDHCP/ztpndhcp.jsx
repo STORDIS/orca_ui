@@ -281,7 +281,11 @@ export const ZTPnDHCP = () => {
   };
 
   const removeTab = (list) => {
-    if (list.status !== "unsaved") {
+    const shouldRemove =
+      list.status !== "unsaved" ||
+      window.confirm("Unsaved changes. Do you want to remove it?");
+
+    if (shouldRemove) {
       const updatedTab = tab.filter((item) => item.filename !== list.filename);
       if (updatedTab.length === 0) {
         setTab([]);
@@ -294,8 +298,6 @@ export const ZTPnDHCP = () => {
         setTab(updatedTab);
         setFile(updatedTab[0]);
       }
-    } else {
-      alert("Unsaved changes, cannot remove. Please save.");
     }
   };
 
