@@ -140,7 +140,11 @@ export function dhcpCredentialsURL() {
 }
 
 export function dhcpConfigURL(device_ip) {
-  return host_addr + "/files/dhcp/config?mgt_ip=" + device_ip;
+  return host_addr + "/files/dhcp/config?device_ip=" + device_ip;
+}
+
+export function dhcpBackupURL(device_ip) {
+  return host_addr + "/files/dhcp/backups?device_ip=" + device_ip;
 }
 
 // other urls

@@ -12,6 +12,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
     device_ip: "",
     username: "",
     password: "",
+    ssh_access: false,
   });
 
   useEffect(() => {
@@ -22,12 +23,8 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
     instance
       .get(dhcpCredentialsURL())
       .then((res) => {
-        setFormData({
-          device_ip: res.data[0].device_ip,
-          username: res.data[0].username,
-          password: res.data[0].password,
-        });
-        sendCredentialsToParent(res.data[0].device_ip);
+        setFormData(res.data);
+        sendCredentialsToParent(res.data.device_ip);
       })
       .catch((err) => {
         console.log(err);
@@ -104,6 +101,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
             onChange={handleChange}
             name="password"
             value={formData.password}
+            disabled={formData.ssh_access}
           />
         </div>
         <div className="form-field w-25">
@@ -116,7 +114,13 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
           >
             <Tooltip placement="top" title="tool tip here">
               SSH Connection :
-              <FaCircle className="ml-5" />
+              <FaCircle
+                className={`ml-5 ${
+                  formData.ssh_access === formData.ssh_access
+                    ? "success"
+                    : "danger"
+                }`}
+              />
             </Tooltip>
           </span>
         </div>
