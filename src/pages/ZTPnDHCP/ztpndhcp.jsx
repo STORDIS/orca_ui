@@ -78,31 +78,38 @@ export const ZTPnDHCP = () => {
     instance
       .get(ztpURL())
       .then((res) => {
-        let list = res.data.map((item) => {
-          return {
-            filename: item.filename,
-            language: getFileLanguage(item.filename),
-            content: item.content,
-            status: "saved",
-          };
-        });
+        if (res?.data?.length > 0) {
+          let list = res.data.map((item) => {
+            return {
+              filename: item.filename,
+              language: getFileLanguage(item.filename),
+              content: item.content,
+              status: "saved",
+            };
+          });
 
-        setFiles(list);
-        // setFile(list[0]);
+          setFiles(list);
+          setFile(list[0]);
 
-        let tabList = res.data[0].map((item) => {
-          return {
-            filename: item.filename,
-            language: getFileLanguage(item.filename),
-            status: "saved",
-          };
-        });
-
-        setTab([]);
+          console.log("tab 100");
+          setTab([
+            {
+              filename: res.data[0].filename,
+              language: res.data[0].language,
+              status: "saved",
+            },
+          ]);
+        } else {
+          setFiles([]);
+          setFile({
+            filename: "default",
+            language: "txt",
+            content: "Select a file",
+          });
+          setTab([]);
+        }
       })
-      .catch((err) => {
-        console.error(err);
-      });
+      .catch((err) => {});
   };
 
   const getZtpFile = (filename) => {
@@ -120,18 +127,14 @@ export const ZTPnDHCP = () => {
           })
         );
       })
-      .catch((err) => {
-        console.error(err);
-      });
+      .catch((err) => {});
   };
 
   const putZtpFile = (payload, getfile) => {
     instance
       .put(ztpURL(), payload)
       .then((res) => {})
-      .catch((err) => {
-        console.error(err);
-      })
+      .catch((err) => {})
       .finally(() => {
         if (getfile) {
           getZtpFile(payload.filename);
@@ -143,49 +146,11 @@ export const ZTPnDHCP = () => {
     instance
       .delete(ztpURL(), { data: payload })
       .then((res) => {})
-      .catch((err) => {
-        console.error(err);
-      })
+      .catch((err) => {})
       .finally(() => {});
   };
 
-  const handleFileChangeZTP = (event) => {
-    const uploadedFile = event.target.files[0];
-
-    if (uploadedFile) {
-      const reader = new FileReader();
-      let fileText = "";
-      reader.onload = (e) => {
-        fileText = e.target.result;
-
-        setFiles([
-          ...files,
-          {
-            filename: uploadedFile.name,
-            language: uploadedFile.type.split("/")[1],
-            content: fileText,
-            status: "unsaved",
-          },
-        ]);
-
-        setFile({
-          filename: uploadedFile.name,
-          language: uploadedFile.type.split("/")[1],
-          content: fileText,
-          status: "unsaved",
-        });
-        setTab([
-          ...tab,
-          {
-            filename: uploadedFile.name,
-            language: uploadedFile.type.split("/")[1],
-            status: "unsaved",
-          },
-        ]);
-      };
-      reader.readAsText(uploadedFile);
-    }
-  };
+  const createNewFile = (event) => {};
 
   // dhcp apis
 
@@ -207,9 +172,7 @@ export const ZTPnDHCP = () => {
           }),
         ]);
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const getDhcpFiles = (device_ip, getfile) => {
@@ -239,18 +202,14 @@ export const ZTPnDHCP = () => {
           ]);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      });
+      .catch((err) => {});
   };
 
   const putDhcpFiles = (payload, getfile) => {
     instance
       .put(dhcpConfigURL(deviceIp), payload)
       .then((res) => {})
-      .catch((err) => {
-        console.log(err);
-      })
+      .catch((err) => {})
       .finally(() => {
         if (getfile) {
           getDhcpFiles(deviceIp, getfile);
@@ -270,10 +229,12 @@ export const ZTPnDHCP = () => {
   };
 
   const addTab = (list, clickType) => {
+    console.log("tab added", list);
     if (clickType === "single") {
       const exists = tab.some((item) => item.filename === list.filename);
 
       if (!exists) {
+        console.log("tab 256");
         setTab([
           ...tab,
           {
@@ -284,6 +245,7 @@ export const ZTPnDHCP = () => {
         ]);
       }
     } else {
+      console.log("tab 276");
       setTab([
         {
           filename: list.filename,
@@ -292,16 +254,17 @@ export const ZTPnDHCP = () => {
         },
       ]);
     }
-    console.log(list);
 
     setFile(list);
   };
-  console.log(tab);
 
   const removeTab = (list) => {
+    console.log("tab removed", list);
+
     if (list.status !== "unsaved") {
       const updatedTab = tab.filter((item) => item.filename !== list.filename);
       if (updatedTab.length === 0) {
+        console.log("tab 295");
         setTab([]);
         setFile({
           filename: "default",
@@ -309,6 +272,7 @@ export const ZTPnDHCP = () => {
           content: "Select a file",
         });
       } else {
+        console.log("tab 303");
         setTab(updatedTab);
         setFile(updatedTab[0]);
       }
@@ -318,43 +282,42 @@ export const ZTPnDHCP = () => {
   };
 
   const editorChange = (e, file) => {
-    console.log(file);
-    if (Object.keys(file).length !== 0 && file?.status !== "readonly") {
-      console.log("===");
-      const updatedTab = tab.map((item) => {
-        if (
-          item.filename === file.filename &&
-          !file.filename.includes("dhcpd.conf.orca")
-        ) {
-          return {
-            ...item,
-            status: file?.status !== "readonly" ? "unsaved" : "readonly",
-          };
-        }
-        return item;
-      });
-      setTab(updatedTab);
-      const updatedFileList = files.map((item) => {
-        if (item.filename === file.filename) {
-          return {
-            ...item,
-            content: e,
-            status: "unsaved",
-          };
-        }
-        return item;
-      });
-      setFiles(updatedFileList);
-      setFile({
-        filename: file.filename,
-        language: file.language,
-        content: e,
-      });
-    } else {
-    }
+    console.log("editor changed if");
+    const updatedTab = tab.map((item) => {
+      if (
+        item.filename === file.filename &&
+        !file.filename.includes("dhcpd.conf.orca")
+      ) {
+        return {
+          ...item,
+          status: file?.status !== "readonly" ? "unsaved" : "readonly",
+        };
+      }
+      return item;
+    });
+    console.log("tab 328");
+    setTab(updatedTab);
+    const updatedFileList = files.map((item) => {
+      if (item.filename === file.filename) {
+        return {
+          ...item,
+          content: e,
+          status: "unsaved",
+        };
+      }
+      return item;
+    });
+    setFiles(updatedFileList);
+    setFile({
+      filename: file.filename,
+      language: file.language,
+      content: e,
+    });
   };
 
   const save = (list) => {
+    console.log("file saved", list);
+
     const updatedTab = tab.map((item) => {
       if (item.filename === list.filename) {
         return {
@@ -373,6 +336,7 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
+    console.log("tab 371");
     setTab(updatedTab);
     setFiles(updatedFiles);
 
@@ -432,6 +396,8 @@ export const ZTPnDHCP = () => {
   };
 
   const removeFile = (list) => {
+    console.log("file removed", list);
+
     const payload = {
       filename: list.filename,
     };
@@ -444,6 +410,7 @@ export const ZTPnDHCP = () => {
 
     const updatedTab = tab.filter((item) => item.filename !== list.filename);
     if (updatedTab.length === 0) {
+      console.log("tab 445");
       setTab([]);
       setFile({
         filename: "default",
@@ -451,6 +418,7 @@ export const ZTPnDHCP = () => {
         content: "Select a file",
       });
     } else {
+      console.log("tab 453");
       setTab(updatedTab);
       setFile(updatedTab[0]);
     }
@@ -489,39 +457,39 @@ export const ZTPnDHCP = () => {
           <div className="fileSelection">
             <div className="fileHeader">File list</div>
 
-            {files.map((list, index) => (
-              <Tooltip title={"file is " + list?.status} placement="right">
-                <div
-                  className={`fileItem ${
-                    file?.filename === list?.filename ? "active" : ""
-                  }`}
-                  key={index}
-                  onClick={() => addTab(list, "single")}
-                  onDoubleClick={() => addTab(list, "double")}
-                  onContextMenu={(e) => handleRightClick(e, list)}
-                >
-                  {list?.filename}
-                </div>
-              </Tooltip>
-            ))}
+            <div
+              style={{
+                height: layout.height,
+                overflowY: "auto",
+              }}
+            >
+              {files.map((list, index) => (
+                <Tooltip title={"file is " + list?.status} placement="right">
+                  <div
+                    className={`fileItem ${
+                      file?.filename === list?.filename ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => addTab(list, "single")}
+                    onDoubleClick={() => addTab(list, "double")}
+                    onContextMenu={(e) => handleRightClick(e, list)}
+                  >
+                    {list?.filename}
+                  </div>
+                </Tooltip>
+              ))}
+            </div>
+
             <div className="fileBottomSection">
               <button
                 onClick={() => {
-                  fileInputZTPRef.current.click();
+                  createNewFile();
                 }}
                 className="ml-5"
               >
                 ZTP
                 <FaFolderPlus className="ml-5" />
               </button>
-              <input
-                type="file"
-                // multiple
-                accept=".txt, .yml, .json, .conf"
-                ref={fileInputZTPRef}
-                style={{ display: "none" }} // Hide the input element
-                onChange={handleFileChangeZTP}
-              />
             </div>
           </div>
 
@@ -556,30 +524,54 @@ export const ZTPnDHCP = () => {
               ))}
             </div>
 
-            <div
-              className="resizable"
-              id="editorContainer"
-              ref={parentDivRef}
-              onMouseMove={handleResize}
-            >
-              <Editor
-                height={layout.height}
-                width={layout.width}
-                path={file.filename}
-                language={file.language}
-                value={file.content}
-                defaultLanguage={"txt"}
-                defaultValue={"Select a file"}
-                theme="light" // light / vs-dark
-                onChange={(e) => editorChange(e, file)}
-                options={{
-                  readOnly: file.status === "readonly" ? true : false,
-                }}
-              />
-            </div>
+            {file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+              <div
+                className="resizable"
+                id="editorContainer"
+                ref={parentDivRef}
+                onMouseMove={handleResize}
+              >
+                <textarea
+                  name=""
+                  id=""
+                  value={file.content}
+                  style={{
+                    height: layout.height,
+                    width: layout.width,
+                    resize: "none",
+                  }}
+                  readOnly
+                ></textarea>
+              </div>
+            ) : (
+              <div
+                className="resizable"
+                id="editorContainer"
+                ref={parentDivRef}
+                onMouseMove={handleResize}
+              >
+                <Editor
+                  height={layout.height}
+                  width={layout.width}
+                  path={file.filename}
+                  language={file.language}
+                  value={file.content}
+                  defaultLanguage={"txt"}
+                  defaultValue={"Select a file"}
+                  theme="light" // light / vs-dark
+                  onChange={(e) => editorChange(e, file)}
+                />
+              </div>
+            )}
 
             <div className="editorBottomSection">
-              <button className="" onClick={() => save(file)}>
+              <button
+                className=""
+                onClick={() => save(file)}
+                disabled={
+                  file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? true : false
+                }
+              >
                 Save
               </button>
             </div>
