@@ -3,7 +3,7 @@ import Editor from "@monaco-editor/react";
 import "./ztpndhcp.scss";
 import { FaRegCircleXmark } from "react-icons/fa6";
 import { FaCircle } from "react-icons/fa";
-import { FaFolderPlus } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import {
   ztpURL,
   dhcpConfigURL,
@@ -11,12 +11,14 @@ import {
 } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import CredentialForm from "./CredentialsForm";
-import { Tooltip } from "@mui/material";
+
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
+
+import Modal from "../../components/modal/Modal";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
-  const fileInputZTPRef = useRef(null);
-  const fileInputDHCPRef = useRef(null);
 
   const [deviceIp, setDeviceIp] = useState("");
 
@@ -34,6 +36,8 @@ export const ZTPnDHCP = () => {
 
   const [file, setFile] = useState({});
   const [tab, setTab] = useState([]);
+
+  const [isModalOpen, setIsModalOpen] = useState("null");
 
   // Keep track of unsaved changes
   const hasUnsavedChanges = tab.some((item) => item.status === "unsaved");
@@ -105,7 +109,7 @@ export const ZTPnDHCP = () => {
           setztpFiles([]);
           setFile({
             filename: "default",
-            language: "txt",
+            language: "json",
             content: "Select a file",
           });
           setTab([]);
@@ -152,7 +156,34 @@ export const ZTPnDHCP = () => {
       .finally(() => {});
   };
 
-  const createNewFile = (event) => {};
+  const createNewFile = (event) => {
+    const n = ztpFiles.length + 1;
+    setztpFiles((prevFiles) => [
+      ...prevFiles,
+      {
+        filename: "new ztp" + n + ".json",
+        language: "json",
+        content: "// new file created. write config here",
+        status: "unsaved",
+      },
+    ]);
+    setFile({
+      filename: "new ztp" + n + ".json",
+      language: "json",
+      content: "// new file created. write config here",
+      status: "unsaved",
+    });
+
+    addTab(
+      {
+        filename: "new ztp" + n + ".json",
+        language: "json",
+        content: "// new file created. write config here",
+        status: "unsaved",
+      },
+      "single"
+    );
+  };
 
   // dhcp apis
 
@@ -250,7 +281,7 @@ export const ZTPnDHCP = () => {
         setTab([]);
         setFile({
           filename: "default",
-          language: "txt",
+          language: "json",
           content: "Select a file",
         });
       } else {
@@ -348,6 +379,7 @@ export const ZTPnDHCP = () => {
   };
 
   const renameFile = (list) => {
+    console.log(list);
     // const updatedTab = tab.map((item) => {
     //   if (item.filename === oldFileName) {
     //     return {
@@ -399,7 +431,7 @@ export const ZTPnDHCP = () => {
       setTab([]);
       setFile({
         filename: "default",
-        language: "txt",
+        language: "json",
         content: "Select a file",
       });
     } else {
@@ -429,6 +461,14 @@ export const ZTPnDHCP = () => {
     setDeviceIp(e);
   };
 
+  const CustomToolTip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      fontSize: 15,
+    },
+  }));
+
   return (
     <div
       className=""
@@ -440,7 +480,6 @@ export const ZTPnDHCP = () => {
         <div className="editorContainer">
           <div className="fileSelection">
             <div className="fileHeader">File list</div>
-
             <div
               style={{
                 height: layout.height,
@@ -448,22 +487,31 @@ export const ZTPnDHCP = () => {
               }}
             >
               {ztpFiles.map((list, index) => (
-                <Tooltip title={"file is " + list?.status} placement="right">
+                <CustomToolTip
+                  arrow
+                  title={"file is " + list?.status}
+                  placement="right"
+                  key={index}
+                >
                   <div
                     className={`fileItem ${
                       file?.filename === list?.filename ? "active" : ""
                     }`}
-                    key={index}
                     onClick={() => addTab(list, "single")}
                     onDoubleClick={() => addTab(list, "double")}
                     onContextMenu={(e) => handleRightClick(e, list)}
                   >
-                    {list?.filename}
+                    <p className="text-overflow">{list?.filename}</p>
                   </div>
-                </Tooltip>
+                </CustomToolTip>
               ))}
               {dhcpFiles.map((list, index) => (
-                <Tooltip title={"file is " + list?.status} placement="right">
+                <CustomToolTip
+                  arrow
+                  title={"file is " + list?.status}
+                  placement="right"
+                  key={index}
+                >
                   <div
                     className={`fileItem ${
                       file?.filename === list?.filename ? "active" : ""
@@ -473,12 +521,17 @@ export const ZTPnDHCP = () => {
                     onDoubleClick={() => addTab(list, "double")}
                     onContextMenu={(e) => handleRightClick(e, list)}
                   >
-                    {list?.filename}
+                    <p className="text-overflow">{list?.filename}</p>
                   </div>
-                </Tooltip>
+                </CustomToolTip>
               ))}
               {backupFiles.map((list, index) => (
-                <Tooltip title={"file is " + list?.status} placement="right">
+                <CustomToolTip
+                  arrow
+                  title={"file is " + list?.status}
+                  placement="right"
+                  key={index}
+                >
                   <div
                     className={`fileItem ${
                       file?.filename === list?.filename ? "active" : ""
@@ -488,9 +541,9 @@ export const ZTPnDHCP = () => {
                     onDoubleClick={() => addTab(list, "double")}
                     onContextMenu={(e) => handleRightClick(e, list)}
                   >
-                    {list?.filename}
+                    <p className="text-overflow">{list?.filename}</p>
                   </div>
-                </Tooltip>
+                </CustomToolTip>
               ))}
             </div>
 
@@ -500,9 +553,13 @@ export const ZTPnDHCP = () => {
                   createNewFile();
                 }}
                 className="ml-5"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                }}
               >
-                ZTP
-                <FaFolderPlus className="ml-5" />
+                <FaPlus className="mr-5" />
+                ADD FILE
               </button>
             </div>
           </div>
@@ -553,6 +610,7 @@ export const ZTPnDHCP = () => {
                     height: "100%",
                     width: "100%",
                     resize: "vertical",
+                    minHeight: "60vh",
                   }}
                   readOnly
                 ></textarea>
@@ -570,7 +628,7 @@ export const ZTPnDHCP = () => {
                   path={file.filename}
                   language={file.language}
                   value={file.content}
-                  defaultLanguage={"txt"}
+                  defaultLanguage={"json"}
                   defaultValue={"Select a file"}
                   theme="light" // light / vs-dark
                   onChange={(e) => editorChange(e, file)}
@@ -606,17 +664,37 @@ export const ZTPnDHCP = () => {
               }}
             >
               <ul>
-                {popover.file.filename !== "dhcpd.conf" ? (
-                  <li onClick={() => renameFile(popover.file)}>Rename file</li>
+                {popover.file.filename !== "dhcpd.conf" &&
+                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                  <li onClick={() => setIsModalOpen("renameModal")}>
+                    Rename file
+                  </li>
                 ) : null}
-                {popover.file.filename !== "dhcpd.conf" ? (
+                {popover.file.filename !== "dhcpd.conf" &&
+                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
                   <li onClick={() => removeFile(popover.file)}>Remove file</li>
                 ) : null}
-                {/* <li onClick={() => renameFile(popover.file)}>Rename file</li>
-                <li onClick={() => removeFile(popover.file)}>Remove file</li> */}
-                <li onClick={() => save(popover.file)}>Save file</li>
+
+                {!popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                  <li onClick={() => save(popover.file)}>Save file</li>
+                ) : null}
+                {popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                  <li> Read Only </li>
+                ) : null}
               </ul>
             </div>
+          )}
+
+          {isModalOpen === "renameModal" && (
+            <Modal
+              show={true}
+              onClose={() => setIsModalOpen("null")}
+              title="Interface IP Address"
+              onSubmit={(e) => renameFile(e)}
+              id="PrimarySecondaryForm"
+            >
+              <div>Modal works</div>
+            </Modal>
           )}
         </div>
       </div>

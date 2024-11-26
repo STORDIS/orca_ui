@@ -66,7 +66,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
     <div className="listContainer">
       <div className="form-wrapper" style={{ alignItems: "center" }}>
         <div className="form-field w-25">
-          <Tooltip placement="top" title="tool tip here">
+          <Tooltip arrow placement="top" title="tool tip here">
             <label htmlFor=""> Server IP :</label>
           </Tooltip>
 
@@ -79,7 +79,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
           />
         </div>
         <div className="form-field w-25">
-          <Tooltip placement="top" title="tool tip here">
+          <Tooltip arrow placement="top" title="tool tip here">
             <label htmlFor=""> SSH User Name :</label>
           </Tooltip>
 
@@ -92,7 +92,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
           />
         </div>
         <div className="form-field w-25">
-          <Tooltip placement="top" title="tool tip here">
+          <Tooltip arrow placement="top" title="tool tip here">
             <label htmlFor=""> SSH Password :</label>
           </Tooltip>
           <input
@@ -112,7 +112,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
               textAlign: "center",
             }}
           >
-            <Tooltip placement="top" title="tool tip here">
+            <Tooltip arrow placement="top" title="tool tip here">
               SSH Connection :
               <FaCircle
                 className={`ml-5 ${
