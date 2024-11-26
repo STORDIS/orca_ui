@@ -91,7 +91,6 @@ export const ZTPnDHCP = () => {
           setFiles(list);
           setFile(list[0]);
 
-          console.log("tab 100");
           setTab([
             {
               filename: res.data[0].filename,
@@ -229,12 +228,10 @@ export const ZTPnDHCP = () => {
   };
 
   const addTab = (list, clickType) => {
-    console.log("tab added", list);
     if (clickType === "single") {
       const exists = tab.some((item) => item.filename === list.filename);
 
       if (!exists) {
-        console.log("tab 256");
         setTab([
           ...tab,
           {
@@ -245,7 +242,6 @@ export const ZTPnDHCP = () => {
         ]);
       }
     } else {
-      console.log("tab 276");
       setTab([
         {
           filename: list.filename,
@@ -259,12 +255,9 @@ export const ZTPnDHCP = () => {
   };
 
   const removeTab = (list) => {
-    console.log("tab removed", list);
-
     if (list.status !== "unsaved") {
       const updatedTab = tab.filter((item) => item.filename !== list.filename);
       if (updatedTab.length === 0) {
-        console.log("tab 295");
         setTab([]);
         setFile({
           filename: "default",
@@ -272,7 +265,6 @@ export const ZTPnDHCP = () => {
           content: "Select a file",
         });
       } else {
-        console.log("tab 303");
         setTab(updatedTab);
         setFile(updatedTab[0]);
       }
@@ -282,7 +274,6 @@ export const ZTPnDHCP = () => {
   };
 
   const editorChange = (e, file) => {
-    console.log("editor changed if");
     const updatedTab = tab.map((item) => {
       if (
         item.filename === file.filename &&
@@ -295,7 +286,6 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
-    console.log("tab 328");
     setTab(updatedTab);
     const updatedFileList = files.map((item) => {
       if (item.filename === file.filename) {
@@ -316,8 +306,6 @@ export const ZTPnDHCP = () => {
   };
 
   const save = (list) => {
-    console.log("file saved", list);
-
     const updatedTab = tab.map((item) => {
       if (item.filename === list.filename) {
         return {
@@ -336,7 +324,6 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
-    console.log("tab 371");
     setTab(updatedTab);
     setFiles(updatedFiles);
 
@@ -396,8 +383,6 @@ export const ZTPnDHCP = () => {
   };
 
   const removeFile = (list) => {
-    console.log("file removed", list);
-
     const payload = {
       filename: list.filename,
     };
@@ -410,7 +395,6 @@ export const ZTPnDHCP = () => {
 
     const updatedTab = tab.filter((item) => item.filename !== list.filename);
     if (updatedTab.length === 0) {
-      console.log("tab 445");
       setTab([]);
       setFile({
         filename: "default",
@@ -418,7 +402,6 @@ export const ZTPnDHCP = () => {
         content: "Select a file",
       });
     } else {
-      console.log("tab 453");
       setTab(updatedTab);
       setFile(updatedTab[0]);
     }
