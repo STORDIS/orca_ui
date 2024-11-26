@@ -27,7 +27,10 @@ export const ZTPnDHCP = () => {
     width: "100%",
   });
 
-  const [files, setFiles] = useState([]);
+  // const [files, setFiles] = useState([]);
+  const [ztpFiles, setztpFiles] = useState([]);
+  const [dhcpFiles, setdhcpFiles] = useState([]);
+  const [backupFiles, setbackupFiles] = useState([]);
 
   const [file, setFile] = useState({});
   const [tab, setTab] = useState([]);
@@ -63,7 +66,7 @@ export const ZTPnDHCP = () => {
   }, [tab]);
 
   useEffect(() => {
-    getStpFileList();
+    getZtpFileList();
   }, []);
 
   useEffect(() => {
@@ -74,7 +77,7 @@ export const ZTPnDHCP = () => {
   }, [deviceIp]);
 
   // ztp apis
-  const getStpFileList = () => {
+  const getZtpFileList = () => {
     instance
       .get(ztpURL())
       .then((res) => {
@@ -88,7 +91,7 @@ export const ZTPnDHCP = () => {
             };
           });
 
-          setFiles(list);
+          setztpFiles(list);
           setFile(list[0]);
 
           setTab([
@@ -99,7 +102,7 @@ export const ZTPnDHCP = () => {
             },
           ]);
         } else {
-          setFiles([]);
+          setztpFiles([]);
           setFile({
             filename: "default",
             language: "txt",
@@ -117,7 +120,7 @@ export const ZTPnDHCP = () => {
       .then((res) => {
         let data = res.data;
 
-        setFiles((prevFiles) =>
+        setztpFiles((prevFiles) =>
           prevFiles.map((file) => {
             if (file.filename === filename) {
               return { ...file, content: data.content };
@@ -159,17 +162,16 @@ export const ZTPnDHCP = () => {
       .then((res) => {
         let data = res.data;
 
-        setFiles((prevFiles) => [
-          ...prevFiles,
-          ...data.map((item) => {
+        setbackupFiles(
+          data.map((item) => {
             return {
               filename: item.filename,
               language: getFileLanguage(item.filename),
               content: item.content,
               status: "readonly",
             };
-          }),
-        ]);
+          })
+        );
       })
       .catch((err) => {});
   };
@@ -178,28 +180,14 @@ export const ZTPnDHCP = () => {
     instance
       .get(dhcpConfigURL(device_ip))
       .then((res) => {
-        let data = res.data;
-
-        if (getfile) {
-          setFiles((prevFiles) =>
-            prevFiles.map((file) => {
-              if (file.filename === "dhcpd.conf") {
-                return { ...file, content: data.content };
-              }
-              return file;
-            })
-          );
-        } else {
-          setFiles((prevFiles) => [
-            ...prevFiles,
-            {
-              filename: res.data.filename,
-              language: getFileLanguage(res.data.filename),
-              content: res.data.content,
-              status: "saved",
-            },
-          ]);
-        }
+        setdhcpFiles([
+          {
+            filename: res.data.filename,
+            language: getFileLanguage(res.data.filename),
+            content: res.data.content,
+            status: "saved",
+          },
+        ]);
       })
       .catch((err) => {});
   };
@@ -212,6 +200,7 @@ export const ZTPnDHCP = () => {
       .finally(() => {
         if (getfile) {
           getDhcpFiles(deviceIp, getfile);
+          getDhcpBackupFiles(deviceIp);
         }
       });
   };
@@ -287,7 +276,8 @@ export const ZTPnDHCP = () => {
       return item;
     });
     setTab(updatedTab);
-    const updatedFileList = files.map((item) => {
+
+    const updatedFileList = ztpFiles.map((item) => {
       if (item.filename === file.filename) {
         return {
           ...item,
@@ -297,7 +287,7 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
-    setFiles(updatedFileList);
+    setztpFiles(updatedFileList);
     setFile({
       filename: file.filename,
       language: file.language,
@@ -315,19 +305,19 @@ export const ZTPnDHCP = () => {
       }
       return item;
     });
-    const updatedFiles = files.map((item) => {
-      if (item.filename === list.filename) {
-        return {
-          ...item,
-          status: "saved",
-        };
-      }
-      return item;
-    });
     setTab(updatedTab);
-    setFiles(updatedFiles);
 
     if (list.filename === "dhcpd.conf") {
+      const updatedFiles = dhcpFiles.map((item) => {
+        if (item.filename === list.filename) {
+          return {
+            ...item,
+            status: "saved",
+          };
+        }
+        return item;
+      });
+      setdhcpFiles(updatedFiles);
       putDhcpFiles(
         {
           device_ip: deviceIp,
@@ -336,6 +326,17 @@ export const ZTPnDHCP = () => {
         true
       );
     } else {
+      const updatedFiles = ztpFiles.map((item) => {
+        if (item.filename === list.filename) {
+          return {
+            ...item,
+            status: "saved",
+          };
+        }
+        return item;
+      });
+      setztpFiles(updatedFiles);
+
       putZtpFile(
         {
           filename: list.filename,
@@ -388,10 +389,10 @@ export const ZTPnDHCP = () => {
     };
     deleteZtpFile(payload);
 
-    const updatedFiles = files.filter(
+    const updatedFiles = ztpFiles.filter(
       (item) => item.filename !== list.filename
     );
-    setFiles(updatedFiles);
+    setztpFiles(updatedFiles);
 
     const updatedTab = tab.filter((item) => item.filename !== list.filename);
     if (updatedTab.length === 0) {
@@ -446,7 +447,37 @@ export const ZTPnDHCP = () => {
                 overflowY: "auto",
               }}
             >
-              {files.map((list, index) => (
+              {ztpFiles.map((list, index) => (
+                <Tooltip title={"file is " + list?.status} placement="right">
+                  <div
+                    className={`fileItem ${
+                      file?.filename === list?.filename ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => addTab(list, "single")}
+                    onDoubleClick={() => addTab(list, "double")}
+                    onContextMenu={(e) => handleRightClick(e, list)}
+                  >
+                    {list?.filename}
+                  </div>
+                </Tooltip>
+              ))}
+              {dhcpFiles.map((list, index) => (
+                <Tooltip title={"file is " + list?.status} placement="right">
+                  <div
+                    className={`fileItem ${
+                      file?.filename === list?.filename ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => addTab(list, "single")}
+                    onDoubleClick={() => addTab(list, "double")}
+                    onContextMenu={(e) => handleRightClick(e, list)}
+                  >
+                    {list?.filename}
+                  </div>
+                </Tooltip>
+              ))}
+              {backupFiles.map((list, index) => (
                 <Tooltip title={"file is " + list?.status} placement="right">
                   <div
                     className={`fileItem ${
@@ -519,9 +550,9 @@ export const ZTPnDHCP = () => {
                   id=""
                   value={file.content}
                   style={{
-                    height: layout.height,
-                    width: layout.width,
-                    resize: "none",
+                    height: "100%",
+                    width: "100%",
+                    resize: "vertical",
                   }}
                   readOnly
                 ></textarea>
