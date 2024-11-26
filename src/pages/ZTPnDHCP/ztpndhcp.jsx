@@ -39,6 +39,8 @@ export const ZTPnDHCP = () => {
 
   const [isModalOpen, setIsModalOpen] = useState("null");
 
+  const [newFileName, setNewFileName] = useState("");
+
   // Keep track of unsaved changes
   const hasUnsavedChanges = tab.some((item) => item.status === "unsaved");
 
@@ -156,33 +158,37 @@ export const ZTPnDHCP = () => {
       .finally(() => {});
   };
 
-  const createNewFile = (event) => {
-    const n = ztpFiles.length + 1;
-    setztpFiles((prevFiles) => [
-      ...prevFiles,
-      {
-        filename: "new ztp" + n + ".json",
+  const createNewFile = (newFileName) => {
+    if (ztpFiles.some((file) => file.filename === newFileName + ".json")) {
+      alert("File already exists");
+    } else {
+      setIsModalOpen("null");
+      setztpFiles((prevFiles) => [
+        ...prevFiles,
+        {
+          filename: newFileName + ".json",
+          language: "json",
+          content: "// new file created. write config here",
+          status: "unsaved",
+        },
+      ]);
+      setFile({
+        filename: newFileName + ".json",
         language: "json",
         content: "// new file created. write config here",
         status: "unsaved",
-      },
-    ]);
-    setFile({
-      filename: "new ztp" + n + ".json",
-      language: "json",
-      content: "// new file created. write config here",
-      status: "unsaved",
-    });
+      });
 
-    addTab(
-      {
-        filename: "new ztp" + n + ".json",
-        language: "json",
-        content: "// new file created. write config here",
-        status: "unsaved",
-      },
-      "single"
-    );
+      addTab(
+        {
+          filename: newFileName + ".json",
+          language: "json",
+          content: "// new file created. write config here",
+          status: "unsaved",
+        },
+        "single"
+      );
+    }
   };
 
   // dhcp apis
@@ -378,43 +384,6 @@ export const ZTPnDHCP = () => {
     }
   };
 
-  const renameFile = (list) => {
-    console.log(list);
-    // const updatedTab = tab.map((item) => {
-    //   if (item.filename === oldFileName) {
-    //     return {
-    //       ...item,
-    //       filename: newFileName,
-    //       status: "saved",
-    //     };
-    //   }
-    //   return item;
-    // });
-    // const updatedFiles = files.map((item) => {
-    //   if (item.filename === oldFileName) {
-    //     return {
-    //       ...item,
-    //       filename: newFileName,
-    //       status: "saved",
-    //     };
-    //   }
-    //   return item;
-    // });
-    // setTab(updatedTab);
-    // setFiles(updatedFiles);
-    // if (newFileName === "dhcpd.conf" || oldFileName === "dhcpd.conf") {
-    //   alert("Cannot rename dhcpd.conf file");
-    // } else {
-    //   putZtpFile(
-    //     {
-    //       filename: newFileName,
-    //       content: list.content,
-    //     },
-    //     true
-    //   );
-    // }
-  };
-
   const removeFile = (list) => {
     const payload = {
       filename: list.filename,
@@ -550,7 +519,7 @@ export const ZTPnDHCP = () => {
             <div className="fileBottomSection">
               <button
                 onClick={() => {
-                  createNewFile();
+                  setIsModalOpen("addNewFileModal");
                 }}
                 className="ml-5"
                 style={{
@@ -664,12 +633,12 @@ export const ZTPnDHCP = () => {
               }}
             >
               <ul>
-                {popover.file.filename !== "dhcpd.conf" &&
+                {/* {popover.file.filename !== "dhcpd.conf" &&
                 !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
                   <li onClick={() => setIsModalOpen("renameModal")}>
                     Rename file
                   </li>
-                ) : null}
+                ) : null} */}
                 {popover.file.filename !== "dhcpd.conf" &&
                 !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
                   <li onClick={() => removeFile(popover.file)}>Remove file</li>
@@ -685,15 +654,37 @@ export const ZTPnDHCP = () => {
             </div>
           )}
 
-          {isModalOpen === "renameModal" && (
+          {isModalOpen === "addNewFileModal" && (
             <Modal
               show={true}
               onClose={() => setIsModalOpen("null")}
-              title="Interface IP Address"
-              onSubmit={(e) => renameFile(e)}
-              id="PrimarySecondaryForm"
+              title="Add New File"
+              // onSubmit={(e) => renameFile(e)}
+              id="addNewFileModal"
             >
-              <div>Modal works</div>
+              <div className="form-wrapper" style={{ alignItems: "center" }}>
+                <div className="form-field w-auto ">
+                  <label htmlFor="">File Name :</label>
+                </div>
+                <div className="form-field  w-60">
+                  <input
+                    type="text"
+                    value={newFileName}
+                    placeholder="Enter File Name"
+                    onChange={(e) => setNewFileName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <button
+                  className="btnStyle"
+                  onClick={() => {
+                    createNewFile(newFileName);
+                  }}
+                >
+                  Save
+                </button>
+              </div>
             </Modal>
           )}
         </div>

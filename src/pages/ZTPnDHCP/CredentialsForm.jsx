@@ -101,7 +101,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
             onChange={handleChange}
             name="password"
             value={formData.password}
-            disabled={formData.ssh_access}
+            // disabled={formData.ssh_access}
           />
         </div>
         <div className="form-field w-25">
