@@ -19,17 +19,13 @@ import Modal from "../../components/modal/Modal";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
-
-  const [deviceIp, setDeviceIp] = useState("");
-
   const instance = interceptor();
-
   const [layout, setLayout] = useState({
     height: "60vh",
     width: "100%",
   });
+  const [deviceIp, setDeviceIp] = useState("");
 
-  // const [files, setFiles] = useState([]);
   const [ztpFiles, setztpFiles] = useState([]);
   const [dhcpFiles, setdhcpFiles] = useState([]);
   const [backupFiles, setbackupFiles] = useState([]);
@@ -37,16 +33,15 @@ export const ZTPnDHCP = () => {
   const [file, setFile] = useState({});
   const [tab, setTab] = useState([]);
 
-  const [isModalOpen, setIsModalOpen] = useState("null");
+  const [currentContent, setCurrentContent] = useState("");
 
+  const [isModalOpen, setIsModalOpen] = useState("null");
   const [newFileName, setNewFileName] = useState("");
 
-  // Keep track of unsaved changes
   const hasUnsavedChanges = tab.some((item) => item.status === "unsaved");
 
   const getFileLanguage = (filename) => {
     const extension = filename.split(".")[1];
-    // return 'json';
     return extension;
   };
 
@@ -77,7 +72,7 @@ export const ZTPnDHCP = () => {
 
   useEffect(() => {
     if (deviceIp) {
-      getDhcpFiles(deviceIp, false);
+      getDhcpFiles(deviceIp);
       getDhcpBackupFiles(deviceIp);
     }
   }, [deviceIp]);
@@ -213,7 +208,7 @@ export const ZTPnDHCP = () => {
       .catch((err) => {});
   };
 
-  const getDhcpFiles = (device_ip, getfile) => {
+  const getDhcpFiles = (device_ip) => {
     instance
       .get(dhcpConfigURL(device_ip))
       .then((res) => {
@@ -229,16 +224,14 @@ export const ZTPnDHCP = () => {
       .catch((err) => {});
   };
 
-  const putDhcpFiles = (payload, getfile) => {
+  const putDhcpFiles = (payload) => {
     instance
       .put(dhcpConfigURL(deviceIp), payload)
       .then((res) => {})
       .catch((err) => {})
       .finally(() => {
-        if (getfile) {
-          getDhcpFiles(deviceIp, getfile);
-          getDhcpBackupFiles(deviceIp);
-        }
+        getDhcpFiles(deviceIp);
+        getDhcpBackupFiles(deviceIp);
       });
   };
 
@@ -283,10 +276,10 @@ export const ZTPnDHCP = () => {
   const removeTab = (list) => {
     const shouldRemove =
       list.status !== "unsaved" ||
-      window.confirm("Unsaved changes. Do you want to remove it?");
-
+      window.confirm("Unsaved changes. Do you want to Discard it?");
     if (shouldRemove) {
-      const updatedTab = tab.filter((item) => item.filename !== list.filename);
+      let updatedTab = tab.filter((item) => item.filename !== list.filename);
+
       if (updatedTab.length === 0) {
         setTab([]);
         setFile({
@@ -297,6 +290,8 @@ export const ZTPnDHCP = () => {
       } else {
         setTab(updatedTab);
         setFile(updatedTab[0]);
+        getDhcpFiles(deviceIp);
+        getZtpFile(list.filename);
       }
     }
   };
@@ -309,24 +304,39 @@ export const ZTPnDHCP = () => {
       ) {
         return {
           ...item,
-          status: file?.status !== "readonly" ? "unsaved" : "readonly",
+          status: "unsaved",
         };
       }
       return item;
     });
     setTab(updatedTab);
 
-    const updatedFileList = ztpFiles.map((item) => {
-      if (item.filename === file.filename) {
-        return {
-          ...item,
-          content: e,
-          status: "unsaved",
-        };
-      }
-      return item;
-    });
-    setztpFiles(updatedFileList);
+    if (file.filename === "dhcpd.conf") {
+      const updatedFiles = dhcpFiles.map((item) => {
+        if (item.filename === file.filename) {
+          return {
+            ...item,
+            content: e,
+            status: "unsaved",
+          };
+        }
+        return item;
+      });
+      setdhcpFiles(updatedFiles);
+    } else {
+      const updatedFileList = ztpFiles.map((item) => {
+        if (item.filename === file.filename) {
+          return {
+            ...item,
+            content: e,
+            status: "unsaved",
+          };
+        }
+        return item;
+      });
+      setztpFiles(updatedFileList);
+    }
+
     setFile({
       filename: file.filename,
       language: file.language,
@@ -357,13 +367,10 @@ export const ZTPnDHCP = () => {
         return item;
       });
       setdhcpFiles(updatedFiles);
-      putDhcpFiles(
-        {
-          device_ip: deviceIp,
-          content: list.content,
-        },
-        true
-      );
+      putDhcpFiles({
+        device_ip: deviceIp,
+        content: list.content,
+      });
     } else {
       const updatedFiles = ztpFiles.map((item) => {
         if (item.filename === list.filename) {
@@ -499,7 +506,7 @@ export const ZTPnDHCP = () => {
               {backupFiles.map((list, index) => (
                 <CustomToolTip
                   arrow
-                  title={"file is " + list?.status}
+                  title={"file is Readonly"}
                   placement="right"
                   key={index}
                 >
@@ -551,7 +558,7 @@ export const ZTPnDHCP = () => {
                     />
                     <div
                       className="mr-5 text-overflow"
-                      style={{ maxWidth: "125px" }}
+                      style={{ width: "130px" }}
                       onClick={() => setFile(list)}
                     >
                       {list.filename}
@@ -608,15 +615,15 @@ export const ZTPnDHCP = () => {
             )}
 
             <div className="editorBottomSection">
-              <button
-                className=""
-                onClick={() => save(file)}
-                disabled={
-                  file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? true : false
-                }
-              >
-                Save
-              </button>
+              {!file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                <button
+                  className=""
+                  onClick={() => save(file)}
+                  disabled={file.status === "saved"}
+                >
+                  Save
+                </button>
+              ) : null}
             </div>
           </div>
 

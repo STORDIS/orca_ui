@@ -2,7 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { dhcpCredentialsURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
-import Tooltip from "@mui/material/Tooltip";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
 
 export const CredentialForm = ({ sendCredentialsToParent }) => {
   const instance = interceptor();
@@ -15,11 +16,29 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
     ssh_access: false,
   });
 
+  const CustomToolTip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      fontSize: 15,
+    },
+  }));
+
+  const [isDisabled, setIsDisabled] = useState(false);
+
   useEffect(() => {
     getCredentials();
   }, []);
 
   const getCredentials = () => {
+    setFormData({
+      device_ip: "",
+      username: "",
+      password: "",
+      ssh_access: false,
+    });
+    setIsDisabled(true);
+
     instance
       .get(dhcpCredentialsURL())
       .then((res) => {
@@ -28,9 +47,11 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
       })
       .catch((err) => {
         console.log(err);
+        setIsDisabled(false);
       })
       .finally(() => {
         setConfigStatus("Config Success");
+        setIsDisabled(false);
         setTimeout(() => {
           setConfigStatus("");
         }, 2500);
@@ -46,6 +67,17 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
   };
 
   const putCredentials = (payload) => {
+    setIsDisabled(true);
+    if (
+      payload.device_ip === "" ||
+      payload.username === "" ||
+      payload.password === ""
+    ) {
+      alert("Please fill all the fields");
+      setIsDisabled(false);
+      return;
+    }
+
     setConfigStatus("Config In Progress....");
     instance
       .put(dhcpCredentialsURL(), payload)
@@ -55,6 +87,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
       .catch((err) => {
         console.log(err);
         setConfigStatus("");
+        setIsDisabled(false);
       })
       .finally(() => {
         setConfigStatus("");
@@ -66,9 +99,13 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
     <div className="listContainer">
       <div className="form-wrapper" style={{ alignItems: "center" }}>
         <div className="form-field w-25">
-          <Tooltip arrow placement="top" title="tool tip here">
+          <CustomToolTip
+            arrow
+            placement="top"
+            title="Provide Server IP for SSH connection"
+          >
             <label htmlFor=""> Server IP :</label>
-          </Tooltip>
+          </CustomToolTip>
 
           <input
             type="text"
@@ -76,12 +113,13 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
             onChange={handleChange}
             name="device_ip"
             value={formData.device_ip}
+            disabled={isDisabled}
           />
         </div>
         <div className="form-field w-25">
-          <Tooltip arrow placement="top" title="tool tip here">
+          <CustomToolTip arrow placement="top" title="Provide SSH User Name">
             <label htmlFor=""> SSH User Name :</label>
-          </Tooltip>
+          </CustomToolTip>
 
           <input
             type="text"
@@ -89,18 +127,20 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
             onChange={handleChange}
             name="username"
             value={formData.username}
+            disabled={isDisabled}
           />
         </div>
         <div className="form-field w-25">
-          <Tooltip arrow placement="top" title="tool tip here">
+          <CustomToolTip arrow placement="top" title="Provide SSH Password">
             <label htmlFor=""> SSH Password :</label>
-          </Tooltip>
+          </CustomToolTip>
           <input
             type="password"
             placementholder=""
             onChange={handleChange}
             name="password"
             value={formData.password}
+            disabled={isDisabled}
             // disabled={formData.ssh_access}
           />
         </div>
@@ -112,7 +152,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
               textAlign: "center",
             }}
           >
-            <Tooltip arrow placement="top" title="tool tip here">
+            <CustomToolTip arrow placement="top" title="tool tip here">
               SSH Connection :
               <FaCircle
                 className={`ml-5 ${
@@ -121,7 +161,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
                     : "danger"
                 }`}
               />
-            </Tooltip>
+            </CustomToolTip>
           </span>
         </div>
       </div>
