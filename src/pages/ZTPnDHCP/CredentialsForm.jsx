@@ -152,15 +152,26 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
               textAlign: "center",
             }}
           >
-            <CustomToolTip arrow placement="top" title="tool tip here">
-              SSH Connection :
-              <FaCircle
-                className={`ml-5 ${
-                  formData.ssh_access === formData.ssh_access
-                    ? "success"
-                    : "danger"
-                }`}
-              />
+            SSH Connection :
+            <CustomToolTip
+              arrow
+              placement="top"
+              title={
+                formData.ssh_access
+                  ? "Connection to SSH is successful"
+                  : "Not Connected"
+              }
+            >
+              <div>
+                <FaCircle
+                  className={`ml-5 ${
+                    formData.ssh_access === formData.ssh_access
+                      ? "success"
+                      : "danger"
+                  }`}
+                  style={{ fontSize: "25px" }}
+                />
+              </div>
             </CustomToolTip>
           </span>
         </div>
