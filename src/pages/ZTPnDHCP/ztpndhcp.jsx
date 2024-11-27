@@ -9,6 +9,7 @@ import {
   dhcpConfigURL,
   dhcpBackupURL,
   templatedURL,
+  ztpRenameURL,
 } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import CredentialForm from "./CredentialsForm";
@@ -185,6 +186,20 @@ export const ZTPnDHCP = () => {
         "single"
       );
     }
+  };
+
+  const renameZtpFile = (newFileName) => {
+    instance
+      .put(ztpRenameURL(), {
+        old_filename: file.filename,
+        new_filename: newFileName + ".json",
+      })
+      .then((res) => {})
+      .catch((err) => {})
+      .finally(() => {
+        getZtpFileList();
+        setIsModalOpen("null");
+      });
   };
 
   // templates
@@ -726,12 +741,6 @@ export const ZTPnDHCP = () => {
               }}
             >
               <ul>
-                {/* {popover.file.filename !== "dhcpd.conf" &&
-                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
-                  <li onClick={() => setIsModalOpen("renameModal")}>
-                    Rename file
-                  </li>
-                ) : null} */}
                 {!popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
                 !popover?.file?.filename?.includes("_template") ? (
                   <li onClick={() => save(popover.file)}>Save file</li>
@@ -741,6 +750,13 @@ export const ZTPnDHCP = () => {
                 !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
                 !popover?.file?.filename?.includes("_template") ? (
                   <li onClick={() => copyPath(popover.file)}>Copy path</li>
+                ) : null}
+                {popover.file.filename !== "dhcpd.conf" &&
+                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
+                !popover?.file?.filename?.includes("_template") ? (
+                  <li onClick={() => setIsModalOpen("renameModal")}>
+                    Rename file
+                  </li>
                 ) : null}
 
                 {popover.file.filename !== "dhcpd.conf" &&
@@ -783,6 +799,39 @@ export const ZTPnDHCP = () => {
                   className="btnStyle"
                   onClick={() => {
                     createNewFile(newFileName);
+                  }}
+                >
+                  Save
+                </button>
+              </div>
+            </Modal>
+          )}
+          {isModalOpen === "renameModal" && (
+            <Modal
+              show={true}
+              onClose={() => setIsModalOpen("null")}
+              title="Rename File"
+              // onSubmit={(e) => renameFile(e)}
+              id="renameModal"
+            >
+              <div className="form-wrapper" style={{ alignItems: "center" }}>
+                <div className="form-field w-auto ">
+                  <label htmlFor="">File Name :</label>
+                </div>
+                <div className="form-field  w-60">
+                  <input
+                    type="text"
+                    value={newFileName}
+                    placeholder="Enter File Name"
+                    onChange={(e) => setNewFileName(e.target.value)}
+                  />
+                </div>
+              </div>
+              <div>
+                <button
+                  className="btnStyle"
+                  onClick={() => {
+                    renameZtpFile(newFileName);
                   }}
                 >
                   Save

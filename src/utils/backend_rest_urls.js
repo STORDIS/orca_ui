@@ -135,6 +135,10 @@ export function ztpURL(fileName) {
   }
 }
 
+export function ztpRenameURL() {
+  return host_addr + "/files/ztp/rename";
+}
+
 export function dhcpCredentialsURL() {
   return host_addr + "/files/dhcp/credentials";
 }
