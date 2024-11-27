@@ -98,7 +98,8 @@ export const ZTPnDHCP = () => {
           });
 
           setztpFiles(list);
-          setFile(list[0]);
+          // setFile(list[0]);
+          selectTab(list[0]);
           setTab([
             {
               filename: list[0].filename,
@@ -128,7 +129,7 @@ export const ZTPnDHCP = () => {
         setztpFiles((prevFiles) =>
           prevFiles.map((file) => {
             if (file.filename === filename) {
-              return { ...file, content: data.content };
+              return { ...file, content: data.content, status: "saved" };
             }
             return file;
           })
@@ -359,6 +360,7 @@ export const ZTPnDHCP = () => {
       window.confirm("Unsaved changes. Do you want to Discard it?");
     if (shouldRemove) {
       let updatedTab = tab.filter((item) => item.filename !== list.filename);
+      console.log(updatedTab)
 
       if (updatedTab.length === 0) {
         setTab([]);
