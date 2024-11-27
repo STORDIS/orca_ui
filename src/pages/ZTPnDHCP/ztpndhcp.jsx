@@ -98,9 +98,7 @@ export const ZTPnDHCP = () => {
           });
 
           setztpFiles(list);
-
           setFile(list[0]);
-
           setTab([
             {
               filename: list[0].filename,
@@ -110,7 +108,11 @@ export const ZTPnDHCP = () => {
           ]);
         } else {
           setztpFiles([]);
-          selectTab("default");
+          selectTab({
+            filename: "default",
+            language: "json",
+            content: "Select a file",
+          });
           setTab([]);
         }
       })
@@ -175,7 +177,6 @@ export const ZTPnDHCP = () => {
         content: "// new file created. write config here",
         status: "unsaved",
       });
-
       addTab(
         {
           filename: newFileName + ".json",
@@ -185,6 +186,7 @@ export const ZTPnDHCP = () => {
         },
         "single"
       );
+      setNewFileName("");
     }
   };
 
@@ -199,6 +201,7 @@ export const ZTPnDHCP = () => {
       .finally(() => {
         getZtpFileList();
         setIsModalOpen("null");
+        setNewFileName("");
       });
   };
 
@@ -209,7 +212,6 @@ export const ZTPnDHCP = () => {
       .get(templatedURL())
       .then((res) => {
         let data = res.data;
-        console.log(data);
 
         setTemplateFiles(
           data.map((item) => {
@@ -309,10 +311,10 @@ export const ZTPnDHCP = () => {
       ]);
     }
 
-    selectTab(list.filename);
+    selectTab(list);
   };
 
-  const selectTab = (filename) => {
+  const selectTab = (file) => {
     let allFiles = [
       ...dhcpFiles,
       ...ztpFiles,
@@ -320,16 +322,34 @@ export const ZTPnDHCP = () => {
       ...templateFiles,
     ];
 
-    const foundFile = allFiles.find((element) => element.filename === filename);
+    console.log(ztpFiles);
+
+    const foundFile = allFiles.find(
+      (element) => element.filename === file.filename
+    );
+
+    const statusFromTab = tab.find(
+      (element) => element.filename === file.filename
+    );
 
     if (foundFile) {
-      setFile(foundFile);
+      if (statusFromTab) {
+        setFile({
+          filename: foundFile.filename,
+          language: foundFile.language,
+          content: foundFile.content,
+          status: statusFromTab.status,
+        });
+      } else {
+        setFile({
+          filename: foundFile.filename,
+          language: foundFile.language,
+          content: foundFile.content,
+          status: "saved",
+        });
+      }
     } else {
-      setFile({
-        filename: "default",
-        language: "json",
-        content: "Select a file",
-      });
+      setFile(file);
     }
   };
 
@@ -342,10 +362,14 @@ export const ZTPnDHCP = () => {
 
       if (updatedTab.length === 0) {
         setTab([]);
-        selectTab("default");
+        selectTab({
+          filename: "default",
+          language: "json",
+          content: "Select a file",
+        });
       } else {
         setTab(updatedTab);
-        selectTab(updatedTab[0].filename);
+        selectTab(updatedTab[0]);
         getDhcpFiles(deviceIp);
         getZtpFile(list.filename);
       }
@@ -392,16 +416,18 @@ export const ZTPnDHCP = () => {
         return item;
       });
       setztpFiles(updatedFileList);
-      setFile(updatedFileList[0]);
-    }
 
-    // selectTab(file.filename);
+      setFile({
+        filename: file.filename,
+        language: file.language,
+        content: e,
+        status: "unsaved",
+      });
+    }
   };
 
   const copyPath = (file) => {
     const filePath = process.env.REACT_APP_HOST_ADDR_BACKEND + "/" + file.path;
-
-    console.log(filePath);
 
     navigator.clipboard
       .writeText(filePath)
@@ -476,10 +502,14 @@ export const ZTPnDHCP = () => {
     const updatedTab = tab.filter((item) => item.filename !== list.filename);
     if (updatedTab.length === 0) {
       setTab([]);
-      selectTab("default");
+      selectTab({
+        filename: "default",
+        language: "json",
+        content: "Select a file",
+      });
     } else {
       setTab(updatedTab);
-      selectTab(updatedTab[0].filename);
+      selectTab(updatedTab[0]);
     }
   };
 
@@ -647,12 +677,12 @@ export const ZTPnDHCP = () => {
                     <div
                       className=" text-overflow"
                       style={{ width: "105px" }}
-                      onClick={() => selectTab(list.filename)}
+                      onClick={() => selectTab(list)}
                     >
                       {list.filename}
                     </div>
                   </div>
-                  <div onClick={() => selectTab(list.filename)}>
+                  <div onClick={() => selectTab(list)}>
                     {list?.status === "unsaved" ? (
                       <FaCircle
                         style={{ color: "#c0c0c0", fontSize: "20px" }}
