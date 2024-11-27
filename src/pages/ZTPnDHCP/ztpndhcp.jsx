@@ -8,6 +8,7 @@ import {
   ztpURL,
   dhcpConfigURL,
   dhcpBackupURL,
+  templatedURL,
 } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import CredentialForm from "./CredentialsForm";
@@ -29,6 +30,7 @@ export const ZTPnDHCP = () => {
   const [ztpFiles, setztpFiles] = useState([]);
   const [dhcpFiles, setdhcpFiles] = useState([]);
   const [backupFiles, setbackupFiles] = useState([]);
+  const [templateFiles, setTemplateFiles] = useState([]);
 
   const [file, setFile] = useState({});
   const [tab, setTab] = useState([]);
@@ -68,6 +70,7 @@ export const ZTPnDHCP = () => {
 
   useEffect(() => {
     getZtpFileList();
+    getTemplates();
   }, []);
 
   useEffect(() => {
@@ -94,7 +97,8 @@ export const ZTPnDHCP = () => {
           });
 
           setztpFiles(list);
-          selectTab(list[0]);
+
+          setFile(list[0]);
 
           setTab([
             {
@@ -105,11 +109,7 @@ export const ZTPnDHCP = () => {
           ]);
         } else {
           setztpFiles([]);
-          setFile({
-            filename: "default",
-            language: "json",
-            content: "Select a file",
-          });
+          selectTab("default");
           setTab([]);
         }
       })
@@ -185,6 +185,29 @@ export const ZTPnDHCP = () => {
         "single"
       );
     }
+  };
+
+  // templates
+
+  const getTemplates = () => {
+    instance
+      .get(templatedURL())
+      .then((res) => {
+        let data = res.data;
+        console.log(data);
+
+        setTemplateFiles(
+          data.map((item) => {
+            return {
+              filename: item.filename,
+              language: getFileLanguage(item.filename),
+              content: item.content,
+              status: "readonly",
+            };
+          })
+        );
+      })
+      .catch((err) => {});
   };
 
   // dhcp apis
@@ -271,25 +294,28 @@ export const ZTPnDHCP = () => {
       ]);
     }
 
-    selectTab(list);
+    selectTab(list.filename);
   };
 
-  const selectTab = (list) => {
-    console.log(list);
+  const selectTab = (filename) => {
+    let allFiles = [
+      ...dhcpFiles,
+      ...ztpFiles,
+      ...backupFiles,
+      ...templateFiles,
+    ];
 
-    let allFiles = [...dhcpFiles, ...ztpFiles, ...backupFiles];
+    const foundFile = allFiles.find((element) => element.filename === filename);
 
-    allFiles.forEach((element) => {
-      if (element.filename === list.filename) {
-        setFile(element);
-      } else {
-        setFile({
-          filename: "default",
-          language: "json",
-          content: "Select a file",
-        });
-      }
-    });
+    if (foundFile) {
+      setFile(foundFile);
+    } else {
+      setFile({
+        filename: "default",
+        language: "json",
+        content: "Select a file",
+      });
+    }
   };
 
   const removeTab = (list) => {
@@ -301,14 +327,10 @@ export const ZTPnDHCP = () => {
 
       if (updatedTab.length === 0) {
         setTab([]);
-        setFile({
-          filename: "default",
-          language: "json",
-          content: "Select a file",
-        });
+        selectTab("default");
       } else {
         setTab(updatedTab);
-        selectTab(updatedTab[0]);
+        selectTab(updatedTab[0].filename);
         getDhcpFiles(deviceIp);
         getZtpFile(list.filename);
       }
@@ -342,6 +364,7 @@ export const ZTPnDHCP = () => {
         return item;
       });
       setdhcpFiles(updatedFiles);
+      setFile(updatedFiles[0]);
     } else {
       const updatedFileList = ztpFiles.map((item) => {
         if (item.filename === file.filename) {
@@ -354,13 +377,10 @@ export const ZTPnDHCP = () => {
         return item;
       });
       setztpFiles(updatedFileList);
+      setFile(updatedFileList[0]);
     }
 
-    selectTab({
-      filename: file.filename,
-      language: file.language,
-      content: e,
-    });
+    // selectTab(file.filename);
   };
 
   const copyPath = (file) => {
@@ -441,14 +461,10 @@ export const ZTPnDHCP = () => {
     const updatedTab = tab.filter((item) => item.filename !== list.filename);
     if (updatedTab.length === 0) {
       setTab([]);
-      setFile({
-        filename: "default",
-        language: "json",
-        content: "Select a file",
-      });
+      selectTab("default");
     } else {
       setTab(updatedTab);
-      selectTab(updatedTab[0]);
+      selectTab(updatedTab[0].filename);
     }
   };
 
@@ -557,6 +573,26 @@ export const ZTPnDHCP = () => {
                   </div>
                 </CustomToolTip>
               ))}
+              {templateFiles.map((list, index) => (
+                <CustomToolTip
+                  arrow
+                  title={"file is Readonly"}
+                  placement="right"
+                  key={index}
+                >
+                  <div
+                    className={`fileItem ${
+                      file?.filename === list?.filename ? "active" : ""
+                    }`}
+                    key={index}
+                    onClick={() => addTab(list, "single")}
+                    onDoubleClick={() => addTab(list, "double")}
+                    onContextMenu={(e) => handleRightClick(e, list)}
+                  >
+                    <p className="text-overflow">{list?.filename}</p>
+                  </div>
+                </CustomToolTip>
+              ))}
             </div>
 
             <div className="fileBottomSection">
@@ -587,27 +623,37 @@ export const ZTPnDHCP = () => {
                 >
                   <div className="tabName">
                     <FaRegCircleXmark
+                      style={{
+                        fontSize: "20px",
+                      }}
                       className="cancel mr-5"
                       onClick={() => removeTab(list)}
                     />
                     <div
-                      className="mr-5 text-overflow"
-                      style={{ width: "130px" }}
-                      onClick={() => selectTab(list)}
+                      className=" text-overflow"
+                      style={{ width: "105px" }}
+                      onClick={() => selectTab(list.filename)}
                     >
                       {list.filename}
                     </div>
                   </div>
-                  {list?.status === "unsaved" ? (
-                    <div onClick={() => selectTab(list)}>
-                      <FaCircle style={{ color: "#c0c0c0" }} />
-                    </div>
-                  ) : null}
+                  <div onClick={() => selectTab(list.filename)}>
+                    {list?.status === "unsaved" ? (
+                      <FaCircle
+                        style={{ color: "#c0c0c0", fontSize: "20px" }}
+                      />
+                    ) : (
+                      <FaCircle
+                        style={{ color: "transparent", fontSize: "20px" }}
+                      />
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
 
-            {file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+            {file?.filename?.match(/dhcpd\.conf\.orca\..+/) ||
+            file?.filename?.includes("_template") ? (
               <div
                 className="resizable"
                 id="editorContainer"
@@ -620,9 +666,12 @@ export const ZTPnDHCP = () => {
                   value={file.content}
                   style={{
                     height: "100%",
-                    width: "100%",
+                    width: "98%",
                     resize: "vertical",
                     minHeight: "60vh",
+                    border: "none",
+                    padding: "10px",
+                    overflowY: "scroll",
                   }}
                   readOnly
                 ></textarea>
@@ -649,7 +698,8 @@ export const ZTPnDHCP = () => {
             )}
 
             <div className="editorBottomSection">
-              {!file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+              {!file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
+              !file?.filename?.includes("_template") ? (
                 <button
                   className=""
                   onClick={() => save(file)}
@@ -682,21 +732,25 @@ export const ZTPnDHCP = () => {
                     Rename file
                   </li>
                 ) : null} */}
-                {!popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                {!popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
+                !popover?.file?.filename?.includes("_template") ? (
                   <li onClick={() => save(popover.file)}>Save file</li>
                 ) : null}
 
                 {popover.file.filename !== "dhcpd.conf" &&
-                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
+                !popover?.file?.filename?.includes("_template") ? (
                   <li onClick={() => copyPath(popover.file)}>Copy path</li>
                 ) : null}
 
                 {popover.file.filename !== "dhcpd.conf" &&
-                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
+                !popover?.file?.filename?.includes("_template") ? (
                   <li onClick={() => removeFile(popover.file)}>Remove file</li>
                 ) : null}
 
-                {popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                {popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ||
+                popover?.file?.filename?.includes("_template") ? (
                   <li> Read Only </li>
                 ) : null}
               </ul>

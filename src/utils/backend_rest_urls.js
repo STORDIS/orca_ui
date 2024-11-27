@@ -146,6 +146,9 @@ export function dhcpConfigURL(device_ip) {
 export function dhcpBackupURL(device_ip) {
   return host_addr + "/files/dhcp/backups?device_ip=" + device_ip;
 }
+export function templatedURL() {
+  return host_addr + "/files/templates" ;
+}
 
 // other urls
 
