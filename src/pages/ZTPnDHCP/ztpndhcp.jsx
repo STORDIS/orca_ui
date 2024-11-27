@@ -94,12 +94,12 @@ export const ZTPnDHCP = () => {
           });
 
           setztpFiles(list);
-          setFile(list[0]);
+          selectTab(list[0]);
 
           setTab([
             {
-              filename: res.data[0].filename,
-              language: res.data[0].language,
+              filename: list[0].filename,
+              language: getFileLanguage(list[0].filename),
               status: "saved",
             },
           ]);
@@ -271,7 +271,25 @@ export const ZTPnDHCP = () => {
       ]);
     }
 
-    setFile(list);
+    selectTab(list);
+  };
+
+  const selectTab = (list) => {
+    console.log(list);
+
+    let allFiles = [...dhcpFiles, ...ztpFiles, ...backupFiles];
+
+    allFiles.forEach((element) => {
+      if (element.filename === list.filename) {
+        setFile(element);
+      } else {
+        setFile({
+          filename: "default",
+          language: "json",
+          content: "Select a file",
+        });
+      }
+    });
   };
 
   const removeTab = (list) => {
@@ -290,7 +308,7 @@ export const ZTPnDHCP = () => {
         });
       } else {
         setTab(updatedTab);
-        setFile(updatedTab[0]);
+        selectTab(updatedTab[0]);
         getDhcpFiles(deviceIp);
         getZtpFile(list.filename);
       }
@@ -338,7 +356,7 @@ export const ZTPnDHCP = () => {
       setztpFiles(updatedFileList);
     }
 
-    setFile({
+    selectTab({
       filename: file.filename,
       language: file.language,
       content: e,
@@ -430,7 +448,7 @@ export const ZTPnDHCP = () => {
       });
     } else {
       setTab(updatedTab);
-      setFile(updatedTab[0]);
+      selectTab(updatedTab[0]);
     }
   };
 
@@ -575,13 +593,13 @@ export const ZTPnDHCP = () => {
                     <div
                       className="mr-5 text-overflow"
                       style={{ width: "130px" }}
-                      onClick={() => setFile(list)}
+                      onClick={() => selectTab(list)}
                     >
                       {list.filename}
                     </div>
                   </div>
                   {list?.status === "unsaved" ? (
-                    <div onClick={() => setFile(list)}>
+                    <div onClick={() => selectTab(list)}>
                       <FaCircle style={{ color: "#c0c0c0" }} />
                     </div>
                   ) : null}
