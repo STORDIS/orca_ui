@@ -89,6 +89,7 @@ export const ZTPnDHCP = () => {
               language: getFileLanguage(item.filename),
               content: item.content,
               status: "saved",
+              path: item.path,
             };
           });
 
@@ -342,6 +343,21 @@ export const ZTPnDHCP = () => {
       language: file.language,
       content: e,
     });
+  };
+
+  const copyPath = (file) => {
+    const filePath = process.env.REACT_APP_HOST_ADDR_BACKEND + "/" + file.path;
+
+    console.log(filePath);
+
+    navigator.clipboard
+      .writeText(filePath)
+      .then(() => {
+        // alert("Path copied to clipboard!");
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+      });
   };
 
   const save = (list) => {
@@ -648,14 +664,20 @@ export const ZTPnDHCP = () => {
                     Rename file
                   </li>
                 ) : null} */}
+                {!popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                  <li onClick={() => save(popover.file)}>Save file</li>
+                ) : null}
+
+                {popover.file.filename !== "dhcpd.conf" &&
+                !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
+                  <li onClick={() => copyPath(popover.file)}>Copy path</li>
+                ) : null}
+
                 {popover.file.filename !== "dhcpd.conf" &&
                 !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
                   <li onClick={() => removeFile(popover.file)}>Remove file</li>
                 ) : null}
 
-                {!popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
-                  <li onClick={() => save(popover.file)}>Save file</li>
-                ) : null}
                 {popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) ? (
                   <li> Read Only </li>
                 ) : null}
