@@ -177,7 +177,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
         </div>
       </div>
 
-      <div className="form-wrapper">
+      <div className="form-wrapper" style={{ alignItems: "center" }} >
         <button onClick={() => putCredentials(formData)} className="btnStyle">
           Apply Config
         </button>
