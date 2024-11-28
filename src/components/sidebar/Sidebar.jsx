@@ -4,6 +4,7 @@ import logo from "../../assets/orca.png";
 import { useNavigate } from "react-router-dom";
 import { FaRobot } from "react-icons/fa";
 import { FaList } from "react-icons/fa";
+import { VscJson } from "react-icons/vsc";
 import { FaGear } from "react-icons/fa6";
 
 const Sidebar = () => {
@@ -29,6 +30,10 @@ const Sidebar = () => {
                 <Link className="navLink" to="/setup">
                     <FaGear className="icon" />
                     <span>SONiC Setup</span>
+                </Link>
+                <Link className="navLink" to="/ztpndhcp">
+                    <VscJson className="icon" />
+                    <span>ZTP & DHCP</span>
                 </Link>
             </div>
         </div>

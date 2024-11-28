@@ -18,6 +18,7 @@ import LogViewer from "../../components/logpane/logpane.jsx";
 import Navbar from "../../components/navbar/Navbar.jsx";
 import Sidebar from "../../components/sidebar/Sidebar.jsx";
 import OrcAsk from "../orcask/orcAsk.jsx";
+import ZTPnDHCP from "../ZTPnDHCP/ztpndhcp.jsx";
 import Setup from "../setup/setup.jsx";
 import { setNavigate } from "../../utils/NavigationService";
 
@@ -76,6 +77,14 @@ const Layout = () => {
                         element={
                             <RequireAuth>
                                 <Setup />
+                            </RequireAuth>
+                        }
+                    />
+                    <Route
+                        path="/ztpndhcp"
+                        element={
+                            <RequireAuth>
+                                <ZTPnDHCP />
                             </RequireAuth>
                         }
                     />
