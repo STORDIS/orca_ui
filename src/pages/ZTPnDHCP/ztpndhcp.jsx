@@ -18,6 +18,7 @@ import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 
 import Modal from "../../components/modal/Modal";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
@@ -360,7 +361,7 @@ export const ZTPnDHCP = () => {
       window.confirm("Unsaved changes. Do you want to Discard it?");
     if (shouldRemove) {
       let updatedTab = tab.filter((item) => item.filename !== list.filename);
-      console.log(updatedTab)
+      console.log(updatedTab);
 
       if (updatedTab.length === 0) {
         setTab([]);
@@ -428,18 +429,6 @@ export const ZTPnDHCP = () => {
     }
   };
 
-  const copyPath = (file) => {
-    const filePath = process.env.REACT_APP_HOST_ADDR_BACKEND + "/" + file.path;
-
-    navigator.clipboard
-      .writeText(filePath)
-      .then(() => {
-        // alert("Path copied to clipboard!");
-      })
-      .catch((err) => {
-        console.error("Failed to copy: ", err);
-      });
-  };
 
   const save = (list) => {
     const updatedTab = tab.map((item) => {
@@ -781,7 +770,15 @@ export const ZTPnDHCP = () => {
                 {popover.file.filename !== "dhcpd.conf" &&
                 !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
                 !popover?.file?.filename?.includes("_template") ? (
-                  <li onClick={() => copyPath(popover.file)}>Copy path</li>
+                  <CopyToClipboard
+                    text={
+                      process.env.REACT_APP_HOST_ADDR_BACKEND +
+                      "/" +
+                      popover.file.path
+                    }
+                  >
+                    <li>Copy path</li>
+                  </CopyToClipboard>
                 ) : null}
                 {popover.file.filename !== "dhcpd.conf" &&
                 !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
