@@ -373,8 +373,12 @@ export const ZTPnDHCP = () => {
       } else {
         setTab(updatedTab);
         selectTab(updatedTab[0]);
-        getDhcpFiles(deviceIp);
-        getZtpFile(list.filename);
+
+        if (list.filename === "dhcpd.conf") {
+          getDhcpFiles(deviceIp);
+        } else {
+          getZtpFile(list.filename);
+        }
       }
     }
   };
@@ -428,7 +432,6 @@ export const ZTPnDHCP = () => {
       });
     }
   };
-
 
   const save = (list) => {
     const updatedTab = tab.map((item) => {
