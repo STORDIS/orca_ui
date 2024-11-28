@@ -49,6 +49,9 @@ export const ZTPnDHCP = () => {
     return extension;
   };
 
+  const inputRef = useRef(null);
+  const inputRefNewFile = useRef(null);
+
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -81,6 +84,15 @@ export const ZTPnDHCP = () => {
       getDhcpBackupFiles(deviceIp);
     }
   }, [deviceIp]);
+
+  useEffect(() => {
+    if (isModalOpen === "renameModal") {
+      inputRef.current?.focus();
+    }
+    if (isModalOpen === "addNewFileModal") {
+      inputRefNewFile.current?.focus();
+    }
+  }, [isModalOpen]);
 
   // ztp apis
   const getZtpFileList = () => {
@@ -638,6 +650,7 @@ export const ZTPnDHCP = () => {
               <button
                 onClick={() => {
                   setIsModalOpen("addNewFileModal");
+                  setNewFileName("");
                 }}
                 className="ml-5"
                 style={{
@@ -786,7 +799,14 @@ export const ZTPnDHCP = () => {
                 {popover.file.filename !== "dhcpd.conf" &&
                 !popover?.file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
                 !popover?.file?.filename?.includes("_template") ? (
-                  <li onClick={() => setIsModalOpen("renameModal")}>
+                  <li
+                    onClick={() => {
+                      setIsModalOpen("renameModal");
+                      setNewFileName(
+                        popover.file.filename.replace(".json", "")
+                      );
+                    }}
+                  >
                     Rename file
                   </li>
                 ) : null}
@@ -821,6 +841,7 @@ export const ZTPnDHCP = () => {
                   <input
                     type="text"
                     value={newFileName}
+                    ref={inputRefNewFile}
                     placeholder="Enter File Name"
                     onChange={(e) => setNewFileName(e.target.value)}
                   />
@@ -834,6 +855,15 @@ export const ZTPnDHCP = () => {
                   }}
                 >
                   Save
+                </button>
+                <button
+                  className="btnStyle ml-10"
+                  onClick={() => {
+                    setIsModalOpen("null");
+                    setNewFileName("");
+                  }}
+                >
+                  Cancel
                 </button>
               </div>
             </Modal>
@@ -855,6 +885,7 @@ export const ZTPnDHCP = () => {
                     type="text"
                     value={newFileName}
                     placeholder="Enter File Name"
+                    ref={inputRef}
                     onChange={(e) => setNewFileName(e.target.value)}
                   />
                 </div>
@@ -867,6 +898,15 @@ export const ZTPnDHCP = () => {
                   }}
                 >
                   Save
+                </button>
+                <button
+                  className="btnStyle ml-10"
+                  onClick={() => {
+                    setIsModalOpen("null");
+                    setNewFileName("");
+                  }}
+                >
+                  Cancel
                 </button>
               </div>
             </Modal>
