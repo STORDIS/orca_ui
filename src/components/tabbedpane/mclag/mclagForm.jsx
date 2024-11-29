@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "../Form.scss";
+
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import useStoreConfig from "../../../utils/configStore";

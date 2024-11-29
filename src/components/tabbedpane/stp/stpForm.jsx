@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../Form.scss";
+
 import useStoreConfig from "../../../utils/configStore";
 import { putStpDataCommon } from "./stpDataTable";
 import useStoreLogs from "../../../utils/store";
