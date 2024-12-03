@@ -5,6 +5,7 @@ import {
   celeryURL,
   installSonicURL,
   celeryTaskURL,
+  getDiscoveryUrl,
 } from "../../utils/backend_rest_urls";
 import useStoreConfig from "../../utils/configStore";
 import useStoreLogs from "../../utils/store";
@@ -14,46 +15,7 @@ import { FaSquareXmark } from "react-icons/fa6";
 import CommonLogTable from "./commonLogTable";
 
 const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
-  const [sonicDevices, setSonicDevices] = useState({
-    "10.10.229.123/28": [
-      {
-        img_name: "SONiC-OS-4.4.0-Enterprise_Base",
-        mgt_intf: "Management0",
-        mgt_ip: "10.10.229.114/21",
-        hwsku: "DellEMC-S5248f-P-25G-DPB",
-        mac: "0c:70:d3:24:00:0a",
-        platform: "x86_64-kvm_x86_64-r0",
-        type: "LeafRouter",
-      },
-      {
-        img_name: "SONiC-OS-4.1.4-Enterprise_Base",
-        mgt_intf: "Management0",
-        mgt_ip: "10.10.229.118/21",
-        hwsku: "DellEMC-S5248f-P-25G-DPB",
-        mac: "0c:33:fb:e0:00:0a",
-        platform: "x86_64-kvm_x86_64-r0",
-        type: "LeafRouter",
-      },
-      {
-        img_name: "SONiC-OS-4.4.0-Enterprise_Base",
-        mgt_intf: "Management0",
-        mgt_ip: "10.10.229.120/21",
-        hwsku: "DellEMC-S5248f-P-25G-DPB",
-        mac: "0c:29:e5:ca:00:0a",
-        platform: "x86_64-kvm_x86_64-r0",
-        type: "LeafRouter",
-      },
-      {
-        img_name: "SONiC-OS-4.2.2-Enterprise_Base",
-        mgt_intf: "Management0",
-        mgt_ip: "10.10.229.124/21",
-        hwsku: "DellEMC-S5248f-P-25G-DPB",
-        mac: "0c:17:33:aa:00:0a",
-        platform: "x86_64-kvm_x86_64-r0",
-        type: "LeafRouter",
-      },
-    ],
-  });
+  const [sonicDevices, setSonicDevices] = useState({});
   const [selectedDevicesSonic, setSelectedDevicesSonic] = useState([]);
   const [selectAllSonic, setSelectAllSonic] = useState(false);
 
@@ -63,13 +25,14 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
 
   const instance = interceptor();
 
-  useEffect(() => {
-    console.log(logData);
+  const [showResponse, setShowResponse] = useState(false);
 
+  useEffect(() => {
     if (Object.keys(logData?.response).includes("sonic_devices")) {
-      // setSonicDevices(logData?.response?.sonic_devices);
+      setSonicDevices(logData?.response?.sonic_devices);
+      setShowResponse(false);
     } else {
-      console.log("sonic devices not found");
+      setShowResponse(true);
     }
 
     const handleKeyDown = (e) => {
@@ -89,17 +52,9 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const handelCheckedSonic = (event, ip) => {
     setSelectedDevicesSonic((prevSelectedNetworkDevices) => {
       if (event.target.checked) {
-        return [
-          ...prevSelectedNetworkDevices,
-          {
-            device_ips: [ip],
-            discover_from_config: false,
-          },
-        ];
+        return [...prevSelectedNetworkDevices, ip];
       } else {
-        return prevSelectedNetworkDevices.filter(
-          (item) => item.device_ips[0] !== ip
-        );
+        return prevSelectedNetworkDevices.filter((item) => item !== ip);
       }
     });
   };
@@ -109,10 +64,8 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
       const result = [];
       Object.keys(sonicDevices).forEach((network) => {
         sonicDevices[network].forEach((entry) => {
-          result.push({
-            device_ips: [entry.mgt_ip],
-            discover_from_config: false,
-          });
+          console.log(entry.mgt_ip);
+          result.push(entry.mgt_ip);
         });
       });
       setSelectedDevicesSonic(result);
@@ -124,16 +77,22 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   };
 
   const applyConfig = async () => {
-    console.log(selectedDevicesSonic);
-    // try {
-    //     const response = await instance.put(installSonicURL(), selectedDevicesSonic);
-    // } catch (error) {
-    //     console.log(error);
-    // } finally {
-    //     setUpdateLog(true);
-    //     setUpdateConfig(false);
-    //     onClose();
-    // }
+    console.log({
+      address: selectedDevicesSonic.join(", "),
+      discover_from_config: true,
+    });
+    try {
+      const response = await instance.put(getDiscoveryUrl(), {
+        address: selectedDevicesSonic.join(", "),
+        discover_from_config: true,
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setUpdateLog(true);
+      setUpdateConfig(false);
+      onClose();
+    }
   };
 
   const revoke = () => {
@@ -165,7 +124,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         <div className="modalBody mt-10 mb-10">
           <CommonLogTable
             logData={logData}
-            showResponse={false}
+            showResponse={showResponse}
           ></CommonLogTable>
 
           {/* discovery responce table */}
@@ -232,8 +191,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 disabled={selectAllSonic}
                                 checked={
                                   selectedDevicesSonic.filter(
-                                    (item) =>
-                                      item.device_ips[0] === entry.mgt_ip
+                                    (item) => item === entry.mgt_ip
                                   ).length > 0
                                 }
                                 onChange={(e) => {
