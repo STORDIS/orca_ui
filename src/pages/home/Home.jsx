@@ -27,8 +27,10 @@ import { getIsStaff } from "../../utils/common";
 export const Home = () => {
   const instance = interceptor();
 
+  const deviceTableRef = useRef(null);
+  const dhcpTableRef = useRef(null);
+
   const gridRef = useRef();
-  const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
 
   const [dataTable, setDataTable] = useState([]);
   const [selectedDeviceToDelete, setSelectedDeviceToDelete] = useState("");
@@ -42,6 +44,10 @@ export const Home = () => {
 
   const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+  const [heightDeviceTable, setHeightDeviceTable] = useState(200);
+  const [heightDhcpTable, setHeightDhcpTable] = useState(200);
+
 
   useEffect(() => {
     getDevices();
@@ -157,6 +163,29 @@ export const Home = () => {
     console.log(selectedRows);
   };
 
+  const handleResizeDeviceTable = () => {
+    if (deviceTableRef.current.offsetHeight > 200) {
+      setHeightDeviceTable(deviceTableRef.current.offsetHeight);
+    }
+  };
+
+  const gridStyleDataTable = useMemo(
+    () => ({ height: heightDeviceTable + "px", width: "100%" }),
+    [heightDeviceTable]
+  );
+
+
+  const handleResizeDhcpTable = () => {
+    if (dhcpTableRef.current.offsetHeight > 200) {
+      setHeightDhcpTable(dhcpTableRef.current.offsetHeight);
+    }
+  };
+
+  const gridStyleDhcpTable = useMemo(
+    () => ({ height: heightDhcpTable + "px", width: "100%" }),
+    [heightDhcpTable]
+  );
+
   return (
     <div>
       <div className="listContainer">
@@ -172,56 +201,57 @@ export const Home = () => {
             </button>
           </div>
         </div>
-        <div className="resizable">
-          <div className="datatable" id="dataTable">
-            <div style={gridStyle} className="ag-theme-alpine">
-              <AgGridReact
-                ref={gridRef}
-                rowData={dataTable}
-                columnDefs={deviceUserColumns("home")}
-                defaultColDef={defaultColDef}
-                domLayout={"autoHeight"}
-                enableCellTextSelection="true"
-                onCellClicked={onCellClicked}
-                stopEditingWhenCellsLoseFocus={true}
-                onCellValueChanged={handleCellValueChanged}
-              ></AgGridReact>
-            </div>
 
-            {selectedDeviceToDelete && (
-              <Modal
-                show={selectedDeviceToDelete}
-                onClose={handleDeleteCancellation}
-              >
-                <div>
-                  <p className="mb-10">
-                    Device {selectedDeviceToDelete}, its components and links
-                    will be removed
-                  </p>
-                  <button
-                    disabled={updateConfig}
-                    id="removeYesBtn"
-                    className="btnStyle mt-10 mr-10"
-                    onClick={handleDeleteConfirmation}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    disabled={updateConfig}
-                    id="removeNoBtn"
-                    className="btnStyle mt-10"
-                    onClick={handleDeleteCancellation}
-                  >
-                    No
-                  </button>
-                </div>
-              </Modal>
-            )}
+        <div
+          className="datatable resizable"
+          id="dataTable"
+          ref={deviceTableRef}
+          onMouseMove={handleResizeDeviceTable}
+        >
+          <div style={gridStyleDataTable} className="ag-theme-alpine">
+            <AgGridReact
+              rowData={dataTable}
+              columnDefs={deviceUserColumns("home")}
+              defaultColDef={defaultColDef}
+              enableCellTextSelection="true"
+              onCellClicked={onCellClicked}
+              stopEditingWhenCellsLoseFocus={true}
+              onCellValueChanged={handleCellValueChanged}
+            ></AgGridReact>
           </div>
         </div>
+        {selectedDeviceToDelete && (
+          <Modal
+            show={selectedDeviceToDelete}
+            onClose={handleDeleteCancellation}
+          >
+            <div>
+              <p className="mb-10">
+                Device {selectedDeviceToDelete}, its components and links will
+                be removed
+              </p>
+              <button
+                disabled={updateConfig}
+                id="removeYesBtn"
+                className="btnStyle mt-10 mr-10"
+                onClick={handleDeleteConfirmation}
+              >
+                Yes
+              </button>
+              <button
+                disabled={updateConfig}
+                id="removeNoBtn"
+                className="btnStyle mt-10"
+                onClick={handleDeleteCancellation}
+              >
+                No
+              </button>
+            </div>
+          </Modal>
+        )}
       </div>
 
-      {/* <div className="listContainer">
+      <div className="listContainer">
         <div className="listTitle">
           Available Devices
           <div>
@@ -235,27 +265,26 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="resizable">
-          <div className="datatable" id="">
-            <div style={gridStyle} className="ag-theme-alpine">
-              <AgGridReact
-                ref={gridRef}
-                rowData={dhcpTable}
-                columnDefs={dhcpColumn}
-                defaultColDef={defaultColDef}
-                domLayout={"autoHeight"}
-                enableCellTextSelection="true"
-                // onCellClicked={onCellClicked}
-                stopEditingWhenCellsLoseFocus={true}
-                // onCellValueChanged={handleCellValueChanged}
-                onSelectionChanged={onSelectionChanged}
-                rowSelection="multiple"
-                suppressRowClickSelection={true}
-              ></AgGridReact>
-            </div>
+        <div
+          className="resizable datatable"
+          ref={dhcpTableRef}
+          onMouseMove={handleResizeDhcpTable}
+        >
+          <div style={gridStyleDhcpTable} className="ag-theme-alpine">
+            <AgGridReact
+              rowData={dhcpTable}
+              columnDefs={dhcpColumn}
+              defaultColDef={defaultColDef}
+              enableCellTextSelection="true"
+              // onCellClicked={onCellClicked}
+              stopEditingWhenCellsLoseFocus={true}
+              onSelectionChanged={onSelectionChanged}
+              rowSelection="multiple"
+              suppressRowClickSelection={true}
+            ></AgGridReact>
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
