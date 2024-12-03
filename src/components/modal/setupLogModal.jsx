@@ -20,10 +20,14 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const [onieDevices, setOnieDevices] = useState([]);
   const [selectedDevicesOnie, setSelectedDevicesOnie] = useState([]);
   const [sonicDevices, setSonicDevices] = useState([]);
-  const [selectedDevicesSonic, setSelectedDevicesSonic] = useState([]);
+  const [selectedDevicesSonicInstall, setSelectedDevicesSonicInstall] =
+    useState([]);
+  const [selectedDevicesSonicDiscover, setSelectedDevicesSonicDiscover] =
+    useState([]);
 
   const [selectAllOnie, setSelectAllOnie] = useState(false);
-  const [selectAllSonic, setSelectAllSonic] = useState(false);
+  const [selectAllSonicInstall, setSelectAllSonicInstall] = useState(false);
+  const [selectAllSonicDiscover, setSelectAllSonicDiscover] = useState(false);
   const [ShowResponse, setShowResponse] = useState(false);
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
@@ -174,7 +178,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
 
   // sonic function
   const handelCheckedSonic = (event, ip) => {
-    setSelectedDevicesSonic((prevSelectedNetworkDevices) => {
+    setSelectedDevicesSonicInstall((prevSelectedNetworkDevices) => {
       if (event.target.checked) {
         return [
           ...prevSelectedNetworkDevices,
@@ -182,6 +186,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
             image_url: logData?.request_json?.image_url,
             device_ips: [ip],
             discover_also: false,
+            install_also: true,
             username: logData?.request_json?.username,
             password: logData?.request_json?.password,
           },
@@ -194,20 +199,23 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     });
   };
 
-  const handelDiscoveryCheckedSonic = (e, ip) => {
-    selectedDevicesSonic.forEach((item) => {
-      if (item.device_ips[0] === ip) {
-        item.discover_also = e.target.checked;
+  const handelDiscoveryCheckedSonic = (event, ip) => {
+    setSelectedDevicesSonicDiscover((prevSelectedNetworkDevices) => {
+      if (event.target.checked) {
+        return [
+          ...prevSelectedNetworkDevices,
+          {
+            device_ips: [ip],
+            discover_also: true,
+            install_also: false,
+          },
+        ];
+      } else {
+        return prevSelectedNetworkDevices.filter(
+          (item) => item.device_ips[0] !== ip
+        );
       }
     });
-    setSelectedDevicesSonic([...selectedDevicesSonic]);
-  };
-
-  const discoverDisabledSonic = (e) => {
-    let result = selectedDevicesSonic.some((item) =>
-      item.device_ips.includes(e)
-    );
-    return !result;
   };
 
   const selectAllIpSonic = (e) => {
@@ -219,35 +227,67 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
             image_url: logData?.request_json?.image_url,
             device_ips: [entry.mgt_ip],
             discover_also: false,
+            install_also: true,
             username: logData?.request_json?.username,
             password: logData?.request_json?.password,
           });
         });
       });
-      setSelectedDevicesSonic(result);
-      setSelectAllSonic(true);
+      setSelectedDevicesSonicInstall(result);
+      setSelectAllSonicInstall(true);
     } else {
-      setSelectedDevicesSonic([]);
-      setSelectAllSonic(false);
+      setSelectedDevicesSonicInstall([]);
+      setSelectAllSonicInstall(false);
     }
   };
 
   const selectDiscoverAllSonic = (e) => {
-    setSelectedDevicesSonic(
-      selectedDevicesSonic.map((item) => {
-        return {
-          ...item,
-          discover_also: e.target.checked,
-        };
-      })
-    );
+    if (e.target.checked) {
+      const result = [];
+      Object.keys(sonicDevices).forEach((network) => {
+        sonicDevices[network].forEach((entry) => {
+          result.push({
+            device_ips: [entry.mgt_ip],
+            discover_also: true,
+            install_also: false,
+          });
+        });
+      });
+      setSelectedDevicesSonicDiscover(result);
+      setSelectAllSonicDiscover(true);
+    } else {
+      setSelectedDevicesSonicDiscover([]);
+      setSelectAllSonicDiscover(false);
+    }
   };
 
   // extra functions
   const applyConfig = async () => {
-    let appIpis = [...selectedDevicesOnie, ...selectedDevicesSonic];
+    const mapArr1 = new Map(
+      selectedDevicesSonicInstall.map((item) => [item.device_ips[0], item])
+    );
+
+    const unmatched = [];
+
+    selectedDevicesSonicDiscover.forEach((item) => {
+      const ip = item.device_ips[0];
+      if (mapArr1.has(ip)) {
+        const matchedItem = mapArr1.get(ip);
+        if (!matchedItem.discover_also && item.discover_also) {
+          matchedItem.discover_also = true;
+        }
+      } else {
+        unmatched.push(item);
+      }
+    });
+
+    let allIpis = [
+      ...selectedDevicesOnie,
+      ...selectedDevicesSonicInstall,
+      ...unmatched,
+    ];
     try {
-      const response = await instance.put(installSonicURL(), appIpis);
+      const response = await instance.put(installSonicURL(), allIpis);
     } catch (error) {
       console.log(error);
     } finally {
@@ -554,7 +594,6 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                         <input
                           className="ml-10"
                           type="checkbox"
-                          disabled={!selectAllSonic}
                           onChange={(e) => {
                             selectDiscoverAllSonic(e);
                           }}
@@ -587,16 +626,14 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 {key}
                               </td>
                             ) : null}
-
                             <td>{entry.mgt_ip}</td>
-
                             <td>
                               <input
                                 type="checkbox"
                                 id="selectDevice"
-                                disabled={selectAllSonic}
+                                disabled={selectAllSonicInstall}
                                 checked={
-                                  selectedDevicesSonic.filter(
+                                  selectedDevicesSonicInstall.filter(
                                     (item) =>
                                       item.device_ips[0] === entry.mgt_ip
                                   ).length > 0
@@ -610,12 +647,11 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                               <input
                                 type="checkbox"
                                 id="discoverDevice"
-                                disabled={discoverDisabledSonic(entry.mgt_ip)}
+                                disabled={selectAllSonicDiscover}
                                 checked={
-                                  selectedDevicesSonic.filter(
+                                  selectedDevicesSonicDiscover.filter(
                                     (item) =>
-                                      item.device_ips[0] === entry.mgt_ip &&
-                                      item.discover_also
+                                      item.device_ips[0] === entry.mgt_ip
                                   ).length > 0
                                 }
                                 onChange={(e) => {
@@ -658,7 +694,8 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                 onClick={applyConfig}
                 disabled={
                   selectedDevicesOnie.length === 0 &&
-                  selectedDevicesSonic.length === 0
+                  selectedDevicesSonicInstall.length === 0 &&
+                  selectedDevicesSonicDiscover.length === 0
                 }
                 id="applyConfigBtn"
               >

@@ -17,7 +17,6 @@ import Modal from "../../modal/Modal";
 
 import { syncFeatureCommon } from "../Deviceinfo";
 
-
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
   const instance = interceptor();
@@ -199,8 +198,6 @@ const InterfaceDataTable = (props) => {
       return;
     }
 
-    console.log("changes", formData);
-
     formData.forEach((item) => {
       if (hasOnlyRequiredKeys(item)) {
         let payload = {
@@ -331,7 +328,7 @@ const InterfaceDataTable = (props) => {
           disabled={updateConfig}
           id="rediscoverBtn"
         >
-          <FaSyncAlt /> Rediscover
+          Rediscover
         </button>
         <button
           onClick={() => sendUpdates(changes)}

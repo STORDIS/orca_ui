@@ -221,7 +221,7 @@ export const Home = () => {
         </div>
       </div>
 
-      <div className="listContainer">
+      {/* <div className="listContainer">
         <div className="listTitle">
           Available Devices
           <div>
@@ -235,25 +235,27 @@ export const Home = () => {
           </div>
         </div>
 
-        <div className="datatable" id="">
-          <div style={gridStyle} className="ag-theme-alpine">
-            <AgGridReact
-              ref={gridRef}
-              rowData={dhcpTable}
-              columnDefs={dhcpColumn}
-              defaultColDef={defaultColDef}
-              domLayout={"autoHeight"}
-              enableCellTextSelection="true"
-              // onCellClicked={onCellClicked}
-              stopEditingWhenCellsLoseFocus={true}
-              // onCellValueChanged={handleCellValueChanged}
-              onSelectionChanged={onSelectionChanged}
-              rowSelection="multiple"
-              suppressRowClickSelection={true}
-            ></AgGridReact>
+        <div className="resizable">
+          <div className="datatable" id="">
+            <div style={gridStyle} className="ag-theme-alpine">
+              <AgGridReact
+                ref={gridRef}
+                rowData={dhcpTable}
+                columnDefs={dhcpColumn}
+                defaultColDef={defaultColDef}
+                domLayout={"autoHeight"}
+                enableCellTextSelection="true"
+                // onCellClicked={onCellClicked}
+                stopEditingWhenCellsLoseFocus={true}
+                // onCellValueChanged={handleCellValueChanged}
+                onSelectionChanged={onSelectionChanged}
+                rowSelection="multiple"
+                suppressRowClickSelection={true}
+              ></AgGridReact>
+            </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
