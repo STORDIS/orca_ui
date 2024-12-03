@@ -45,8 +45,8 @@ export const Home = () => {
   const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
-  const [heightDeviceTable, setHeightDeviceTable] = useState(200);
-  const [heightDhcpTable, setHeightDhcpTable] = useState(200);
+  const [heightDeviceTable, setHeightDeviceTable] = useState(250);
+  const [heightDhcpTable, setHeightDhcpTable] = useState(250);
 
 
   useEffect(() => {
@@ -164,7 +164,7 @@ export const Home = () => {
   };
 
   const handleResizeDeviceTable = () => {
-    if (deviceTableRef.current.offsetHeight > 200) {
+    if (deviceTableRef.current.offsetHeight > 250) {
       setHeightDeviceTable(deviceTableRef.current.offsetHeight);
     }
   };
@@ -176,7 +176,7 @@ export const Home = () => {
 
 
   const handleResizeDhcpTable = () => {
-    if (dhcpTableRef.current.offsetHeight > 200) {
+    if (dhcpTableRef.current.offsetHeight > 250) {
       setHeightDhcpTable(dhcpTableRef.current.offsetHeight);
     }
   };
