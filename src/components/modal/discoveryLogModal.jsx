@@ -230,7 +230,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
           {Object.keys(sonicDevices).length > 0 && (
             <div>
               <button
-                className="btnStyle ml-15"
+                className="btnStyle mr-15"
                 onClick={applyConfig}
                 disabled={selectedDevicesSonic.length === 0}
                 id="applyConfigBtn"
@@ -245,7 +245,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
             <div>
               <button
                 onClick={revoke}
-                className="btnStyle ml-15"
+                className="btnStyle mr-15"
                 id="revokeTaskBtn"
               >
                 revoke running task
