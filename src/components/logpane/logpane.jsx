@@ -22,6 +22,10 @@ export const LogViewer = () => {
   const logPannelDivRef = useRef(null);
 
   const [logEntries, setLogEntries] = useState([]);
+  const [logEntriesToDelete, setLogEntriesToDelete] = useState({
+    log_ids: [],
+    task_ids: [],
+  });
 
   const instance = interceptor();
 
@@ -30,6 +34,11 @@ export const LogViewer = () => {
 
   // Column Definitions: Defines the columns to be displayed.
   const [colDefs] = useState([
+    {
+      headerCheckboxSelection: getIsStaff(),
+      checkboxSelection: getIsStaff(),
+      width: 50,
+    },
     {
       field: "index",
       headerName: "#",
@@ -217,21 +226,6 @@ export const LogViewer = () => {
       });
   };
 
-  const handelClearLog = () => {
-    instance
-      .delete(logPanelDeleteURL())
-      .then((response) => {
-        resetUpdateLog();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      })
-      .finally(() => {
-        getLogs();
-        resetUpdateLog();
-      });
-  };
-
   const handleResize = () => {
     if (logPannelDivRef.current.offsetHeight > 400) {
       setHeight(logPannelDivRef.current.offsetHeight);
@@ -267,11 +261,43 @@ export const LogViewer = () => {
     setLogDetails(params.data);
   };
 
-  const gridRef = useRef(null); // Reference for AG Grid instance
+  const gridRef = useRef(null);
+
   const clearFilters = () => {
     if (gridRef.current) {
-      gridRef.current.api.setFilterModel(null); // Clear all filters
+      gridRef.current.api.setFilterModel(null);
     }
+  };
+
+  const onSelectionChanged = () => {
+    const selectedNodes = gridRef.current.api.getSelectedNodes();
+    const selectedId = selectedNodes.map((node) => node.data.id);
+    const selectedTask = selectedNodes.map((node) => node.data.task_id);
+    console.log("selectedId", selectedId);
+    console.log("selectedTask", selectedTask);
+    setLogEntriesToDelete({
+      log_ids: selectedId || [],
+      task_ids: selectedTask || [],
+    });
+  };
+
+  const handelClearLog = () => {
+    instance
+      .delete(logPanelDeleteURL(), { data: logEntriesToDelete })
+      .then((response) => {
+        resetUpdateLog();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      })
+      .finally(() => {
+        getLogs();
+        resetUpdateLog();
+        setLogEntriesToDelete({
+          log_ids: [],
+          task_ids: [],
+        });
+      });
   };
 
   return (
@@ -301,7 +327,7 @@ export const LogViewer = () => {
             onClick={handelClearLog}
             disabled={!getIsStaff()}
           >
-            Remove All Tasks
+            Remove Tasks
           </button>
 
           <button
@@ -322,6 +348,9 @@ export const LogViewer = () => {
           onRowClicked={(params) => {
             openLogDetails(params);
           }}
+          stopEditingWhenCellsLoseFocus={true}
+          onSelectionChanged={onSelectionChanged}
+          rowSelection="multiple"
           pagination={true}
           paginationPageSize={50}
           paginationPageSizeSelector={[50, 100, 150, 200]}
