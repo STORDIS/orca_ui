@@ -1,5 +1,4 @@
 .editorContainer {
-  // border: 1px solid rgb(0, 0, 0);
   display: flex;
   width: 100%;
 
@@ -67,14 +66,6 @@
           align-items: center;
         }
 
-        // .cancel {
-        //     color: red;
-        // }
-
-        // .cancel:hover ~ .tabName {
-        //     color: red;
-        // }
-
         &:hover {
           background-color: rgba(255, 255, 255, 0.75);
         }
@@ -96,8 +87,6 @@
     }
 
     .editorBottomSection {
-      // display: flex;
-      // align-items: end;
       padding: 5px;
       text-align: right;
     }

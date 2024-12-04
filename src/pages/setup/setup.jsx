@@ -2,7 +2,6 @@ import React, {
   useEffect,
   useState,
   useRef,
-  useCallback,
   useMemo,
 } from "react";
 
@@ -68,7 +67,7 @@ export const Home = () => {
         setDataTable(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -151,7 +150,7 @@ export const Home = () => {
       setIsModalOpen(true);
       const response = await instance.put(installSonicURL(), payload);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setUpdateLog(true);
       setUpdateConfig(false);
@@ -263,7 +262,6 @@ export const Home = () => {
                 className="ml-15"
                 name="discover_also"
                 ref={discoverAlsoRef}
-                // checked={formData.discover_also}
                 onChange={handleCheckbox}
               />
             </div>

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCircle } from "react-icons/fa";
 import { dhcpCredentialsURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
@@ -46,7 +46,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
         sendCredentialsToParent(res.data.device_ip);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setIsDisabled(false);
       })
       .finally(() => {
@@ -81,11 +81,9 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
     setConfigStatus("Config In Progress....");
     instance
       .put(dhcpCredentialsURL(), payload)
-      .then((res) => {
-        console.log(res.data);
-      })
+      .then((res) => {})
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         setConfigStatus("");
         setIsDisabled(false);
       })
@@ -109,7 +107,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
 
           <input
             type="text"
-            placementholder=""
+            placeholder=""
             onChange={handleChange}
             name="device_ip"
             value={formData.device_ip}
@@ -123,7 +121,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
 
           <input
             type="text"
-            placementholder=""
+            placeholder=""
             onChange={handleChange}
             name="username"
             value={formData.username}
@@ -136,12 +134,11 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
           </CustomToolTip>
           <input
             type="password"
-            placementholder=""
+            placeholder=""
             onChange={handleChange}
             name="password"
             value={formData.password}
             disabled={isDisabled}
-            // disabled={formData.ssh_access}
           />
         </div>
         <div className="form-field w-25">
@@ -177,7 +174,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
         </div>
       </div>
 
-      <div className="form-wrapper" style={{ alignItems: "center" }} >
+      <div className="form-wrapper" style={{ alignItems: "center" }}>
         <button onClick={() => putCredentials(formData)} className="btnStyle">
           Apply Config
         </button>
