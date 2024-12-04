@@ -263,6 +263,7 @@ export const LogViewer = () => {
         style={{
           display: "flex",
           justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <div className="listTitle">Task</div>

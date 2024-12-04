@@ -77,10 +77,6 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   };
 
   const applyConfig = async () => {
-    console.log({
-      address: selectedDevicesSonic.join(", "),
-      discover_from_config: true,
-    });
     try {
       const response = await instance.put(getDiscoveryUrl(), {
         address: selectedDevicesSonic.join(", "),

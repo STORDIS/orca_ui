@@ -48,7 +48,6 @@ export const Home = () => {
   const [heightDeviceTable, setHeightDeviceTable] = useState(250);
   const [heightDhcpTable, setHeightDhcpTable] = useState(250);
 
-
   useEffect(() => {
     getDevices();
     getDhcpDevices();
@@ -155,8 +154,9 @@ export const Home = () => {
 
   const onSelectionChanged = () => {
     const selectedNodes = gridRef.current.api.getSelectedNodes();
-    const selectedData = selectedNodes.map((node) => node.data);
-    setSelectedRows(selectedData);
+    console.log(selectedNodes)
+    // const selectedData = selectedNodes.map((node) => node.data);
+    // setSelectedRows(selectedData);
   };
 
   const discoverDhcp = () => {
@@ -174,7 +174,6 @@ export const Home = () => {
     [heightDeviceTable]
   );
 
-
   const handleResizeDhcpTable = () => {
     if (dhcpTableRef.current.offsetHeight > 250) {
       setHeightDhcpTable(dhcpTableRef.current.offsetHeight);
@@ -189,7 +188,7 @@ export const Home = () => {
   return (
     <div>
       <div className="listContainer">
-        <div className="listTitle">
+        <div className="listTitle" style={{ alignItems: "center" }}>
           Devices
           <div>
             <button
@@ -252,7 +251,7 @@ export const Home = () => {
       </div>
 
       <div className="listContainer">
-        <div className="listTitle">
+        <div className="listTitle" style={{ alignItems: "center" }}>
           Available Devices
           <div>
             <button
@@ -275,7 +274,7 @@ export const Home = () => {
               rowData={dhcpTable}
               columnDefs={dhcpColumn}
               defaultColDef={defaultColDef}
-              enableCellTextSelection="true"
+              // enableCellTextSelection="true"
               // onCellClicked={onCellClicked}
               stopEditingWhenCellsLoseFocus={true}
               onSelectionChanged={onSelectionChanged}
