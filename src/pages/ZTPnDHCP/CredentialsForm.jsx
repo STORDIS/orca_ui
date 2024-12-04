@@ -5,7 +5,7 @@ import interceptor from "../../utils/interceptor";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 
-export const CredentialForm = ({ sendCredentialsToParent }) => {
+export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   const instance = interceptor();
   const [configStatus, setConfigStatus] = useState("");
 
@@ -27,6 +27,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
+    console.log(type);
     getCredentials();
   }, []);
 
@@ -43,7 +44,7 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
       .get(dhcpCredentialsURL())
       .then((res) => {
         setFormData(res.data);
-        sendCredentialsToParent(res.data.device_ip);
+        sendCredentialsToParent(res.data);
       })
       .catch((err) => {
         console.error(err);
@@ -94,93 +95,124 @@ export const CredentialForm = ({ sendCredentialsToParent }) => {
   };
 
   return (
-    <div className="listContainer">
-      <div className="form-wrapper" style={{ alignItems: "center" }}>
-        <div className="form-field w-25">
+    <>
+      {type === "form" ? (
+        <div className="listContainer">
+          <div className="form-wrapper" style={{ alignItems: "center" }}>
+            <div className="form-field w-25">
+              <CustomToolTip
+                arrow
+                placement="top"
+                title="Provide Server IP for SSH connection"
+              >
+                <label htmlFor=""> Server IP :</label>
+              </CustomToolTip>
+
+              <input
+                type="text"
+                placeholder=""
+                onChange={handleChange}
+                name="device_ip"
+                value={formData?.device_ip}
+                disabled={isDisabled}
+              />
+            </div>
+            <div className="form-field w-25">
+              <CustomToolTip
+                arrow
+                placement="top"
+                title="Provide SSH User Name"
+              >
+                <label htmlFor=""> SSH User Name :</label>
+              </CustomToolTip>
+
+              <input
+                type="text"
+                placeholder=""
+                onChange={handleChange}
+                name="username"
+                value={formData?.username}
+                disabled={isDisabled}
+              />
+            </div>
+            <div className="form-field w-25">
+              <CustomToolTip arrow placement="top" title="Provide SSH Password">
+                <label htmlFor=""> SSH Password :</label>
+              </CustomToolTip>
+              <input
+                type="password"
+                placeholder=""
+                onChange={handleChange}
+                name="password"
+                value={formData?.password}
+                disabled={isDisabled}
+              />
+            </div>
+            <div className="form-field w-25">
+              <span
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  textAlign: "center",
+                }}
+              >
+                SSH Connection :
+                <CustomToolTip
+                  arrow
+                  placement="top"
+                  title={
+                    formData?.ssh_access
+                      ? "Connection to SSH is successful"
+                      : "Not Connected"
+                  }
+                >
+                  <div>
+                    <FaCircle
+                      className={`ml-5 ${
+                        formData?.ssh_access ? "success" : "danger"
+                      }`}
+                      style={{ fontSize: "25px" }}
+                    />
+                  </div>
+                </CustomToolTip>
+              </span>
+            </div>
+          </div>
+
+          <div className="form-wrapper" style={{ alignItems: "center" }}>
+            <button
+              onClick={() => putCredentials(formData)}
+              className="btnStyle"
+            >
+              Apply Config
+            </button>
+            <span className="configStatus">{configStatus}</span>
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          DHCP server {formData?.device_ip} connection status :
           <CustomToolTip
             arrow
             placement="top"
-            title="Provide Server IP for SSH connection"
+            title={
+              formData?.ssh_access
+                ? "Connection to SSH is successful"
+                : "Not Connected"
+            }
           >
-            <label htmlFor=""> Server IP :</label>
+            <div>
+              <FaCircle
+                className={`ml-5 ${
+                  formData?.ssh_access ? "success" : "danger"
+                }`}
+                style={{ fontSize: "25px" }}
+              />
+            </div>
           </CustomToolTip>
-
-          <input
-            type="text"
-            placeholder=""
-            onChange={handleChange}
-            name="device_ip"
-            value={formData.device_ip}
-            disabled={isDisabled}
-          />
         </div>
-        <div className="form-field w-25">
-          <CustomToolTip arrow placement="top" title="Provide SSH User Name">
-            <label htmlFor=""> SSH User Name :</label>
-          </CustomToolTip>
-
-          <input
-            type="text"
-            placeholder=""
-            onChange={handleChange}
-            name="username"
-            value={formData.username}
-            disabled={isDisabled}
-          />
-        </div>
-        <div className="form-field w-25">
-          <CustomToolTip arrow placement="top" title="Provide SSH Password">
-            <label htmlFor=""> SSH Password :</label>
-          </CustomToolTip>
-          <input
-            type="password"
-            placeholder=""
-            onChange={handleChange}
-            name="password"
-            value={formData.password}
-            disabled={isDisabled}
-          />
-        </div>
-        <div className="form-field w-25">
-          <span
-            style={{
-              display: "flex",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            SSH Connection :
-            <CustomToolTip
-              arrow
-              placement="top"
-              title={
-                formData.ssh_access
-                  ? "Connection to SSH is successful"
-                  : "Not Connected"
-              }
-            >
-              <div>
-                <FaCircle
-                  className={`ml-5 ${
-                    formData.ssh_access === formData.ssh_access
-                      ? "success"
-                      : "danger"
-                  }`}
-                  style={{ fontSize: "25px" }}
-                />
-              </div>
-            </CustomToolTip>
-          </span>
-        </div>
-      </div>
-
-      <div className="form-wrapper" style={{ alignItems: "center" }}>
-        <button onClick={() => putCredentials(formData)} className="btnStyle">
-          Apply Config
-        </button>
-        <span className="configStatus">{configStatus}</span>
-      </div>
-    </div>
+      )}
+    </>
   );
 };
 

@@ -253,6 +253,13 @@ export const LogViewer = () => {
     setLogDetails(params.data);
   };
 
+  const gridRef = useRef(null); // Reference for AG Grid instance
+  const clearFilters = () => {
+    if (gridRef.current) {
+      gridRef.current.api.setFilterModel(null); // Clear all filters
+    }
+  };
+
   return (
     <div
       className="logPanel resizable"
@@ -270,6 +277,10 @@ export const LogViewer = () => {
       >
         <div className="listTitle">Task</div>
         <div>
+          <button className="clearLogBtn btnStyle ml-15" onClick={clearFilters}>
+            Clear Filters
+          </button>
+
           <button
             id="clearLogBtn"
             className="clearLogBtn btnStyle ml-15"
@@ -291,6 +302,7 @@ export const LogViewer = () => {
       </div>
       <div style={gridStyle} className="ag-theme-alpine ">
         <AgGridReact
+          ref={gridRef}
           rowData={logEntries}
           columnDefs={colDefs}
           onRowClicked={(params) => {

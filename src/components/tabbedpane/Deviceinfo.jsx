@@ -45,7 +45,7 @@ const Deviceinfo = (props) => {
   const updateConfig = useStoreConfig((state) => state.updateConfig);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
-  const [orcaState, setOrcaState] = useState("NO CONFIGURATION");
+  const [orcaState, setOrcaState] = useState("AVAILABLE");
 
   useEffect(() => {
     getDeviceDetails();
@@ -89,7 +89,7 @@ const Deviceinfo = (props) => {
         if (res.data) {
           setOrcaState(res.data.state);
         } else {
-          setOrcaState("NO CONFIGURATION");
+          setOrcaState("AVAILABLE");
         }
       })
       .catch((err) => console.error(err));

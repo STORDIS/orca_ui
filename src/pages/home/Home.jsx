@@ -14,6 +14,7 @@ import {
   dhcpDeviceListURL,
 } from "../../utils/backend_rest_urls.js";
 import Modal from "../../components/modal/Modal";
+import CredentialForm from "../ZTPnDHCP/CredentialsForm";
 
 import interceptor from "../../utils/interceptor.js";
 
@@ -26,6 +27,7 @@ import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
 
 import { getIsStaff } from "../../utils/common";
+import { ZTPnDHCP } from "../ZTPnDHCP/ztpndhcp";
 
 export const Home = () => {
   const instance = interceptor();
@@ -51,27 +53,31 @@ export const Home = () => {
   const [heightDeviceTable, setHeightDeviceTable] = useState(250);
   const [heightDhcpTable, setHeightDhcpTable] = useState(250);
 
+  const [isSSHConnected, setIsSSHConnected] = useState(false);
+
   useEffect(() => {
     getDevices();
-    getDhcpDevices();
   }, []);
 
   useEffect(() => {
     if (updateLog) {
       getDevices();
-      getDhcpDevices();
     }
   }, [updateLog]);
 
-  const getDhcpDevices = () => {
+  const getDhcpDevices = (e) => {
     setDhcpTable([]);
-    instance(dhcpDeviceListURL())
-      .then((res) => {
-        setDhcpTable(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    if (e) {
+      instance(dhcpDeviceListURL())
+        .then((res) => {
+          setDhcpTable(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      setDhcpTable([]);
+    }
   };
 
   const getDevices = () => {
@@ -268,6 +274,13 @@ export const Home = () => {
       <div className="listContainer">
         <div className="listTitle" style={{ alignItems: "center" }}>
           Available SONiC defaultColDefevices in network
+          <CredentialForm
+            type="status"
+            sendCredentialsToParent={(e) => {
+              getDhcpDevices(e.ssh_access);
+              setIsSSHConnected(e.ssh_access);
+            }}
+          />
           <div>
             <button
               className="btnStyle "
@@ -278,7 +291,9 @@ export const Home = () => {
             </button>
             <button
               className="btnStyle ml-15"
-              onClick={discoverDhcp}
+              onClick={() => {
+                getDhcpDevices(isSSHConnected);
+              }}
               disabled={!getIsStaff()}
             >
               Refresh

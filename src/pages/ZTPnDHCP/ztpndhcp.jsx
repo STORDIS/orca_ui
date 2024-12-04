@@ -530,7 +530,7 @@ export const ZTPnDHCP = () => {
   };
 
   const getDeviceIp = (e) => {
-    setDeviceIp(e);
+    setDeviceIp(e.device_ip);
   };
 
   const CustomToolTip = styled(({ className, ...props }) => (
@@ -546,7 +546,7 @@ export const ZTPnDHCP = () => {
       className=""
       onClick={() => setPopover({ ...popover, visible: false })}
     >
-      <CredentialForm sendCredentialsToParent={getDeviceIp} />
+      <CredentialForm type="form" sendCredentialsToParent={getDeviceIp} />
 
       <div className="listContainer">
         <div className="editorContainer">
