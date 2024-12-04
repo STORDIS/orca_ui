@@ -17,7 +17,10 @@ import Modal from "../../components/modal/Modal";
 
 import interceptor from "../../utils/interceptor.js";
 
-import { deleteDevicesURL } from "../../utils/backend_rest_urls.js";
+import {
+  deleteDevicesURL,
+  getDiscoveryUrl,
+} from "../../utils/backend_rest_urls.js";
 import useStoreConfig from "../../utils/configStore.js";
 import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
@@ -150,12 +153,22 @@ export const Home = () => {
 
   const onSelectionChanged = () => {
     const selectedNodes = gridRefDhcpTable.current.api.getSelectedNodes();
-    const selectedData = selectedNodes.map((node) => node.data);
+    const selectedData = selectedNodes.map((node) => node.data.device_ip);
     setSelectedRows(selectedData);
   };
 
-  const discoverDhcp = () => {
-    // console.log(selectedRows);
+  const discoverDhcp = async () => {
+    try {
+      const response = await instance.put(getDiscoveryUrl(), {
+        address: selectedRows,
+        discover_from_config: true,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdateLog(true);
+      setUpdateConfig(false);
+    }
   };
 
   const handleResizeDeviceTable = () => {
@@ -192,6 +205,13 @@ export const Home = () => {
               disabled={updateConfig || !getIsStaff()}
             >
               Apply config
+            </button>
+            <button
+              className="btnStyle ml-15"
+              onClick={getDevices}
+              disabled={!getIsStaff()}
+            >
+              Refresh
             </button>
           </div>
         </div>
@@ -247,14 +267,21 @@ export const Home = () => {
 
       <div className="listContainer">
         <div className="listTitle" style={{ alignItems: "center" }}>
-          Available Devices
+          Available SONiC defaultColDefevices in network
           <div>
             <button
               className="btnStyle "
               onClick={discoverDhcp}
               disabled={!getIsStaff()}
             >
-              Discover DHCP
+              Discover
+            </button>
+            <button
+              className="btnStyle ml-15"
+              onClick={discoverDhcp}
+              disabled={!getIsStaff()}
+            >
+              Refresh
             </button>
           </div>
         </div>

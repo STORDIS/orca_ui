@@ -1206,10 +1206,10 @@ export const dhcpColumn = [
     width: 130,
     sortable: true,
   },
-  {
-    field: "dhcp_ip",
-    headerName: "DHCP IP",
-    width: 130,
-    sortable: true,
-  },
+  // {
+  //   field: "dhcp_ip",
+  //   headerName: "DHCP IP",
+  //   width: 130,
+  //   sortable: true,
+  // },
 ];
