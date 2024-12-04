@@ -1,218 +1,214 @@
 .flexContainer {
-    display: flex;
-    gap: 10px;
-    margin: 10px;
+  display: flex;
+  gap: 10px;
+  margin: 10px;
 
-    .leftColumn {
-        width: 50vw;
-        // flex-direction: column;
+  .leftColumn {
+    width: 50vw;
+    padding: 10px;
+    height: 80vh;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
 
-        padding: 10px;
-        height: 80vh;
-        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+    .chatSection {
+      background-color: #c0c0c0;
+      overflow-y: auto;
+      width: -webkit-fill-available;
+      height: calc(100% - 90px);
 
-        .chatSection {
-            background-color: #c0c0c0;
-            overflow-y: auto;
-            width: -webkit-fill-available;
-            height: calc(100% - 90px);
+      .aiStyle {
+        max-width: 85%;
+        height: max-content;
+        margin-left: 5px;
+        display: flex;
+        margin: 10px auto 10px 5px;
+        align-items: end;
 
-            .aiStyle {
-                max-width: 85%;
-                height: max-content;
-                margin-left: 5px;
-                display: flex;
-                margin: 10px auto 10px 5px;
-                align-items: end;
-
-                .icon {
-                    width: 25px;
-                    font-size: 25px;
-                    background-color: rgb(245, 242, 240);
-                    border-radius: 25px;
-                    padding: 10px;
-                }
-
-                .content {
-                    background-color: rgb(245, 242, 240);
-                    border-radius: 25px;
-                    border-bottom-left-radius: 0px;
-                    padding: 12px 15px 12px 15px;
-                    margin-left: 10px;
-                    width: 80%;
-                    // text-align: center;
-
-                    .selectView {
-                        width: 100%;
-                        margin: 0px 5px 5px 0px;
-                        display: flex;
-                        justify-content: space-between;
-
-                        select {
-                            width: auto;
-                        }
-                    }
-
-                    .graph {
-                        border: 1px solid gray;
-                        width: -webkit-fill-available;
-                        height: 300px !important;
-                        position: relative;
-                    }
-
-                    .noData {
-                        text-align: center;
-                    }
-                    .error {
-                        text-align: center;
-                        color: orange;
-                    }
-                }
-            }
-
-            .aiStyle:hover .copy {
-                visibility: visible !important;
-            }
-
-            .aiStyle:hover .bookmark {
-                visibility: visible !important;
-            }
-
-            .copy {
-                cursor: pointer;
-                display: flex;
-                background-color: white;
-                border-radius: 25px;
-                padding: 5px;
-                margin: 0px 10px 0px 10px;
-                font-size: 15px;
-                visibility: hidden;
-            }
-
-            .bookmark {
-                cursor: pointer;
-                display: flex;
-                background-color: white;
-                border-radius: 25px;
-                padding: 5px;
-                margin: 0px 10px 0px 10px;
-                font-size: 15px;
-                visibility: hidden;
-                border: none;
-            }
-
-            .promptStyle:hover .bookmark {
-                visibility: visible !important;
-            }
-
-            .promptStyle:hover .copy {
-                visibility: visible !important;
-            }
-
-            .promptStyle {
-                text-align: right;
-                width: fit-content;
-                max-width: 85%;
-                margin: 10px 5px 10px auto;
-                height: max-content;
-                display: flex;
-                align-items: end;
-
-                .icon {
-                    background-color: white;
-                    border-radius: 25px;
-                    padding: 10px;
-                    font-size: 20px;
-                    width: 20px;
-                }
-
-                .text {
-                    background-color: white;
-                    border-radius: 25px;
-                    border-bottom-right-radius: 0px;
-                    padding: 12px;
-                    margin-right: 10px;
-                }
-            }
+        .icon {
+          width: 25px;
+          font-size: 25px;
+          background-color: rgb(245, 242, 240);
+          border-radius: 25px;
+          padding: 10px;
         }
 
-        .promptArea {
-            height: 60px;
-            margin-top: 10px;
-            align-items: center;
+        .content {
+          background-color: rgb(245, 242, 240);
+          border-radius: 25px;
+          border-bottom-left-radius: 0px;
+          padding: 12px 15px 12px 15px;
+          margin-left: 10px;
+          width: 80%;
+
+          .selectView {
+            width: 100%;
+            margin: 0px 5px 5px 0px;
             display: flex;
+            justify-content: space-between;
+
+            select {
+              width: auto;
+            }
+          }
+
+          .graph {
+            border: 1px solid gray;
             width: -webkit-fill-available;
-            padding: 10px;
-            border-radius: 25px;
-            border: 1px solid lightgray;
+            height: 300px !important;
+            position: relative;
+          }
 
-            textarea {
-                width: 92%;
-                font-size: 16px;
-                min-height: 3rem !important;
-                resize: none;
-                overflow-y: auto;
-                border: none;
-                border-right: 1px solid lightgray !important;
-            }
-            textarea:focus {
-                outline: none;
-            }
-        }
-    }
-
-    .rightColumn {
-        width: 27vw;
-        height: 83vh;
-        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
-        // background-color: #dfdfdf;
-
-        .heading {
-            padding: 10px;
-            margin-bottom: 15px;
-            display: flex;
+          .noData {
             text-align: center;
-            border-bottom: 1px solid black;
-            -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-            box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+          }
+          .error {
+            text-align: center;
+            color: orange;
+          }
+        }
+      }
+
+      .aiStyle:hover .copy {
+        visibility: visible !important;
+      }
+
+      .aiStyle:hover .bookmark {
+        visibility: visible !important;
+      }
+
+      .copy {
+        cursor: pointer;
+        display: flex;
+        background-color: white;
+        border-radius: 25px;
+        padding: 5px;
+        margin: 0px 10px 0px 10px;
+        font-size: 15px;
+        visibility: hidden;
+      }
+
+      .bookmark {
+        cursor: pointer;
+        display: flex;
+        background-color: white;
+        border-radius: 25px;
+        padding: 5px;
+        margin: 0px 10px 0px 10px;
+        font-size: 15px;
+        visibility: hidden;
+        border: none;
+      }
+
+      .promptStyle:hover .bookmark {
+        visibility: visible !important;
+      }
+
+      .promptStyle:hover .copy {
+        visibility: visible !important;
+      }
+
+      .promptStyle {
+        text-align: right;
+        width: fit-content;
+        max-width: 85%;
+        margin: 10px 5px 10px auto;
+        height: max-content;
+        display: flex;
+        align-items: end;
+
+        .icon {
+          background-color: white;
+          border-radius: 25px;
+          padding: 10px;
+          font-size: 20px;
+          width: 20px;
         }
 
-        .tabBody {
-            padding: 0px 15px 0px 15px;
-            overflow-y: auto;
-            overflow-x: hidden;
-            height: 70vh;
-            align-items: end;
-
-            .bookmarkTitle {
-                display: flex;
-                align-items: center;
-                background-color: #e7dbdb;
-                padding: 10px;
-                margin-bottom: 10px;
-            }
+        .text {
+          background-color: white;
+          border-radius: 25px;
+          border-bottom-right-radius: 0px;
+          padding: 12px;
+          margin-right: 10px;
         }
-
-        .deleteIcon {
-            color: red;
-            margin-left: auto !important;
-            cursor: pointer;
-            border: none;
-            background-color: transparent;
-
-            &:disabled {
-                color: #a4a3a3;
-                cursor: not-allowed;
-            }
-
-            &.button-disabled {
-                opacity: 0.5;
-                cursor: not-allowed;
-
-                color: #a4a3a3;
-            }
-        }
+      }
     }
+
+    .promptArea {
+      height: 60px;
+      margin-top: 10px;
+      align-items: center;
+      display: flex;
+      width: -webkit-fill-available;
+      padding: 10px;
+      border-radius: 25px;
+      border: 1px solid lightgray;
+
+      textarea {
+        width: 92%;
+        font-size: 16px;
+        min-height: 3rem !important;
+        resize: none;
+        overflow-y: auto;
+        border: none;
+        border-right: 1px solid lightgray !important;
+      }
+      textarea:focus {
+        outline: none;
+      }
+    }
+  }
+
+  .rightColumn {
+    width: 27vw;
+    height: 83vh;
+    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+
+    .heading {
+      padding: 10px;
+      margin-bottom: 15px;
+      display: flex;
+      text-align: center;
+      border-bottom: 1px solid black;
+      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+    }
+
+    .tabBody {
+      padding: 0px 15px 0px 15px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      height: 70vh;
+      align-items: end;
+
+      .bookmarkTitle {
+        display: flex;
+        align-items: center;
+        background-color: #e7dbdb;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+    }
+
+    .deleteIcon {
+      color: red;
+      margin-left: auto !important;
+      cursor: pointer;
+      border: none;
+      background-color: transparent;
+
+      &:disabled {
+        color: #a4a3a3;
+        cursor: not-allowed;
+      }
+
+      &.button-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+
+        color: #a4a3a3;
+      }
+    }
+  }
 }

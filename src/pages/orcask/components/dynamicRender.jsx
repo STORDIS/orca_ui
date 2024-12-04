@@ -5,11 +5,6 @@ import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
 const DynamicRender = (props) => {
-  // const [displayData, setDisplayData] = useState({
-  //     message: "",
-  //     responseType: "",
-  //     type: "",
-  // });
   const [displayData, setDisplayData] = useState([
     {
       message: "",
@@ -26,12 +21,6 @@ const DynamicRender = (props) => {
     setDisplayData([]);
 
     if (props.finalMessage.success.length > 0) {
-      // setDisplayData({
-      //     message: props.finalMessage.success,
-      //     responseType: "success",
-      //     type: checkTypeofResponse(props.finalMessage.success),
-      // });
-
       setDisplayData((prevData) => [
         ...prevData,
         {
@@ -50,13 +39,6 @@ const DynamicRender = (props) => {
           type: checkTypeofResponse(props?.finalMessage?.functions_result),
         },
       ]);
-      // setDisplayData({
-      //     message: props.finalMessage.functions_result,
-      //     responseType: "function",
-      //     type: checkTypeofResponse(
-      //         props?.finalMessage?.functions_result
-      //     ),
-      // });
     }
 
     if (props.finalMessage.fail.length > 0) {
@@ -68,12 +50,6 @@ const DynamicRender = (props) => {
           type: checkTypeofResponse(props.finalMessage.fail),
         },
       ]);
-
-      // setDisplayData({
-      //     message: props.finalMessage.fail,
-      //     responseType: "fail",
-      //     type: checkTypeofResponse(props.finalMessage.fail),
-      // });
     }
 
     if (
@@ -104,7 +80,7 @@ const DynamicRender = (props) => {
           Array.isArray(res[key]) &&
           res[key].every((item) => typeof item === "object" && item !== null)
         ) {
-          return "table_json"; // Return "table_json" if the structure matches
+          return "table_json";
         }
       }
 
@@ -178,7 +154,6 @@ const DynamicRender = (props) => {
                   style={{
                     marginBottom: "10px",
                     paddingBottom: "10px",
-                    // borderBottom: "1px solid black",
                   }}
                 >
                   <div className="mt-5 mb-10 selectView">

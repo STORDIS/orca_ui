@@ -1,64 +1,54 @@
 .main-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  padding: 30px;
+  margin: 20vh auto;
+  border-radius: 5px;
+  -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+  width: 700px;
+
+  .logo {
+    width: 40%;
+    object-fit: scale-down;
+    padding-right: 50px;
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  form {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    width: 100%;
+  }
 
-    background-color: #fff;
-    padding: 30px;
-    margin: 20vh auto;
-    border-radius: 5px;
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-    width: 700px;
+  label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
 
-    .logo {
-        width: 40%;
-        object-fit: scale-down;
-        padding-right: 50px;
+  input[type="text"],
+  input[type="password"] {
+    padding: 10px;
+    margin-top: 15px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    margin-bottom: 15px;
+    width: -webkit-fill-available;
+  }
+
+  .password {
+    width: 100% !important;
+    display: inline-flex;
+    .showBtn {
+      padding: 5px;
+      margin-top: 15px;
+      margin-bottom: 15px;
     }
-
-    h1 {
-        text-align: center;
-        margin-bottom: 20px;
-    }
-
-    form {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-    }
-
-    label {
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-    input[type="text"],
-    input[type="password"] {
-        padding: 10px;
-        margin-top: 15px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        margin-bottom: 15px;
-        width: -webkit-fill-available;
-    }
-
-    .password {
-        width: 100% !important;
-        display: inline-flex;
-        .showBtn {
-            padding: 5px;
-            margin-top: 15px;
-            margin-bottom: 15px;
-        }
-    }
-
-    .btnStyle {
-        background-color: lightgray;
-        color: black;
-        border: 1px solid black;
-        border-radius: 4px;
-        padding: 6px 12px;
-        font-family: Nunito, sans-serif;
-    }
+  }
 }

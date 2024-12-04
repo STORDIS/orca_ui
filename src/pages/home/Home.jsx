@@ -30,7 +30,7 @@ export const Home = () => {
   const deviceTableRef = useRef(null);
   const dhcpTableRef = useRef(null);
 
-  const gridRef = useRef();
+  const gridRefDhcpTable = useRef();
 
   const [dataTable, setDataTable] = useState([]);
   const [selectedDeviceToDelete, setSelectedDeviceToDelete] = useState("");
@@ -67,7 +67,7 @@ export const Home = () => {
         setDhcpTable(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -78,7 +78,7 @@ export const Home = () => {
         setDataTable(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -135,15 +135,11 @@ export const Home = () => {
   }, []);
 
   const sendUpdates = () => {
-    console.log(selectedDeviceToUpdate);
-
     setUpdateConfig(true);
     const apiUrl = switchImageURL();
     instance
       .put(apiUrl, selectedDeviceToUpdate)
-      .then((res) => {
-        console.log(res);
-      })
+      .then((res) => {})
       .catch((err) => {})
       .finally(() => {
         setUpdateLog(true);
@@ -153,14 +149,13 @@ export const Home = () => {
   };
 
   const onSelectionChanged = () => {
-    const selectedNodes = gridRef.current.api.getSelectedNodes();
-    console.log(selectedNodes)
-    // const selectedData = selectedNodes.map((node) => node.data);
-    // setSelectedRows(selectedData);
+    const selectedNodes = gridRefDhcpTable.current.api.getSelectedNodes();
+    const selectedData = selectedNodes.map((node) => node.data);
+    setSelectedRows(selectedData);
   };
 
   const discoverDhcp = () => {
-    console.log(selectedRows);
+    // console.log(selectedRows);
   };
 
   const handleResizeDeviceTable = () => {
@@ -271,6 +266,7 @@ export const Home = () => {
         >
           <div style={gridStyleDhcpTable} className="ag-theme-alpine">
             <AgGridReact
+              ref={gridRefDhcpTable}
               rowData={dhcpTable}
               columnDefs={dhcpColumn}
               defaultColDef={defaultColDef}
