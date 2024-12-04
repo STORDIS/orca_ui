@@ -199,6 +199,9 @@ export const ChatSection = ({sendDataToParent}) => {
                 field: key,
                 resizable: true,
                 filter: true,
+                filterParams: {
+                    buttons: ["clear"],
+                  },
                 sortable: true,
                 width: 130,
             }));

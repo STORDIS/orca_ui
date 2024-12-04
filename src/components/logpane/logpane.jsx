@@ -37,6 +37,9 @@ export const LogViewer = () => {
       width: 50,
       resizable: true,
       filter: true,
+      filterParams: {
+        buttons: ["clear"],
+      },
       sortable: true,
     },
     {
@@ -45,6 +48,9 @@ export const LogViewer = () => {
       width: 170,
       resizable: true,
       filter: true,
+      filterParams: {
+        buttons: ["clear"],
+      },
       sortable: true,
       cellRenderer: (params) => {
         return <Time value={params?.value} format="hh:mm:ss DD-MM-YYYY" />;
@@ -59,6 +65,9 @@ export const LogViewer = () => {
       width: 100,
       resizable: true,
       filter: true,
+      filterParams: {
+        buttons: ["clear"],
+      },
       sortable: true,
       cellRenderer: (params) => {
         let num = params.value;
@@ -76,6 +85,9 @@ export const LogViewer = () => {
       width: 500,
       resizable: true,
       filter: true,
+      filterParams: {
+        buttons: ["clear"],
+      },
       sortable: true,
       valueGetter: (params) => {
         return (
@@ -98,6 +110,9 @@ export const LogViewer = () => {
       resizable: true,
       sortable: true,
       filter: true,
+      filterParams: {
+        buttons: ["clear"],
+      },
       cellRenderer: (params) => {
         if (params.value.toUpperCase() === "SUCCESS") {
           return (
@@ -278,7 +293,7 @@ export const LogViewer = () => {
         <div className="listTitle">Task</div>
         <div>
           <button className="clearLogBtn btnStyle ml-15" onClick={clearFilters}>
-            Clear Filters
+            Clear All Filters
           </button>
 
           <button
