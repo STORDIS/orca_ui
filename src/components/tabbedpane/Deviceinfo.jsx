@@ -7,6 +7,7 @@ import {
   getAllDevicesURL,
   syncURL,
   sheduleURL,
+  getStateURL,
 } from "../../utils/backend_rest_urls.js";
 import interceptor from "../../utils/interceptor.js";
 import useStoreLogs from "../../utils/store";
@@ -44,9 +45,12 @@ const Deviceinfo = (props) => {
   const updateConfig = useStoreConfig((state) => state.updateConfig);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+  const [orcaState, setOrcaState] = useState("NO CONFIGURATION");
+
   useEffect(() => {
     getDeviceDetails();
     getShedule();
+    getOrcaState();
   }, [selectedDeviceIp]);
 
   const getDeviceDetails = () => {
@@ -63,6 +67,7 @@ const Deviceinfo = (props) => {
       setDataTable([]);
       getDeviceDetails();
       getShedule();
+      getOrcaState();
     }
     props.reset(false);
   }, [props.refresh]);
@@ -76,6 +81,18 @@ const Deviceinfo = (props) => {
       })
       .catch((err) => {})
       .finally(() => {});
+  };
+
+  const getOrcaState = () => {
+    instance(getStateURL(selectedDeviceIp))
+      .then((res) => {
+        if (res.data) {
+          setOrcaState(res.data.state);
+        } else {
+          setOrcaState("NO CONFIGURATION");
+        }
+      })
+      .catch((err) => console.error(err));
   };
 
   const sendUpdates = () => {
@@ -177,8 +194,8 @@ const Deviceinfo = (props) => {
                         <option value="20">20 Minutes</option>
                         <option value="30">30 Minutes</option>
                       </select>
-                    ) : column.headerName === "Orca Status" ? (
-                      <span> {props.orcaState} </span>
+                    ) : column.headerName === "Device Status in Orca" ? (
+                      <span> {orcaState} </span>
                     ) : (
                       dataRow[column.field]
                     )}
