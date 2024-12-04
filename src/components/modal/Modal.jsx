@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./Modal.scss";
 
 const Modal = ({ show, onClose, onSubmit, children, title, id }) => {

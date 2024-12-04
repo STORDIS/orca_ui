@@ -23,7 +23,6 @@ const BGPTable = (props) => {
     const selectedDeviceIp = props.selectedDeviceIp;
 
     const [dataTable, setDataTable] = useState([]);
-    // const [showForm, setShowForm] = useState(false);
     const [configStatus, setConfigStatus] = useState("");
     const [selectedRows, setSelectedRows] = useState([]);
     const [changes, setChanges] = useState({});
@@ -53,7 +52,6 @@ const BGPTable = (props) => {
         instance
             .get(apiMUrl)
             .then((res) => {
-                // get neighbor_prop property from json and convert to string
                 res?.data?.forEach((element) => {
                     element.neighbor_prop = JSON.stringify(
                         element?.neighbor_prop

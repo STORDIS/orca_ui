@@ -11,7 +11,7 @@ const CommonLogTable = ({ logData, showResponse, response }) => {
   const formattedRequestJson = logData?.request_json
     ? Object.entries(logData?.request_json)
         .map(([key, value]) => `${key}: ${value}`)
-        .join("\n") // Double newlines for extra space between pairs
+        .join("\n") 
     : "waiting for process to complete";
 
   return (

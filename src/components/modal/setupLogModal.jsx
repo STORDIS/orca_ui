@@ -1,12 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./logModel.scss";
-import Time from "react-time-format";
 
-import {
-  celeryURL,
-  installSonicURL,
-  celeryTaskURL,
-} from "../../utils/backend_rest_urls";
+import { celeryURL, installSonicURL } from "../../utils/backend_rest_urls";
 import useStoreConfig from "../../utils/configStore";
 import useStoreLogs from "../../utils/store";
 import interceptor from "../../utils/interceptor";
@@ -88,7 +83,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     //         setIsLoading(false);
     //     })
     //     .catch((err) => {
-    //         console.log(err);
+    //         console.error(err);
     //         setIsLoading(false);
     //     });
 
@@ -289,7 +284,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     try {
       const response = await instance.put(installSonicURL(), allIpis);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setUpdateLog(true);
       setUpdateConfig(false);

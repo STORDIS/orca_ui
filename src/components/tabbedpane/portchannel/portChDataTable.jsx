@@ -38,7 +38,7 @@ export const getPortChannelDataCommon = (selectedDeviceIp) => {
             return data;
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return [];
         });
 };
@@ -147,7 +147,6 @@ const PortChDataTable = (props) => {
                 }
             }
 
-            console.log(params.colDef.field, params.newValue);
 
             setChanges((prev) => {
                 if (!Array.isArray(prev)) {

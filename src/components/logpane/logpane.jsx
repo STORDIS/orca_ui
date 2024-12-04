@@ -28,7 +28,6 @@ export const LogViewer = () => {
   const updateLog = useStoreLogs((state) => state.updateLog);
   const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
 
-  // Column Definitions: Defines the columns to be displayed.
   const [colDefs] = useState([
     {
       field: "index",
@@ -86,7 +85,6 @@ export const LogViewer = () => {
       },
       tooltipValueGetter: (params) => {
         return JSON.stringify(params?.value);
-        // return "tool";
       },
     },
     {
@@ -165,7 +163,6 @@ export const LogViewer = () => {
         }
       },
       tooltipValueGetter: (params) => {
-        // console.log(params?.data?.response)
         if (params?.data?.response) {
           return JSON.stringify(params?.data?.response);
         } else {

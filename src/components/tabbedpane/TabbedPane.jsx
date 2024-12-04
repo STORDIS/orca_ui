@@ -50,7 +50,7 @@ const TabbedPane = () => {
                 });
                 setDropdownOptions(data);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => console.error(err));
     }, []);
 
     const handleTabs = (event, val) => {
@@ -81,7 +81,6 @@ const TabbedPane = () => {
 
     const [height, setHeight] = useState(500);
     const handleResize = () => {
-        console.log('---', parentDivRef.current.offsetHeight)
         if (parentDivRef.current) {
             setHeight(parentDivRef.current.offsetHeight);
         }

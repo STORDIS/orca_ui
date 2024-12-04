@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import "./logModel.scss";
-import Time from "react-time-format";
 import { FaSquareXmark } from "react-icons/fa6";
 import CommonLogTable from "./commonLogTable";
 

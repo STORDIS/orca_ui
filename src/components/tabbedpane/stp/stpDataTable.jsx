@@ -24,7 +24,7 @@ export const getStpDataCommon = (selectedDeviceIp) => {
             return res.data;
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return []; // Return an empty array on error
         });
 };
@@ -40,7 +40,7 @@ export const putStpDataCommon = (selectedDeviceIp, payload, status) => {
             return true;
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             status(false);
             return false;
         });
@@ -57,7 +57,7 @@ export const deleteStpDataCommon = (selectedDeviceIp, payload, status) => {
             return true;
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             status(false);
             return false;
         });
@@ -118,7 +118,6 @@ const StpDataTable = (props) => {
                 }));
             }
         }
-        // setSelectedRows(params.data);
     }, []);
 
     const onCellClicked = useCallback((params) => {

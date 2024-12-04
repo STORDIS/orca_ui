@@ -36,7 +36,7 @@ export const getVlanDataCommon = (selectedDeviceIp) => {
             return items;
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return []; // Return an empty array on error
         });
 };

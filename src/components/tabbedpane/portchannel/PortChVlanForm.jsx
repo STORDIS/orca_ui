@@ -12,7 +12,6 @@ import { getVlanDataCommon } from "../vlan/vlanTable";
 const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
     const [vlanNames, setVlanNames] = useState([]);
 
-    // const [selectedVlans, setSelectedVlans] = useState([]);
     const [inputVlans, setInputVlans] = useState({
         vlan_ids: [],
         if_mode: "TRUNK",
@@ -117,7 +116,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                 onClose();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 setUpdateConfig(false);
             })
             .finally(() => {
@@ -142,7 +141,7 @@ const PortChVlanForm = ({ onSubmit, inputData, selectedDeviceIp, onClose }) => {
                 onClose();
             })
             .catch((err) => {
-                console.log(err);
+                console.error(err);
                 setUpdateConfig(false);
             })
             .finally(() => {

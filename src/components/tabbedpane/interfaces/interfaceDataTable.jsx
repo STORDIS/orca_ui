@@ -6,7 +6,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
   getAllInterfacesOfDeviceURL,
   breakoutURL,
-  subInterfaceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import PrimarySecondaryForm from "./primarySecondaryForm";
@@ -38,7 +37,7 @@ export const getInterfaceDataCommon = (selectedDeviceIp) => {
       return items;
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       return []; // Return an empty array on error
     });
 };
@@ -59,8 +58,6 @@ const InterfaceDataTable = (props) => {
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
   const updateConfig = useStoreConfig((state) => state.updateConfig);
 
-  // const setUpdateStatus = useStoreLogs((state) => state.setUpdateStatus);
-  //  onSuccess({ success: true });
   useEffect(() => {
     if (selectedDeviceIp) {
       getInterfaceData();
@@ -80,7 +77,6 @@ const InterfaceDataTable = (props) => {
     setChanges([]);
     getInterfaceDataCommon(selectedDeviceIp).then((res) => {
       setDataTable(res);
-      // setOriginData(res);
 
       const deepCopyData = JSON.parse(JSON.stringify(res));
       setOriginData([...deepCopyData]);
@@ -114,7 +110,6 @@ const InterfaceDataTable = (props) => {
       setIsModalOpen("PrimarySecondaryForm");
     }
     setSelectedRows(params.data);
-    // console.log(originData);
   }, []);
 
   const handleCellValueChanged = useCallback((params) => {

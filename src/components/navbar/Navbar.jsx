@@ -23,7 +23,7 @@ const Navbar = () => {
       const response = await instance.put(getDiscoveryUrl(), formData);
       setUpdateLog(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setUpdateLog(true);
     }
   };

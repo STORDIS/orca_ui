@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./logModel.scss";
 
-import {
-  celeryURL,
-  installSonicURL,
-  celeryTaskURL,
-  getDiscoveryUrl,
-} from "../../utils/backend_rest_urls";
+import { celeryURL, getDiscoveryUrl } from "../../utils/backend_rest_urls";
 import useStoreConfig from "../../utils/configStore";
 import useStoreLogs from "../../utils/store";
 import interceptor from "../../utils/interceptor";
-import { isValidIPv4WithCIDR } from "../../utils/common";
 import { FaSquareXmark } from "react-icons/fa6";
 import CommonLogTable from "./commonLogTable";
 
@@ -64,7 +58,6 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
       const result = [];
       Object.keys(sonicDevices).forEach((network) => {
         sonicDevices[network].forEach((entry) => {
-          console.log(entry.mgt_ip);
           result.push(entry.mgt_ip);
         });
       });
@@ -83,7 +76,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         discover_from_config: true,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setUpdateLog(true);
       setUpdateConfig(false);
@@ -177,9 +170,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                                 {key}
                               </td>
                             ) : null}
-
                             <td>{entry.mgt_ip}</td>
-
                             <td>
                               <input
                                 type="checkbox"
@@ -248,16 +239,6 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
               </button>
             </div>
           ) : null}
-
-          {/* <div>
-            <button
-              className="btnStyle ml-15"
-              id="DiscoveryLogModalCloseBtn"
-              onClick={onClose}
-            >
-              Close
-            </button>
-          </div> */}
         </div>
       </div>
     </div>
