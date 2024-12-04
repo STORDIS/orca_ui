@@ -42,7 +42,6 @@ const Deviceinfo = (props) => {
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
   const updateConfig = useStoreConfig((state) => state.updateConfig);
-
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   useEffect(() => {

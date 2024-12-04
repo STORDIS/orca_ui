@@ -183,7 +183,7 @@ export const Home = () => {
   return (
     <div>
       <div className="listContainer">
-        <div className="listTitle" style={{ alignItems: "center" }}>
+        <div className="listTitle ">
           Devices
           <div>
             <button
@@ -197,7 +197,7 @@ export const Home = () => {
         </div>
 
         <div
-          className="datatable resizable"
+          className="datatable resizable mt-15"
           id="dataTable"
           ref={deviceTableRef}
           onMouseMove={handleResizeDeviceTable}
@@ -260,7 +260,7 @@ export const Home = () => {
         </div>
 
         <div
-          className="resizable datatable"
+          className="datatable resizable mt-15"
           ref={dhcpTableRef}
           onMouseMove={handleResizeDhcpTable}
         >

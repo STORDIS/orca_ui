@@ -95,7 +95,7 @@ const CommonLogTable = ({ logData, showResponse, response }) => {
             <b>Processing Time :</b>
           </td>
           <td className="w-75">
-            {parseFloat(logData?.processing_time).toFixed(4)}
+            {parseFloat(logData?.processing_time).toFixed(4)} sec
           </td>
         </tr>
       </tbody>

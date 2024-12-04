@@ -72,7 +72,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const applyConfig = async () => {
     try {
       const response = await instance.put(getDiscoveryUrl(), {
-        address: selectedDevicesSonic.join(", "),
+        address: selectedDevicesSonic,
         discover_from_config: true,
       });
     } catch (error) {
@@ -134,7 +134,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                       <th>Network Address</th>
                       <th>IP Address</th>
                       <th id="selectAll">
-                        Select All
+                        Discover
                         <input
                           className="ml-10"
                           type="checkbox"
@@ -222,7 +222,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                 disabled={selectedDevicesSonic.length === 0}
                 id="applyConfigBtn"
               >
-                Apply Config
+                Discover Network
               </button>
             </div>
           )}
