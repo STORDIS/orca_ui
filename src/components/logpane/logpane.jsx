@@ -100,7 +100,7 @@ export const LogViewer = () => {
         return params.value;
       },
       tooltipValueGetter: (params) => {
-        return JSON.stringify(params?.value);
+        return params.value;
       },
     },
     {
@@ -182,7 +182,6 @@ export const LogViewer = () => {
         }
       },
       tooltipValueGetter: (params) => {
-        // console.log(params?.data?.response)
         if (params?.data?.response) {
           return JSON.stringify(params?.data?.response);
         } else {

@@ -27,7 +27,6 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
-    console.log(type);
     getCredentials();
   }, []);
 
