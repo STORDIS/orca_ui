@@ -17,6 +17,7 @@ import { FaRotateLeft } from "react-icons/fa6";
 import { FaHourglassHalf } from "react-icons/fa";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { FaRegCircleXmark } from "react-icons/fa6";
+import Modal from "../../components/modal/Modal";
 
 export const LogViewer = () => {
   const logPannelDivRef = useRef(null);
@@ -26,13 +27,16 @@ export const LogViewer = () => {
     log_ids: [],
     task_ids: [],
   });
+  const [hasStartedTask, setHasStartedTask] = useState(false);
 
   const instance = interceptor();
 
   const updateLog = useStoreLogs((state) => state.updateLog);
   const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
 
-  // Column Definitions: Defines the columns to be displayed.
+  const [showLogDetails, setShowLogDetails] = useState("null");
+  const [logDetails, setLogDetails] = useState({});
+
   const [colDefs] = useState([
     {
       headerCheckboxSelection: getIsStaff(),
@@ -237,9 +241,6 @@ export const LogViewer = () => {
     [height]
   );
 
-  const [showLogDetails, setShowLogDetails] = useState("null");
-  const [logDetails, setLogDetails] = useState({});
-
   const openLogDetails = (params) => {
     getLogs();
     switch (params.data.http_path) {
@@ -273,15 +274,35 @@ export const LogViewer = () => {
     const selectedNodes = gridRef.current.api.getSelectedNodes();
     const selectedId = selectedNodes.map((node) => node.data.id);
     const selectedTask = selectedNodes.map((node) => node.data.task_id);
-    console.log("selectedId", selectedId);
-    console.log("selectedTask", selectedTask);
+
+    const startedTask = selectedNodes.some(
+      (node) => node.data.status === "STARTED"
+    );
+
+    setHasStartedTask(startedTask);
+
     setLogEntriesToDelete({
       log_ids: selectedId || [],
       task_ids: selectedTask || [],
     });
   };
 
+  const reload = () => {
+    getLogs();
+    setShowLogDetails("null");
+    setLogEntriesToDelete({
+      log_ids: [],
+      task_ids: [],
+    });
+  };
+
   const handelClearLog = () => {
+    if (hasStartedTask) {
+      setShowLogDetails("deleteDialog");
+    } else {
+      setShowLogDetails("null");
+    }
+
     instance
       .delete(logPanelDeleteURL(), { data: logEntriesToDelete })
       .then((response) => {
@@ -387,6 +408,27 @@ export const LogViewer = () => {
           title="Log Details"
           id="discoveryLogDetails"
         />
+      )}
+
+      {showLogDetails === "deleteDialog" && (
+        <Modal show={true} onClose={reload} title="Warning" onSubmit={reload}>
+          <div>
+            Task which are in Start state can not be cleared. Revoke them first
+            and try again
+            <div
+              style={{
+                marginTop: "10px",
+                display: "flex",
+                justifyContent: "center",
+                gap: "10px",
+              }}
+            >
+              <button className="btnStyle" onClick={reload}>
+                OK
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
     </div>
   );
