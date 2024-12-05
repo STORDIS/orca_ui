@@ -273,7 +273,7 @@ export const Home = () => {
 
       <div className="listContainer">
         <div className="listTitle" style={{ alignItems: "center" }}>
-          Available SONiC defaultColDefevices in network
+          Available SONiC Devices in network
           <CredentialForm
             type="status"
             sendCredentialsToParent={(e) => {

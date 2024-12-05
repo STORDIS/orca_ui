@@ -317,17 +317,21 @@ export const LogViewer = () => {
       >
         <div className="listTitle">Task</div>
         <div>
-          <button className="clearLogBtn btnStyle ml-15" onClick={clearFilters}>
-            Clear All Filters
-          </button>
-
           <button
             id="clearLogBtn"
             className="clearLogBtn btnStyle ml-15"
             onClick={handelClearLog}
-            disabled={!getIsStaff()}
+            disabled={
+              !getIsStaff() ||
+              logEntriesToDelete.log_ids.length === 0 ||
+              logEntriesToDelete.task_ids.length === 0
+            }
           >
-            Remove Tasks
+            Clear
+          </button>
+
+          <button className="clearLogBtn btnStyle ml-15" onClick={clearFilters}>
+            Clear All Filters
           </button>
 
           <button
