@@ -413,8 +413,8 @@ export const LogViewer = () => {
           onSubmit={() => setShowLogDetails("null")}
         >
           <div>
-            Task which are in Start state can not be cleared. Revoke them first
-            and try again
+            Task which are in Start state can not be cleared. Revoke them and
+            try again
             <div
               style={{
                 marginTop: "10px",
