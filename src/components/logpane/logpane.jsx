@@ -218,6 +218,10 @@ export const LogViewer = () => {
 
   const getLogs = () => {
     setLogEntries([]);
+    setLogEntriesToDelete({
+      log_ids: [],
+      task_ids: [],
+    });
     instance
       .get(logPanelURL())
       .then((response) => {
