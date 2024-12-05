@@ -287,15 +287,6 @@ export const LogViewer = () => {
     });
   };
 
-  const reload = () => {
-    getLogs();
-    setShowLogDetails("null");
-    setLogEntriesToDelete({
-      log_ids: [],
-      task_ids: [],
-    });
-  };
-
   const handelClearLog = () => {
     if (hasStartedTask) {
       setShowLogDetails("deleteDialog");
@@ -411,7 +402,12 @@ export const LogViewer = () => {
       )}
 
       {showLogDetails === "deleteDialog" && (
-        <Modal show={true} onClose={reload} title="Warning" onSubmit={reload}>
+        <Modal
+          show={true}
+          onClose={() => setShowLogDetails("null")}
+          title=""
+          onSubmit={() => setShowLogDetails("null")}
+        >
           <div>
             Task which are in Start state can not be cleared. Revoke them first
             and try again
@@ -423,7 +419,10 @@ export const LogViewer = () => {
                 gap: "10px",
               }}
             >
-              <button className="btnStyle" onClick={reload}>
+              <button
+                className="btnStyle"
+                onClick={() => setShowLogDetails("null")}
+              >
                 OK
               </button>
             </div>
