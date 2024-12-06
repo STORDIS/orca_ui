@@ -284,10 +284,10 @@ export const Home = () => {
           <div>
             <button
               className="btnStyle "
-              onClick={discoverDhcp || selectedRows.length === 0}
-              disabled={!getIsStaff()}
+              onClick={discoverDhcp}
+              disabled={!getIsStaff() || selectedRows.length === 0}
             >
-              Discover
+              Discover Device
             </button>
             <button
               className="btnStyle ml-15"

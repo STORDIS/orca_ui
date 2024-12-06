@@ -13,7 +13,6 @@ import PrimarySecondaryForm from "./primarySecondaryForm";
 import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 import Modal from "../../modal/Modal";
-
 import { syncFeatureCommon } from "../Deviceinfo";
 
 // Function to get interface names

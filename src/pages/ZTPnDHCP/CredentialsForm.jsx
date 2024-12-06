@@ -4,7 +4,7 @@ import { dhcpCredentialsURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
-import { areAllIPAddressesValid } from "../../utils/common";
+import { isValidIPv4WithCIDR } from "../../utils/common";
 
 export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   const instance = interceptor();
@@ -51,7 +51,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
         setIsDisabled(false);
       })
       .finally(() => {
-        setConfigStatus("Config Success");
+      //   setConfigStatus("Config Success");
         setIsDisabled(false);
         setTimeout(() => {
           setConfigStatus("");
@@ -78,7 +78,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       setIsDisabled(false);
       return;
     }
-    if (!areAllIPAddressesValid(payload.device_ip)) {
+    if (!isValidIPv4WithCIDR(payload.device_ip)) {
       alert("Invalid IP Address");
       setIsDisabled(false);
       return;
@@ -90,11 +90,11 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       .then((res) => {})
       .catch((err) => {
         console.error(err);
-        setConfigStatus("");
+        setConfigStatus("Config Failed");
         setIsDisabled(false);
       })
       .finally(() => {
-        setConfigStatus("");
+        setConfigStatus("Config Success");
         getCredentials();
       });
   };
@@ -127,6 +127,8 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
     <>
       {type === "form" ? (
         <div className="listContainer">
+          <div className="listTitle mb-15">DHCP Server Credentials</div>
+
           <div className="form-wrapper" style={{ alignItems: "center" }}>
             <div className="form-field w-25">
               <CustomToolTip
@@ -190,15 +192,21 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
                   arrow
                   placement="top"
                   title={
-                    formData?.ssh_access
+                    formData?.ssh_access === true
                       ? "Connection to SSH is successful"
-                      : "Not Connected"
+                      : formData?.ssh_access === false
+                      ? "Connected to SSH failed"
+                      : "No connection"
                   }
                 >
                   <div>
                     <FaCircle
                       className={`ml-5 ${
-                        formData?.ssh_access ? "success" : "danger"
+                        formData?.ssh_access === true
+                          ? "success"
+                          : formData?.ssh_access === false
+                          ? "danger"
+                          : ""
                       }`}
                       style={{ fontSize: "25px" }}
                     />
@@ -225,7 +233,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
               onClick={() => removeCredentials(formData)}
               className="btnStyle"
             >
-              Remove Credentials
+              Remove DHCP Server
             </button>
           </div>
         </div>
@@ -236,15 +244,21 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             arrow
             placement="top"
             title={
-              formData?.ssh_access
+              formData?.ssh_access === true
                 ? "Connection to SSH is successful"
-                : "Not Connected"
+                : formData?.ssh_access === false
+                ? "Connected to SSH failed"
+                : "No connection"
             }
           >
             <div>
               <FaCircle
                 className={`ml-5 ${
-                  formData?.ssh_access ? "success" : "danger"
+                  formData?.ssh_access === true
+                    ? "success"
+                    : formData?.ssh_access === false
+                    ? "danger"
+                    : ""
                 }`}
                 style={{ fontSize: "25px" }}
               />
