@@ -30,13 +30,27 @@ const DynamicRender = (props) => {
         },
       ]);
     }
-    if (Object.keys(props.finalMessage.functions_result).length > 0) {
+    if (Object.keys(props.finalMessage.immediate_functions_result).length > 0) {
       setDisplayData((prev) => [
         ...prev,
         {
-          message: props.finalMessage.functions_result,
+          message: props.finalMessage.immediate_functions_result,
           responseType: "function",
-          type: checkTypeofResponse(props?.finalMessage?.functions_result),
+          type: checkTypeofResponse(
+            props?.finalMessage?.immediate_functions_result
+          ),
+        },
+      ]);
+    }
+    if (Object.keys(props.finalMessage.confirmed_functions_result).length > 0) {
+      setDisplayData((prev) => [
+        ...prev,
+        {
+          message: props.finalMessage.confirmed_functions_result,
+          responseType: "function",
+          type: checkTypeofResponse(
+            props?.finalMessage?.confirmed_functions_result
+          ),
         },
       ]);
     }
@@ -54,7 +68,8 @@ const DynamicRender = (props) => {
 
     if (
       props.finalMessage.success.length <= 0 &&
-      Object.keys(props.finalMessage.functions_result).length <= 0 &&
+      Object.keys(props.finalMessage.immediate_functions_result).length <= 0 &&
+      Object.keys(props.finalMessage.confirmed_functions_result).length <= 0 &&
       props.finalMessage.fail.length <= 0
     ) {
       setDisplayData((prev) => [
