@@ -1,53 +1,51 @@
 .datatable {
-    max-height: 500px;
-    min-height: 100px;
-    flex: 10;
+  max-height: 500px;
+  min-height: 100px;
+  flex: 10;
 
-    .button-group {
-        display: flex;
-        justify-content: space-between;
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .selection-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    margin-left: 8px;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      margin-right: 4px;
     }
+  }
 
-    .selection-container {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+  .cellAction {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .viewButton {
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: lightgray;
+      border: 1px dotted black(0, 0, 139, 0.479);
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f0f0f0;
+      }
     }
+  }
 
-    .checkbox-label {
-        display: flex;
-        align-items: center;
-        margin-left: 8px;
-        cursor: pointer;
-
-        input[type="checkbox"] {
-            margin-right: 4px;
-        }
-    }
-
-
-
-    .cellAction {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-
-        .viewButton {
-            padding: 2px 5px;
-            border-radius: 5px;
-            color: lightgray;
-            border: 1px dotted black(0, 0, 139, 0.479);
-            cursor: pointer;
-
-            &:hover {
-                background-color: #f0f0f0;
-            }
-        }
-    }
-
-    .config-in-progress {
-        margin-left: 10px;
-        font-style: italic;
-        color: #999;
-    }
+  .config-in-progress {
+    margin-left: 10px;
+    font-style: italic;
+    color: #999;
+  }
 }

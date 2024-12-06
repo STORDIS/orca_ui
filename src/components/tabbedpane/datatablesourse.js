@@ -1120,7 +1120,7 @@ export const deviceUserColumns = (showIn) => {
     },
     {
       field: "system_status",
-      headerName: "Device Status",
+      headerName: "Sonic Status",
       width: 130,
       sortable: true,
     },
@@ -1165,7 +1165,7 @@ export const deviceUserColumns = (showIn) => {
   if (showIn === "info" || showIn === "all") {
     dataColumn.push({
       field: "orca_status",
-      headerName: "Orca Status",
+      headerName: "Device Status in Orca",
       width: 130,
       sortable: true,
     });
@@ -1206,10 +1206,10 @@ export const dhcpColumn = [
     width: 130,
     sortable: true,
   },
-  {
-    field: "dhcp_ip",
-    headerName: "DHCP IP",
-    width: 130,
-    sortable: true,
-  },
+  // {
+  //   field: "dhcp_ip",
+  //   headerName: "DHCP IP",
+  //   width: 130,
+  //   sortable: true,
+  // },
 ];

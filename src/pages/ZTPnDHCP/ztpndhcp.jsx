@@ -36,9 +36,6 @@ export const ZTPnDHCP = () => {
 
   const [file, setFile] = useState({});
   const [tab, setTab] = useState([]);
-
-  const [currentContent, setCurrentContent] = useState("");
-
   const [isModalOpen, setIsModalOpen] = useState("null");
   const [newFileName, setNewFileName] = useState("");
 
@@ -111,7 +108,6 @@ export const ZTPnDHCP = () => {
           });
 
           setztpFiles(list);
-          // setFile(list[0]);
           selectTab(list[0]);
           setTab([
             {
@@ -336,8 +332,6 @@ export const ZTPnDHCP = () => {
       ...templateFiles,
     ];
 
-    console.log(ztpFiles);
-
     const foundFile = allFiles.find(
       (element) => element.filename === file.filename
     );
@@ -373,7 +367,6 @@ export const ZTPnDHCP = () => {
       window.confirm("Unsaved changes. Do you want to Discard it?");
     if (shouldRemove) {
       let updatedTab = tab.filter((item) => item.filename !== list.filename);
-      console.log(updatedTab);
 
       if (updatedTab.length === 0) {
         setTab([]);
@@ -537,7 +530,7 @@ export const ZTPnDHCP = () => {
   };
 
   const getDeviceIp = (e) => {
-    setDeviceIp(e);
+    setDeviceIp(e.device_ip);
   };
 
   const CustomToolTip = styled(({ className, ...props }) => (
@@ -553,7 +546,7 @@ export const ZTPnDHCP = () => {
       className=""
       onClick={() => setPopover({ ...popover, visible: false })}
     >
-      <CredentialForm sendCredentialsToParent={getDeviceIp} />
+      <CredentialForm type="form" sendCredentialsToParent={getDeviceIp} />
 
       <div className="listContainer">
         <div className="editorContainer">

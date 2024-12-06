@@ -6,7 +6,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
   getAllInterfacesOfDeviceURL,
   breakoutURL,
-  subInterfaceURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
 import PrimarySecondaryForm from "./primarySecondaryForm";
@@ -16,8 +15,6 @@ import useStoreConfig from "../../../utils/configStore";
 import Modal from "../../modal/Modal";
 
 import { syncFeatureCommon } from "../Deviceinfo";
-
-import { FaSyncAlt } from "react-icons/fa";
 
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
@@ -40,7 +37,7 @@ export const getInterfaceDataCommon = (selectedDeviceIp) => {
       return items;
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       return []; // Return an empty array on error
     });
 };
@@ -61,8 +58,6 @@ const InterfaceDataTable = (props) => {
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
   const updateConfig = useStoreConfig((state) => state.updateConfig);
 
-  // const setUpdateStatus = useStoreLogs((state) => state.setUpdateStatus);
-  //  onSuccess({ success: true });
   useEffect(() => {
     if (selectedDeviceIp) {
       getInterfaceData();
@@ -82,7 +77,6 @@ const InterfaceDataTable = (props) => {
     setChanges([]);
     getInterfaceDataCommon(selectedDeviceIp).then((res) => {
       setDataTable(res);
-      // setOriginData(res);
 
       const deepCopyData = JSON.parse(JSON.stringify(res));
       setOriginData([...deepCopyData]);
@@ -116,7 +110,6 @@ const InterfaceDataTable = (props) => {
       setIsModalOpen("PrimarySecondaryForm");
     }
     setSelectedRows(params.data);
-    // console.log(originData);
   }, []);
 
   const handleCellValueChanged = useCallback((params) => {
@@ -199,8 +192,6 @@ const InterfaceDataTable = (props) => {
     if (formData.length === 0) {
       return;
     }
-
-    console.log("changes", formData);
 
     formData.forEach((item) => {
       if (hasOnlyRequiredKeys(item)) {
@@ -332,7 +323,7 @@ const InterfaceDataTable = (props) => {
           disabled={updateConfig}
           id="rediscoverBtn"
         >
-          <FaSyncAlt /> Rediscover
+          Rediscover
         </button>
         <button
           onClick={() => sendUpdates(changes)}

@@ -14,7 +14,7 @@ import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
-import { FaSyncAlt } from "react-icons/fa";
+
 import { syncFeatureCommon } from "../Deviceinfo";
 
 // Function to get vlan names
@@ -36,7 +36,7 @@ export const getVlanDataCommon = (selectedDeviceIp) => {
             return items;
         })
         .catch((err) => {
-            console.log(err);
+            console.error(err);
             return []; // Return an empty array on error
         });
 };
@@ -313,7 +313,7 @@ const VlanTable = (props) => {
                             onClick={resyncVlan}
                             disabled={updateConfig}
                         >
-                            <FaSyncAlt /> Rediscover
+                             Rediscover
                         </button>
 
                         <button

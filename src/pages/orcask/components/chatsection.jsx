@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
-
 import { executePlanURL } from "../../../utils/backend_rest_urls";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { AgGridReact } from "ag-grid-react";
-
 import { FaRobot } from "react-icons/fa6";
 import { FaRegCopy } from "react-icons/fa";
 import { FaUser } from "react-icons/fa";
@@ -13,9 +11,7 @@ import { FaArrowUp } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaSpinner } from "react-icons/fa";
 import { Chart } from "react-google-charts";
-import { AiOutlineClear } from "react-icons/ai";
 import "../orcAsk.scss";
-
 import interceptor from "../../../utils/interceptor";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 
@@ -203,6 +199,9 @@ export const ChatSection = ({sendDataToParent}) => {
                 field: key,
                 resizable: true,
                 filter: true,
+                filterParams: {
+                    buttons: ["clear"],
+                  },
                 sortable: true,
                 width: 130,
             }));

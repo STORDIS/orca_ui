@@ -14,21 +14,28 @@ import {
   dhcpDeviceListURL,
 } from "../../utils/backend_rest_urls.js";
 import Modal from "../../components/modal/Modal";
+import CredentialForm from "../ZTPnDHCP/CredentialsForm";
 
 import interceptor from "../../utils/interceptor.js";
 
-import { deleteDevicesURL } from "../../utils/backend_rest_urls.js";
+import {
+  deleteDevicesURL,
+  getDiscoveryUrl,
+} from "../../utils/backend_rest_urls.js";
 import useStoreConfig from "../../utils/configStore.js";
 import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
 
 import { getIsStaff } from "../../utils/common";
+import { ZTPnDHCP } from "../ZTPnDHCP/ztpndhcp";
 
 export const Home = () => {
   const instance = interceptor();
 
-  const gridRef = useRef();
-  const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
+  const deviceTableRef = useRef(null);
+  const dhcpTableRef = useRef(null);
+
+  const gridRefDhcpTable = useRef();
 
   const [dataTable, setDataTable] = useState([]);
   const [selectedDeviceToDelete, setSelectedDeviceToDelete] = useState("");
@@ -43,27 +50,34 @@ export const Home = () => {
   const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+  const [heightDeviceTable, setHeightDeviceTable] = useState(250);
+  const [heightDhcpTable, setHeightDhcpTable] = useState(250);
+
+  const [isSSHConnected, setIsSSHConnected] = useState(false);
+
   useEffect(() => {
     getDevices();
-    getDhcpDevices();
   }, []);
 
   useEffect(() => {
     if (updateLog) {
       getDevices();
-      getDhcpDevices();
     }
   }, [updateLog]);
 
-  const getDhcpDevices = () => {
+  const getDhcpDevices = (e) => {
     setDhcpTable([]);
-    instance(dhcpDeviceListURL())
-      .then((res) => {
-        setDhcpTable(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    if (e) {
+      instance(dhcpDeviceListURL())
+        .then((res) => {
+          setDhcpTable(res.data);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    } else {
+      setDhcpTable([]);
+    }
   };
 
   const getDevices = () => {
@@ -73,7 +87,7 @@ export const Home = () => {
         setDataTable(res.data);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
   };
 
@@ -130,15 +144,11 @@ export const Home = () => {
   }, []);
 
   const sendUpdates = () => {
-    console.log(selectedDeviceToUpdate);
-
     setUpdateConfig(true);
     const apiUrl = switchImageURL();
     instance
       .put(apiUrl, selectedDeviceToUpdate)
-      .then((res) => {
-        console.log(res);
-      })
+      .then((res) => {})
       .catch((err) => {})
       .finally(() => {
         setUpdateLog(true);
@@ -148,19 +158,51 @@ export const Home = () => {
   };
 
   const onSelectionChanged = () => {
-    const selectedNodes = gridRef.current.api.getSelectedNodes();
-    const selectedData = selectedNodes.map((node) => node.data);
+    const selectedNodes = gridRefDhcpTable.current.api.getSelectedNodes();
+    const selectedData = selectedNodes.map((node) => node.data.device_ip);
     setSelectedRows(selectedData);
   };
 
-  const discoverDhcp = () => {
-    console.log(selectedRows);
+  const discoverDhcp = async () => {
+    try {
+      const response = await instance.put(getDiscoveryUrl(), {
+        address: selectedRows,
+        discover_from_config: true,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdateLog(true);
+      setUpdateConfig(false);
+    }
   };
+
+  const handleResizeDeviceTable = () => {
+    if (deviceTableRef.current.offsetHeight > 250) {
+      setHeightDeviceTable(deviceTableRef.current.offsetHeight);
+    }
+  };
+
+  const gridStyleDataTable = useMemo(
+    () => ({ height: heightDeviceTable + "px", width: "100%" }),
+    [heightDeviceTable]
+  );
+
+  const handleResizeDhcpTable = () => {
+    if (dhcpTableRef.current.offsetHeight > 250) {
+      setHeightDhcpTable(dhcpTableRef.current.offsetHeight);
+    }
+  };
+
+  const gridStyleDhcpTable = useMemo(
+    () => ({ height: heightDhcpTable + "px", width: "100%" }),
+    [heightDhcpTable]
+  );
 
   return (
     <div>
       <div className="listContainer">
-        <div className="listTitle">
+        <div className="listTitle ">
           Devices
           <div>
             <button
@@ -170,83 +212,109 @@ export const Home = () => {
             >
               Apply config
             </button>
+            <button
+              className="btnStyle ml-15"
+              onClick={getDevices}
+              disabled={!getIsStaff()}
+            >
+              Refresh
+            </button>
           </div>
         </div>
-        <div className="resizable">
-          <div className="datatable" id="dataTable">
-            <div style={gridStyle} className="ag-theme-alpine">
-              <AgGridReact
-                ref={gridRef}
-                rowData={dataTable}
-                columnDefs={deviceUserColumns("home")}
-                defaultColDef={defaultColDef}
-                domLayout={"autoHeight"}
-                enableCellTextSelection="true"
-                onCellClicked={onCellClicked}
-                stopEditingWhenCellsLoseFocus={true}
-                onCellValueChanged={handleCellValueChanged}
-              ></AgGridReact>
-            </div>
 
-            {selectedDeviceToDelete && (
-              <Modal
-                show={selectedDeviceToDelete}
-                onClose={handleDeleteCancellation}
-              >
-                <div>
-                  <p className="mb-10">
-                    Device {selectedDeviceToDelete}, its components and links
-                    will be removed
-                  </p>
-                  <button
-                    disabled={updateConfig}
-                    id="removeYesBtn"
-                    className="btnStyle mt-10 mr-10"
-                    onClick={handleDeleteConfirmation}
-                  >
-                    Yes
-                  </button>
-                  <button
-                    disabled={updateConfig}
-                    id="removeNoBtn"
-                    className="btnStyle mt-10"
-                    onClick={handleDeleteCancellation}
-                  >
-                    No
-                  </button>
-                </div>
-              </Modal>
-            )}
+        <div
+          className="datatable resizable mt-15"
+          id="dataTable"
+          ref={deviceTableRef}
+          onMouseMove={handleResizeDeviceTable}
+        >
+          <div style={gridStyleDataTable} className="ag-theme-alpine">
+            <AgGridReact
+              rowData={dataTable}
+              columnDefs={deviceUserColumns("home")}
+              defaultColDef={defaultColDef}
+              enableCellTextSelection="true"
+              onCellClicked={onCellClicked}
+              stopEditingWhenCellsLoseFocus={true}
+              onCellValueChanged={handleCellValueChanged}
+            ></AgGridReact>
           </div>
         </div>
+        {selectedDeviceToDelete && (
+          <Modal
+            show={selectedDeviceToDelete}
+            onClose={handleDeleteCancellation}
+          >
+            <div>
+              <p className="mb-10">
+                Device {selectedDeviceToDelete}, its components and links will
+                be removed
+              </p>
+              <button
+                disabled={updateConfig}
+                id="removeYesBtn"
+                className="btnStyle mt-10 mr-10"
+                onClick={handleDeleteConfirmation}
+              >
+                Yes
+              </button>
+              <button
+                disabled={updateConfig}
+                id="removeNoBtn"
+                className="btnStyle mt-10"
+                onClick={handleDeleteCancellation}
+              >
+                No
+              </button>
+            </div>
+          </Modal>
+        )}
       </div>
 
       <div className="listContainer">
-        <div className="listTitle">
-          Available Devices
+        <div className="listTitle" style={{ alignItems: "center" }}>
+          Available SONiC Devices in network
+          <CredentialForm
+            type="status"
+            sendCredentialsToParent={(e) => {
+              getDhcpDevices(e.ssh_access);
+              setIsSSHConnected(e.ssh_access);
+            }}
+          />
           <div>
             <button
               className="btnStyle "
               onClick={discoverDhcp}
               disabled={!getIsStaff()}
             >
-              Discover DHCP
+              Discover
+            </button>
+            <button
+              className="btnStyle ml-15"
+              onClick={() => {
+                getDhcpDevices(isSSHConnected);
+              }}
+              disabled={!getIsStaff()}
+            >
+              Refresh
             </button>
           </div>
         </div>
 
-        <div className="datatable" id="">
-          <div style={gridStyle} className="ag-theme-alpine">
+        <div
+          className="datatable resizable mt-15"
+          ref={dhcpTableRef}
+          onMouseMove={handleResizeDhcpTable}
+        >
+          <div style={gridStyleDhcpTable} className="ag-theme-alpine">
             <AgGridReact
-              ref={gridRef}
+              ref={gridRefDhcpTable}
               rowData={dhcpTable}
               columnDefs={dhcpColumn}
               defaultColDef={defaultColDef}
-              domLayout={"autoHeight"}
-              enableCellTextSelection="true"
+              // enableCellTextSelection="true"
               // onCellClicked={onCellClicked}
               stopEditingWhenCellsLoseFocus={true}
-              // onCellValueChanged={handleCellValueChanged}
               onSelectionChanged={onSelectionChanged}
               rowSelection="multiple"
               suppressRowClickSelection={true}
