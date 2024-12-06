@@ -4,6 +4,7 @@ import { dhcpCredentialsURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
+import { areAllIPAddressesValid } from "../../utils/common";
 
 export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   const instance = interceptor();
@@ -77,6 +78,11 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       setIsDisabled(false);
       return;
     }
+    if (!areAllIPAddressesValid(payload.device_ip)) {
+      alert("Invalid IP Address");
+      setIsDisabled(false);
+      return;
+    }
 
     setConfigStatus("Config In Progress....");
     instance
@@ -88,6 +94,30 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
         setIsDisabled(false);
       })
       .finally(() => {
+        setConfigStatus("");
+        getCredentials();
+      });
+  };
+
+  const removeCredentials = (payload) => {
+    setIsDisabled(true);
+    setConfigStatus("Config In Progress....");
+    instance
+      .delete(dhcpCredentialsURL(), { data: { device_ip: payload.device_ip } })
+      .then((res) => {})
+      .catch((err) => {
+        console.error(err);
+        setConfigStatus("");
+        setIsDisabled(false);
+      })
+      .finally(() => {
+        setFormData({
+          device_ip: "",
+          username: "",
+          password: "",
+          ssh_access: false,
+        });
+        setIsDisabled(false);
         setConfigStatus("");
         getCredentials();
       });
@@ -178,14 +208,25 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             </div>
           </div>
 
-          <div className="form-wrapper" style={{ alignItems: "center" }}>
+          <div
+            className="form-wrapper"
+            style={{ alignItems: "center", justifyContent: "space-between" }}
+          >
+            <div>
+              <button
+                onClick={() => putCredentials(formData)}
+                className="btnStyle"
+              >
+                Apply Config
+              </button>
+              <span className="configStatus">{configStatus}</span>
+            </div>
             <button
-              onClick={() => putCredentials(formData)}
+              onClick={() => removeCredentials(formData)}
               className="btnStyle"
             >
-              Apply Config
+              Remove Credentials
             </button>
-            <span className="configStatus">{configStatus}</span>
           </div>
         </div>
       ) : (

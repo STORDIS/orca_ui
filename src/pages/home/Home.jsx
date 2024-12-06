@@ -284,7 +284,7 @@ export const Home = () => {
           <div>
             <button
               className="btnStyle "
-              onClick={discoverDhcp}
+              onClick={discoverDhcp || selectedRows.length === 0}
               disabled={!getIsStaff()}
             >
               Discover
