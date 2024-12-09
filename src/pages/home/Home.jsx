@@ -202,8 +202,14 @@ export const Home = () => {
   return (
     <div>
       <div className="listContainer">
-        <div className="listTitle ">
-          Devices
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span className="listTitle">Devices</span>
           <div>
             <button
               className="btnStyle "
@@ -272,8 +278,14 @@ export const Home = () => {
       </div>
 
       <div className="listContainer">
-        <div className="listTitle" style={{ alignItems: "center" }}>
-          Available SONiC Devices in network
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span className="listTitle">Available SONiC Devices in network</span>
           <CredentialForm
             type="status"
             sendCredentialsToParent={(e) => {

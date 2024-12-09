@@ -14,7 +14,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
     device_ip: "",
     username: "",
     password: "",
-    ssh_access: false,
+    ssh_access: undefined,
   });
 
   const CustomToolTip = styled(({ className, ...props }) => (
@@ -36,7 +36,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       device_ip: "",
       username: "",
       password: "",
-      ssh_access: false,
+      ssh_access: undefined,
     });
     setIsDisabled(true);
 
@@ -69,11 +69,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
 
   const putCredentials = (payload) => {
     setIsDisabled(true);
-    if (
-      payload.device_ip === "" ||
-      payload.username === "" ||
-      payload.password === ""
-    ) {
+    if (payload.device_ip === "" || payload.username === "") {
       alert("Please fill all the fields");
       setIsDisabled(false);
       return;
@@ -116,7 +112,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
           device_ip: "",
           username: "",
           password: "",
-          ssh_access: false,
+          ssh_access: undefined,
         });
         setIsDisabled(false);
         setConfigStatus("");
