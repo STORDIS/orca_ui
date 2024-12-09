@@ -138,7 +138,12 @@ export const ZTPnDHCP = () => {
         setztpFiles((prevFiles) =>
           prevFiles.map((file) => {
             if (file.filename === filename) {
-              return { ...file, content: data.content, status: "saved" };
+              return {
+                ...file,
+                content: data.content,
+                status: "saved",
+                path: data.path,
+              };
             }
             return file;
           })
@@ -531,6 +536,7 @@ export const ZTPnDHCP = () => {
 
   const getDeviceIp = (e) => {
     setDeviceIp(e.device_ip);
+    getDhcpFiles(e.device_ip);
   };
 
   const CustomToolTip = styled(({ className, ...props }) => (
