@@ -51,7 +51,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
         setIsDisabled(false);
       })
       .finally(() => {
-      //   setConfigStatus("Config Success");
+        //   setConfigStatus("Config Success");
         setIsDisabled(false);
         setTimeout(() => {
           setConfigStatus("");
@@ -87,14 +87,15 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
     setConfigStatus("Config In Progress....");
     instance
       .put(dhcpCredentialsURL(), payload)
-      .then((res) => {})
+      .then((res) => {
+        setConfigStatus("Config Success");
+      })
       .catch((err) => {
         console.error(err);
         setConfigStatus("Config Failed");
         setIsDisabled(false);
       })
       .finally(() => {
-        setConfigStatus("Config Success");
         getCredentials();
       });
   };
@@ -195,7 +196,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
                     formData?.ssh_access === true
                       ? "Connection to SSH is successful"
                       : formData?.ssh_access === false
-                      ? "Connected to SSH failed"
+                      ? "Connection to SSH failed"
                       : "No connection"
                   }
                 >
@@ -247,7 +248,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
               formData?.ssh_access === true
                 ? "Connection to SSH is successful"
                 : formData?.ssh_access === false
-                ? "Connected to SSH failed"
+                ? "Connection to SSH failed"
                 : "No connection"
             }
           >
