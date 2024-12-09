@@ -836,6 +836,7 @@ export const ZTPnDHCP = () => {
                 <div className="form-field w-auto ">
                   <label htmlFor="">File Name :</label>
                 </div>
+
                 <div className="form-field  w-60">
                   <input
                     type="text"
@@ -846,6 +847,10 @@ export const ZTPnDHCP = () => {
                   />
                 </div>
               </div>
+              <div className="note  mb-10">
+                NOTE: File name should be unique and should not contain
+                extension
+              </div>
               <div>
                 <button
                   className="btnStyle"
@@ -853,7 +858,7 @@ export const ZTPnDHCP = () => {
                     createNewFile(newFileName);
                   }}
                 >
-                  Save
+                  Add File
                 </button>
                 <button
                   className="btnStyle ml-10"
@@ -888,6 +893,10 @@ export const ZTPnDHCP = () => {
                     onChange={(e) => setNewFileName(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="note  mb-10">
+                NOTE: File name should be unique and should not contain
+                extension
               </div>
               <div>
                 <button
