@@ -285,9 +285,9 @@ export const Home = () => {
             <button
               className="btnStyle "
               onClick={discoverDhcp}
-              disabled={!getIsStaff()}
+              disabled={!getIsStaff() || selectedRows.length === 0}
             >
-              Discover
+              Discover Device
             </button>
             <button
               className="btnStyle ml-15"

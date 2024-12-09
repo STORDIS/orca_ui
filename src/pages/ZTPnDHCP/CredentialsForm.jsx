@@ -4,6 +4,7 @@ import { dhcpCredentialsURL } from "../../utils/backend_rest_urls";
 import interceptor from "../../utils/interceptor";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
+import { isValidIPv4WithCIDR } from "../../utils/common";
 
 export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   const instance = interceptor();
@@ -50,7 +51,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
         setIsDisabled(false);
       })
       .finally(() => {
-        setConfigStatus("Config Success");
+      //   setConfigStatus("Config Success");
         setIsDisabled(false);
         setTimeout(() => {
           setConfigStatus("");
@@ -77,6 +78,11 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       setIsDisabled(false);
       return;
     }
+    if (!isValidIPv4WithCIDR(payload.device_ip)) {
+      alert("Invalid IP Address");
+      setIsDisabled(false);
+      return;
+    }
 
     setConfigStatus("Config In Progress....");
     instance
@@ -84,10 +90,34 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       .then((res) => {})
       .catch((err) => {
         console.error(err);
+        setConfigStatus("Config Failed");
+        setIsDisabled(false);
+      })
+      .finally(() => {
+        setConfigStatus("Config Success");
+        getCredentials();
+      });
+  };
+
+  const removeCredentials = (payload) => {
+    setIsDisabled(true);
+    setConfigStatus("Config In Progress....");
+    instance
+      .delete(dhcpCredentialsURL(), { data: { device_ip: payload.device_ip } })
+      .then((res) => {})
+      .catch((err) => {
+        console.error(err);
         setConfigStatus("");
         setIsDisabled(false);
       })
       .finally(() => {
+        setFormData({
+          device_ip: "",
+          username: "",
+          password: "",
+          ssh_access: false,
+        });
+        setIsDisabled(false);
         setConfigStatus("");
         getCredentials();
       });
@@ -97,6 +127,8 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
     <>
       {type === "form" ? (
         <div className="listContainer">
+          <div className="listTitle mb-15">DHCP Server Credentials</div>
+
           <div className="form-wrapper" style={{ alignItems: "center" }}>
             <div className="form-field w-25">
               <CustomToolTip
@@ -160,15 +192,21 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
                   arrow
                   placement="top"
                   title={
-                    formData?.ssh_access
+                    formData?.ssh_access === true
                       ? "Connection to SSH is successful"
-                      : "Not Connected"
+                      : formData?.ssh_access === false
+                      ? "Connected to SSH failed"
+                      : "No connection"
                   }
                 >
                   <div>
                     <FaCircle
                       className={`ml-5 ${
-                        formData?.ssh_access ? "success" : "danger"
+                        formData?.ssh_access === true
+                          ? "success"
+                          : formData?.ssh_access === false
+                          ? "danger"
+                          : ""
                       }`}
                       style={{ fontSize: "25px" }}
                     />
@@ -178,14 +216,25 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             </div>
           </div>
 
-          <div className="form-wrapper" style={{ alignItems: "center" }}>
+          <div
+            className="form-wrapper"
+            style={{ alignItems: "center", justifyContent: "space-between" }}
+          >
+            <div>
+              <button
+                onClick={() => putCredentials(formData)}
+                className="btnStyle"
+              >
+                Apply Config
+              </button>
+              <span className="configStatus">{configStatus}</span>
+            </div>
             <button
-              onClick={() => putCredentials(formData)}
+              onClick={() => removeCredentials(formData)}
               className="btnStyle"
             >
-              Apply Config
+              Remove DHCP Server
             </button>
-            <span className="configStatus">{configStatus}</span>
           </div>
         </div>
       ) : (
@@ -195,15 +244,21 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             arrow
             placement="top"
             title={
-              formData?.ssh_access
+              formData?.ssh_access === true
                 ? "Connection to SSH is successful"
-                : "Not Connected"
+                : formData?.ssh_access === false
+                ? "Connected to SSH failed"
+                : "No connection"
             }
           >
             <div>
               <FaCircle
                 className={`ml-5 ${
-                  formData?.ssh_access ? "success" : "danger"
+                  formData?.ssh_access === true
+                    ? "success"
+                    : formData?.ssh_access === false
+                    ? "danger"
+                    : ""
                 }`}
                 style={{ fontSize: "25px" }}
               />
