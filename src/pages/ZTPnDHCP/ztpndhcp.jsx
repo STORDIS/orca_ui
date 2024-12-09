@@ -76,10 +76,10 @@ export const ZTPnDHCP = () => {
   }, []);
 
   useEffect(() => {
-    if (deviceIp) {
-      getDhcpFiles(deviceIp);
-      getDhcpBackupFiles(deviceIp);
-    }
+    setdhcpFiles([]);
+    setbackupFiles([]);
+    getDhcpFiles(deviceIp);
+    getDhcpBackupFiles(deviceIp);
   }, [deviceIp]);
 
   useEffect(() => {
@@ -748,7 +748,7 @@ export const ZTPnDHCP = () => {
                 <button
                   className=""
                   onClick={() => save(file)}
-                  disabled={file.status === "saved"}
+                  disabled={file.status === "saved" || !file?.status}
                 >
                   Save
                 </button>
