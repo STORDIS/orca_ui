@@ -97,6 +97,7 @@ const BGPTable = (props) => {
                 setUpdateLog(true);
                 setUpdateConfig(false);
                 reload();
+                setChanges({})
             });
     };
 

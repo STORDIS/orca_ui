@@ -934,8 +934,6 @@ export const bgpColumns = [
     headerName: "ASN",
     width: 130,
     sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
   {
@@ -943,8 +941,6 @@ export const bgpColumns = [
     headerName: "VRF",
     width: 130,
     sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
   {
@@ -952,17 +948,15 @@ export const bgpColumns = [
     headerName: "Router ID",
     width: 130,
     sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
-  {
-    field: "neighbor_prop",
-    headerName: "Neighbors",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
+  // {
+  //   field: "neighbor_prop",
+  //   headerName: "Neighbors",
+  //   width: 130,
+  //   sortable: true,
+  //   headerTooltip: "", // add header tooltip here
+  // },
 ];
 
 export const stpColumn = [
@@ -1111,7 +1105,6 @@ export const deviceUserColumns = (showIn) => {
       width: 130,
       sortable: true,
     },
-
     {
       field: "platform",
       headerName: "PLATFORM",
