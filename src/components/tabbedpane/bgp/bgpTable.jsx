@@ -180,7 +180,7 @@ const BGPTable = (props) => {
         <div>
           <button
             className="btnStyle m-10"
-            disabled={!getIsStaff() || dataTable.length === 1}
+            disabled={!getIsStaff()}
             onClick={openAddModal}
           >
             Add BGP
