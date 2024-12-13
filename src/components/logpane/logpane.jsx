@@ -215,9 +215,9 @@ export const LogViewer = () => {
   const [height, setHeight] = useState(400);
 
   const [showDhcpTable, setShowDhcpTable] = useState(false);
+  const [dhcpTask, setDhcpTask] = useState({});
   const [heightDhcpTable, setHeightDhcpTable] = useState(250);
   const [sshData, setSshData] = useState(false);
-  const [dhcpTable, setDhcpTable] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const dhcpTableRef = useRef(null);
   const gridRefDhcpTable = useRef();
@@ -239,6 +239,7 @@ export const LogViewer = () => {
 
   const getLogs = () => {
     setLogEntries([]);
+    setDhcpTask({});
     setLogEntriesToDelete({
       log_ids: [],
       task_ids: [],
@@ -248,6 +249,17 @@ export const LogViewer = () => {
       .then((response) => {
         setLogEntries(response.data);
         resetUpdateLog();
+
+        for (const element of response.data) {
+          if (element.http_path === "/files/dhcp/scan") {
+            console.log(element.timestamp);
+            console.log(element.task_id);
+            setDhcpTask(element);
+            break; 
+          } else {
+            setDhcpTask({});
+          }
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -402,7 +414,19 @@ export const LogViewer = () => {
                 setSshData(e);
               }}
             />
+
             <div>
+              {dhcpTask.timestamp ? (
+                <span>
+                  Last Scan:
+                  <Time
+                    className="ml-5 mr-5"
+                    value={dhcpTask.timestamp}
+                    format="hh:mm:ss DD-MM-YYYY"
+                  />
+                </span>
+              ) : null}
+
               <button
                 className="btnStyle "
                 onClick={discoverDhcp}
@@ -430,7 +454,7 @@ export const LogViewer = () => {
             <div style={gridStyleDhcpTable} className="ag-theme-alpine">
               <AgGridReact
                 ref={gridRefDhcpTable}
-                rowData={dhcpTable}
+                rowData={dhcpTask?.response?.sonic_devices}
                 columnDefs={dhcpColumn}
                 defaultColDef={defaultColDef}
                 stopEditingWhenCellsLoseFocus={true}

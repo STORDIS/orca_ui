@@ -44,6 +44,7 @@ const DhcpScanLogModal = ({ logData, onClose, onSubmit, title, id }) => {
 
   // sonic function
   const handelCheckedSonic = (event, ip) => {
+    console.log(ip);
     setSelectedDevicesSonic((prevSelectedNetworkDevices) => {
       if (event.target.checked) {
         return [...prevSelectedNetworkDevices, ip];
@@ -56,10 +57,8 @@ const DhcpScanLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const selectAllIpSonic = (e) => {
     if (e.target.checked) {
       const result = [];
-      Object.keys(sonicDevices).forEach((network) => {
-        sonicDevices[network].forEach((entry) => {
-          result.push(entry.mgt_ip);
-        });
+      sonicDevices.forEach((entry) => {
+        result.push(entry.mgt_ip);
       });
       setSelectedDevicesSonic(result);
       setSelectAllSonic(true);
@@ -70,6 +69,7 @@ const DhcpScanLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   };
 
   const applyConfig = async () => {
+    // console.log(selectedDevicesSonic);
     try {
       const response = await instance.put(getDiscoveryUrl(), {
         address: selectedDevicesSonic,
@@ -151,45 +151,41 @@ const DhcpScanLogModal = ({ logData, onClose, onSubmit, title, id }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {Object.keys(sonicDevices).map((key) => (
-                      <React.Fragment key={key}>
-                        {sonicDevices[key].map((entry, index) => (
-                          <tr
-                            key={index}
-                            id={index}
-                            style={{
-                              textAlign: "center",
+                    {sonicDevices.map((entry, index) => (
+                      <tr
+                        key={index}
+                        id={index}
+                        style={{
+                          textAlign: "center",
+                        }}
+                      >
+                        <td>{entry.mgt_ip}</td>
+                        <td>
+                          <input
+                            type="checkbox"
+                            id="selectDevice"
+                            disabled={selectAllSonic}
+                            checked={
+                              selectedDevicesSonic.filter(
+                                (item) => item === entry.mgt_ip
+                              ).length > 0
+                            }
+                            onChange={(e) => {
+                              handelCheckedSonic(e, entry.mgt_ip);
                             }}
-                          >
-                            <td>{entry.mgt_ip}</td>
-                            <td>
-                              <input
-                                type="checkbox"
-                                id="selectDevice"
-                                disabled={selectAllSonic}
-                                checked={
-                                  selectedDevicesSonic.filter(
-                                    (item) => item === entry.mgt_ip
-                                  ).length > 0
-                                }
-                                onChange={(e) => {
-                                  handelCheckedSonic(e, entry.mgt_ip);
-                                }}
-                              />
-                            </td>
+                          />
+                        </td>
 
-                            <td>{entry["img_name"]}</td>
-                            <td>{entry["mgt_intf"]}</td>
-                            <td>{entry["hwsku"]}</td>
-                            <td>{entry["mac"]}</td>
-                            <td>{entry["platform"]}</td>
-                            <td>{entry["type"]}</td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
+                        <td>{entry["img_name"]}</td>
+                        <td>{entry["mgt_intf"]}</td>
+                        <td>{entry["hwsku"]}</td>
+                        <td>{entry["mac"]}</td>
+                        <td>{entry["platform"]}</td>
+                        <td>{entry["type"]}</td>
+                      </tr>
                     ))}
 
-                    {Object.values(sonicDevices)[0].length === 0 ? (
+                    {sonicDevices.length === 0 ? (
                       <tr>
                         <td colSpan="18">
                           <span className="ml-25">
@@ -205,7 +201,7 @@ const DhcpScanLogModal = ({ logData, onClose, onSubmit, title, id }) => {
           )}
         </div>
         <div className="modalFooter">
-          {Object.keys(sonicDevices).length > 0 && (
+          {sonicDevices.length > 0 && (
             <div>
               <button
                 className="btnStyle mr-15"
