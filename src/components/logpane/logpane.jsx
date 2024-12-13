@@ -12,6 +12,7 @@ import useStoreLogs from "../../utils/store";
 import GenericLogModal from "../../components/modal/genericLogModal";
 import SetupLogModal from "../../components/modal/setupLogModal";
 import DiscoveryLogModal from "../../components/modal/discoveryLogModal";
+import DhcpScanLogModal from "../../components/modal/dhcpScanLogModal";
 import { FaRegPlayCircle } from "react-icons/fa";
 import { FaRotateLeft } from "react-icons/fa6";
 import { FaHourglassHalf } from "react-icons/fa";
@@ -21,7 +22,6 @@ import Modal from "../../components/modal/Modal";
 
 import { getDiscoveryUrl, dhcpScanURL } from "../../utils/backend_rest_urls.js";
 import CredentialForm from "../../pages/ZTPnDHCP/CredentialsForm";
-
 import {
   defaultColDef,
   dhcpColumn,
@@ -267,7 +267,6 @@ export const LogViewer = () => {
   );
 
   const openLogDetails = (params) => {
-    // getLogs();
     switch (params.data.http_path) {
       case "/install_image":
         setShowLogDetails("setupDialog");
@@ -277,6 +276,9 @@ export const LogViewer = () => {
         break;
       case "/discover":
         setShowLogDetails("discoveryDialog");
+        break;
+      case "/files/dhcp/scan":
+        setShowLogDetails("dhcpScanDialog");
         break;
 
       default:
@@ -524,6 +526,15 @@ export const LogViewer = () => {
         )}
         {showLogDetails === "discoveryDialog" && (
           <DiscoveryLogModal
+            logData={logDetails}
+            onClose={() => setShowLogDetails(false)}
+            onSubmit={() => setShowLogDetails(false)}
+            title="Log Details"
+            id="discoveryLogDetails"
+          />
+        )}
+        {showLogDetails === "dhcpScanDialog" && (
+          <DhcpScanLogModal
             logData={logDetails}
             onClose={() => setShowLogDetails(false)}
             onSubmit={() => setShowLogDetails(false)}
