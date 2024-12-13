@@ -234,7 +234,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             </button>
           </div>
         </div>
-      ) : (
+      ) : type === "status" ? (
         <div style={{ display: "flex", alignItems: "center" }}>
           DHCP server {formData?.device_ip} connection status :
           <CustomToolTip
@@ -245,6 +245,33 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
                 ? "Connection to SSH is successful"
                 : formData?.ssh_access === false
                 ? "Connection to SSH failed"
+                : "No connection"
+            }
+          >
+            <div>
+              <FaCircle
+                className={`ml-5 ${
+                  formData?.ssh_access === true
+                    ? "success"
+                    : formData?.ssh_access === false
+                    ? "danger"
+                    : ""
+                }`}
+                style={{ fontSize: "25px" }}
+              />
+            </div>
+          </CustomToolTip>
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <CustomToolTip
+            arrow
+            placement="top"
+            title={
+              formData?.ssh_access === true
+                ? "Connection to SSH " + formData?.device_ip + " is successful"
+                : formData?.ssh_access === false
+                ? "Connection to SSH "+ formData?.device_ip +" failed"
                 : "No connection"
             }
           >

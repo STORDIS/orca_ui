@@ -233,7 +233,6 @@ export const LogViewer = () => {
   }, []);
 
   useEffect(() => {
-    console.log(window.location.href.includes("/home"));
     setShowDhcpTable(window.location.href.includes("/home"));
   }, [window.location.href]);
 
@@ -252,10 +251,8 @@ export const LogViewer = () => {
 
         for (const element of response.data) {
           if (element.http_path === "/files/dhcp/scan") {
-            console.log(element.timestamp);
-            console.log(element.task_id);
             setDhcpTask(element);
-            break; 
+            break;
           } else {
             setDhcpTask({});
           }

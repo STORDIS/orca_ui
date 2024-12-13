@@ -1,62 +1,38 @@
 .navbar {
-    height: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #888;
+  -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+  margin: 10px;
+
+  .wrapper {
+    width: 100%;
     display: flex;
+    padding: 20px;
     align-items: center;
-    font-size: 14px;
-    color: #888;
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-    margin: 10px;
+    justify-content: space-between;
 
-    .wrapper {
-        width: 100%;
-        display: flex;
-        padding: 20px;
-        align-items: center;
-        justify-content: space-between;
+    .search {
+      display: flex;
+      align-items: center;
+      border: 0.5px solid lightgray;
+      padding: 3px;
 
-        .search {
-            display: flex;
-            align-items: center;
-            border: 0.5px solid lightgray;
-            padding: 3px;
-
-            input {
-                border: none;
-                outline: none;
-                background: transparent;
-            }
-        }
-
-        .items {
-            display: flex;
-            align-items: center;
-
-            .item {
-                display: flex;
-                align-items: center;
-                margin-right: 20px;
-                position: relative;
-
-                .icon {
-                    font-size: 20px;
-                }
-
-                .counter {
-                    width: 15px;
-                    height: 15px;
-                    background-color: red;
-                    border-radius: 50%;
-                    align-items: center;
-                    justify-content: center;
-                    display: flex;
-                    font-size: 10px;
-                    color: white;
-                    position: absolute;
-                    top: -5px;
-                    right: -5px;
-                }
-            }
-        }
+      input {
+        border: none;
+        outline: none;
+        background: transparent;
+      }
     }
+
+    .items {
+      display: flex;
+      align-items: center;
+
+    
+    }
+  }
 }

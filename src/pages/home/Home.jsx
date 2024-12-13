@@ -3,7 +3,6 @@ import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   deviceUserColumns,
   defaultColDef,
-  dhcpColumn,
 } from "../../components/tabbedpane/datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -11,7 +10,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
   getAllDevicesURL,
   switchImageURL,
-  dhcpDeviceListURL,
   deleteDevicesURL,
 } from "../../utils/backend_rest_urls.js";
 import Modal from "../../components/modal/Modal";
@@ -23,7 +21,6 @@ import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
 
 import { getIsStaff } from "../../utils/common";
-import { ZTPnDHCP } from "../ZTPnDHCP/ztpndhcp";
 
 export const Home = () => {
   const instance = interceptor();
