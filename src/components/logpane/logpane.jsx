@@ -27,6 +27,21 @@ import {
   dhcpColumn,
 } from "../../components/tabbedpane/datatablesourse";
 
+export const getLogsCommon = () => {
+  const instance = interceptor();
+  const apiUrl = logPanelURL();
+
+  return instance
+    .get(apiUrl)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      return []; // Return an empty array on error
+    });
+};
+
 export const LogViewer = () => {
   const logPannelDivRef = useRef(null);
 
@@ -243,25 +258,18 @@ export const LogViewer = () => {
       log_ids: [],
       task_ids: [],
     });
-    instance
-      .get(logPanelURL())
-      .then((response) => {
-        setLogEntries(response.data);
-        resetUpdateLog();
-
-        for (const element of response.data) {
-          if (element.http_path === "/files/dhcp/scan") {
-            setDhcpTask(element);
-            break;
-          } else {
-            setDhcpTask({});
-          }
+    getLogsCommon().then((res) => {
+      setLogEntries(res);
+      resetUpdateLog();
+      for (const element of res) {
+        if (element.http_path === "/files/dhcp/scan") {
+          setDhcpTask(element);
+          break;
+        } else {
+          setDhcpTask({});
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setLogEntries([]);
-      });
+      }
+    });
   };
 
   const handleResize = () => {
@@ -479,7 +487,15 @@ export const LogViewer = () => {
           }}
         >
           <div className="listTitle">Task</div>
+
           <div>
+            {/* On Going Process:
+            <span className="ml-15  warning">
+              Started: {ongoingProcessCount.processStarted}
+            </span>
+            <span className="ml-15 gray">
+              Pending: {ongoingProcessCount.processPending}
+            </span> */}
             <button
               id="clearLogBtn"
               className="clearLogBtn btnStyle ml-15"
@@ -492,14 +508,12 @@ export const LogViewer = () => {
             >
               Clear
             </button>
-
             <button
               className="clearLogBtn btnStyle ml-15"
               onClick={clearFilters}
             >
               Clear All Filters
             </button>
-
             <button
               id="refreshLogBtn"
               className="clearLogBtn btnStyle ml-15"

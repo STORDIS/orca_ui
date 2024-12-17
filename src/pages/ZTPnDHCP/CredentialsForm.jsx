@@ -271,11 +271,12 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
               formData?.ssh_access === true
                 ? "Connection to SSH " + formData?.device_ip + " is successful"
                 : formData?.ssh_access === false
-                ? "Connection to SSH "+ formData?.device_ip +" failed"
+                ? "Connection to SSH " + formData?.device_ip + " failed"
                 : "No connection"
             }
           >
-            <div>
+            <div style={{ display: "flex", alignItems: "center" }} >
+              SSH :
               <FaCircle
                 className={`ml-5 ${
                   formData?.ssh_access === true

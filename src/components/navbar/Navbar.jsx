@@ -12,6 +12,7 @@ import interceptor from "../../utils/interceptor";
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 import CredentialForm from "../../pages/ZTPnDHCP/CredentialsForm";
+import getLogsCommon from "../../components/logpane/logpane";
 
 const Navbar = () => {
   const auth = useAuth();
@@ -44,6 +45,10 @@ const Navbar = () => {
 
   useEffect(() => {
     getDevices();
+
+    getLogsCommon().then((res) => {
+      console.log(res);
+    });
   }, []);
 
   const getDevices = () => {
@@ -98,6 +103,7 @@ const Navbar = () => {
               {orcaDeviceData.availableDevices.length}
             </div>
           </div>
+
           <CredentialForm
             type="pointer"
             sendCredentialsToParent={(e) => {
