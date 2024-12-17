@@ -5,8 +5,27 @@ import interceptor from "../../utils/interceptor";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { isValidIPv4WithCIDR } from "../../utils/common";
+import useStoreLogs from "../../utils/store.js";
+
+export const getDhcpCredentialsCommon = () => {
+  const instance = interceptor();
+  const apiUrl = dhcpCredentialsURL();
+
+  return instance
+    .get(apiUrl)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      return []; // Return an empty array on error
+    });
+};
 
 export const CredentialForm = ({ type, sendCredentialsToParent }) => {
+  const updateLog = useStoreLogs((state) => state.updateLog);
+  const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
   const instance = interceptor();
   const [configStatus, setConfigStatus] = useState("");
 
@@ -32,26 +51,42 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   }, []);
 
   const getCredentials = () => {
-    setFormData({
-      device_ip: "",
-      username: "",
-      password: "",
-      ssh_access: undefined,
-    });
-    setIsDisabled(true);
+    //   setFormData({
+    //     device_ip: "",
+    //     username: "",
+    //     password: "",
+    //     ssh_access: undefined,
+    //   });
+    //   setIsDisabled(true);
 
-    instance
-      .get(dhcpCredentialsURL())
+    //   instance
+    //     .get(dhcpCredentialsURL())
+    //     .then((res) => {
+    //       setFormData(res.data);
+    //       sendCredentialsToParent(res.data);
+    //     })
+    //     .catch((err) => {
+    //       console.error(err);
+    //       setIsDisabled(false);
+    //     })
+    //     .finally(() => {
+    //       //   setConfigStatus("Config Success");
+    //       setIsDisabled(false);
+    //       setTimeout(() => {
+    //         setConfigStatus("");
+    //       }, 2500);
+    //     });
+
+    getDhcpCredentialsCommon()
       .then((res) => {
-        setFormData(res.data);
-        sendCredentialsToParent(res.data);
+        setFormData(res);
+        sendCredentialsToParent(res);
       })
       .catch((err) => {
         console.error(err);
         setIsDisabled(false);
       })
       .finally(() => {
-        //   setConfigStatus("Config Success");
         setIsDisabled(false);
         setTimeout(() => {
           setConfigStatus("");
@@ -79,7 +114,6 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       setIsDisabled(false);
       return;
     }
-
     setConfigStatus("Config In Progress....");
     instance
       .put(dhcpCredentialsURL(), payload)
@@ -89,9 +123,9 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       .catch((err) => {
         console.error(err);
         setConfigStatus("Config Failed");
-        setIsDisabled(false);
       })
       .finally(() => {
+        setUpdateLog(true);
         getCredentials();
       });
   };
@@ -117,6 +151,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
         setIsDisabled(false);
         setConfigStatus("");
         getCredentials();
+        setUpdateLog(true);
       });
   };
 
@@ -262,35 +297,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             </div>
           </CustomToolTip>
         </div>
-      ) : (
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <CustomToolTip
-            arrow
-            placement="top"
-            title={
-              formData?.ssh_access === true
-                ? "Connection to SSH " + formData?.device_ip + " is successful"
-                : formData?.ssh_access === false
-                ? "Connection to SSH " + formData?.device_ip + " failed"
-                : "No connection"
-            }
-          >
-            <div style={{ display: "flex", alignItems: "center" }} >
-              SSH :
-              <FaCircle
-                className={`ml-5 ${
-                  formData?.ssh_access === true
-                    ? "success"
-                    : formData?.ssh_access === false
-                    ? "danger"
-                    : ""
-                }`}
-                style={{ fontSize: "25px" }}
-              />
-            </div>
-          </CustomToolTip>
-        </div>
-      )}
+      ) : null}
     </>
   );
 };

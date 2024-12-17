@@ -31,8 +31,10 @@
     .items {
       display: flex;
       align-items: center;
-
-    
+    }
+    .border-right {
+      padding-right: 10px;
+      border-right: 2px solid #dbdbdb;
     }
   }
 }

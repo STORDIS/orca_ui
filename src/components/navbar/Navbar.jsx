@@ -1,5 +1,5 @@
 import "./navbar.scss";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaCircle } from "react-icons/fa";
 import { useAuth } from "../../utils/auth";
 import React, { useState, useEffect } from "react";
 import {
@@ -11,21 +11,32 @@ import Modal from "../modal/Modal";
 import interceptor from "../../utils/interceptor";
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
-import CredentialForm from "../../pages/ZTPnDHCP/CredentialsForm";
-import getLogsCommon from "../../components/logpane/logpane";
+import { getLogsCommon } from "../../components/logpane/logpane";
+import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
+import { styled } from "@mui/material/styles";
+import { getDhcpCredentialsCommon } from "../../pages/ZTPnDHCP/CredentialsForm";
 
 const Navbar = () => {
   const auth = useAuth();
 
   const [showForm, setShowForm] = useState(false);
-  const [sshData, setSshData] = useState(false);
   const [orcaDeviceData, setOrcaDeviceData] = useState({
     availableDevices: [],
     notAvailableDevices: [],
     totalDevices: 0,
   });
+  const [credentials, setCredentials] = useState({
+    device_ip: "",
+    ssh_access: undefined,
+  });
+
+  const [ongoingProcess, setOngoingProcess] = useState({
+    started: 0,
+    pending: 0,
+  });
 
   const instance = interceptor();
+  const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   const start_discovery = async (formData) => {
@@ -48,14 +59,67 @@ const Navbar = () => {
 
     getLogsCommon().then((res) => {
       console.log(res);
+      let started = 0;
+      let pending = 0;
+      for (const element of res) {
+        if (element.status === "STARTED") {
+          started = started + 1;
+        } else if (element.status === "PENDING") {
+          pending = pending + 1;
+        }
+      }
+
+      setOngoingProcess({
+        started: started,
+        pending: pending,
+      });
+    });
+
+    getDhcpCredentialsCommon().then((res) => {
+      console.log(res);
+      setCredentials({
+        device_ip: res.device_ip,
+        ssh_access: res.ssh_access,
+      });
     });
   }, []);
+  
+  useEffect(() => {
+    if (updateLog) {
+      getDevices();
+
+      getLogsCommon().then((res) => {
+        console.log(res);
+        let started = 0;
+        let pending = 0;
+        for (const element of res) {
+          if (element.status === "STARTED") {
+            started = started + 1;
+          } else if (element.status === "PENDING") {
+            pending = pending + 1;
+          }
+        }
+
+        setOngoingProcess({
+          started: started,
+          pending: pending,
+        });
+      });
+      
+      getDhcpCredentialsCommon().then((res) => {
+        console.log(res);
+        setCredentials({
+          device_ip: res.device_ip,
+          ssh_access: res.ssh_access,
+        });
+      });
+    }
+  }, [updateLog]);
 
   const getDevices = () => {
+    console.log("===");
     instance(getAllDevicesURL())
       .then((res) => {
-        console.log(res.data);
-
         let availableDevices = [];
         let notAvailableDevices = [];
 
@@ -73,9 +137,6 @@ const Navbar = () => {
           }
         });
 
-        // system_status
-        // mgt_ip
-
         setOrcaDeviceData({
           availableDevices: availableDevices,
           notAvailableDevices: notAvailableDevices,
@@ -87,6 +148,14 @@ const Navbar = () => {
       });
   };
 
+  const CustomToolTip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      fontSize: 15,
+    },
+  }));
+
   return (
     <div className="navbar">
       <div className="wrapper">
@@ -96,7 +165,12 @@ const Navbar = () => {
         </div>
 
         <div className="items">
-          <div className="mr-5">
+          <div className="mr-10 border-right">
+            <div>Task Started: {ongoingProcess.started}</div>
+            <div>Task Pending: {ongoingProcess.pending}</div>
+          </div>
+
+          <div className="mr-10 border-right">
             <div>Total Devices: {orcaDeviceData.totalDevices}</div>
             <div>
               Available Devices:
@@ -104,12 +178,33 @@ const Navbar = () => {
             </div>
           </div>
 
-          <CredentialForm
-            type="pointer"
-            sendCredentialsToParent={(e) => {
-              setSshData(e);
-            }}
-          />
+          <CustomToolTip
+            arrow
+            placement="top"
+            title={
+              credentials?.ssh_access === true
+                ? "Connection to SSH " +
+                  credentials?.device_ip +
+                  " is successful"
+                : credentials?.ssh_access === false
+                ? "Connection to SSH " + credentials?.device_ip + " failed"
+                : "No connection"
+            }
+          >
+            <div style={{ display: "flex", alignItems: "center" }}>
+              SSH :
+              <FaCircle
+                className={`ml-5 ${
+                  credentials?.ssh_access === true
+                    ? "success"
+                    : credentials?.ssh_access === false
+                    ? "danger"
+                    : ""
+                }`}
+                style={{ fontSize: "25px" }}
+              />
+            </div>
+          </CustomToolTip>
 
           <div>
             <button

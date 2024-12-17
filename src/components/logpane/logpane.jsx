@@ -50,12 +50,19 @@ export const LogViewer = () => {
     log_ids: [],
     task_ids: [],
   });
+
+  const [ongoingProcess, setOngoingProcess] = useState({
+    started: 0,
+    pending: 0,
+  });
+
   const [hasStartedTask, setHasStartedTask] = useState(false);
 
   const instance = interceptor();
 
   const updateLog = useStoreLogs((state) => state.updateLog);
   const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
+  const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   const [showLogDetails, setShowLogDetails] = useState("null");
   const [logDetails, setLogDetails] = useState({});
@@ -261,12 +268,32 @@ export const LogViewer = () => {
     getLogsCommon().then((res) => {
       setLogEntries(res);
       resetUpdateLog();
+
+      let started = 0;
+      let pending = 0;
+      for (const element of res) {
+        if (element.status === "STARTED") {
+          started = started + 1;
+        } else if (element.status === "PENDING") {
+          pending = pending + 1;
+        }
+      }
+
+      setOngoingProcess({
+        started: started,
+        pending: pending,
+      });
+
       for (const element of res) {
         if (element.http_path === "/files/dhcp/scan") {
           setDhcpTask(element);
           break;
         } else {
-          setDhcpTask({});
+          setDhcpTask({
+            response: {
+              sonic_devices: [],
+            },
+          });
         }
       }
     });
@@ -341,14 +368,14 @@ export const LogViewer = () => {
     instance
       .delete(logPanelDeleteURL(), { data: logEntriesToDelete })
       .then((response) => {
-        resetUpdateLog();
+        setUpdateLog(true);
       })
       .catch((error) => {
         console.error("Error:", error);
       })
       .finally(() => {
         getLogs();
-        resetUpdateLog();
+        // resetUpdateLog();
         setLogEntriesToDelete({
           log_ids: [],
           task_ids: [],
@@ -489,13 +516,13 @@ export const LogViewer = () => {
           <div className="listTitle">Task</div>
 
           <div>
-            {/* On Going Process:
+            On Going Process:
             <span className="ml-15  warning">
-              Started: {ongoingProcessCount.processStarted}
+              Started: {ongoingProcess.started}
             </span>
             <span className="ml-15 gray">
-              Pending: {ongoingProcessCount.processPending}
-            </span> */}
+              Pending: {ongoingProcess.pending}
+            </span>
             <button
               id="clearLogBtn"
               className="clearLogBtn btnStyle ml-15"
