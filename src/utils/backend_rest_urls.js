@@ -151,12 +151,12 @@ export function dhcpBackupURL(device_ip) {
   return host_addr + "/files/dhcp/backups?device_ip=" + device_ip;
 }
 
-export function dhcpDeviceListURL() {
-  return host_addr + "/files/dhcp/list";
+export function dhcpScanURL() {
+  return host_addr + "/files/dhcp/scan";
 }
 
 export function templatedURL() {
-  return host_addr + "/files/templates" ;
+  return host_addr + "/files/templates";
 }
 
 // other urls

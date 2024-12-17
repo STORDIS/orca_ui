@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    BrowserRouter as Router,
-    Routes,
-    Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import secureLocalStorage from "react-secure-storage";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -24,103 +20,99 @@ import { setNavigate } from "../../utils/NavigationService";
 import "./Layout.scss";
 
 const Layout = () => {
-    const [token, setToken] = useState("");
-    const [isAI, setIsAI] = useState(true);
-    const location = useLocation();
+  const [token, setToken] = useState("");
+  const [isAI, setIsAI] = useState(true);
+  const location = useLocation();
 
-    const navigate = useNavigate();
-    setNavigate(navigate); // Set the navigate function
+  const navigate = useNavigate();
+  setNavigate(navigate); // Set the navigate function
 
-    useEffect(() => {
-        if (location.pathname?.includes("/ORCAsk")) {
-            setIsAI(false);
-        } else if (location.pathname?.includes("/error")) {
-            setIsAI(false);
-        } else {
-            setIsAI(true);
-        }
+  useEffect(() => {
+    if (location.pathname?.includes("/ORCAsk")) {
+      setIsAI(false);
+    } else if (location.pathname?.includes("/error")) {
+      setIsAI(false);
+    } else {
+      setIsAI(true);
+    }
 
-        setToken(secureLocalStorage.getItem("token"));
-    }, [location.pathname, token]);
+    setToken(secureLocalStorage.getItem("token"));
+  }, [location.pathname, token]);
 
-    return (
-        <div className="mainContainer">
-            {token ? (
-                <div className="sideBar">
-                    <Sidebar />
-                </div>
-            ) : null}
-
-            <div className="container">
-                {token ? <Navbar /> : null}
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route
-                        path="/home"
-                        element={
-                            <RequireAuth>
-                                <Home />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path="/orcAsk"
-                        element={
-                            <RequireAuth>
-                                <OrcAsk />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path="/setup"
-                        element={
-                            <RequireAuth>
-                                <Setup />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path="/ztpndhcp"
-                        element={
-                            <RequireAuth>
-                                <ZTPnDHCP />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route
-                        path="devices/:deviceIP"
-                        element={
-                            <RequireAuth>
-                                <TabbedPane />
-                            </RequireAuth>
-                        }
-                    />
-                    <Route path="/" element={<Redirect />} />
-
-                    <Route path="*" element={<ErrorPage />} />
-                </Routes>
-
-                {token && isAI ? (
-                    <div className="listContainer mb ">
-                        <LogViewer />
-                    </div>
-                ) : null}
-            </div>
+  return (
+    <div className="mainContainer">
+      {token ? (
+        <div className="sideBar">
+          <Sidebar />
         </div>
-    );
+      ) : null}
+
+      <div className="container">
+        {token ? <Navbar /> : null}
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/home"
+            element={
+              <RequireAuth>
+                <Home />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/orcAsk"
+            element={
+              <RequireAuth>
+                <OrcAsk />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/setup"
+            element={
+              <RequireAuth>
+                <Setup />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/ztpndhcp"
+            element={
+              <RequireAuth>
+                <ZTPnDHCP />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="devices/:deviceIP"
+            element={
+              <RequireAuth>
+                <TabbedPane />
+              </RequireAuth>
+            }
+          />
+          <Route path="/" element={<Redirect />} />
+
+          <Route path="*" element={<ErrorPage />} />
+        </Routes>
+
+        {token && isAI ? <LogViewer /> : null}
+      </div>
+    </div>
+  );
 };
 
 function Redirect() {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        if (secureLocalStorage.getItem("token")) {
-            navigate("/home");
-        } else {
-            navigate("/login");
-        }
-    }, [navigate]);
+  useEffect(() => {
+    if (secureLocalStorage.getItem("token")) {
+      navigate("/home");
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
 
-    return null;
+  return null;
 }
 export default Layout;

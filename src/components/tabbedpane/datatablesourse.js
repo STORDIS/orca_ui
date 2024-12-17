@@ -1067,6 +1067,12 @@ export const getCellEditorParamsDeviceImageList = (params) => {
 export const deviceUserColumns = (showIn) => {
   let dataColumn = [
     {
+      field: "mgt_ip",
+      headerName: "Management IP",
+      width: 130,
+      sortable: true,
+    },
+    {
       field: "img_name",
       headerName: "Image Name",
       width: 130,
@@ -1086,19 +1092,12 @@ export const deviceUserColumns = (showIn) => {
       sortable: true,
     },
     {
-      field: "mgt_ip",
-      headerName: "Management IP",
-      width: 130,
-      sortable: true,
-    },
-    {
       field: "hwsku",
       headerName: "HWSKU",
       type: "number",
       width: 130,
       sortable: true,
     },
-
     {
       field: "mac",
       headerName: "MAC",
@@ -1182,27 +1181,41 @@ export const dhcpColumn = [
     width: 50,
   },
   {
-    field: "device_ip",
-    headerName: "Device IP",
+    field: "mgt_ip",
+    headerName: "Management IP",
     width: 130,
     sortable: true,
   },
   {
-    field: "hostname",
-    headerName: "Hostname",
+    field: "img_name",
+    headerName: "Image Name",
     width: 130,
     sortable: true,
   },
   {
-    field: "mac_address",
-    headerName: "MAC Address",
+    field: "mgt_intf",
+    headerName: "Management Int",
     width: 130,
     sortable: true,
   },
-  // {
-  //   field: "dhcp_ip",
-  //   headerName: "DHCP IP",
-  //   width: 130,
-  //   sortable: true,
-  // },
+  {
+    field: "hwsku",
+    headerName: "HWSKU",
+    type: "number",
+    width: 130,
+    sortable: true,
+  },
+  {
+    field: "mac",
+    headerName: "MAC",
+    width: 130,
+    sortable: true,
+  },
+  {
+    field: "platform",
+    headerName: "PLATFORM",
+    width: 130,
+    sortable: true,
+  },
+  { field: "type", headerName: "TYPE", width: 130, sortable: true },
 ];
