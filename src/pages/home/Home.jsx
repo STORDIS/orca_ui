@@ -22,6 +22,21 @@ import "./home.scss";
 
 import { getIsStaff } from "../../utils/common";
 
+export const getDevicesCommon = () => {
+  const instance = interceptor();
+  const apiUrl = getAllDevicesURL();
+
+  return instance
+    .get(apiUrl)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      return []; // Return an empty array on error
+    });
+};
+
 export const Home = () => {
   const instance = interceptor();
 
@@ -51,13 +66,10 @@ export const Home = () => {
 
   const getDevices = () => {
     setDataTable([]);
-    instance(getAllDevicesURL())
-      .then((res) => {
-        setDataTable(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+
+    getDevicesCommon().then((res) => {
+      setDataTable(res);
+    });
   };
 
   const onCellClicked = useCallback((params) => {

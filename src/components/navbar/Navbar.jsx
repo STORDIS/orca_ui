@@ -15,6 +15,8 @@ import { getLogsCommon } from "../../components/logpane/logpane";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { getDhcpCredentialsCommon } from "../../pages/ZTPnDHCP/CredentialsForm";
+import { getDevicesCommon } from "../../pages/home/Home";
+import Time from "react-time-format";
 
 const Navbar = () => {
   const auth = useAuth();
@@ -39,6 +41,11 @@ const Navbar = () => {
   const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+  const [dhcpDevices, setDhcpDevices] = useState({
+    totalDevices: 0,
+    lastScanned: undefined,
+  });
+
   const start_discovery = async (formData) => {
     try {
       setShowForm(false);
@@ -55,10 +62,41 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    getDevices();
+    getAllPointers();
+  }, []);
+
+  useEffect(() => {
+      getAllPointers();
+    
+  }, [updateLog]);
+
+  const getAllPointers = () => {
+    getDevicesCommon().then((res) => {
+      let availableDevices = [];
+      let notAvailableDevices = [];
+
+      res.forEach((element) => {
+        if (element.system_status === "System is ready") {
+          availableDevices.push({
+            mgt_ip: element.mgt_ip,
+            system_status: element.system_status,
+          });
+        } else {
+          notAvailableDevices.push({
+            mgt_ip: element.mgt_ip,
+            system_status: element.system_status,
+          });
+        }
+      });
+
+      setOrcaDeviceData({
+        availableDevices: availableDevices,
+        notAvailableDevices: notAvailableDevices,
+        totalDevices: res.length,
+      });
+    });
 
     getLogsCommon().then((res) => {
-      console.log(res);
       let started = 0;
       let pending = 0;
       for (const element of res) {
@@ -73,79 +111,24 @@ const Navbar = () => {
         started: started,
         pending: pending,
       });
+
+      for (const element of res) {
+        if (element.http_path === "/files/dhcp/scan") {
+          setDhcpDevices({
+            totalDevices: element.response.sonic_devices.length,
+            lastScanned: element.timestamp,
+          });
+          break;
+        }
+      }
     });
 
     getDhcpCredentialsCommon().then((res) => {
-      console.log(res);
       setCredentials({
         device_ip: res.device_ip,
         ssh_access: res.ssh_access,
       });
     });
-  }, []);
-  
-  useEffect(() => {
-    if (updateLog) {
-      getDevices();
-
-      getLogsCommon().then((res) => {
-        console.log(res);
-        let started = 0;
-        let pending = 0;
-        for (const element of res) {
-          if (element.status === "STARTED") {
-            started = started + 1;
-          } else if (element.status === "PENDING") {
-            pending = pending + 1;
-          }
-        }
-
-        setOngoingProcess({
-          started: started,
-          pending: pending,
-        });
-      });
-      
-      getDhcpCredentialsCommon().then((res) => {
-        console.log(res);
-        setCredentials({
-          device_ip: res.device_ip,
-          ssh_access: res.ssh_access,
-        });
-      });
-    }
-  }, [updateLog]);
-
-  const getDevices = () => {
-    console.log("===");
-    instance(getAllDevicesURL())
-      .then((res) => {
-        let availableDevices = [];
-        let notAvailableDevices = [];
-
-        res.data.forEach((element) => {
-          if (element.system_status === "System is ready") {
-            availableDevices.push({
-              mgt_ip: element.mgt_ip,
-              system_status: element.system_status,
-            });
-          } else {
-            notAvailableDevices.push({
-              mgt_ip: element.mgt_ip,
-              system_status: element.system_status,
-            });
-          }
-        });
-
-        setOrcaDeviceData({
-          availableDevices: availableDevices,
-          notAvailableDevices: notAvailableDevices,
-          totalDevices: res.data.length,
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-      });
   };
 
   const CustomToolTip = styled(({ className, ...props }) => (
@@ -178,6 +161,22 @@ const Navbar = () => {
             </div>
           </div>
 
+          <div className="mr-10 border-right">
+            <div>Devices Avilable in Network: {dhcpDevices.totalDevices}</div>
+            <div>
+              Last scan:
+              {dhcpDevices.lastScanned === undefined ? (
+                " Unknown"
+              ) : (
+                <Time
+                  className="ml-5 mr-5"
+                  value={dhcpDevices.lastScanned}
+                  format="hh:mm:ss DD-MM-YYYY"
+                />
+              )}
+            </div>
+          </div>
+
           <CustomToolTip
             arrow
             placement="top"
@@ -192,7 +191,7 @@ const Navbar = () => {
             }
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              SSH :
+              DHCP connection :
               <FaCircle
                 className={`ml-5 ${
                   credentials?.ssh_access === true

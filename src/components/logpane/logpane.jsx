@@ -237,7 +237,11 @@ export const LogViewer = () => {
   const [height, setHeight] = useState(400);
 
   const [showDhcpTable, setShowDhcpTable] = useState(false);
-  const [dhcpTask, setDhcpTask] = useState({});
+  const [dhcpTask, setDhcpTask] = useState({
+    response: {
+      sonic_devices: [],
+    },
+  });
   const [heightDhcpTable, setHeightDhcpTable] = useState(250);
   const [sshData, setSshData] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -260,43 +264,51 @@ export const LogViewer = () => {
 
   const getLogs = () => {
     setLogEntries([]);
-    setDhcpTask({});
+    setDhcpTask({
+      response: {
+        sonic_devices: [],
+      },
+    });
     setLogEntriesToDelete({
       log_ids: [],
       task_ids: [],
     });
-    getLogsCommon().then((res) => {
-      setLogEntries(res);
-      resetUpdateLog();
 
-      let started = 0;
-      let pending = 0;
-      for (const element of res) {
-        if (element.status === "STARTED") {
-          started = started + 1;
-        } else if (element.status === "PENDING") {
-          pending = pending + 1;
+    getLogsCommon()
+      .then((res) => {
+        setLogEntries(res);
+
+        let started = 0;
+        let pending = 0;
+        for (const element of res) {
+          if (element.status === "STARTED") {
+            started = started + 1;
+          } else if (element.status === "PENDING") {
+            pending = pending + 1;
+          }
         }
-      }
 
-      setOngoingProcess({
-        started: started,
-        pending: pending,
+        setOngoingProcess({
+          started: started,
+          pending: pending,
+        });
+
+        for (const element of res) {
+          if (element.http_path === "/files/dhcp/scan") {
+            setDhcpTask(element);
+            break;
+          } else {
+            setDhcpTask({
+              response: {
+                sonic_devices: [],
+              },
+            });
+          }
+        }
+      })
+      .finally(() => {
+        resetUpdateLog();
       });
-
-      for (const element of res) {
-        if (element.http_path === "/files/dhcp/scan") {
-          setDhcpTask(element);
-          break;
-        } else {
-          setDhcpTask({
-            response: {
-              sonic_devices: [],
-            },
-          });
-        }
-      }
-    });
   };
 
   const handleResize = () => {
@@ -375,7 +387,7 @@ export const LogViewer = () => {
       })
       .finally(() => {
         getLogs();
-        // resetUpdateLog();
+        resetUpdateLog();
         setLogEntriesToDelete({
           log_ids: [],
           task_ids: [],
@@ -517,12 +529,8 @@ export const LogViewer = () => {
 
           <div>
             On Going Process:
-            <span className="ml-15  warning">
-              Started: {ongoingProcess.started}
-            </span>
-            <span className="ml-15 gray">
-              Pending: {ongoingProcess.pending}
-            </span>
+            <span className="ml-15 ">Started: {ongoingProcess.started}</span>
+            <span className="ml-15 ">Pending: {ongoingProcess.pending}</span>
             <button
               id="clearLogBtn"
               className="clearLogBtn btnStyle ml-15"
@@ -544,7 +552,9 @@ export const LogViewer = () => {
             <button
               id="refreshLogBtn"
               className="clearLogBtn btnStyle ml-15"
-              onClick={getLogs}
+              onClick={() => {
+                getLogs();
+              }}
               disabled={!getIsStaff()}
             >
               Refresh
@@ -562,6 +572,7 @@ export const LogViewer = () => {
             stopEditingWhenCellsLoseFocus={true}
             onSelectionChanged={onSelectionChanged}
             rowSelection="multiple"
+            suppressRowClickSelection={true}
             pagination={true}
             paginationPageSize={50}
             paginationPageSizeSelector={[50, 100, 150, 200]}
