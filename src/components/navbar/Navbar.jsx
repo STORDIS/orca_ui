@@ -10,7 +10,10 @@ import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 import interceptor from "../../utils/interceptor";
 import { getIsStaff } from "../../utils/common";
+
 import useStoreLogs from "../../utils/store";
+import useStorePointer from "../../utils/pointerStore";
+
 import { getLogsCommon } from "../../components/logpane/logpane";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
@@ -38,7 +41,8 @@ const Navbar = () => {
   });
 
   const instance = interceptor();
-  const updateLog = useStoreLogs((state) => state.updateLog);
+  const storePointer = useStorePointer((state) => state.storePointer);
+
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   const [dhcpDevices, setDhcpDevices] = useState({
@@ -66,9 +70,8 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-      getAllPointers();
-    
-  }, [updateLog]);
+    getAllPointers();
+  }, [storePointer]);
 
   const getAllPointers = () => {
     getDevicesCommon().then((res) => {
@@ -115,8 +118,8 @@ const Navbar = () => {
       for (const element of res) {
         if (element.http_path === "/files/dhcp/scan") {
           setDhcpDevices({
-            totalDevices: element.response.sonic_devices.length,
-            lastScanned: element.timestamp,
+            totalDevices: element?.response?.sonic_devices?.length || 0,
+            lastScanned: element?.timestamp,
           });
           break;
         }
@@ -205,7 +208,7 @@ const Navbar = () => {
             </div>
           </CustomToolTip>
 
-          <div>
+          <div style={{ textAlign: "right" }}>
             <button
               className="btnStyle ml-10 mr-10"
               id="discoveryBtn"

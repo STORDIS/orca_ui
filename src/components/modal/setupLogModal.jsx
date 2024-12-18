@@ -26,7 +26,6 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const [ShowResponse, setShowResponse] = useState(false);
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
-  const updateConfig = useStoreConfig((state) => state.updateConfig);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   const instance = interceptor();

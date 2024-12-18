@@ -5,7 +5,8 @@ import interceptor from "../../utils/interceptor";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { isValidIPv4WithCIDR } from "../../utils/common";
-import useStoreLogs from "../../utils/store.js";
+import useStoreLogs from "../../utils/store";
+import useStorePointer from "../../utils/pointerStore";
 
 export const getDhcpCredentialsCommon = () => {
   const instance = interceptor();
@@ -23,7 +24,6 @@ export const getDhcpCredentialsCommon = () => {
 };
 
 export const CredentialForm = ({ type, sendCredentialsToParent }) => {
-  const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   const instance = interceptor();
@@ -35,6 +35,10 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
     password: "",
     ssh_access: undefined,
   });
+
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const CustomToolTip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -51,32 +55,6 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   }, []);
 
   const getCredentials = () => {
-    //   setFormData({
-    //     device_ip: "",
-    //     username: "",
-    //     password: "",
-    //     ssh_access: undefined,
-    //   });
-    //   setIsDisabled(true);
-
-    //   instance
-    //     .get(dhcpCredentialsURL())
-    //     .then((res) => {
-    //       setFormData(res.data);
-    //       sendCredentialsToParent(res.data);
-    //     })
-    //     .catch((err) => {
-    //       console.error(err);
-    //       setIsDisabled(false);
-    //     })
-    //     .finally(() => {
-    //       //   setConfigStatus("Config Success");
-    //       setIsDisabled(false);
-    //       setTimeout(() => {
-    //         setConfigStatus("");
-    //       }, 2500);
-    //     });
-
     getDhcpCredentialsCommon()
       .then((res) => {
         setFormData(res);
@@ -127,6 +105,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       .finally(() => {
         setUpdateLog(true);
         getCredentials();
+        setUpdateStorePointer();
       });
   };
 
@@ -152,6 +131,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
         setConfigStatus("");
         getCredentials();
         setUpdateLog(true);
+        setUpdateStorePointer();
       });
   };
 

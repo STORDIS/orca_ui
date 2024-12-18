@@ -9,6 +9,7 @@ import { logPanelURL, logPanelDeleteURL } from "../../utils/backend_rest_urls";
 
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
+import useStorePointer from "../../utils/pointerStore";
 import GenericLogModal from "../../components/modal/genericLogModal";
 import SetupLogModal from "../../components/modal/setupLogModal";
 import DiscoveryLogModal from "../../components/modal/discoveryLogModal";
@@ -63,6 +64,10 @@ export const LogViewer = () => {
   const updateLog = useStoreLogs((state) => state.updateLog);
   const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const [showLogDetails, setShowLogDetails] = useState("null");
   const [logDetails, setLogDetails] = useState({});
@@ -388,6 +393,7 @@ export const LogViewer = () => {
       .finally(() => {
         getLogs();
         resetUpdateLog();
+        setUpdateStorePointer();
         setLogEntriesToDelete({
           log_ids: [],
           task_ids: [],
@@ -430,6 +436,7 @@ export const LogViewer = () => {
       })
       .finally(() => {
         getLogs();
+        setUpdateStorePointer();
       });
   };
 
@@ -554,6 +561,7 @@ export const LogViewer = () => {
               className="clearLogBtn btnStyle ml-15"
               onClick={() => {
                 getLogs();
+                setUpdateStorePointer();
               }}
               disabled={!getIsStaff()}
             >
