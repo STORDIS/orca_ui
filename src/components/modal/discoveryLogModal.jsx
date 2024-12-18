@@ -7,6 +7,7 @@ import useStoreLogs from "../../utils/store";
 import interceptor from "../../utils/interceptor";
 import { FaSquareXmark } from "react-icons/fa6";
 import CommonLogTable from "./commonLogTable";
+import useStorePointer from "../../utils/pointerStore";
 
 const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const [sonicDevices, setSonicDevices] = useState({});
@@ -16,6 +17,10 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
   const updateConfig = useStoreConfig((state) => state.updateConfig);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const instance = interceptor();
 
@@ -99,6 +104,7 @@ const DiscoveryLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         setUpdateLog(true);
         setUpdateConfig(false);
         onSubmit();
+        setUpdateStorePointer();
       });
   };
 

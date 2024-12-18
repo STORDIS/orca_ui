@@ -19,8 +19,8 @@ import interceptor from "../../utils/interceptor.js";
 import useStoreConfig from "../../utils/configStore.js";
 import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
-
 import { getIsStaff } from "../../utils/common";
+import useStorePointer from "../../utils/pointerStore";
 
 export const getDevicesCommon = () => {
   const instance = interceptor();
@@ -51,6 +51,10 @@ export const Home = () => {
 
   const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const [heightDeviceTable, setHeightDeviceTable] = useState(250);
 
@@ -94,6 +98,7 @@ export const Home = () => {
         setUpdateLog(true);
         setSelectedDeviceToDelete("");
         getDevices();
+        setUpdateStorePointer();
       });
   };
 
