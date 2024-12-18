@@ -519,7 +519,7 @@ export const LogViewer = () => {
       ) : null}
 
       <div
-        className="logPanel resizable"
+        className="listContainer logPanel resizable"
         id="logPanel"
         ref={logPannelDivRef}
         onMouseMove={handleResize}
@@ -535,9 +535,12 @@ export const LogViewer = () => {
           <div className="listTitle">Task</div>
 
           <div>
-            On Going Process:
-            <span className="ml-15 ">Started: {ongoingProcess.started}</span>
-            <span className="ml-15 ">Pending: {ongoingProcess.pending}</span>
+            <span className="ml-15 ">
+              Task Started: {ongoingProcess.started}
+            </span>
+            <span className="ml-15 ">
+              Task Pending: {ongoingProcess.pending}
+            </span>
             <button
               id="clearLogBtn"
               className="clearLogBtn btnStyle ml-15"
