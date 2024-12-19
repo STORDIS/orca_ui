@@ -1,7 +1,7 @@
 import "./navbar.scss";
 import { FaSearch, FaCircle } from "react-icons/fa";
 import { useAuth } from "../../utils/auth";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import DiscoveryForm from "./DiscoveryForm";
 import Modal from "../modal/Modal";
 import { getIsStaff } from "../../utils/common";
@@ -53,7 +53,7 @@ const Navbar = () => {
     }
   }, [storePointer]);
 
-  const getAllPointers = () => {
+  const getAllPointers = useCallback(() => {
     getDevicesCommon().then((res) => {
       let availableDevices = [];
       let notAvailableDevices = [];
@@ -93,30 +93,41 @@ const Navbar = () => {
       if (res?.length > 0) {
         for (const element of res) {
           if (element.status === "STARTED") {
-            started = started + 1;
+            started += 1;
           } else if (element.status === "PENDING") {
-            pending = pending + 1;
+            pending += 1;
           }
         }
 
         setOngoingProcess({
-          started: started,
-          pending: pending,
+          started,
+          pending,
         });
 
         for (const element of res) {
+          console.log("---", res);
           if (element.http_path === "/files/dhcp/scan") {
             setDhcpDevices({
               totalDevices: element?.response?.sonic_devices?.length || 0,
               lastScanned: element?.timestamp,
             });
             break;
+          } else {
+            setDhcpDevices({
+              totalDevices: 0,
+              lastScanned: undefined,
+            });
           }
         }
       } else {
         setOngoingProcess({
           started: 0,
           pending: 0,
+        });
+
+        setDhcpDevices({
+          totalDevices: 0,
+          lastScanned: undefined,
         });
       }
     });
@@ -129,7 +140,7 @@ const Navbar = () => {
         });
       }
     });
-  };
+  }, []);
 
   const CustomToolTip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
