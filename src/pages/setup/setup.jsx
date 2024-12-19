@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 
 import {
   deviceUserColumns,
@@ -21,6 +16,7 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { areAllIPAddressesValid } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore";
+import useStorePointer from "../../utils/pointerStore";
 
 import Modal from "../../components/modal/Modal";
 
@@ -34,9 +30,10 @@ export const Home = () => {
   const instance = interceptor();
 
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
-
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
-  const updateConfig = useStoreConfig((state) => state.updateConfig);
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const [dataTable, setDataTable] = useState([]);
   const gridRef = useRef();
@@ -155,6 +152,7 @@ export const Home = () => {
       setUpdateLog(true);
       setUpdateConfig(false);
 
+      setUpdateStorePointer();
       setFormData({
         image_url: "",
         device_ips: [],

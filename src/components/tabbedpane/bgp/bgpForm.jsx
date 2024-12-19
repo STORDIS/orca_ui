@@ -47,7 +47,7 @@ const BgpForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
           e.preventDefault();
           handleSubmit(formData);
         }}
-        className="port-channel-form"
+        className="form-container"
       >
         <div className="form-field">
           <label>Device IP:</label>

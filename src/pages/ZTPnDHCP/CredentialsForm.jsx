@@ -5,8 +5,27 @@ import interceptor from "../../utils/interceptor";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import { isValidIPv4WithCIDR } from "../../utils/common";
+import useStoreLogs from "../../utils/store";
+import useStorePointer from "../../utils/pointerStore";
+
+export const getDhcpCredentialsCommon = () => {
+  const instance = interceptor();
+  const apiUrl = dhcpCredentialsURL();
+
+  return instance
+    .get(apiUrl)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      return []; // Return an empty array on error
+    });
+};
 
 export const CredentialForm = ({ type, sendCredentialsToParent }) => {
+  const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
   const instance = interceptor();
   const [configStatus, setConfigStatus] = useState("");
 
@@ -16,6 +35,10 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
     password: "",
     ssh_access: undefined,
   });
+
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const CustomToolTip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -32,26 +55,16 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
   }, []);
 
   const getCredentials = () => {
-    setFormData({
-      device_ip: "",
-      username: "",
-      password: "",
-      ssh_access: undefined,
-    });
-    setIsDisabled(true);
-
-    instance
-      .get(dhcpCredentialsURL())
+    getDhcpCredentialsCommon()
       .then((res) => {
-        setFormData(res.data);
-        sendCredentialsToParent(res.data);
+        setFormData(res);
+        sendCredentialsToParent(res);
       })
       .catch((err) => {
         console.error(err);
         setIsDisabled(false);
       })
       .finally(() => {
-        //   setConfigStatus("Config Success");
         setIsDisabled(false);
         setTimeout(() => {
           setConfigStatus("");
@@ -79,7 +92,6 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       setIsDisabled(false);
       return;
     }
-
     setConfigStatus("Config In Progress....");
     instance
       .put(dhcpCredentialsURL(), payload)
@@ -89,10 +101,11 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
       .catch((err) => {
         console.error(err);
         setConfigStatus("Config Failed");
-        setIsDisabled(false);
       })
       .finally(() => {
+        setUpdateLog(true);
         getCredentials();
+        setUpdateStorePointer();
       });
   };
 
@@ -117,6 +130,8 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
         setIsDisabled(false);
         setConfigStatus("");
         getCredentials();
+        setUpdateLog(true);
+        setUpdateStorePointer();
       });
   };
 
@@ -234,7 +249,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             </button>
           </div>
         </div>
-      ) : (
+      ) : type === "status" ? (
         <div style={{ display: "flex", alignItems: "center" }}>
           DHCP server {formData?.device_ip} connection status :
           <CustomToolTip
@@ -262,7 +277,7 @@ export const CredentialForm = ({ type, sendCredentialsToParent }) => {
             </div>
           </CustomToolTip>
         </div>
-      )}
+      ) : null}
     </>
   );
 };

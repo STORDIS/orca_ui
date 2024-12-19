@@ -9,6 +9,7 @@ import { logPanelURL, logPanelDeleteURL } from "../../utils/backend_rest_urls";
 
 import { getIsStaff } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
+import useStorePointer from "../../utils/pointerStore";
 import GenericLogModal from "../../components/modal/genericLogModal";
 import SetupLogModal from "../../components/modal/setupLogModal";
 import DiscoveryLogModal from "../../components/modal/discoveryLogModal";
@@ -27,6 +28,21 @@ import {
   dhcpColumn,
 } from "../../components/tabbedpane/datatablesourse";
 
+export const getLogsCommon = () => {
+  const instance = interceptor();
+  const apiUrl = logPanelURL();
+
+  return instance
+    .get(apiUrl)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      return []; // Return an empty array on error
+    });
+};
+
 export const LogViewer = () => {
   const logPannelDivRef = useRef(null);
 
@@ -35,12 +51,23 @@ export const LogViewer = () => {
     log_ids: [],
     task_ids: [],
   });
+
+  const [ongoingProcess, setOngoingProcess] = useState({
+    started: 0,
+    pending: 0,
+  });
+
   const [hasStartedTask, setHasStartedTask] = useState(false);
 
   const instance = interceptor();
 
   const updateLog = useStoreLogs((state) => state.updateLog);
   const resetUpdateLog = useStoreLogs((state) => state.resetUpdateLog);
+  const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const [showLogDetails, setShowLogDetails] = useState("null");
   const [logDetails, setLogDetails] = useState({});
@@ -215,7 +242,11 @@ export const LogViewer = () => {
   const [height, setHeight] = useState(400);
 
   const [showDhcpTable, setShowDhcpTable] = useState(false);
-  const [dhcpTask, setDhcpTask] = useState({});
+  const [dhcpTask, setDhcpTask] = useState({
+    response: {
+      sonic_devices: [],
+    },
+  });
   const [heightDhcpTable, setHeightDhcpTable] = useState(250);
   const [sshData, setSshData] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -233,37 +264,55 @@ export const LogViewer = () => {
   }, []);
 
   useEffect(() => {
-    console.log(window.location.href.includes("/home"));
     setShowDhcpTable(window.location.href.includes("/home"));
   }, [window.location.href]);
 
   const getLogs = () => {
     setLogEntries([]);
-    setDhcpTask({});
+    setDhcpTask({
+      response: {
+        sonic_devices: [],
+      },
+    });
     setLogEntriesToDelete({
       log_ids: [],
       task_ids: [],
     });
-    instance
-      .get(logPanelURL())
-      .then((response) => {
-        setLogEntries(response.data);
-        resetUpdateLog();
 
-        for (const element of response.data) {
+    getLogsCommon()
+      .then((res) => {
+        setLogEntries(res);
+
+        let started = 0;
+        let pending = 0;
+        for (const element of res) {
+          if (element.status === "STARTED") {
+            started = started + 1;
+          } else if (element.status === "PENDING") {
+            pending = pending + 1;
+          }
+        }
+
+        setOngoingProcess({
+          started: started,
+          pending: pending,
+        });
+
+        for (const element of res) {
           if (element.http_path === "/files/dhcp/scan") {
-            console.log(element.timestamp);
-            console.log(element.task_id);
             setDhcpTask(element);
-            break; 
+            break;
           } else {
-            setDhcpTask({});
+            setDhcpTask({
+              response: {
+                sonic_devices: [],
+              },
+            });
           }
         }
       })
-      .catch((error) => {
-        console.error("Error:", error);
-        setLogEntries([]);
+      .finally(() => {
+        resetUpdateLog();
       });
   };
 
@@ -336,7 +385,7 @@ export const LogViewer = () => {
     instance
       .delete(logPanelDeleteURL(), { data: logEntriesToDelete })
       .then((response) => {
-        resetUpdateLog();
+        setUpdateLog(true);
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -344,6 +393,7 @@ export const LogViewer = () => {
       .finally(() => {
         getLogs();
         resetUpdateLog();
+        setUpdateStorePointer();
         setLogEntriesToDelete({
           log_ids: [],
           task_ids: [],
@@ -386,6 +436,7 @@ export const LogViewer = () => {
       })
       .finally(() => {
         getLogs();
+        setUpdateStorePointer();
       });
   };
 
@@ -468,7 +519,7 @@ export const LogViewer = () => {
       ) : null}
 
       <div
-        className="logPanel resizable"
+        className="listContainer logPanel resizable"
         id="logPanel"
         ref={logPannelDivRef}
         onMouseMove={handleResize}
@@ -482,7 +533,14 @@ export const LogViewer = () => {
           }}
         >
           <div className="listTitle">Task</div>
+
           <div>
+            <span className="ml-15 ">
+              Task Started: {ongoingProcess.started}
+            </span>
+            <span className="ml-15 ">
+              Task Pending: {ongoingProcess.pending}
+            </span>
             <button
               id="clearLogBtn"
               className="clearLogBtn btnStyle ml-15"
@@ -495,18 +553,19 @@ export const LogViewer = () => {
             >
               Clear
             </button>
-
             <button
               className="clearLogBtn btnStyle ml-15"
               onClick={clearFilters}
             >
               Clear All Filters
             </button>
-
             <button
               id="refreshLogBtn"
               className="clearLogBtn btnStyle ml-15"
-              onClick={getLogs}
+              onClick={() => {
+                getLogs();
+                setUpdateStorePointer();
+              }}
               disabled={!getIsStaff()}
             >
               Refresh
@@ -524,6 +583,7 @@ export const LogViewer = () => {
             stopEditingWhenCellsLoseFocus={true}
             onSelectionChanged={onSelectionChanged}
             rowSelection="multiple"
+            suppressRowClickSelection={true}
             pagination={true}
             paginationPageSize={50}
             paginationPageSizeSelector={[50, 100, 150, 200]}

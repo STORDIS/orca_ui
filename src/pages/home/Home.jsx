@@ -3,7 +3,6 @@ import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   deviceUserColumns,
   defaultColDef,
-  dhcpColumn,
 } from "../../components/tabbedpane/datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -11,7 +10,6 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
   getAllDevicesURL,
   switchImageURL,
-  dhcpDeviceListURL,
   deleteDevicesURL,
 } from "../../utils/backend_rest_urls.js";
 import Modal from "../../components/modal/Modal";
@@ -21,9 +19,23 @@ import interceptor from "../../utils/interceptor.js";
 import useStoreConfig from "../../utils/configStore.js";
 import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
-
 import { getIsStaff } from "../../utils/common";
-import { ZTPnDHCP } from "../ZTPnDHCP/ztpndhcp";
+import useStorePointer from "../../utils/pointerStore";
+
+export const getDevicesCommon = () => {
+  const instance = interceptor();
+  const apiUrl = getAllDevicesURL();
+
+  return instance
+    .get(apiUrl)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      return []; // Return an empty array on error
+    });
+};
 
 export const Home = () => {
   const instance = interceptor();
@@ -40,6 +52,10 @@ export const Home = () => {
   const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
+
   const [heightDeviceTable, setHeightDeviceTable] = useState(250);
 
   useEffect(() => {
@@ -54,13 +70,10 @@ export const Home = () => {
 
   const getDevices = () => {
     setDataTable([]);
-    instance(getAllDevicesURL())
-      .then((res) => {
-        setDataTable(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+
+    getDevicesCommon().then((res) => {
+      setDataTable(res);
+    });
   };
 
   const onCellClicked = useCallback((params) => {
@@ -85,6 +98,7 @@ export const Home = () => {
         setUpdateLog(true);
         setSelectedDeviceToDelete("");
         getDevices();
+        setUpdateStorePointer();
       });
   };
 
