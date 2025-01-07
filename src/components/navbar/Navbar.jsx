@@ -105,7 +105,6 @@ const Navbar = () => {
         });
 
         for (const element of res) {
-          console.log("---", res);
           if (element.http_path === "/files/dhcp/scan") {
             setDhcpDevices({
               totalDevices: element?.response?.sonic_devices?.length || 0,
