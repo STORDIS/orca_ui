@@ -164,13 +164,14 @@
     height: 83vh;
     -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
     box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+    // height: 70vh;
 
     .heading {
       padding: 10px;
-      margin-bottom: 15px;
+      // margin-bottom: 15px;
       display: flex;
       text-align: center;
-      border-bottom: 1px solid black;
+      border: 1px solid lightgray;
       -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
       box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
     }
@@ -179,8 +180,9 @@
       padding: 0px 15px 0px 15px;
       overflow-y: auto;
       overflow-x: hidden;
-      height: 70vh;
       align-items: end;
+      height: 40%;
+      // border: 1px solid rgb(0, 0, 0);
 
       .bookmarkTitle {
         display: flex;
