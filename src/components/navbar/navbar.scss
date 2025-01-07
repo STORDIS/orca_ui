@@ -4,8 +4,8 @@
   align-items: center;
   font-size: 14px;
   // color: #888;
-  -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+  -webkit-box-shadow: 2px 4px 10px 1px  var(--shadow_light_1);
+  box-shadow: 2px 4px 10px 1px  var(--shadow_light_2);
   margin: 10px;
 
   .wrapper {

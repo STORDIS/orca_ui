@@ -13,7 +13,6 @@ import interceptor from "../../../utils/interceptor";
 import PortChannelForm from "./PortChannelForm";
 import PortChMemberForm from "./portChMemberForm";
 import PortChVlanForm from "./PortChVlanForm";
-import "../tabbedPaneTable.scss";
 import useStoreLogs from "../../../utils/store";
 
 import { getIsStaff } from "../../../utils/common";

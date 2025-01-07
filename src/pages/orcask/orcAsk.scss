@@ -7,11 +7,11 @@
     width: 50vw;
     padding: 10px;
     height: 80vh;
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+    -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_light_1);
+    box-shadow: 2px 4px 10px 1px var(--shadow_light_2) !important;
 
     .chatSection {
-      background-color: #c0c0c0;
+      background-color: var(--light_btn_bg);
       overflow-y: auto;
       width: -webkit-fill-available;
       height: calc(100% - 90px);
@@ -27,13 +27,13 @@
         .icon {
           width: 25px;
           font-size: 25px;
-          background-color: rgb(245, 242, 240);
+          background-color: var(--light_item_hover);
           border-radius: 25px;
           padding: 10px;
         }
 
         .content {
-          background-color: rgb(245, 242, 240);
+          background-color: var(--light_item_hover);
           border-radius: 25px;
           border-bottom-left-radius: 0px;
           padding: 12px 15px 12px 15px;
@@ -52,7 +52,7 @@
           }
 
           .graph {
-            border: 1px solid gray;
+            border: 1px solid var(--light_form_border);
             width: -webkit-fill-available;
             height: 300px !important;
             position: relative;
@@ -79,7 +79,7 @@
       .copy {
         cursor: pointer;
         display: flex;
-        background-color: white;
+        background-color: var(--light_bg_color);
         border-radius: 25px;
         padding: 5px;
         margin: 0px 10px 0px 10px;
@@ -90,7 +90,7 @@
       .bookmark {
         cursor: pointer;
         display: flex;
-        background-color: white;
+        background-color: var(--light_bg_color);
         border-radius: 25px;
         padding: 5px;
         margin: 0px 10px 0px 10px;
@@ -117,7 +117,7 @@
         align-items: end;
 
         .icon {
-          background-color: white;
+          background-color: var(--light_bg_color);
           border-radius: 25px;
           padding: 10px;
           font-size: 20px;
@@ -125,7 +125,7 @@
         }
 
         .text {
-          background-color: white;
+          background-color: var(--light_bg_color);
           border-radius: 25px;
           border-bottom-right-radius: 0px;
           padding: 12px;
@@ -142,7 +142,7 @@
       width: -webkit-fill-available;
       padding: 10px;
       border-radius: 25px;
-      border: 1px solid lightgray;
+      border: 1px solid var(--light_form_border) !important;
 
       textarea {
         width: 92%;
@@ -151,7 +151,7 @@
         resize: none;
         overflow-y: auto;
         border: none;
-        border-right: 1px solid lightgray !important;
+        border-right: 1px solid var(--light_form_border) !important;
       }
       textarea:focus {
         outline: none;
@@ -162,8 +162,8 @@
   .rightColumn {
     width: 27vw;
     height: 83vh;
-    -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-    box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+    -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_light_1);
+    box-shadow: 2px 4px 10px 1px var(--shadow_light_2) !important;
     // height: 70vh;
 
     .heading {
@@ -171,9 +171,9 @@
       // margin-bottom: 15px;
       display: flex;
       text-align: center;
-      border: 1px solid lightgray;
-      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47) !important;
+      border: 1px solid var(--light_form_border);
+      -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_light_1);
+      box-shadow: 2px 4px 10px 1px var(--shadow_light_2) !important;
     }
 
     .tabBody {
@@ -187,7 +187,7 @@
       .bookmarkTitle {
         display: flex;
         align-items: center;
-        background-color: #e7dbdb;
+        background-color: var(--light_item_hover);
         padding: 10px;
         margin-bottom: 10px;
       }
@@ -201,15 +201,13 @@
       background-color: transparent;
 
       &:disabled {
-        color: #a4a3a3;
+        color: var(--light_btn_disabled_color);
         cursor: not-allowed;
       }
-
       &.button-disabled {
         opacity: 0.5;
         cursor: not-allowed;
-
-        color: #a4a3a3;
+        color: var(--light_btn_disabled_color);
       }
     }
   }

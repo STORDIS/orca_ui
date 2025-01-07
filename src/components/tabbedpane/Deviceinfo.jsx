@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./tabbedPaneTable.scss";
 import { deviceUserColumns } from "./datatablesourse";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";

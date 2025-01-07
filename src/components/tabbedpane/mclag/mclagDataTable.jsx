@@ -3,7 +3,6 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-import "../tabbedPaneTable.scss";
 import MclagForm from "./mclagForm";
 import MclagMemberForm from "./mclagMemberForm";
 

@@ -1,65 +1,87 @@
+:root {
+  --shadow_light_1: rgba(0, 0, 0, 0.47);
+  --shadow_light_2: rgba(201, 201, 201, 0.47);
+
+  --light_title: rgb(128, 128, 128);
+
+  --light_btn_color: rgba(0, 0, 0, 1);
+  --light_btn_bg: rgba(211, 211, 211, 1);
+
+  --light_btn_disabled_bg: rgb(219, 219, 219, 1);
+  --light_btn_disabled_border: rgb(219, 219, 219);
+  --light_btn_disabled_color: rgba(164, 163, 163, 1);
+
+  --light_form_border: rgb(167, 167, 167);
+
+  --light_text_color: rgb(0, 0, 0);
+  --light_bg_color: rgb(255, 255, 255);
+
+  --light_item_color: rgb(255, 255, 255);
+  --light_item_hover: rgb(245, 239, 239);
+}
+
 .listContainer {
   padding: 15px !important;
-  -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-  box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+  -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_light_1);
+  box-shadow: 2px 4px 10px 1px var(--shadow_light_2);
   margin: 10px !important;
 }
 .listTitle {
   font-weight: 500;
-  color: gray;
+  color: var(--light_title);
 }
 
 .btnColor {
   border-radius: 4px !important;
-  border: 1px solid black !important;
-  background-color: lightgray;
-  color: black;
+  border: 1px solid var(--light_btn_color) !important;
+  background-color: var(--light_btn_bg) !important;
+  color: var(--light_btn_color);
   cursor: pointer;
 
   &:disabled {
-    background-color: #dbdbdb;
-    border-color: #dbdbdb;
-    color: #a4a3a3;
+    background-color: var(--light_btn_disabled_bg);
+    border-color: var(--light_btn_disabled_bg);
+    color: var(--light_btn_disabled_color);
     cursor: not-allowed;
   }
 
   &.button-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background-color: gray;
-    border-color: #dbdbdb;
-    color: #a4a3a3;
+    background-color: var(--light_btn_disabled_bg);
+    border-color: var(--light_btn_disabled_border);
+    color: var(--light_btn_disabled_color);
   }
 }
 
 .btnStyle {
   padding: 6px 12px;
   border-radius: 4px;
-  border: 1px solid black;
-  background-color: rgba(211, 211, 211, 1) !important;
-  color: rgb(0, 0, 0);
+  border: 1px solid var(--light_btn_color);
+  background-color: var(--light_btn_bg) !important;
+  color: var(--light_btn_color);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 
   &:disabled {
-    background-color: rgb(219, 219, 219, 1) !important;
-    border-color: rgb(219, 219, 219) !important;
-    color: rgba(164, 163, 163, 1) !important;
+    background-color: var(--light_btn_disabled_bg) !important;
+    border-color: var(--light_btn_disabled_border) !important;
+    color: var(--light_btn_disabled_color) !important;
     cursor: not-allowed !important;
   }
 
   &.button-disabled {
     opacity: 0.5;
-    background-color: rgb(219, 219, 219, 1) !important;
-    border-color: rgb(219, 219, 219) !important;
-    color: rgba(164, 163, 163, 1) !important;
+    background-color: var(--light_btn_disabled_bg) !important;
+    border-color: var(--light_btn_disabled_border) !important;
+    color: var(--light_btn_disabled_color) !important;
     cursor: not-allowed !important;
   }
 }
 
 .loader {
   display: inline-block;
-  background-color: rgb(245, 242, 240);
+  background-color: var(--light_bg_color);
   border-radius: 25px;
   border-bottom-left-radius: 0px;
   padding: 12px;
@@ -70,7 +92,7 @@
 .dot {
   width: 10px;
   height: 10px;
-  background-color: black;
+  background-color: var(--light_text_color);
   border-radius: 50%;
   display: inline-block;
   animation: dance 1.5s infinite ease-in-out;
@@ -90,7 +112,18 @@
   font-weight: bold;
 
   font-style: italic;
-  color: #999;
+  color: var(--light_title);
+}
+
+.datatable {
+  max-height: 500px;
+  min-height: 100px;
+  flex: 10;
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 @keyframes dance {
@@ -281,16 +314,16 @@
 .form-field textarea,
 .form-field select {
   padding: 6px;
-  border: 1px solid #a7a7a7 !important;
+  border: 1px solid var(--light_form_border) !important;
   border-radius: 4px;
 }
 
 .form-field input:disabled {
-  background-color: #dbdbdb;
+  background-color: var(--light_btn_disabled_bg);
 }
 
 .form-field select:disabled {
-  background-color: #dbdbdb;
+  background-color: var(--light_btn_disabled_bg);
 }
 
 .form-field input[type="submit"]:hover,
@@ -307,7 +340,7 @@
 .selected-interface-wrap {
   min-height: 100px;
   max-height: 250px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--light_form_border);
   overflow-y: auto;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -316,7 +349,7 @@
 .increadeDecrease {
   border: none;
   background-color: transparent;
-  color: black;
+  color: var(--light_text_color);
   cursor: pointer;
   align-items: center;
 }
