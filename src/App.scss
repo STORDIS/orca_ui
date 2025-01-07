@@ -13,13 +13,18 @@
 
   --light_form_border: rgb(167, 167, 167);
 
-  --light_text_color: rgb(0, 0, 0);
-  --light_bg_color: rgb(255, 255, 255);
-
   --light_item_color: rgb(255, 255, 255);
   --light_item_hover: rgb(245, 239, 239);
 
   --light_backdrop: rgba(0, 0, 0, 0.5);
+
+  --light_text_color: rgb(0, 0, 0);
+  --light_bg_color: rgb(255, 255, 255);
+}
+
+body {
+  background-color: var(--light_bg_color);
+  color: var(--light_text_color);
 }
 
 .listContainer {
