@@ -4,17 +4,17 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--light_backdrop);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 
   .modalInner {
-    background-color: white;
+    background-color: var(--light_bg_color);
     padding: 15px;
     border-radius: 5px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 15px var(--shadow_light_1);
     max-width: 75vw;
     min-width: 600px;
     height: fit-content;
@@ -24,7 +24,7 @@
     .modalHeader {
       display: flex;
       justify-content: space-between;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid var(--light_form_border);
       padding-bottom: 5px;
       align-items: center;
 
@@ -40,11 +40,11 @@
 
       table {
         width: 100%;
-        border: 1px solid #ddd !important;
+        border: 1px solid var(--light_form_border) !important;
         border-collapse: collapse;
 
         th {
-          border: 1px solid black !important;
+          border: 1px solid var(--light_form_border) !important;
           padding: 5px;
           min-width: 150px;
         }
@@ -52,7 +52,7 @@
         tbody {
           tr {
             td {
-              border: 1px solid black !important;
+              border: 1px solid var(--light_form_border) !important;
               padding: 5px;
             }
           }
@@ -64,7 +64,7 @@
       display: flex;
       justify-content: flex-start;
       padding-top: 5px;
-      border-top: 1px solid #ddd;
+      border-top: 1px solid var(--light_form_border);
     }
   }
 }
