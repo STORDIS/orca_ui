@@ -4,7 +4,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: var(--light_backdrop);
+  background-color: var(--backdrop);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,10 +12,10 @@
 }
 
 .modal-content {
-    background-color: var(--light_bg_color);
+    background-color: var(--bg_color);
   padding: 15px;
   border-radius: 5px;
-  box-shadow: 0 5px 15px var(--shadow_light_1);
+  box-shadow: 0 5px 15px var(--shadow_1);
   width: 60%;
   max-width: 500px;
   position: relative;

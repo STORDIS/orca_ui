@@ -15,6 +15,8 @@ export const AuthProvider = ({ children }) => {
       .post(postLogin(), credential)
       .then((response) => {
         secureLocalStorage.setItem("token", response.data.token);
+        secureLocalStorage.setItem("theme", "light");
+
         setAccessToken(credential);
         getUser(credential.username, redirectUrl);
       })

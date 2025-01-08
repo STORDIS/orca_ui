@@ -1,94 +1,94 @@
 :root {
-  --shadow_light_1: rgba(0, 0, 0, 0.47);
-  --shadow_light_2: rgba(201, 201, 201, 0.47);
+  --shadow_1: rgba(0, 0, 0, 0.47);
+  --shadow_2: rgba(201, 201, 201, 0.47);
 
-  --light_title: rgb(128, 128, 128);
+  --title: rgb(128, 128, 128);
 
-  --light_btn_color: rgba(0, 0, 0, 1);
-  --light_btn_bg: rgba(211, 211, 211, 1);
+  --btn_color: rgba(0, 0, 0, 1);
+  --btn_bg: rgba(211, 211, 211, 1);
 
-  --light_btn_disabled_bg: rgb(219, 219, 219, 1);
-  --light_btn_disabled_border: rgb(219, 219, 219);
-  --light_btn_disabled_color: rgba(164, 163, 163, 1);
+  --btn_disabled_bg: rgb(219, 219, 219, 1);
+  --btn_disabled_border: rgb(219, 219, 219);
+  --btn_disabled_color: rgba(164, 163, 163, 1);
 
-  --light_form_border: rgb(167, 167, 167);
+  --form_border: rgb(167, 167, 167);
 
-  --light_item_color: rgb(255, 255, 255);
-  --light_item_hover: rgb(245, 239, 239);
+  --item_color: rgb(255, 255, 255);
+  --item_hover: rgb(245, 239, 239);
 
-  --light_backdrop: rgba(0, 0, 0, 0.5);
+  --backdrop: rgba(0, 0, 0, 0.5);
 
-  --light_text_color: rgb(0, 0, 0);
-  --light_bg_color: rgb(255, 255, 255);
+  --text_color: rgb(0, 0, 0);
+  --bg_color: rgb(255, 255, 255);
 }
 
 body {
-  background-color: var(--light_bg_color);
-  color: var(--light_text_color);
+  background-color: var(--bg_color);
+  color: var(--text_color);
 }
 
 .listContainer {
   padding: 15px !important;
-  -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_light_1);
-  box-shadow: 2px 4px 10px 1px var(--shadow_light_2);
+  -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_1);
+  box-shadow: 2px 4px 10px 1px var(--shadow_2);
   margin: 10px !important;
 }
 .listTitle {
   font-weight: 500;
-  color: var(--light_title);
+  color: var(--title);
 }
 
 .btnColor {
   border-radius: 4px !important;
-  border: 1px solid var(--light_btn_color) !important;
-  background-color: var(--light_btn_bg) !important;
-  color: var(--light_btn_color);
+  border: 1px solid var(--btn_color) !important;
+  background-color: var(--btn_bg) !important;
+  color: var(--btn_color);
   cursor: pointer;
 
   &:disabled {
-    background-color: var(--light_btn_disabled_bg);
-    border-color: var(--light_btn_disabled_bg);
-    color: var(--light_btn_disabled_color);
+    background-color: var(--btn_disabled_bg);
+    border-color: var(--btn_disabled_bg);
+    color: var(--btn_disabled_color);
     cursor: not-allowed;
   }
 
   &.button-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background-color: var(--light_btn_disabled_bg);
-    border-color: var(--light_btn_disabled_border);
-    color: var(--light_btn_disabled_color);
+    background-color: var(--btn_disabled_bg);
+    border-color: var(--btn_disabled_border);
+    color: var(--btn_disabled_color);
   }
 }
 
 .btnStyle {
   padding: 6px 12px;
   border-radius: 4px;
-  border: 1px solid var(--light_btn_color);
-  background-color: var(--light_btn_bg) !important;
-  color: var(--light_btn_color);
+  border: 1px solid var(--btn_color);
+  background-color: var(--btn_bg) !important;
+  color: var(--btn_color);
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 
   &:disabled {
-    background-color: var(--light_btn_disabled_bg) !important;
-    border-color: var(--light_btn_disabled_border) !important;
-    color: var(--light_btn_disabled_color) !important;
+    background-color: var(--btn_disabled_bg) !important;
+    border-color: var(--btn_disabled_border) !important;
+    color: var(--btn_disabled_color) !important;
     cursor: not-allowed !important;
   }
 
   &.button-disabled {
     opacity: 0.5;
-    background-color: var(--light_btn_disabled_bg) !important;
-    border-color: var(--light_btn_disabled_border) !important;
-    color: var(--light_btn_disabled_color) !important;
+    background-color: var(--btn_disabled_bg) !important;
+    border-color: var(--btn_disabled_border) !important;
+    color: var(--btn_disabled_color) !important;
     cursor: not-allowed !important;
   }
 }
 
 .loader {
   display: inline-block;
-  background-color: var(--light_bg_color);
+  background-color: var(--bg_color);
   border-radius: 25px;
   border-bottom-left-radius: 0px;
   padding: 12px;
@@ -99,7 +99,7 @@ body {
 .dot {
   width: 10px;
   height: 10px;
-  background-color: var(--light_text_color);
+  background-color: var(--text_color);
   border-radius: 50%;
   display: inline-block;
   animation: dance 1.5s infinite ease-in-out;
@@ -119,7 +119,7 @@ body {
   font-weight: bold;
 
   font-style: italic;
-  color: var(--light_title);
+  color: var(--title);
 }
 
 .datatable {
@@ -321,16 +321,16 @@ body {
 .form-field textarea,
 .form-field select {
   padding: 6px;
-  border: 1px solid var(--light_form_border) !important;
+  border: 1px solid var(--form_border) !important;
   border-radius: 4px;
 }
 
 .form-field input:disabled {
-  background-color: var(--light_btn_disabled_bg);
+  background-color: var(--btn_disabled_bg);
 }
 
 .form-field select:disabled {
-  background-color: var(--light_btn_disabled_bg);
+  background-color: var(--btn_disabled_bg);
 }
 
 .form-field input[type="submit"]:hover,
@@ -347,7 +347,7 @@ body {
 .selected-interface-wrap {
   min-height: 100px;
   max-height: 250px;
-  border: 1px solid var(--light_form_border);
+  border: 1px solid var(--form_border);
   overflow-y: auto;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -356,7 +356,7 @@ body {
 .increadeDecrease {
   border: none;
   background-color: transparent;
-  color: var(--light_text_color);
+  color: var(--text_color);
   cursor: pointer;
   align-items: center;
 }

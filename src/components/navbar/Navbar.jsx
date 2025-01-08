@@ -12,6 +12,8 @@ import { styled } from "@mui/material/styles";
 import { getDhcpCredentialsCommon } from "../../pages/ZTPnDHCP/CredentialsForm";
 import { getDevicesCommon } from "../../pages/home/Home";
 import Time from "react-time-format";
+import { FaCircleHalfStroke } from "react-icons/fa6";
+import secureLocalStorage from "react-secure-storage";
 
 const Navbar = () => {
   const auth = useAuth();
@@ -141,6 +143,20 @@ const Navbar = () => {
     });
   }, []);
 
+  const [theme, setTheme] = useState(secureLocalStorage.getItem("theme"));
+
+  const changeTheme = () => {
+    let theme = secureLocalStorage.getItem("theme");
+    console.log(theme);
+    if (theme === "light") {
+      secureLocalStorage.setItem("theme", "dark");
+      setTheme("dark");
+    } else {
+      secureLocalStorage.setItem("theme", "light");
+      setTheme("light");
+    }
+  };
+
   const CustomToolTip = styled(({ className, ...props }) => (
     <Tooltip {...props} classes={{ popper: className }} />
   ))(({ theme }) => ({
@@ -215,7 +231,13 @@ const Navbar = () => {
             </div>
           </CustomToolTip>
 
-          <div style={{ textAlign: "right" }}>
+          <div
+            style={{
+              textAlign: "right",
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <button
               className="btnStyle ml-10 mr-10"
               id="discoveryBtn"
@@ -233,9 +255,23 @@ const Navbar = () => {
               <DiscoveryForm />
             </Modal>
 
-            <button id="logoutBtn" onClick={handleLogout} className="btnStyle">
+            <CustomToolTip
+              arrow
+              placement="top"
+              title={
+                theme === "light"
+                  ? "Change to Dark Theme"
+                  : "Change to Light Theme"
+              }
+            >
+              <span onClick={changeTheme}>
+                <FaCircleHalfStroke style={{ fontSize: "25px" }} />
+              </span>
+            </CustomToolTip>
+
+            {/* <button id="logoutBtn" onClick={handleLogout} className="btnStyle">
               Logout
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

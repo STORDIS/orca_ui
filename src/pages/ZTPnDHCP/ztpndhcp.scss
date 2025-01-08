@@ -4,9 +4,9 @@
 
   .fileSelection {
     // background-color: rgb(192, 192, 192) !important;
-    background-color: var(--light_btn_bg) !important;
+    background-color: var(--btn_bg) !important;
     width: 250px;
-    border: 1px solid var(--light_form_border);
+    border: 1px solid var(--form_border);
     display: flex;
     flex-direction: column;
 
@@ -19,14 +19,14 @@
       margin: 5px;
       padding: 5px;
       cursor: pointer;
-      background-color: var(--light_item_color);
+      background-color: var(--item_color);
 
       &:hover {
-        background-color: var(--light_item_hover);
+        background-color: var(--item_hover);
       }
     }
     .active {
-      background-color: var(--light_item_hover) !important;
+      background-color: var(--item_hover) !important;
     }
 
     .fileBottomSection {
@@ -38,11 +38,11 @@
   }
   .editor {
     width: calc(100% - 255px);
-    border: 1px solid var(--light_form_border);
+    border: 1px solid var(--form_border);
 
     .tab {
       width: 100%;
-      background: var(--light_btn_bg);
+      background: var(--btn_bg);
       display: flex;
       overflow-x: auto;
       min-height: 25px;
@@ -52,10 +52,10 @@
         align-items: center;
         justify-content: space-between;
         // background-color: rgb(231, 219, 219);
-        background-color: var(--light_item_color);
+        background-color: var(--item_color);
         padding: 5px;
-        border-right: 1px solid var(--light_form_border);
-        border-bottom: 1px solid var(--light_form_border);
+        border-right: 1px solid var(--form_border);
+        border-bottom: 1px solid var(--form_border);
         cursor: pointer;
         max-width: 150px;
         min-width: 150px;
@@ -69,23 +69,23 @@
         }
 
         &:hover {
-          background-color: var(--light_item_hover);
+          background-color: var(--item_hover);
         }
       }
 
       .tabActive {
-        background-color: var(--light_item_hover) !important;
+        background-color: var(--item_hover) !important;
         border-bottom: none !important;
       }
     }
     .tab::-webkit-scrollbar {
       width: 5px;
       height: 5px !important;
-      background-color: var(--light_bg_color);
+      background-color: var(--bg_color);
       display: block !important; /* for Chrome, Safari, and Opera */
     }
     .tab::-webkit-scrollbar-thumb {
-      background: var(--light_form_border);
+      background: var(--form_border);
     }
 
     .editorBottomSection {
@@ -103,11 +103,11 @@
       li {
         padding: 5px 15px 5px 10px;
         cursor: pointer;
-        border-bottom: 1px solid var(--light_form_border);
+        border-bottom: 1px solid var(--form_border);
         font-size: 14px;
 
         &:hover {
-          background-color: var(--light_item_hover);
+          background-color: var(--item_hover);
         }
       }
     }

@@ -4,8 +4,8 @@
   align-items: center;
   font-size: 14px;
   // color: #888;
-  -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_light_1);
-  box-shadow: 2px 4px 10px 1px var(--shadow_light_2);
+  -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_1);
+  box-shadow: 2px 4px 10px 1px var(--shadow_2);
   margin: 10px;
 
   .wrapper {
@@ -18,7 +18,7 @@
     .search {
       display: flex;
       align-items: center;
-      border: 0.5px solid var(--light_form_border);
+      border: 0.5px solid var(--form_border);
       padding: 3px;
 
       input {
@@ -34,7 +34,7 @@
     }
     .border-right {
       padding-right: 10px;
-      border-right: 2px solid var(--light_btn_bg);
+      border-right: 2px solid var(--btn_bg);
     }
   }
 }

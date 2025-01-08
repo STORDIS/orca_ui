@@ -22,6 +22,8 @@ import "./home.scss";
 import { getIsStaff } from "../../utils/common";
 import useStorePointer from "../../utils/pointerStore";
 
+// ag-theme-alpine-dark
+
 export const getDevicesCommon = () => {
   const instance = interceptor();
   const apiUrl = getAllDevicesURL();

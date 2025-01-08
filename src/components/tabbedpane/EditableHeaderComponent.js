@@ -5,8 +5,6 @@ import { getIsStaff } from "../../utils/common";
 const EditableHeaderComponent = (props) => {
   const { displayName, column } = props;
 
-  console.log(props.column.colDef.showIcon);
-
   return (
     <span>
       {props.column.colDef.showIcon && getIsStaff() ? (

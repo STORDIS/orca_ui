@@ -24,10 +24,15 @@ const Layout = () => {
   const [isAI, setIsAI] = useState(true);
   const location = useLocation();
 
+
   const navigate = useNavigate();
   setNavigate(navigate); // Set the navigate function
 
   useEffect(() => {
+
+    let theme = secureLocalStorage.getItem("theme");
+   console.log(theme);
+
     if (location.pathname?.includes("/ORCAsk")) {
       setIsAI(false);
     } else if (location.pathname?.includes("/error")) {
