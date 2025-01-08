@@ -661,7 +661,7 @@ export const ZTPnDHCP = () => {
                   setIsModalOpen("addNewFileModal");
                   setNewFileName("");
                 }}
-                className="ml-5"
+                className="ml-5 btnColor"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -762,7 +762,7 @@ export const ZTPnDHCP = () => {
               {!file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
               !file?.filename?.includes("_template") ? (
                 <button
-                  className=""
+                  className="btnColor"
                   onClick={() => save(file)}
                   disabled={file.status === "saved" || !file?.status}
                 >
