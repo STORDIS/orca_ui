@@ -155,6 +155,8 @@ const Navbar = () => {
       secureLocalStorage.setItem("theme", "light");
       setTheme("light");
     }
+
+    window.location.reload();
   };
 
   const CustomToolTip = styled(({ className, ...props }) => (

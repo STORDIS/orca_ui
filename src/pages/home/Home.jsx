@@ -21,6 +21,7 @@ import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
 import { getIsStaff } from "../../utils/common";
 import useStorePointer from "../../utils/pointerStore";
+import secureLocalStorage from "react-secure-storage";
 
 // ag-theme-alpine-dark
 
@@ -59,6 +60,14 @@ export const Home = () => {
   );
 
   const [heightDeviceTable, setHeightDeviceTable] = useState(250);
+
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
   useEffect(() => {
     getDevices();
@@ -191,7 +200,7 @@ export const Home = () => {
           ref={deviceTableRef}
           onMouseMove={handleResizeDeviceTable}
         >
-          <div style={gridStyleDataTable} className="ag-theme-alpine">
+          <div style={gridStyleDataTable} className={theme}>
             <AgGridReact
               rowData={dataTable}
               columnDefs={deviceUserColumns("home")}

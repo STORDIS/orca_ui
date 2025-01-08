@@ -1,28 +1,27 @@
 :root {
+  --text_color: rgb(0, 0, 0);
+  --bg_color: rgb(255, 255, 255);
+  --form_border: rgb(167, 167, 167);
   --shadow_1: rgba(0, 0, 0, 0.47);
   --shadow_2: rgba(201, 201, 201, 0.47);
-
   --title: rgb(128, 128, 128);
+  --backdrop: rgba(0, 0, 0, 0.5);
 
-  --btn_color: rgba(0, 0, 0, 1);
   --btn_bg: rgba(211, 211, 211, 1);
+  --btn_color: rgba(0, 0, 0, 1);
+  --btn_border: rgba(0, 0, 0, 1);
 
   --btn_disabled_bg: rgb(219, 219, 219, 1);
   --btn_disabled_border: rgb(219, 219, 219);
   --btn_disabled_color: rgba(164, 163, 163, 1);
 
-  --form_border: rgb(167, 167, 167);
-
   --item_color: rgb(255, 255, 255);
   --item_hover: rgb(245, 239, 239);
-
-  --backdrop: rgba(0, 0, 0, 0.5);
-
-  --text_color: rgb(0, 0, 0);
-  --bg_color: rgb(255, 255, 255);
 }
 
 body {
+  background-color: rgb(1, 4, 9);
+  background-color: rgb(22, 27, 34);
   background-color: var(--bg_color);
   color: var(--text_color);
 }
@@ -40,7 +39,7 @@ body {
 
 .btnColor {
   border-radius: 4px !important;
-  border: 1px solid var(--btn_color) !important;
+  border: 1px solid var(--btn_border) !important;
   background-color: var(--btn_bg) !important;
   color: var(--btn_color);
   cursor: pointer;
@@ -64,7 +63,7 @@ body {
 .btnStyle {
   padding: 6px 12px;
   border-radius: 4px;
-  border: 1px solid var(--btn_color);
+  border: 1px solid var(--btn_border);
   background-color: var(--btn_bg) !important;
   color: var(--btn_color);
   cursor: pointer;

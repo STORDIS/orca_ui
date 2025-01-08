@@ -24,14 +24,33 @@ const Layout = () => {
   const [isAI, setIsAI] = useState(true);
   const location = useLocation();
 
-
   const navigate = useNavigate();
   setNavigate(navigate); // Set the navigate function
 
   useEffect(() => {
-
     let theme = secureLocalStorage.getItem("theme");
-   console.log(theme);
+
+    const root = document.documentElement;
+
+    if (theme === "dark") {
+      root.style.setProperty("--bg_color", "rgb(13, 17, 23)");
+      root.style.setProperty("--text_color", "rgb(255, 255, 255)");
+      root.style.setProperty("--form_border", "rgba(255, 255, 255, 0.5)");
+      root.style.setProperty("--backdrop", "rgba(13, 17, 23, 0.75)");
+
+      root.style.setProperty("--btn_bg", "rgb(1, 4, 9)");
+      root.style.setProperty("--btn_color", "rgb(255, 255, 255)");
+      root.style.setProperty("--btn_border", "rgba(255, 255, 255, 0.5)");
+
+      root.style.setProperty("--btn_disabled_bg", "rgb(22, 27, 34)");
+      root.style.setProperty("--btn_disabled_border", "rgb(1, 4, 9)");
+      root.style.setProperty("--btn_disabled_color", "rgba(255, 255, 255, 0.3)");
+      
+      root.style.setProperty("--item_color", "rgb(22, 27, 34)");
+      root.style.setProperty("--item_hover", "rgb(1, 4, 9)");
+
+
+    }
 
     if (location.pathname?.includes("/ORCAsk")) {
       setIsAI(false);

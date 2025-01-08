@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import Editor from "@monaco-editor/react";
 import "./ztpndhcp.scss";
 import { FaRegCircleXmark } from "react-icons/fa6";
@@ -19,6 +19,7 @@ import { styled } from "@mui/material/styles";
 
 import Modal from "../../components/modal/Modal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import secureLocalStorage from "react-secure-storage";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
@@ -48,6 +49,15 @@ export const ZTPnDHCP = () => {
 
   const inputRef = useRef(null);
   const inputRefNewFile = useRef(null);
+
+  
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "vs-dark";
+    } else {
+      return "light";
+    }
+  }, []);
 
   useEffect(() => {
     handleResize();
@@ -742,7 +752,7 @@ export const ZTPnDHCP = () => {
                   value={file.content}
                   defaultLanguage={"json"}
                   defaultValue={"Select a file"}
-                  theme="light" // light / vs-dark
+                  theme={theme} // light / vs-dark
                   onChange={(e) => editorChange(e, file)}
                 />
               </div>
