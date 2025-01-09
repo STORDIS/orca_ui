@@ -569,6 +569,7 @@ export const ZTPnDHCP = () => {
           <div className="fileSelection">
             <div className="fileHeader">File list</div>
             <div
+            className="fileListContainer"
               style={{
                 height: layout.height,
                 overflowY: "auto",
@@ -727,7 +728,7 @@ export const ZTPnDHCP = () => {
                   value={file.content}
                   style={{
                     height: "100%",
-                    width: "98%",
+                    width: "97%",
                     resize: "vertical",
                     minHeight: "60vh",
                     border: "none",

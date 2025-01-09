@@ -21,6 +21,7 @@ import useStoreConfig from "../../../utils/configStore";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 
 import { syncFeatureCommon } from "../Deviceinfo";
+import secureLocalStorage from "react-secure-storage";
 
 export const getPortChannelDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -44,6 +45,13 @@ export const getPortChannelDataCommon = (selectedDeviceIp) => {
 
 const PortChDataTable = (props) => {
     const gridRef = useRef();
+    const theme = useMemo(() => {
+        if (secureLocalStorage.getItem("theme") === "dark") {
+          return "ag-theme-alpine-dark";
+        } else {
+          return "ag-theme-alpine";
+        }
+      }, []);
 
     const [dataTable, setDataTable] = useState([]);
     const [changes, setChanges] = useState([]);
@@ -335,7 +343,7 @@ const PortChDataTable = (props) => {
                     </div>
                 </div>
 
-                <div style={gridStyle} className="ag-theme-alpine ">
+                <div style={gridStyle} className={theme}>
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}

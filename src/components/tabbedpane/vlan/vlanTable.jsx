@@ -15,6 +15,7 @@ import useStoreLogs from "../../../utils/store";
 import { isValidIPv4WithCIDR } from "../../../utils/common";
 
 import { syncFeatureCommon } from "../Deviceinfo";
+import secureLocalStorage from "react-secure-storage";
 
 // Function to get vlan names
 export const getVlanDataCommon = (selectedDeviceIp) => {
@@ -42,6 +43,13 @@ export const getVlanDataCommon = (selectedDeviceIp) => {
 
 const VlanTable = (props) => {
   const instance = interceptor();
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
   const gridRef = useRef();
   const [dataTable, setDataTable] = useState([]);
@@ -339,7 +347,7 @@ const VlanTable = (props) => {
           </div>
         </div>
 
-        <div style={gridStyle} className="ag-theme-alpine ">
+        <div style={gridStyle} className={theme}>
           <AgGridReact
             ref={gridRef}
             rowData={dataTable}

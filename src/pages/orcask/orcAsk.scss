@@ -28,6 +28,7 @@
           width: 25px;
           font-size: 25px;
           background-color: var(--item_hover);
+          border: 1px solid var(--form_border);
           border-radius: 25px;
           padding: 10px;
         }
@@ -39,6 +40,7 @@
           padding: 12px 15px 12px 15px;
           margin-left: 10px;
           width: 80%;
+          border: 1px solid var(--form_border);
 
           .selectView {
             width: 100%;
@@ -133,7 +135,15 @@
         }
       }
     }
-
+    .chatSection::-webkit-scrollbar {
+      width: 5px;
+      height: 5px !important;
+      background-color: var(--bg_color);
+      display: block !important;
+    }
+    .chatSection::-webkit-scrollbar-thumb {
+      background: var(--form_border);
+    }
     .promptArea {
       height: 60px;
       margin-top: 10px;
@@ -152,7 +162,21 @@
         overflow-y: auto;
         border: none;
         border-right: 1px solid var(--form_border) !important;
+        background-color: var(--input_bg);
+        color: var(--input_color);
       }
+
+      textarea::-webkit-scrollbar {
+        width: 5px;
+        height: 5px !important;
+        background-color: var(--bg_color);
+        display: block !important;
+      }
+      textarea::-webkit-scrollbar-thumb {
+        background: var(--form_border);
+      }
+
+      
       textarea:focus {
         outline: none;
       }
@@ -191,6 +215,15 @@
         padding: 10px;
         margin-bottom: 10px;
       }
+    }
+    .tabBody::-webkit-scrollbar {
+      width: 5px;
+      height: 5px !important;
+      background-color: var(--bg_color);
+      display: block !important;
+    }
+    .tabBody::-webkit-scrollbar-thumb {
+      background: var(--form_border);
     }
 
     .deleteIcon {

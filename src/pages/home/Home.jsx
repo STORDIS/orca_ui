@@ -23,7 +23,6 @@ import { getIsStaff } from "../../utils/common";
 import useStorePointer from "../../utils/pointerStore";
 import secureLocalStorage from "react-secure-storage";
 
-// ag-theme-alpine-dark
 
 export const getDevicesCommon = () => {
   const instance = interceptor();

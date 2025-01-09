@@ -9,6 +9,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  backdrop-filter: blur(5px);
 
   .modalInner {
     background-color: var(--bg_color);
@@ -36,7 +37,7 @@
 
     .modalBody {
       overflow-y: auto;
-      max-height: 60vh;
+      max-height: 62vh;
 
       table {
         width: 100%;
@@ -59,7 +60,15 @@
         }
       }
     }
-
+    .modalBody::-webkit-scrollbar {
+      width: 5px;
+      height: 5px !important;
+      background-color: var(--bg_color);
+      display: block !important;
+    }
+    .modalBody::-webkit-scrollbar-thumb {
+      background: var(--form_border);
+    }
     .modalFooter {
       display: flex;
       justify-content: flex-start;

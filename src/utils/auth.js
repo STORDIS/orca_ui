@@ -15,7 +15,10 @@ export const AuthProvider = ({ children }) => {
       .post(postLogin(), credential)
       .then((response) => {
         secureLocalStorage.setItem("token", response.data.token);
-        secureLocalStorage.setItem("theme", "light");
+
+        if (secureLocalStorage.getItem("theme") === null) {
+          secureLocalStorage.setItem("theme", "light");
+        }
 
         setAccessToken(credential);
         getUser(credential.username, redirectUrl);
@@ -54,7 +57,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setAccessToken(null);
-    secureLocalStorage.clear();
+    secureLocalStorage.removeItem("token");
+    secureLocalStorage.removeItem("user_details");
+    // secureLocalStorage.clear();
     window.location.href = "/login";
   };
 

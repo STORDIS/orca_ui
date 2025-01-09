@@ -14,6 +14,7 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 import Modal from "../../modal/Modal";
 import { syncFeatureCommon } from "../Deviceinfo";
+import secureLocalStorage from "react-secure-storage";
 
 // Function to get interface names
 export const getInterfaceDataCommon = (selectedDeviceIp) => {
@@ -42,6 +43,15 @@ export const getInterfaceDataCommon = (selectedDeviceIp) => {
 };
 
 const InterfaceDataTable = (props) => {
+  
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
+
   const gridRef = useRef();
   const selectedDeviceIp = props.selectedDeviceIp;
   const [dataTable, setDataTable] = useState([]);
@@ -337,7 +347,7 @@ const InterfaceDataTable = (props) => {
         </span>
       </div>
 
-      <div className="ag-theme-alpine " style={gridStyle}>
+      <div className={theme} style={gridStyle}>
         <AgGridReact
           ref={gridRef}
           rowData={dataTable}

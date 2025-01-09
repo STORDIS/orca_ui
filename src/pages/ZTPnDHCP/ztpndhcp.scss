@@ -36,6 +36,16 @@
       width: 100%;
     }
   }
+  .fileListContainer::-webkit-scrollbar {
+    width: 5px;
+    height: 5px !important;
+    background-color: var(--bg_color);
+    display: block !important;
+  }
+  .fileListContainer::-webkit-scrollbar-thumb {
+    background: var(--form_border);
+  }
+
   .editor {
     width: calc(100% - 255px);
     border: 1px solid var(--form_border);
@@ -82,7 +92,7 @@
       width: 5px;
       height: 5px !important;
       background-color: var(--bg_color);
-      display: block !important; /* for Chrome, Safari, and Opera */
+      display: block !important;
     }
     .tab::-webkit-scrollbar-thumb {
       background: var(--form_border);
@@ -91,6 +101,21 @@
     .editorBottomSection {
       padding: 5px;
       text-align: right;
+    }
+
+    textarea {
+      border-right: 1px solid var(--form_border) !important;
+      background-color: var(--text_editor_bg);
+      color: var(--input_color);
+    }
+    textarea::-webkit-scrollbar {
+      width: 5px;
+      height: 5px !important;
+      background-color: var(--bg_color);
+      display: block !important;
+    }
+    textarea::-webkit-scrollbar-thumb {
+      background: var(--form_border);
     }
   }
 

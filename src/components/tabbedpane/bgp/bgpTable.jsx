@@ -14,9 +14,17 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 
 import { syncFeatureCommon } from "../Deviceinfo";
+import secureLocalStorage from "react-secure-storage";
 
 const BGPTable = (props) => {
   const instance = interceptor();
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
   const gridRef = useRef();
   const selectedDeviceIp = props.selectedDeviceIp;
@@ -195,7 +203,7 @@ const BGPTable = (props) => {
         </div>
       </div>
 
-      <div style={gridStyle} className="ag-theme-alpine ">
+      <div style={gridStyle} className={theme}>
         <AgGridReact
           ref={gridRef}
           rowData={dataTable}

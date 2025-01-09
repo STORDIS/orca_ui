@@ -13,6 +13,7 @@ import StpForm from "./stpForm";
 import StpVlanForm from "./stpVlanForm";
 
 import { syncFeatureCommon } from "../Deviceinfo";
+import secureLocalStorage from "react-secure-storage";
 
 export const getStpDataCommon = (selectedDeviceIp) => {
     const instance = interceptor();
@@ -64,7 +65,14 @@ export const deleteStpDataCommon = (selectedDeviceIp, payload, status) => {
 
 const StpDataTable = (props) => {
     const instance = interceptor();
-
+    const theme = useMemo(() => {
+        if (secureLocalStorage.getItem("theme") === "dark") {
+          return "ag-theme-alpine-dark";
+        } else {
+          return "ag-theme-alpine";
+        }
+      }, []);
+    
     const gridRef = useRef();
     const [dataTable, setDataTable] = useState([]);
 
@@ -232,7 +240,7 @@ const StpDataTable = (props) => {
                     </div>
                 </div>
 
-                <div style={gridStyle} className="ag-theme-alpine ">
+                <div style={gridStyle} className={theme}>
                     <AgGridReact
                         ref={gridRef}
                         rowData={dataTable}

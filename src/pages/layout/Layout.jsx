@@ -33,23 +33,31 @@ const Layout = () => {
     const root = document.documentElement;
 
     if (theme === "dark") {
-      root.style.setProperty("--bg_color", "rgb(13, 17, 23)");
-      root.style.setProperty("--text_color", "rgb(255, 255, 255)");
+      root.style.setProperty("--bg_color", "rgba(13, 17, 23, 1)");
+      root.style.setProperty("--text_color", "rgba(255, 255, 255, 0.75)");
+      root.style.setProperty("--title", "rgba(255, 255, 255, 1)");
       root.style.setProperty("--form_border", "rgba(255, 255, 255, 0.5)");
-      root.style.setProperty("--backdrop", "rgba(13, 17, 23, 0.75)");
+      root.style.setProperty("--backdrop", "rgba(255, 255, 255, 0.1)");
 
-      root.style.setProperty("--btn_bg", "rgb(1, 4, 9)");
-      root.style.setProperty("--btn_color", "rgb(255, 255, 255)");
+      root.style.setProperty("--btn_bg", "rgba(1, 4, 9, 1)");
+      root.style.setProperty("--btn_color", "rgba(255, 255, 255, 1)");
       root.style.setProperty("--btn_border", "rgba(255, 255, 255, 0.5)");
 
-      root.style.setProperty("--btn_disabled_bg", "rgb(22, 27, 34)");
-      root.style.setProperty("--btn_disabled_border", "rgb(1, 4, 9)");
-      root.style.setProperty("--btn_disabled_color", "rgba(255, 255, 255, 0.3)");
-      
-      root.style.setProperty("--item_color", "rgb(22, 27, 34)");
-      root.style.setProperty("--item_hover", "rgb(1, 4, 9)");
+      root.style.setProperty("--btn_disabled_bg", "rgba(22, 27, 34, 1)");
+      root.style.setProperty("--btn_disabled_border", "rgba(1, 4, 9, 1)");
+      root.style.setProperty(
+        "--btn_disabled_color",
+        "rgba(255, 255, 255, 0.3)"
+      );
 
+      root.style.setProperty("--item_color", "rgba(22, 27, 34, 1)");
+      root.style.setProperty("--item_hover", "rgba(255, 255, 255, 0.25)");
 
+      root.style.setProperty("--input_bg", "rgba(1, 4, 9, 1)");
+      root.style.setProperty("--input_color", "rgba(255, 255, 255, 1)");
+      root.style.setProperty("--text_editor_bg", "rgba(30, 30, 30, 1)");
+
+      root.style.setProperty("--card_bg", "rgba(1, 4, 9, 1)");
     }
 
     if (location.pathname?.includes("/ORCAsk")) {

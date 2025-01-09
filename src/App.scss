@@ -1,29 +1,61 @@
 :root {
-  --text_color: rgb(0, 0, 0);
-  --bg_color: rgb(255, 255, 255);
-  --form_border: rgb(167, 167, 167);
+  --text_color: rgba(0, 0, 0, 1);
+  --bg_color: rgba(255, 255, 255, 1);
+  --form_border: rgba(167, 167, 167, 1);
   --shadow_1: rgba(0, 0, 0, 0.47);
   --shadow_2: rgba(201, 201, 201, 0.47);
-  --title: rgb(128, 128, 128);
+  --title: rgba(128, 128, 128, 1);
   --backdrop: rgba(0, 0, 0, 0.5);
 
   --btn_bg: rgba(211, 211, 211, 1);
   --btn_color: rgba(0, 0, 0, 1);
   --btn_border: rgba(0, 0, 0, 1);
 
-  --btn_disabled_bg: rgb(219, 219, 219, 1);
-  --btn_disabled_border: rgb(219, 219, 219);
+  --btn_disabled_bg: rgba(219, 219, 219, 1);
+  --btn_disabled_border: rgba(219, 219, 219, 1);
   --btn_disabled_color: rgba(164, 163, 163, 1);
 
-  --item_color: rgb(255, 255, 255);
-  --item_hover: rgb(245, 239, 239);
+  --item_color: rgba(255, 255, 255, 1);
+  --item_hover: rgba(245, 239, 239, 1);
+
+  --input_bg: rgba(255, 255, 255, 1);
+  --input_color: rgba(0, 0, 0, 1);
+
+  --text_editor_bg: rgba(255, 255, 255, 1);
+
+  --card_bg: rgba(255, 255, 255, 1);
 }
 
 body {
-  background-color: rgb(1, 4, 9);
+  background-color: rgb(30, 30, 30);
   background-color: rgb(22, 27, 34);
   background-color: var(--bg_color);
   color: var(--text_color);
+}
+
+select {
+  background-color: var(--input_bg);
+  color: var(--input_color);
+}
+input {
+  background-color: var(--input_bg);
+  color: var(--input_color);
+}
+input:focus {
+  outline: none;
+  border: 1px solid var(--btn_border);
+}
+input:-webkit-autofill {
+  background-color: var(--input_bg) !important;
+  color: var(--input_color) !important;
+}
+input:-internal-autofill-selected {
+  background-color: var(--input_bg) !important;
+  color: var(--input_color) !important;
+}
+input:-webkit-autofill[type="password"] {
+  background-color: var(--input_bg) !important;
+  color: var(--input_color) !important;
 }
 
 .listContainer {
@@ -60,12 +92,17 @@ body {
   }
 }
 
+.tabStyle {
+  background-color: var(--bg_color) !important;
+  color: var(--text_color) !important;
+}
+
 .btnStyle {
   padding: 6px 12px;
   border-radius: 4px;
   border: 1px solid var(--btn_border);
   background-color: var(--btn_bg) !important;
-  color: var(--btn_color);
+  color: var(--btn_color) !important;
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 
