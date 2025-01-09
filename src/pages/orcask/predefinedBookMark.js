@@ -6,9 +6,9 @@ export const predefinedBookMarks = [
     prompt: "get device details",
   },
   {
-    prompt: "get vlans for ip \t\t",
+    prompt: "get vlans for ip ",
   },
   {
-    prompt: "get port channels for ip \t\t",
+    prompt: "get port channels for ip ",
   },
 ];

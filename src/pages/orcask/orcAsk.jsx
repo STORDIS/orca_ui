@@ -125,15 +125,6 @@ export const AskOrca = () => {
               </Tooltip>
             </div>
           ))}
-
-          {/* <div className="bookmarkTitle">
-                        <FaBookmark />
-                        <div className="ml-10">some text which is heading</div>
-                    </div>
-                    <div className="bookmarkTitle">
-                        <FaBookmark />
-                        <div className="ml-10">some text which is heading</div>
-                    </div> */}
         </div>
 
         <div className="heading">
@@ -142,20 +133,28 @@ export const AskOrca = () => {
           </span>
           Predefined Bookmark
         </div>
-        <div className="tabBody">
-          {predefinedBookMarks.map((item, index) => (
-            <div className="bookmarkTitle">
-              <span
-                style={{ cursor: "pointer" }}
-                onClick={() => copyBookmark(item.prompt)}
-              >
-                <FaRegCopy />
-              </span>
-              <div className="ml-10" style={{ whiteSpace: "pre" }}>
-                {item.prompt}
+        <div
+          style={{
+            overflowX: "hidden",
+            overflowY: "auto",
+            height: "40%",
+          }}
+        >
+          <div className="predefinedTabBody">
+            {predefinedBookMarks.map((item, index) => (
+              <div className="predefinedBookMark">
+                <span
+                  style={{ cursor: "pointer" }}
+                  onClick={() => copyBookmark(item.prompt)}
+                >
+                  <FaRegCopy />
+                </span>
+                <span className="ml-10" style={{ whiteSpace: "pre" }}>
+                  {item.prompt}
+                </span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </div>
