@@ -20,7 +20,7 @@ const GenericLogModal = ({ logData, onClose, onSubmit, title, id }) => {
     <div className="modalContainer" onClick={onClose} id={id}>
       <div className="modalInner" onClick={(e) => e.stopPropagation()}>
         <h4 className="modalHeader">
-          {title}
+          <span className="listTitle">{title}</span>
 
           <FaSquareXmark className="closeBtn danger" onClick={onClose} />
         </h4>

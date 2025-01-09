@@ -21,6 +21,7 @@ import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
 import { getIsStaff } from "../../utils/common";
 import useStorePointer from "../../utils/pointerStore";
+import secureLocalStorage from "react-secure-storage";
 
 export const getDevicesCommon = () => {
   const instance = interceptor();
@@ -39,6 +40,14 @@ export const getDevicesCommon = () => {
 
 export const Home = () => {
   const instance = interceptor();
+
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
   const deviceTableRef = useRef(null);
 
@@ -189,7 +198,7 @@ export const Home = () => {
           ref={deviceTableRef}
           onMouseMove={handleResizeDeviceTable}
         >
-          <div style={gridStyleDataTable} className="ag-theme-alpine">
+          <div style={gridStyleDataTable} className={theme}>
             <AgGridReact
               rowData={dataTable}
               columnDefs={deviceUserColumns("home")}

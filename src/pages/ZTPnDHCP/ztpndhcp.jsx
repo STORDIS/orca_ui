@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import Editor from "@monaco-editor/react";
 import "./ztpndhcp.scss";
 import { FaRegCircleXmark } from "react-icons/fa6";
@@ -19,6 +19,7 @@ import { styled } from "@mui/material/styles";
 
 import Modal from "../../components/modal/Modal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import secureLocalStorage from "react-secure-storage";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
@@ -48,6 +49,15 @@ export const ZTPnDHCP = () => {
 
   const inputRef = useRef(null);
   const inputRefNewFile = useRef(null);
+
+  
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "vs-dark";
+    } else {
+      return "light";
+    }
+  }, []);
 
   useEffect(() => {
     handleResize();
@@ -559,6 +569,7 @@ export const ZTPnDHCP = () => {
           <div className="fileSelection">
             <div className="fileHeader">File list</div>
             <div
+            className="fileListContainer"
               style={{
                 height: layout.height,
                 overflowY: "auto",
@@ -651,7 +662,7 @@ export const ZTPnDHCP = () => {
                   setIsModalOpen("addNewFileModal");
                   setNewFileName("");
                 }}
-                className="ml-5"
+                className="ml-5 btnColor"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -717,7 +728,7 @@ export const ZTPnDHCP = () => {
                   value={file.content}
                   style={{
                     height: "100%",
-                    width: "98%",
+                    width: "97%",
                     resize: "vertical",
                     minHeight: "60vh",
                     border: "none",
@@ -742,7 +753,7 @@ export const ZTPnDHCP = () => {
                   value={file.content}
                   defaultLanguage={"json"}
                   defaultValue={"Select a file"}
-                  theme="light" // light / vs-dark
+                  theme={theme} // light / vs-dark
                   onChange={(e) => editorChange(e, file)}
                 />
               </div>
@@ -752,7 +763,7 @@ export const ZTPnDHCP = () => {
               {!file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
               !file?.filename?.includes("_template") ? (
                 <button
-                  className=""
+                  className="btnColor"
                   onClick={() => save(file)}
                   disabled={file.status === "saved" || !file?.status}
                 >

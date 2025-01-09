@@ -4,9 +4,12 @@ import { getIsStaff } from "../../utils/common";
 
 const EditableHeaderComponent = (props) => {
   const { displayName, column } = props;
+
   return (
     <span>
-      <FaEdit style={{ marginRight: "5px" }} />
+      {props.column.colDef.showIcon && getIsStaff() ? (
+        <FaEdit style={{ marginRight: "5px" }} />
+      ) : null}
       {displayName}
     </span>
   );

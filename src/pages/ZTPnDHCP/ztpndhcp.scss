@@ -3,9 +3,10 @@
   width: 100%;
 
   .fileSelection {
-    background-color: #c0c0c0 !important;
+    // background-color: rgb(192, 192, 192) !important;
+    background-color: var(--btn_bg) !important;
     width: 250px;
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid var(--form_border);
     display: flex;
     flex-direction: column;
 
@@ -18,14 +19,14 @@
       margin: 5px;
       padding: 5px;
       cursor: pointer;
-      background-color: white;
+      background-color: var(--item_color);
 
       &:hover {
-        background-color: #f5efef;
+        background-color: var(--item_hover);
       }
     }
     .active {
-      background-color: #e7dbdb !important;
+      background-color: var(--item_hover) !important;
     }
 
     .fileBottomSection {
@@ -35,13 +36,23 @@
       width: 100%;
     }
   }
+  .fileListContainer::-webkit-scrollbar {
+    // width: 5px;
+    // height: 5px !important;
+    background-color: var(--scrollbar_color);
+    display: block !important;
+  }
+  .fileListContainer::-webkit-scrollbar-thumb {
+    background: var(--form_border);
+  }
+ 
   .editor {
     width: calc(100% - 255px);
-    border: 1px solid rgb(0, 0, 0);
+    border: 1px solid var(--form_border);
 
     .tab {
       width: 100%;
-      background: #c0c0c0;
+      background: var(--btn_bg);
       display: flex;
       overflow-x: auto;
       min-height: 25px;
@@ -50,10 +61,11 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background-color: #e7dbdb;
+        // background-color: rgb(231, 219, 219);
+        background-color: var(--item_hover);
         padding: 5px;
-        border-right: 1px solid rgb(0, 0, 0);
-        border-bottom: 1px solid rgb(0, 0, 0);
+        border-right: 1px solid var(--form_border);
+        border-bottom: 1px solid var(--form_border);
         cursor: pointer;
         max-width: 150px;
         min-width: 150px;
@@ -67,28 +79,43 @@
         }
 
         &:hover {
-          background-color: rgba(255, 255, 255, 0.75);
+          background-color: var(--item_hover);
         }
       }
 
       .tabActive {
-        background-color: white !important;
+        background-color: var(--tab_active_bg) !important;
         border-bottom: none !important;
       }
     }
     .tab::-webkit-scrollbar {
       width: 5px;
       height: 5px !important;
-      background-color: #ffffff;
-      display: block !important; /* for Chrome, Safari, and Opera */
+      background-color: var(--scrollbar_color);
+      display: block !important;
     }
     .tab::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.5);
+      background: var(--form_border);
     }
 
     .editorBottomSection {
       padding: 5px;
       text-align: right;
+    }
+
+    textarea {
+      border-right: 1px solid var(--form_border) !important;
+      background-color: var(--text_editor_bg);
+      color: var(--input_color);
+    }
+    textarea::-webkit-scrollbar {
+      // width: 5px;
+      // height: 5px !important;
+      background-color: var(--scrollbar_color);
+      display: block !important;
+    }
+    textarea::-webkit-scrollbar-thumb {
+      background: var(--form_border);
     }
   }
 
@@ -101,11 +128,11 @@
       li {
         padding: 5px 15px 5px 10px;
         cursor: pointer;
-        border-bottom: 1px solid black;
+        border-bottom: 1px solid var(--form_border);
         font-size: 14px;
 
         &:hover {
-          background-color: #f5efef;
+          background-color: var(--item_hover);
         }
       }
     }

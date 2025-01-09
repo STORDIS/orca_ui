@@ -19,6 +19,7 @@ import useStoreConfig from "../../utils/configStore";
 import useStorePointer from "../../utils/pointerStore";
 
 import Modal from "../../components/modal/Modal";
+import secureLocalStorage from "react-secure-storage";
 
 export const Home = () => {
   const imageUrlRef = useRef(null);
@@ -28,6 +29,14 @@ export const Home = () => {
   const discoverAlsoRef = useRef(null);
 
   const instance = interceptor();
+  
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
@@ -269,8 +278,8 @@ export const Home = () => {
         <div className="listTitle" id="sonicDeviceListHeader">
           Select Devices for SONiC installation
         </div>
-        <div className="" id="sonicDeviceTable">
-          <div style={gridStyle} className="ag-theme-alpine">
+        <div className="mt-10" id="sonicDeviceTable">
+          <div style={gridStyle} className={theme}>
             <AgGridReact
               ref={gridRef}
               rowData={dataTable}

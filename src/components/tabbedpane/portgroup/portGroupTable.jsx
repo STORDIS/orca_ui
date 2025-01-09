@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
-import "../tabbedPaneTable.scss";
 import { portGroupColumns, defaultColDef } from "../datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -10,9 +9,17 @@ import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
 
 import { syncFeatureCommon } from "../Deviceinfo";
+import secureLocalStorage from "react-secure-storage";
 
 const PortGroupTable = (props) => {
   const gridRef = useRef();
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
   const [changes, setChanges] = useState([]);
   const [dataTable, setDataTable] = useState([]);
   const [configStatus, setConfigStatus] = useState("");
@@ -160,7 +167,7 @@ const PortGroupTable = (props) => {
         <span className="configStatus">{configStatus}</span>
       </div>
 
-      <div style={gridStyle} className="ag-theme-alpine ">
+      <div style={gridStyle} className={theme}> 
         <AgGridReact
           ref={gridRef}
           rowData={dataTable}

@@ -34,6 +34,7 @@ export const Login = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        
         if (secureLocalStorage.getItem("token")) {
             navigate("/home");
         }

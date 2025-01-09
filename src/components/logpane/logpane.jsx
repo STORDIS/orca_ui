@@ -27,6 +27,7 @@ import {
   defaultColDef,
   dhcpColumn,
 } from "../../components/tabbedpane/datatablesourse";
+import secureLocalStorage from "react-secure-storage";
 
 export const getLogsCommon = () => {
   const instance = interceptor();
@@ -45,6 +46,14 @@ export const getLogsCommon = () => {
 
 export const LogViewer = () => {
   const logPannelDivRef = useRef(null);
+
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
   const [logEntries, setLogEntries] = useState([]);
   const [logEntriesToDelete, setLogEntriesToDelete] = useState({
@@ -502,7 +511,7 @@ export const LogViewer = () => {
             ref={dhcpTableRef}
             onMouseMove={handleResizeDhcpTable}
           >
-            <div style={gridStyleDhcpTable} className="ag-theme-alpine">
+            <div style={gridStyleDhcpTable} className={theme}>
               <AgGridReact
                 ref={gridRefDhcpTable}
                 rowData={dhcpTask?.response?.sonic_devices}
@@ -572,7 +581,7 @@ export const LogViewer = () => {
             </button>
           </div>
         </div>
-        <div style={gridStyle} className="ag-theme-alpine ">
+        <div style={gridStyle} className={theme}>
           <AgGridReact
             ref={gridRef}
             rowData={logEntries}
