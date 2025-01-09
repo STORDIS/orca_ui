@@ -57,8 +57,6 @@ const TabbedPane = () => {
     setUpdateLog(true);
   };
 
-
-
   const onUndo = (event) => {
     setUndoChanges(true);
   };
@@ -119,14 +117,14 @@ const TabbedPane = () => {
             variant="scrollable"
             scrollButtons="auto"
           >
-            <Tab label="Device Info" />
-            <Tab label="Interfaces" />
-            <Tab label="PortChannels" />
-            <Tab label="MCLAGs" />
-            <Tab label="BGP" />
-            <Tab label="Port Groups" />
-            <Tab label="VLANs" />
-            <Tab label="STP" />
+            <Tab className="tabStyle" label="Device Info" />
+            <Tab className="tabStyle" label="Interfaces" />
+            <Tab className="tabStyle" label="PortChannels" />
+            <Tab className="tabStyle" label="MCLAGs" />
+            <Tab className="tabStyle" label="BGP" />
+            <Tab className="tabStyle" label="Port Groups" />
+            <Tab className="tabStyle" label="VLANs" />
+            <Tab className="tabStyle" label="STP" />
           </Tabs>
         </Box>
         {tabvalue === 0 && (
@@ -142,7 +140,7 @@ const TabbedPane = () => {
               selectedDeviceIp={deviceIP}
               height={height}
               reset={() => setUndoChanges(false)}
-            //   orcaState={orcaState}
+              //   orcaState={orcaState}
             />
           </div>
         )}

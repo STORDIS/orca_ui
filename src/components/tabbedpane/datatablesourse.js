@@ -11,6 +11,130 @@ export const defaultColDef = {
   singleClickEdit: "true",
 };
 
+export const getCellEditorParamsDeviceImageList = (params) => {
+  if (params?.data?.image_list?.length > 0) {
+    return {
+      values: params?.data?.image_list,
+    };
+  } else {
+    return {
+      values: [params?.data?.img_name],
+    };
+  }
+};
+
+export const deviceUserColumns = (showIn) => {
+  let dataColumn = [
+    {
+      field: "mgt_ip",
+      headerName: "Management IP",
+      width: 130,
+      sortable: true,
+    },
+    {
+      field: "img_name",
+      headerName: "Image Name",
+      width: 130,
+      sortable: true,
+      editable: getIsStaff() && showIn === "home",
+      showIcon: getIsStaff(),
+
+      headerComponent: EditableHeaderComponent,
+      cellEditor: "agSelectCellEditor",
+      cellEditorParams: getCellEditorParamsDeviceImageList,
+      cellRenderer: (params) => {
+        return <span>{params.value}</span>;
+      },
+    },
+    {
+      field: "mgt_intf",
+      headerName: "Management Int",
+      width: 130,
+      sortable: true,
+    },
+    {
+      field: "hwsku",
+      headerName: "HWSKU",
+      type: "number",
+      width: 130,
+      sortable: true,
+    },
+    {
+      field: "mac",
+      headerName: "MAC",
+      width: 130,
+      sortable: true,
+    },
+    {
+      field: "platform",
+      headerName: "PLATFORM",
+      width: 130,
+      sortable: true,
+    },
+    {
+      field: "system_status",
+      headerName: "Sonic Status",
+      width: 130,
+      sortable: true,
+    },
+
+    { field: "type", headerName: "TYPE", width: 130, sortable: true },
+  ];
+
+  if (showIn === "home" || showIn === "all") {
+    dataColumn.push({
+      field: "action",
+      headerName: "Action",
+      width: 200,
+      cellRenderer: (params) => {
+        return (
+          <>
+            <Link to={`/devices/${params?.data?.mgt_ip}`}>
+              <button id="ipDetailsBtn" className="btnStyle">
+                Details
+              </button>
+            </Link>
+            <button
+              id="ipRemoveBtn"
+              disabled={!getIsStaff()}
+              className="ml-10 btnStyle"
+            >
+              Remove
+            </button>
+          </>
+        );
+      },
+    });
+  }
+
+  if (showIn === "info" || showIn === "all") {
+    dataColumn.unshift({
+      field: "sync_in",
+      headerName: "Rediscovery Frequency",
+      width: 200,
+      editable: getIsStaff(),
+    });
+  }
+  if (showIn === "info" || showIn === "all") {
+    dataColumn.push({
+      field: "orca_status",
+      headerName: "Device Status in Orca",
+      width: 130,
+      sortable: true,
+    });
+  }
+  if (showIn === "setup" || showIn === "all") {
+    dataColumn.unshift({
+      headerCheckboxSelection: getIsStaff() && showIn === "setup",
+      checkboxSelection: getIsStaff() && showIn === "setup",
+      width: 50,
+      sortable: true,
+      headerTooltip: "", // add header tooltip here
+    });
+  }
+  return dataColumn;
+};
+
 export const getCellEditorParamsInterfaceSpeed = (params) => {
   let result = [];
 
@@ -45,6 +169,7 @@ export const getCellEditorParamsInterfaceAdvSpeed = (params) => {
     values: result,
   };
 };
+
 export const getCellEditorParamsInterfaceBreakout = (params, originalData) => {
   let temp = originalData.find((item) => item.name === params.data.name);
 
@@ -133,6 +258,8 @@ export const interfaceColumns = (originalData) => [
     cellEditor: "agCheckboxCellEditor",
     editable: getIsStaff(),
     suppressKeyboardEvent: (params) => params?.event?.key === " ",
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "test tool tip", // add header tooltip here
   },
@@ -142,6 +269,8 @@ export const interfaceColumns = (originalData) => [
     type: "number",
     width: 130,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -155,6 +284,8 @@ export const interfaceColumns = (originalData) => [
     cellEditorParams: {
       values: ["FEC_RS", "FEC_FC", "FEC_DISABLED", "FEC_AUTO"],
     },
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -166,6 +297,8 @@ export const interfaceColumns = (originalData) => [
     editable: getIsStaff(),
     cellEditor: "agSelectCellEditor",
     cellEditorParams: getCellEditorParamsInterfaceSpeed,
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -179,6 +312,8 @@ export const interfaceColumns = (originalData) => [
     cellEditorParams: (params) => {
       return getCellEditorParamsInterfaceBreakout(params, originalData);
     },
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     cellRenderer: (params) => {
       if (params.data.breakout_supported) {
@@ -222,6 +357,8 @@ export const interfaceColumns = (originalData) => [
     headerName: "Description",
     width: 130,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -230,7 +367,9 @@ export const interfaceColumns = (originalData) => [
     headerName: "IP Address",
     width: 130,
     sortable: true,
-    editable: getIsStaff(),
+    editable: false,
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
     cellRenderer: (params) => {
@@ -315,6 +454,8 @@ export const interfaceColumns = (originalData) => [
     cellEditorParams: {
       values: ["off", "on"],
     },
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -326,6 +467,8 @@ export const interfaceColumns = (originalData) => [
     editable: getIsStaff(),
     cellEditor: "agSelectCellEditor",
     cellEditorParams: getCellEditorParamsInterfaceAdvSpeed,
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -340,6 +483,396 @@ export const interfaceColumns = (originalData) => [
     cellEditorParams: {
       values: ["off", "on"],
     },
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+];
+
+export const portChannelColumns = [
+  {
+    headerCheckboxSelection: getIsStaff(),
+    checkboxSelection: getIsStaff(),
+    width: 50,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "lag_name",
+    headerName: "Channel Name",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "active",
+    headerName: "Active",
+    cellDataType: "boolean",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "admin_sts",
+    headerName: "Admin Status",
+    width: 150,
+    editable: (params) => {
+      const regex = /Management*/i;
+      if (regex?.test(params?.data?.name) || !getIsStaff()) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    cellEditor: "agSelectCellEditor",
+    cellEditorParams: {
+      values: ["up", "down"],
+    },
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "mtu",
+    headerName: "MTU",
+    type: "number",
+    width: 130,
+    editable: (params) => {
+      const regex = /Management*/i;
+      if (regex?.test(params?.data?.name) || !getIsStaff()) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "name",
+    headerName: "Name",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    width: 130,
+    sortable: true,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "ip_address",
+    headerName: "IP Address",
+    width: 130,
+    sortable: true,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "fallback_operational",
+    headerName: "Fallback Operation",
+    cellDataType: "boolean",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "oper_sts",
+    headerName: "Operation Status",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "speed",
+    headerName: "Speed",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "min_links",
+    headerName: "Min Links",
+    width: 130,
+    sortable: true,
+    cellDataType: "number",
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "graceful_shutdown_mode",
+    headerName: "Graceful Shutdown Mode",
+    width: 130,
+    sortable: true,
+    cellEditor: "agSelectCellEditor",
+    cellEditorParams: {
+      values: ["enable", "disable"],
+    },
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "static",
+    headerName: "Static",
+    width: 130,
+    sortable: true,
+    cellDataType: "boolean",
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "fallback",
+    headerName: "Fallback",
+    width: 130,
+    sortable: true,
+    cellDataType: "boolean",
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "fast_rate",
+    headerName: "Fast Rate",
+    width: 130,
+    sortable: true,
+    cellDataType: "boolean",
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "oper_sts_reason",
+    headerName: "OperReason",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "members",
+    headerName: "Members",
+    width: 130,
+    editable: false,
+    showIcon: getIsStaff(),
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+    cellRenderer: (params) => {
+      return JSON.parse(params.value).join(", ");
+    },
+  },
+  {
+    field: "vlan_members",
+    headerName: "Access Vlan",
+    width: 130,
+    editable: false,
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    cellRenderer: (params) => {
+      let js = JSON.parse(params.value);
+
+      if (js?.vlan_ids?.length > 0) {
+        return (
+          js.if_mode + " - " + js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
+        );
+      } else {
+        return "";
+      }
+    },
+    tooltipValueGetter: (p) => {
+      let js = JSON.parse(p.value);
+      return (
+        js.if_mode + " - " + js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
+      );
+    },
+    headerTooltip: "", // add header tooltip here
+  },
+];
+
+export const mclagColumns = (interfaceNames) => [
+  {
+    headerCheckboxSelection: getIsStaff(),
+    checkboxSelection: getIsStaff(),
+    width: 50,
+  },
+  {
+    field: "domain_id",
+    headerName: "Domain_ID",
+    cellDataType: "number",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "keepalive_interval",
+    headerName: "Keepalive Interval",
+    cellDataType: "number",
+    width: 130,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "mclag_sys_mac",
+    headerName: "MCLAG Sys MAC",
+    width: 130,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "peer_addr",
+    headerName: "Peer Address",
+    width: 130,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "peer_link",
+    headerName: "Peer Link",
+    width: 130,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    sortable: true,
+    cellEditor: "agSelectCellEditor",
+    cellEditorParams: {
+      values: interfaceNames,
+    },
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "session_timeout",
+    headerName: "Session Timeout",
+    cellDataType: "number",
+    width: 130,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "source_address",
+    headerName: "Source Address",
+    width: 130,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "oper_status",
+    headerName: "Operation Status",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "role",
+    headerName: "Role",
+    width: 130,
+    // editable: getIsStaff(),
+    showIcon: getIsStaff(),
+    //
+    headerComponent: EditableHeaderComponent,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "gateway_mac",
+    headerName: "Gateway MAC",
+    width: 130,
+    sortable: true,
+    editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "delay_restore",
+    headerName: "Delay Restore",
+    cellDataType: "number",
+    width: 130,
+    editable: getIsStaff(),
+    sortable: true,
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "fast_convergence",
+    headerName: "Fast Convergence",
+    width: 130,
+    editable: getIsStaff(),
+    sortable: true,
+    cellEditor: "agSelectCellEditor",
+    cellEditorParams: {
+      values: ["enable", "disable"],
+    },
+    showIcon: getIsStaff(),
+
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "session_vrf",
+    headerName: "session vrf",
+    width: 130,
+    editable: getIsStaff(),
+    sortable: true,
+    showIcon: getIsStaff(),
+    headerComponent: EditableHeaderComponent,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "mclag_members",
+    headerName: "Members",
+    width: 130,
+    sortable: true,
+    editable: false,
+    showIcon: getIsStaff(),
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -372,6 +905,8 @@ export const portGroupColumns = [
         values: params?.data?.valid_speeds,
       };
     },
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -401,6 +936,41 @@ export const portGroupColumns = [
   },
 ];
 
+export const bgpColumns = [
+  {
+    headerCheckboxSelection: getIsStaff(),
+    checkboxSelection: getIsStaff(),
+    width: 50,
+  },
+  {
+    field: "local_asn",
+    headerName: "ASN",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "vrf_name",
+    headerName: "VRF",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  {
+    field: "router_id",
+    headerName: "Router ID",
+    width: 130,
+    sortable: true,
+    headerTooltip: "", // add header tooltip here
+  },
+  // {
+  //   field: "neighbor_prop",
+  //   headerName: "Neighbors",
+  //   width: 130,
+  //   sortable: true,
+  //   headerTooltip: "", // add header tooltip here
+  // },
+];
 export const valnIp = (params) => {
   if (params.data.sag_ip_address) {
     return false;
@@ -408,6 +978,7 @@ export const valnIp = (params) => {
     return true;
   }
 };
+
 export const valnSagIp = (params) => {
   if (params?.data?.ip_address) {
     return false;
@@ -445,6 +1016,8 @@ export const vlanColumns = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -458,6 +1031,8 @@ export const vlanColumns = [
     cellEditorParams: {
       values: ["enable", "disable"],
     },
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -467,6 +1042,7 @@ export const vlanColumns = [
     width: 130,
     sortable: true,
     editable: getIsStaff() && valnIp,
+    showIcon: getIsStaff(),
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -475,7 +1051,8 @@ export const vlanColumns = [
     headerName: "Anycast Address",
     width: 130,
     sortable: true,
-    editable: getIsStaff() && valnSagIp,
+    editable: false,
+    showIcon: getIsStaff(),
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -485,6 +1062,7 @@ export const vlanColumns = [
     type: "number",
     width: 130,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -498,6 +1076,7 @@ export const vlanColumns = [
     cellEditorParams: {
       values: ["up", "down"],
     },
+    showIcon: getIsStaff(),
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -513,7 +1092,8 @@ export const vlanColumns = [
     field: "mem_ifs",
     headerName: "Member IFs",
     width: 130,
-    editable: getIsStaff(),
+    editable: false,
+    showIcon: getIsStaff(),
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
     cellRenderer: (params) => {
@@ -578,393 +1158,6 @@ export const vlanColumns = [
   },
 ];
 
-export const portChannelColumns = [
-  {
-    headerCheckboxSelection: getIsStaff(),
-    checkboxSelection: getIsStaff(),
-    width: 50,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "lag_name",
-    headerName: "Channel Name",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "active",
-    headerName: "Active",
-    cellDataType: "boolean",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "admin_sts",
-    headerName: "Admin Status",
-    width: 150,
-    editable: (params) => {
-      const regex = /Management*/i;
-      if (regex?.test(params?.data?.name) || !getIsStaff()) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-    cellEditor: "agSelectCellEditor",
-    cellEditorParams: {
-      values: ["up", "down"],
-    },
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "mtu",
-    headerName: "MTU",
-    type: "number",
-    width: 130,
-    editable: (params) => {
-      const regex = /Management*/i;
-      if (regex?.test(params?.data?.name) || !getIsStaff()) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "name",
-    headerName: "Name",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "description",
-    headerName: "Description",
-    width: 130,
-    sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "ip_address",
-    headerName: "IP Address",
-    width: 130,
-    sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "fallback_operational",
-    headerName: "Fallback Operation",
-    cellDataType: "boolean",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "oper_sts",
-    headerName: "Operation Status",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "speed",
-    headerName: "Speed",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "min_links",
-    headerName: "Min Links",
-    width: 130,
-    sortable: true,
-    cellDataType: "number",
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "graceful_shutdown_mode",
-    headerName: "Graceful Shutdown Mode",
-    width: 130,
-    sortable: true,
-    cellEditor: "agSelectCellEditor",
-    cellEditorParams: {
-      values: ["enable", "disable"],
-    },
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "static",
-    headerName: "Static",
-    width: 130,
-    sortable: true,
-    cellDataType: "boolean",
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "fallback",
-    headerName: "Fallback",
-    width: 130,
-    sortable: true,
-    cellDataType: "boolean",
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "fast_rate",
-    headerName: "Fast Rate",
-    width: 130,
-    sortable: true,
-    cellDataType: "boolean",
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "oper_sts_reason",
-    headerName: "OperReason",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "members",
-    headerName: "Members",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-    cellRenderer: (params) => {
-      return JSON.parse(params.value).join(", ");
-    },
-  },
-  {
-    field: "vlan_members",
-    headerName: "Access Vlan",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    cellRenderer: (params) => {
-      let js = JSON.parse(params.value);
-
-      if (js?.vlan_ids?.length > 0) {
-        return (
-          js.if_mode + " - " + js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
-        );
-      } else {
-        return "";
-      }
-    },
-    tooltipValueGetter: (p) => {
-      let js = JSON.parse(p.value);
-      return (
-        js.if_mode + " - " + js?.vlan_ids?.map((id) => "Vlan" + id).join(", ")
-      );
-    },
-    headerTooltip: "", // add header tooltip here
-  },
-];
-
-export const mclagColumns = (interfaceNames) => [
-  {
-    headerCheckboxSelection: getIsStaff(),
-    checkboxSelection: getIsStaff(),
-    width: 50,
-  },
-  {
-    field: "domain_id",
-    headerName: "Domain_ID",
-    cellDataType: "number",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "keepalive_interval",
-    headerName: "Keepalive Interval",
-    cellDataType: "number",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "mclag_sys_mac",
-    headerName: "MCLAG Sys MAC",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "peer_addr",
-    headerName: "Peer Address",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "peer_link",
-    headerName: "Peer Link",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    sortable: true,
-    cellEditor: "agSelectCellEditor",
-    cellEditorParams: {
-      values: interfaceNames,
-    },
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "session_timeout",
-    headerName: "Session Timeout",
-    cellDataType: "number",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "source_address",
-    headerName: "Source Address",
-    width: 130,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "oper_status",
-    headerName: "Operation Status",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "role",
-    headerName: "Role",
-    width: 130,
-    // editable: getIsStaff(),
-    // headerComponent: EditableHeaderComponent,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "gateway_mac",
-    headerName: "Gateway MAC",
-    width: 130,
-    sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "delay_restore",
-    headerName: "Delay Restore",
-    cellDataType: "number",
-    width: 130,
-    editable: getIsStaff(),
-    sortable: true,
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "fast_convergence",
-    headerName: "Fast Convergence",
-    width: 130,
-    editable: getIsStaff(),
-    sortable: true,
-    cellEditor: "agSelectCellEditor",
-    cellEditorParams: {
-      values: ["enable", "disable"],
-    },
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "session_vrf",
-    headerName: "session vrf",
-    width: 130,
-    editable: getIsStaff(),
-    sortable: true,
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "mclag_members",
-    headerName: "Members",
-    width: 130,
-    editable: getIsStaff(),
-    sortable: true,
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-];
-
-export const bgpColumns = [
-  {
-    headerCheckboxSelection: getIsStaff(),
-    checkboxSelection: getIsStaff(),
-    width: 50,
-  },
-  {
-    field: "local_asn",
-    headerName: "ASN",
-    width: 130,
-    sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "vrf_name",
-    headerName: "VRF",
-    width: 130,
-    sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "router_id",
-    headerName: "Router ID",
-    width: 130,
-    sortable: true,
-    editable: getIsStaff(),
-    headerComponent: EditableHeaderComponent,
-    headerTooltip: "", // add header tooltip here
-  },
-  {
-    field: "neighbor_prop",
-    headerName: "Neighbors",
-    width: 130,
-    sortable: true,
-    headerTooltip: "", // add header tooltip here
-  },
-];
-
 export const stpColumn = [
   {
     headerCheckboxSelection: getIsStaff(),
@@ -977,6 +1170,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
     cellEditor: "agSelectCellEditor",
     cellEditorParams: {
@@ -990,6 +1185,8 @@ export const stpColumn = [
     sortable: true,
     cellDataType: "boolean",
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -998,6 +1195,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -1006,6 +1205,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -1014,6 +1215,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -1022,6 +1225,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -1030,6 +1235,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -1038,6 +1245,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -1046,6 +1255,8 @@ export const stpColumn = [
     width: 130,
     sortable: true,
     editable: getIsStaff(),
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
   {
@@ -1053,134 +1264,12 @@ export const stpColumn = [
     headerName: "disabled_vlans",
     width: 130,
     sortable: true,
-    editable: getIsStaff(),
+    editable: false,
+    showIcon: getIsStaff(),
+
     headerComponent: EditableHeaderComponent,
   },
 ];
-
-export const getCellEditorParamsDeviceImageList = (params) => {
-  if (params?.data?.image_list?.length > 0) {
-    return {
-      values: params?.data?.image_list,
-    };
-  } else {
-    return {
-      values: [params?.data?.img_name],
-    };
-  }
-};
-
-export const deviceUserColumns = (showIn) => {
-  let dataColumn = [
-    {
-      field: "img_name",
-      headerName: "Image Name",
-      width: 130,
-      sortable: true,
-      editable: getIsStaff() && showIn === "home",
-      headerComponent: EditableHeaderComponent,
-      cellEditor: "agSelectCellEditor",
-      cellEditorParams: getCellEditorParamsDeviceImageList,
-      cellRenderer: (params) => {
-        return <span>{params.value}</span>;
-      },
-    },
-    {
-      field: "mgt_intf",
-      headerName: "Management Int",
-      width: 130,
-      sortable: true,
-    },
-    {
-      field: "mgt_ip",
-      headerName: "Management IP",
-      width: 130,
-      sortable: true,
-    },
-    {
-      field: "hwsku",
-      headerName: "HWSKU",
-      type: "number",
-      width: 130,
-      sortable: true,
-    },
-
-    {
-      field: "mac",
-      headerName: "MAC",
-      width: 130,
-      sortable: true,
-    },
-
-    {
-      field: "platform",
-      headerName: "PLATFORM",
-      width: 130,
-      sortable: true,
-    },
-    {
-      field: "system_status",
-      headerName: "Sonic Status",
-      width: 130,
-      sortable: true,
-    },
-
-    { field: "type", headerName: "TYPE", width: 130, sortable: true },
-  ];
-
-  if (showIn === "home" || showIn === "all") {
-    dataColumn.push({
-      field: "action",
-      headerName: "Action",
-      width: 200,
-      cellRenderer: (params) => {
-        return (
-          <>
-            <Link to={`/devices/${params?.data?.mgt_ip}`}>
-              <button id="ipDetailsBtn" className="btnStyle">
-                Details
-              </button>
-            </Link>
-            <button
-              id="ipRemoveBtn"
-              disabled={!getIsStaff()}
-              className="ml-10 btnStyle"
-            >
-              Remove
-            </button>
-          </>
-        );
-      },
-    });
-  }
-
-  if (showIn === "info" || showIn === "all") {
-    dataColumn.unshift({
-      field: "sync_in",
-      headerName: "Rediscovery Frequency",
-      width: 200,
-      editable: getIsStaff(),
-    });
-  }
-  if (showIn === "info" || showIn === "all") {
-    dataColumn.push({
-      field: "orca_status",
-      headerName: "Device Status in Orca",
-      width: 130,
-      sortable: true,
-    });
-  }
-  if (showIn === "setup" || showIn === "all") {
-    dataColumn.unshift({
-      headerCheckboxSelection: getIsStaff() && showIn === "setup",
-      checkboxSelection: getIsStaff() && showIn === "setup",
-      width: 50,
-      sortable: true,
-      headerTooltip: "", // add header tooltip here
-    });
-  }
-  return dataColumn;
-};
 
 export const dhcpColumn = [
   {
@@ -1189,27 +1278,41 @@ export const dhcpColumn = [
     width: 50,
   },
   {
-    field: "device_ip",
-    headerName: "Device IP",
+    field: "mgt_ip",
+    headerName: "Management IP",
     width: 130,
     sortable: true,
   },
   {
-    field: "hostname",
-    headerName: "Hostname",
+    field: "img_name",
+    headerName: "Image Name",
     width: 130,
     sortable: true,
   },
   {
-    field: "mac_address",
-    headerName: "MAC Address",
+    field: "mgt_intf",
+    headerName: "Management Int",
     width: 130,
     sortable: true,
   },
-  // {
-  //   field: "dhcp_ip",
-  //   headerName: "DHCP IP",
-  //   width: 130,
-  //   sortable: true,
-  // },
+  {
+    field: "hwsku",
+    headerName: "HWSKU",
+    type: "number",
+    width: 130,
+    sortable: true,
+  },
+  {
+    field: "mac",
+    headerName: "MAC",
+    width: 130,
+    sortable: true,
+  },
+  {
+    field: "platform",
+    headerName: "PLATFORM",
+    width: 130,
+    sortable: true,
+  },
+  { field: "type", headerName: "TYPE", width: 130, sortable: true },
 ];

@@ -3,7 +3,6 @@ import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-import "../tabbedPaneTable.scss";
 import MclagForm from "./mclagForm";
 import MclagMemberForm from "./mclagMemberForm";
 
@@ -19,10 +18,17 @@ import useStoreLogs from "../../../utils/store";
 import useStoreConfig from "../../../utils/configStore";
 
 import { syncFeatureCommon } from "../Deviceinfo";
+import secureLocalStorage from "react-secure-storage";
 
 const McLagDataTable = (props) => {
     const instance = interceptor();
-
+    const theme = useMemo(() => {
+        if (secureLocalStorage.getItem("theme") === "dark") {
+          return "ag-theme-alpine-dark";
+        } else {
+          return "ag-theme-alpine";
+        }
+      }, []);
     const gridRef = useRef();
     const [dataTable, setDataTable] = useState([]);
     const [configStatus, setConfigStatus] = useState("");
@@ -300,7 +306,7 @@ const McLagDataTable = (props) => {
                 </div>
             </div>
 
-            <div style={gridStyle} className="ag-theme-alpine ">
+            <div style={gridStyle} className={theme}>
                 <AgGridReact
                     ref={gridRef}
                     rowData={dataTable}

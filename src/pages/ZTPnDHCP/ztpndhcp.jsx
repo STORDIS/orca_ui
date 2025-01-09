@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import Editor from "@monaco-editor/react";
 import "./ztpndhcp.scss";
 import { FaRegCircleXmark } from "react-icons/fa6";
@@ -19,6 +19,7 @@ import { styled } from "@mui/material/styles";
 
 import Modal from "../../components/modal/Modal";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import secureLocalStorage from "react-secure-storage";
 
 export const ZTPnDHCP = () => {
   const parentDivRef = useRef(null);
@@ -49,6 +50,15 @@ export const ZTPnDHCP = () => {
   const inputRef = useRef(null);
   const inputRefNewFile = useRef(null);
 
+  
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "vs-dark";
+    } else {
+      return "light";
+    }
+  }, []);
+
   useEffect(() => {
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -76,10 +86,10 @@ export const ZTPnDHCP = () => {
   }, []);
 
   useEffect(() => {
-    if (deviceIp) {
-      getDhcpFiles(deviceIp);
-      getDhcpBackupFiles(deviceIp);
-    }
+    setdhcpFiles([]);
+    setbackupFiles([]);
+    getDhcpFiles(deviceIp);
+    getDhcpBackupFiles(deviceIp);
   }, [deviceIp]);
 
   useEffect(() => {
@@ -138,7 +148,12 @@ export const ZTPnDHCP = () => {
         setztpFiles((prevFiles) =>
           prevFiles.map((file) => {
             if (file.filename === filename) {
-              return { ...file, content: data.content, status: "saved" };
+              return {
+                ...file,
+                content: data.content,
+                status: "saved",
+                path: data.path,
+              };
             }
             return file;
           })
@@ -531,6 +546,7 @@ export const ZTPnDHCP = () => {
 
   const getDeviceIp = (e) => {
     setDeviceIp(e.device_ip);
+    getDhcpFiles(e.device_ip);
   };
 
   const CustomToolTip = styled(({ className, ...props }) => (
@@ -553,6 +569,7 @@ export const ZTPnDHCP = () => {
           <div className="fileSelection">
             <div className="fileHeader">File list</div>
             <div
+            className="fileListContainer"
               style={{
                 height: layout.height,
                 overflowY: "auto",
@@ -645,7 +662,7 @@ export const ZTPnDHCP = () => {
                   setIsModalOpen("addNewFileModal");
                   setNewFileName("");
                 }}
-                className="ml-5"
+                className="ml-5 btnColor"
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -711,7 +728,7 @@ export const ZTPnDHCP = () => {
                   value={file.content}
                   style={{
                     height: "100%",
-                    width: "98%",
+                    width: "97%",
                     resize: "vertical",
                     minHeight: "60vh",
                     border: "none",
@@ -736,7 +753,7 @@ export const ZTPnDHCP = () => {
                   value={file.content}
                   defaultLanguage={"json"}
                   defaultValue={"Select a file"}
-                  theme="light" // light / vs-dark
+                  theme={theme} // light / vs-dark
                   onChange={(e) => editorChange(e, file)}
                 />
               </div>
@@ -746,9 +763,9 @@ export const ZTPnDHCP = () => {
               {!file?.filename?.match(/dhcpd\.conf\.orca\..+/) &&
               !file?.filename?.includes("_template") ? (
                 <button
-                  className=""
+                  className="btnColor"
                   onClick={() => save(file)}
-                  disabled={file.status === "saved"}
+                  disabled={file.status === "saved" || !file?.status}
                 >
                   Save
                 </button>
@@ -830,6 +847,7 @@ export const ZTPnDHCP = () => {
                 <div className="form-field w-auto ">
                   <label htmlFor="">File Name :</label>
                 </div>
+
                 <div className="form-field  w-60">
                   <input
                     type="text"
@@ -840,6 +858,10 @@ export const ZTPnDHCP = () => {
                   />
                 </div>
               </div>
+              <div className="note  mb-10">
+                NOTE: File name should be unique and should not contain
+                extension
+              </div>
               <div>
                 <button
                   className="btnStyle"
@@ -847,7 +869,7 @@ export const ZTPnDHCP = () => {
                     createNewFile(newFileName);
                   }}
                 >
-                  Save
+                  Add File
                 </button>
                 <button
                   className="btnStyle ml-10"
@@ -882,6 +904,10 @@ export const ZTPnDHCP = () => {
                     onChange={(e) => setNewFileName(e.target.value)}
                   />
                 </div>
+              </div>
+              <div className="note  mb-10">
+                NOTE: File name should be unique and should not contain
+                extension
               </div>
               <div>
                 <button

@@ -146,7 +146,7 @@ const MclagForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
                     e.preventDefault();
                     handleSubmit(formData);
                 }}
-                className="port-channel-form"
+                className="form-container"
             >
                 <div className="form-wrapper">
                     <div className="form-field w-50">

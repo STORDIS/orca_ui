@@ -1,23 +1,23 @@
 .logPanel {
-    width: "100%";
-    height: "470px";
+  width: "100%";
+  height: "470px";
 
-    .stickyButton {
-        position: absolute;
-        z-index: 3;
-        width: calc(100vw - 301px);
-        background-color: white;
-        padding-top: 15px;
-        padding-bottom: 15px;
-        margin-top: -15px;
-    }
-  
-    .icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .table {
-        padding-top: 45px;
-    }
+  .stickyButton {
+    position: absolute;
+    z-index: 3;
+    width: calc(100vw - 301px);
+    background-color: var(--bg_color);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    margin-top: -15px;
+  }
+
+  .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .table {
+    padding-top: 45px;
+  }
 }

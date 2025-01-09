@@ -80,5 +80,5 @@ If docker image is to be transferred to other machine to run there, first save t
 ### Run orca_ui docker container
 orca_ui docker container can be started as follows:
 ```shell
-docker run -p 3000:3000 -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_server_address:port>" orca_ui
+docker run -p 3000:3000 -e REACT_APP_HOST_ADDR_BACKEND="http://<orca_backend_server_address:port>" stordis/orca_ui:latest
 ```

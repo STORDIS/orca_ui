@@ -1,9 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-} from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 
 import {
   deviceUserColumns,
@@ -21,8 +16,10 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import { areAllIPAddressesValid } from "../../utils/common";
 import useStoreLogs from "../../utils/store";
 import useStoreConfig from "../../utils/configStore";
+import useStorePointer from "../../utils/pointerStore";
 
 import Modal from "../../components/modal/Modal";
+import secureLocalStorage from "react-secure-storage";
 
 export const Home = () => {
   const imageUrlRef = useRef(null);
@@ -32,11 +29,20 @@ export const Home = () => {
   const discoverAlsoRef = useRef(null);
 
   const instance = interceptor();
+  
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
-
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
-  const updateConfig = useStoreConfig((state) => state.updateConfig);
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
   const [dataTable, setDataTable] = useState([]);
   const gridRef = useRef();
@@ -155,6 +161,7 @@ export const Home = () => {
       setUpdateLog(true);
       setUpdateConfig(false);
 
+      setUpdateStorePointer();
       setFormData({
         image_url: "",
         device_ips: [],
@@ -271,8 +278,8 @@ export const Home = () => {
         <div className="listTitle" id="sonicDeviceListHeader">
           Select Devices for SONiC installation
         </div>
-        <div className="" id="sonicDeviceTable">
-          <div style={gridStyle} className="ag-theme-alpine">
+        <div className="mt-10" id="sonicDeviceTable">
+          <div style={gridStyle} className={theme}>
             <AgGridReact
               ref={gridRef}
               rowData={dataTable}

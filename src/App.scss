@@ -1,54 +1,102 @@
+:root {
+  --text_color: rgba(0, 0, 0, 1);
+  --bg_color: rgba(255, 255, 255, 1);
+  --form_border: rgba(167, 167, 167, 1);
+  --shadow_1: rgba(0, 0, 0, 0.47);
+  --shadow_2: rgba(201, 201, 201, 0.47);
+  --title: rgba(128, 128, 128, 1);
+  --backdrop: rgba(0, 0, 0, 0.5);
+  --btn_bg: rgba(211, 211, 211, 1);
+  --btn_color: rgba(0, 0, 0, 1);
+  --btn_border: rgba(0, 0, 0, 1);
+  --btn_disabled_bg: rgba(219, 219, 219, 1);
+  --btn_disabled_border: rgba(219, 219, 219, 1);
+  --btn_disabled_color: rgba(164, 163, 163, 1);
+  --item_color: rgba(255, 255, 255, 1);
+  --item_hover: rgba(245, 239, 239, 1);
+  --item_hover_border: rgba(245, 239, 239, 1);
+  --input_bg: rgba(255, 255, 255, 1);
+  --input_color: rgba(0, 0, 0, 1);
+  --text_editor_bg: rgba(255, 255, 255, 1);
+  --card_bg: rgba(255, 255, 255, 1);
+  --scrollbar_color: #f0f0f0;
+  --tab_active_bg: rgb(255, 255, 255);
+}
+
+body {
+  background-color: rgb(30, 30, 30);
+  background-color: rgb(22, 27, 34);
+  background-color: var(--bg_color);
+  color: var(--text_color);
+}
+
+.listContainer {
+  padding: 15px !important;
+  -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_1);
+  box-shadow: 2px 4px 10px 1px var(--shadow_2);
+  margin: 10px !important;
+}
+.listTitle {
+  font-weight: 500;
+  color: var(--title);
+}
+
 .btnColor {
   border-radius: 4px !important;
-  border: 1px solid black !important;
-  background-color: lightgray;
-  color: black;
+  border: 1px solid var(--btn_border) !important;
+  background-color: var(--btn_bg) !important;
+  color: var(--btn_color);
   cursor: pointer;
 
   &:disabled {
-    background-color: #dbdbdb;
-    border-color: #dbdbdb;
-    color: #a4a3a3;
+    background-color: var(--btn_disabled_bg);
+    border-color: var(--btn_disabled_bg);
+    color: var(--btn_disabled_color);
     cursor: not-allowed;
   }
 
   &.button-disabled {
     opacity: 0.5;
     cursor: not-allowed;
-    background-color: gray;
-    border-color: #dbdbdb;
-    color: #a4a3a3;
+    background-color: var(--btn_disabled_bg);
+    border-color: var(--btn_disabled_border);
+    color: var(--btn_disabled_color);
   }
+}
+
+.tabStyle {
+  background-color: var(--bg_color) !important;
+  color: var(--text_color) !important;
 }
 
 .btnStyle {
   padding: 6px 12px;
   border-radius: 4px;
-  border: 1px solid black;
-  background-color: rgba(211, 211, 211, 1) !important;
-  color: rgb(0, 0, 0);
+  border: 1px solid var(--btn_border);
+  background-color: var(--btn_bg) !important;
+  color: var(--btn_color) !important;
   cursor: pointer;
   transition: background-color 0.15s ease-in-out;
 
   &:disabled {
-    background-color: rgb(219, 219, 219, 1) !important;
-    border-color: rgb(219, 219, 219) !important;
-    color: rgba(164, 163, 163, 1) !important;
+    background-color: var(--btn_disabled_bg) !important;
+    border-color: var(--btn_disabled_border) !important;
+    color: var(--btn_disabled_color) !important;
     cursor: not-allowed !important;
   }
 
   &.button-disabled {
     opacity: 0.5;
-    background-color: rgb(219, 219, 219, 1) !important;
-    border-color: rgb(219, 219, 219) !important;
-    color: rgba(164, 163, 163, 1) !important;
+    background-color: var(--btn_disabled_bg) !important;
+    border-color: var(--btn_disabled_border) !important;
+    color: var(--btn_disabled_color) !important;
     cursor: not-allowed !important;
   }
 }
 
 .loader {
   display: inline-block;
-  background-color: rgb(245, 242, 240);
+  background-color: var(--bg_color);
   border-radius: 25px;
   border-bottom-left-radius: 0px;
   padding: 12px;
@@ -59,7 +107,7 @@
 .dot {
   width: 10px;
   height: 10px;
-  background-color: black;
+  background-color: var(--text_color);
   border-radius: 50%;
   display: inline-block;
   animation: dance 1.5s infinite ease-in-out;
@@ -79,7 +127,18 @@
   font-weight: bold;
 
   font-style: italic;
-  color: #999;
+  color: var(--title);
+}
+
+.datatable {
+  max-height: 500px;
+  min-height: 100px;
+  flex: 10;
+
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
 @keyframes dance {
@@ -270,21 +329,45 @@
 .form-field textarea,
 .form-field select {
   padding: 6px;
-  border: 1px solid #a7a7a7 !important;
+  border: 1px solid var(--form_border) !important;
   border-radius: 4px;
 }
 
 .form-field input:disabled {
-  background-color: #dbdbdb;
+  background-color: var(--btn_disabled_bg);
 }
 
 .form-field select:disabled {
-  background-color: #dbdbdb;
+  background-color: var(--btn_disabled_bg);
 }
 
 .form-field input[type="submit"]:hover,
 .form-field button:hover {
   opacity: 0.9;
+}
+
+input {
+  background-color: var(--input_bg);
+  color: var(--input_color);
+}
+input:focus {
+  outline: none;
+  border: 1px solid var(--btn_border);
+}
+input:-webkit-autofill {
+  background-color: var(--input_bg) !important;
+  color: var(--input_color) !important;
+  -webkit-text-fill-color: var(--input_color) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--input_bg) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+select {
+  background-color: var(--input_bg);
+  color: var(--input_color);
+}
+textarea {
+  background-color: var(--input_bg);
+  color: var(--input_color);
 }
 
 .selected-interface-list {
@@ -296,18 +379,31 @@
 .selected-interface-wrap {
   min-height: 100px;
   max-height: 250px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--form_border);
   overflow-y: auto;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+.selected-interface-wrap::-webkit-scrollbar {
+  // width: 5px;
+  // height: 5px !important;
+  background-color: var(--scrollbar_color);
+  display: block !important;
+}
+.selected-interface-wrap::-webkit-scrollbar-thumb {
+  background: var(--form_border);
 }
 
 .increadeDecrease {
   border: none;
   background-color: transparent;
-  color: black;
+  color: var(--text_color);
   cursor: pointer;
   align-items: center;
+}
+
+.form-container {
+  text-align: left;
 }
 
 .success {

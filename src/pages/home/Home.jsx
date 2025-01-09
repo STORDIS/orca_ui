@@ -3,7 +3,6 @@ import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   deviceUserColumns,
   defaultColDef,
-  dhcpColumn,
 } from "../../components/tabbedpane/datatablesourse";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -11,38 +10,50 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import {
   getAllDevicesURL,
   switchImageURL,
-  dhcpDeviceListURL,
+  deleteDevicesURL,
 } from "../../utils/backend_rest_urls.js";
 import Modal from "../../components/modal/Modal";
-import CredentialForm from "../ZTPnDHCP/CredentialsForm";
 
 import interceptor from "../../utils/interceptor.js";
 
-import {
-  deleteDevicesURL,
-  getDiscoveryUrl,
-} from "../../utils/backend_rest_urls.js";
 import useStoreConfig from "../../utils/configStore.js";
 import useStoreLogs from "../../utils/store.js";
 import "./home.scss";
-
 import { getIsStaff } from "../../utils/common";
-import { ZTPnDHCP } from "../ZTPnDHCP/ztpndhcp";
+import useStorePointer from "../../utils/pointerStore";
+import secureLocalStorage from "react-secure-storage";
+
+export const getDevicesCommon = () => {
+  const instance = interceptor();
+  const apiUrl = getAllDevicesURL();
+
+  return instance
+    .get(apiUrl)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      console.error(err);
+      return []; // Return an empty array on error
+    });
+};
 
 export const Home = () => {
   const instance = interceptor();
 
-  const deviceTableRef = useRef(null);
-  const dhcpTableRef = useRef(null);
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
 
-  const gridRefDhcpTable = useRef();
+  const deviceTableRef = useRef(null);
 
   const [dataTable, setDataTable] = useState([]);
   const [selectedDeviceToDelete, setSelectedDeviceToDelete] = useState("");
   const [selectedDeviceToUpdate, setSelectedDeviceToUpdate] = useState([]);
-
-  const [dhcpTable, setDhcpTable] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
   const updateConfig = useStoreConfig((state) => state.updateConfig);
@@ -50,10 +61,11 @@ export const Home = () => {
   const updateLog = useStoreLogs((state) => state.updateLog);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
-  const [heightDeviceTable, setHeightDeviceTable] = useState(250);
-  const [heightDhcpTable, setHeightDhcpTable] = useState(250);
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
 
-  const [isSSHConnected, setIsSSHConnected] = useState(false);
+  const [heightDeviceTable, setHeightDeviceTable] = useState(250);
 
   useEffect(() => {
     getDevices();
@@ -65,30 +77,12 @@ export const Home = () => {
     }
   }, [updateLog]);
 
-  const getDhcpDevices = (e) => {
-    setDhcpTable([]);
-    if (e) {
-      instance(dhcpDeviceListURL())
-        .then((res) => {
-          setDhcpTable(res.data);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    } else {
-      setDhcpTable([]);
-    }
-  };
-
   const getDevices = () => {
     setDataTable([]);
-    instance(getAllDevicesURL())
-      .then((res) => {
-        setDataTable(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+
+    getDevicesCommon().then((res) => {
+      setDataTable(res);
+    });
   };
 
   const onCellClicked = useCallback((params) => {
@@ -113,6 +107,7 @@ export const Home = () => {
         setUpdateLog(true);
         setSelectedDeviceToDelete("");
         getDevices();
+        setUpdateStorePointer();
       });
   };
 
@@ -157,26 +152,6 @@ export const Home = () => {
       });
   };
 
-  const onSelectionChanged = () => {
-    const selectedNodes = gridRefDhcpTable.current.api.getSelectedNodes();
-    const selectedData = selectedNodes.map((node) => node.data.device_ip);
-    setSelectedRows(selectedData);
-  };
-
-  const discoverDhcp = async () => {
-    try {
-      const response = await instance.put(getDiscoveryUrl(), {
-        address: selectedRows,
-        discover_from_config: true,
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setUpdateLog(true);
-      setUpdateConfig(false);
-    }
-  };
-
   const handleResizeDeviceTable = () => {
     if (deviceTableRef.current.offsetHeight > 250) {
       setHeightDeviceTable(deviceTableRef.current.offsetHeight);
@@ -188,22 +163,17 @@ export const Home = () => {
     [heightDeviceTable]
   );
 
-  const handleResizeDhcpTable = () => {
-    if (dhcpTableRef.current.offsetHeight > 250) {
-      setHeightDhcpTable(dhcpTableRef.current.offsetHeight);
-    }
-  };
-
-  const gridStyleDhcpTable = useMemo(
-    () => ({ height: heightDhcpTable + "px", width: "100%" }),
-    [heightDhcpTable]
-  );
-
   return (
     <div>
       <div className="listContainer">
-        <div className="listTitle ">
-          Devices
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span className="listTitle">Devices</span>
           <div>
             <button
               className="btnStyle "
@@ -228,7 +198,7 @@ export const Home = () => {
           ref={deviceTableRef}
           onMouseMove={handleResizeDeviceTable}
         >
-          <div style={gridStyleDataTable} className="ag-theme-alpine">
+          <div style={gridStyleDataTable} className={theme}>
             <AgGridReact
               rowData={dataTable}
               columnDefs={deviceUserColumns("home")}
@@ -269,58 +239,6 @@ export const Home = () => {
             </div>
           </Modal>
         )}
-      </div>
-
-      <div className="listContainer">
-        <div className="listTitle" style={{ alignItems: "center" }}>
-          Available SONiC Devices in network
-          <CredentialForm
-            type="status"
-            sendCredentialsToParent={(e) => {
-              getDhcpDevices(e.ssh_access);
-              setIsSSHConnected(e.ssh_access);
-            }}
-          />
-          <div>
-            <button
-              className="btnStyle "
-              onClick={discoverDhcp}
-              disabled={!getIsStaff()}
-            >
-              Discover
-            </button>
-            <button
-              className="btnStyle ml-15"
-              onClick={() => {
-                getDhcpDevices(isSSHConnected);
-              }}
-              disabled={!getIsStaff()}
-            >
-              Refresh
-            </button>
-          </div>
-        </div>
-
-        <div
-          className="datatable resizable mt-15"
-          ref={dhcpTableRef}
-          onMouseMove={handleResizeDhcpTable}
-        >
-          <div style={gridStyleDhcpTable} className="ag-theme-alpine">
-            <AgGridReact
-              ref={gridRefDhcpTable}
-              rowData={dhcpTable}
-              columnDefs={dhcpColumn}
-              defaultColDef={defaultColDef}
-              // enableCellTextSelection="true"
-              // onCellClicked={onCellClicked}
-              stopEditingWhenCellsLoseFocus={true}
-              onSelectionChanged={onSelectionChanged}
-              rowSelection="multiple"
-              suppressRowClickSelection={true}
-            ></AgGridReact>
-          </div>
-        </div>
       </div>
     </div>
   );

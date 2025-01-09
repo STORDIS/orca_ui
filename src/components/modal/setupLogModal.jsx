@@ -8,6 +8,7 @@ import interceptor from "../../utils/interceptor";
 import { isValidIPv4WithCIDR } from "../../utils/common";
 import { FaSquareXmark } from "react-icons/fa6";
 import CommonLogTable from "./commonLogTable";
+import useStorePointer from "../../utils/pointerStore";
 
 const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const [installResponses, setInstallResponses] = useState([]);
@@ -26,10 +27,14 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
   const [ShowResponse, setShowResponse] = useState(false);
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
-  const updateConfig = useStoreConfig((state) => state.updateConfig);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   const instance = interceptor();
+
+  const setUpdateStorePointer = useStorePointer(
+    (state) => state.setUpdateStorePointer
+  );
+
 
   useEffect(() => {
     if (Object.keys(logData?.response).includes("onie_devices")) {
@@ -53,39 +58,6 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         setShowResponse(true);
       }
     }
-
-    // setIsLoading(true);
-    // instance
-    //     .get(celeryTaskURL(taskId))
-    //     .then((res) => {
-    //         SetLogData(res.data);
-    //         let result = res.data;
-    //         if (Object.keys(result?.response).includes("onie_devices")) {
-    //             setOnieDevices(result?.response?.onie_devices);
-    //         } else {
-    //         }
-    //         if (Object.keys(result?.response).includes("sonic_devices")) {
-    //             setSonicDevices(result?.response?.sonic_devices);
-    //         } else {
-    //             let is_ip = false;
-    //             Object.keys(result?.response).forEach((element) => {
-    //                 if (isValidIPv4WithCIDR(element)) {
-    //                     is_ip = true;
-    //                 }
-    //             });
-    //             if (is_ip) {
-    //                 setInstallResponses(result?.response);
-    //             } else {
-    //                 setInstallResponses([]);
-    //                 setResponse(JSON.stringify(result?.response, null, 2));
-    //             }
-    //         }
-    //         setIsLoading(false);
-    //     })
-    //     .catch((err) => {
-    //         console.error(err);
-    //         setIsLoading(false);
-    //     });
 
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -307,6 +279,7 @@ const SetupLogModal = ({ logData, onClose, onSubmit, title, id }) => {
         setUpdateLog(true);
         setUpdateConfig(false);
         onSubmit();
+        setUpdateStorePointer();
       });
   };
 
