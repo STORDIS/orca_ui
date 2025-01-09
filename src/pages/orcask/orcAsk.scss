@@ -28,7 +28,7 @@
           width: 25px;
           font-size: 25px;
           background-color: var(--item_hover);
-          border: 1px solid var(--form_border);
+          border: 1px solid var(--item_hover_border);
           border-radius: 25px;
           padding: 10px;
         }
@@ -40,7 +40,7 @@
           padding: 12px 15px 12px 15px;
           margin-left: 10px;
           width: 80%;
-          border: 1px solid var(--form_border);
+          border: 1px solid var(--item_hover_border);
 
           .selectView {
             width: 100%;
@@ -136,9 +136,9 @@
       }
     }
     .chatSection::-webkit-scrollbar {
-      width: 5px;
-      height: 5px !important;
-      background-color: var(--bg_color);
+      // width: 5px;
+      // height: 5px !important;
+      background-color: var(--scrollbar_color);
       display: block !important;
     }
     .chatSection::-webkit-scrollbar-thumb {
@@ -167,16 +167,15 @@
       }
 
       textarea::-webkit-scrollbar {
-        width: 5px;
-        height: 5px !important;
-        background-color: var(--bg_color);
+        // width: 5px;
+        // height: 5px !important;
+        background-color: var(--scrollbar_color);
         display: block !important;
       }
       textarea::-webkit-scrollbar-thumb {
         background: var(--form_border);
       }
 
-      
       textarea:focus {
         outline: none;
       }
@@ -195,9 +194,11 @@
       // margin-bottom: 15px;
       display: flex;
       text-align: center;
-      border: 1px solid var(--form_border);
-      -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_1);
-      box-shadow: 2px 4px 10px 1px var(--shadow_2) !important;
+      border-top: 1px solid var(--form_border);
+      border-bottom: 1px solid var(--form_border);
+      color: var(--title);
+      // -webkit-box-shadow: 2px 4px 10px 1px var(--shadow_1);
+      // box-shadow: 2px 4px 10px 1px var(--shadow_2) !important;
     }
 
     .tabBody {
@@ -212,14 +213,15 @@
         display: flex;
         align-items: center;
         background-color: var(--item_hover);
+        border: 1px solid var(--item_hover_border);
         padding: 10px;
         margin-bottom: 10px;
       }
     }
     .tabBody::-webkit-scrollbar {
-      width: 5px;
-      height: 5px !important;
-      background-color: var(--bg_color);
+      // width: 5px;
+      // height: 5px !important;
+      background-color: var(--scrollbar_color);
       display: block !important;
     }
     .tabBody::-webkit-scrollbar-thumb {

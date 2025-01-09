@@ -30,9 +30,13 @@ const Layout = () => {
   useEffect(() => {
     let theme = secureLocalStorage.getItem("theme");
 
+    console.log(theme);
+
     const root = document.documentElement;
 
-    if (theme === "dark") {
+    if (theme === null) {
+      secureLocalStorage.setItem("theme", "dark");
+    } else if (theme === "dark") {
       root.style.setProperty("--bg_color", "rgba(13, 17, 23, 1)");
       root.style.setProperty("--text_color", "rgba(255, 255, 255, 0.75)");
       root.style.setProperty("--title", "rgba(255, 255, 255, 1)");
@@ -51,13 +55,18 @@ const Layout = () => {
       );
 
       root.style.setProperty("--item_color", "rgba(22, 27, 34, 1)");
-      root.style.setProperty("--item_hover", "rgba(255, 255, 255, 0.25)");
+      root.style.setProperty("--item_hover", "rgba(33, 150, 243, 0.1)");
+      root.style.setProperty("--item_hover_border", "rgba(255, 255, 255, 0.1)");
 
       root.style.setProperty("--input_bg", "rgba(1, 4, 9, 1)");
       root.style.setProperty("--input_color", "rgba(255, 255, 255, 1)");
       root.style.setProperty("--text_editor_bg", "rgba(30, 30, 30, 1)");
 
       root.style.setProperty("--card_bg", "rgba(1, 4, 9, 1)");
+
+      root.style.setProperty("--scrollbar_color", "rgba(255, 255, 255, 0.25)");
+      root.style.setProperty("--tab_active_bg", "rgba(30, 30, 30, 1)");
+    } else {
     }
 
     if (location.pathname?.includes("/ORCAsk")) {

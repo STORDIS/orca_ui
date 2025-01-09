@@ -23,7 +23,6 @@ import { getIsStaff } from "../../utils/common";
 import useStorePointer from "../../utils/pointerStore";
 import secureLocalStorage from "react-secure-storage";
 
-
 export const getDevicesCommon = () => {
   const instance = interceptor();
   const apiUrl = getAllDevicesURL();
@@ -42,6 +41,14 @@ export const getDevicesCommon = () => {
 export const Home = () => {
   const instance = interceptor();
 
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
+
   const deviceTableRef = useRef(null);
 
   const [dataTable, setDataTable] = useState([]);
@@ -59,14 +66,6 @@ export const Home = () => {
   );
 
   const [heightDeviceTable, setHeightDeviceTable] = useState(250);
-
-  const theme = useMemo(() => {
-    if (secureLocalStorage.getItem("theme") === "dark") {
-      return "ag-theme-alpine-dark";
-    } else {
-      return "ag-theme-alpine";
-    }
-  }, []);
 
   useEffect(() => {
     getDevices();

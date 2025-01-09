@@ -37,15 +37,15 @@
     }
   }
   .fileListContainer::-webkit-scrollbar {
-    width: 5px;
-    height: 5px !important;
-    background-color: var(--bg_color);
+    // width: 5px;
+    // height: 5px !important;
+    background-color: var(--scrollbar_color);
     display: block !important;
   }
   .fileListContainer::-webkit-scrollbar-thumb {
     background: var(--form_border);
   }
-
+ 
   .editor {
     width: calc(100% - 255px);
     border: 1px solid var(--form_border);
@@ -62,7 +62,7 @@
         align-items: center;
         justify-content: space-between;
         // background-color: rgb(231, 219, 219);
-        background-color: var(--item_color);
+        background-color: var(--item_hover);
         padding: 5px;
         border-right: 1px solid var(--form_border);
         border-bottom: 1px solid var(--form_border);
@@ -84,14 +84,14 @@
       }
 
       .tabActive {
-        background-color: var(--item_hover) !important;
+        background-color: var(--tab_active_bg) !important;
         border-bottom: none !important;
       }
     }
     .tab::-webkit-scrollbar {
       width: 5px;
       height: 5px !important;
-      background-color: var(--bg_color);
+      background-color: var(--scrollbar_color);
       display: block !important;
     }
     .tab::-webkit-scrollbar-thumb {
@@ -109,9 +109,9 @@
       color: var(--input_color);
     }
     textarea::-webkit-scrollbar {
-      width: 5px;
-      height: 5px !important;
-      background-color: var(--bg_color);
+      // width: 5px;
+      // height: 5px !important;
+      background-color: var(--scrollbar_color);
       display: block !important;
     }
     textarea::-webkit-scrollbar-thumb {

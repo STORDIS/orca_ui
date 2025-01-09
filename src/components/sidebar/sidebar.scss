@@ -38,6 +38,7 @@
       &:hover {
         color: var(--text_color) !important;
         background-color: var(--item_hover);
+        // border: 1px solid var(--item_hover_border);
       }
     }
   }
