@@ -90,7 +90,7 @@ export const AskOrca = () => {
           <span className="mr-10">
             <FaBookmark />
           </span>
-          User Marked Bookmark
+          User Bookmark
           <Tooltip place="bottom" title="Delete All Bookmark">
             <button
               disabled={!getIsStaff()}
