@@ -20,6 +20,7 @@ import {
   deleteOrcAskHistoryURL,
 } from "../../../utils/backend_rest_urls";
 import interceptor from "../../../utils/interceptor";
+import { temp } from "../predefinedBookMark";
 
 export const HistoryChatSection = ({
   sendBookmarkDataToParent,
@@ -31,16 +32,13 @@ export const HistoryChatSection = ({
   const [chatHistory, setChatHistory] = useState([
     {
       id: 0,
-      final_message: {
-        success: [
+      prompt_response: {
+        default_message:
           "I am, ORCAsk AI developed to assist you. How can I help you?",
-        ],
-        fail: [],
-        immediate_functions_result: {},
-        confirmed_functions_result: {},
       },
-      user_message: "",
+      prompt: "",
     },
+    // temp,
   ]);
   const chatContainerRef = useRef(null);
   const [questionPrompt, setQuestionPrompt] = useState({ prompt: "" });
@@ -84,10 +82,11 @@ export const HistoryChatSection = ({
     instance
       .get(getOrcAskHistoryURL())
       .then((response) => {
+        // console.log(response.data);
         const newChatHistory = response?.data.map((chat) => ({
           id: chat.id,
-          final_message: chat?.final_message,
-          user_message: chat?.user_message,
+          prompt_response: chat?.prompt_response,
+          prompt: chat?.prompt,
         }));
 
         setChatHistory((prevChatHistory) => {
@@ -115,15 +114,11 @@ export const HistoryChatSection = ({
         setChatHistory([
           {
             id: 0,
-            final_message: {
-              success: [
+            prompt_response: {
+              default_message:
                 "I am, ORCAsk AI developed to assist you. How can I help you?",
-              ],
-              fail: [],
-              immediate_functions_result: {},
-              confirmed_functions_result: {},
             },
-            user_message: "",
+            prompt: "",
             viewType: "string",
           },
         ]);
@@ -134,10 +129,10 @@ export const HistoryChatSection = ({
       });
   };
 
-  const gptCompletions = () => {
+  const aiCompletion = (e) => {
     setIsLoading(true);
     instance
-      .post(executePlanURL(), questionPrompt)
+      .post(executePlanURL(), e)
       .then((response) => {
         setQuestionPrompt({ prompt: "" });
         getChatHistory();
@@ -150,43 +145,9 @@ export const HistoryChatSection = ({
       });
   };
 
-  const handleOptionChange = (e) => {
-    let index = parseInt(e.target.id);
-    setChatHistory((prevChatHistory) => {
-      const updatedChatHistory = [...prevChatHistory];
-      if (index >= 0 && index < updatedChatHistory?.length) {
-        updatedChatHistory[index].viewType = e?.target?.value;
-      }
-      return updatedChatHistory;
-    });
-  };
-
-  const checkValidTableRes = (e) => {
-    if (
-      Array.isArray(e?.functions_result) &&
-      e?.functions_result?.length > 0 &&
-      e?.functions_result[0] !== null
-    ) {
-      return "table_data";
-    } else if (
-      Array.isArray(e?.functions_result) &&
-      e?.functions_result?.length > 0 &&
-      e?.functions_result[0] === null
-    ) {
-      return "no_data";
-    } else if (
-      Array.isArray(e?.functions_result) &&
-      e?.functions_result?.length === 0
-    ) {
-      return "no_data";
-    } else {
-      return false;
-    }
-  };
-
   const handleKeyDown = (event) => {
     if (event.keyCode === 13) {
-      gptCompletions();
+      aiCompletion(questionPrompt);
       event.preventDefault();
     }
   };
@@ -200,6 +161,18 @@ export const HistoryChatSection = ({
     sendBookmarkDataToParent(dataToParent);
   };
 
+  const handelConfirmation = (e) => {
+    console.log(e);
+    setQuestionPrompt({
+      prompt: e,
+    });
+    if (e === "Yes") {
+      aiCompletion({
+        prompt: e,
+      });
+    }
+  };
+
   return (
     <>
       <div className="chatSection" id="chatSection" ref={chatContainerRef}>
@@ -207,24 +180,24 @@ export const HistoryChatSection = ({
           .sort((a, b) => a.id - b.id)
           .map((item, index) => (
             <React.Fragment key={item.id}>
-              {item.user_message ? (
+              {item.prompt ? (
                 <div className="promptStyle" id={index + "-user"} index={index}>
                   <button
                     disabled={!getIsStaff()}
                     className="bookmark"
                     id="bookmarkUser"
                     onClick={() =>
-                      sendBookMarks(item.user_message, item.final_message)
+                      sendBookMarks(item.prompt, item.final_message)
                     }
                   >
                     <FaBookmark />
                   </button>
                   <span className="copy" id="copyUser">
                     <CopyToClipboard
-                      text={item.user_message}
+                      text={item.prompt}
                       onCopy={() => {
                         setQuestionPrompt({
-                          prompt: item.user_message,
+                          prompt: item.prompt,
                         });
                         textAreaRef.current.focus();
                       }}
@@ -232,21 +205,22 @@ export const HistoryChatSection = ({
                       <FaRegCopy />
                     </CopyToClipboard>
                   </span>
-                  <span className="text">{item.user_message}</span>
+                  <span className="text">{item.prompt}</span>
                   <span className="icon">
                     <FaUser />
                   </span>
                 </div>
               ) : null}
-              {item.final_message ? (
+              {item.prompt_response ? (
                 <div className="aiStyle" id={index + "-ai"} index={index}>
                   <span className="icon">
                     <FaRobot />
                   </span>
-                  <div className="content">
+                  <div style={{ width: "80%" }}>
                     <DynamicRender
-                      finalMessage={item.final_message}
+                      prompt_response={item.prompt_response}
                       index={index}
+                      confirmationToParent={handelConfirmation}
                     />
                   </div>
                 </div>
@@ -308,7 +282,7 @@ export const HistoryChatSection = ({
             disabled={
               isLoading || !getIsStaff() || questionPrompt.prompt === ""
             }
-            onClick={gptCompletions}
+            onClick={() => aiCompletion(questionPrompt)}
             className="btnStyle ml-10 "
             id="sendMessageBtn"
           >

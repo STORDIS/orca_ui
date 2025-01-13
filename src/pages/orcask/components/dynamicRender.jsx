@@ -3,106 +3,151 @@ import "../orcAsk.scss";
 import { AgGridReact } from "ag-grid-react";
 import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
+import secureLocalStorage from "react-secure-storage";
 
-const DynamicRender = (props) => {
+const DynamicRender = ({prompt_response, confirmationToParent}) => {
   const [displayData, setDisplayData] = useState([
     {
+      heading: "",
+      content: "",
       message: "",
+      confirmationDesc: "",
       responseType: "",
       type: "",
     },
   ]);
 
+  const theme = useMemo(() => {
+    if (secureLocalStorage.getItem("theme") === "dark") {
+      return "ag-theme-alpine-dark";
+    } else {
+      return "ag-theme-alpine";
+    }
+  }, []);
+
   useEffect(() => {
-    checkWhichResponce(props.finalMessage);
-  }, [props]);
+    checkWhichResponce(prompt_response);
+  }, [prompt_response]);
 
   const checkWhichResponce = (res) => {
     setDisplayData([]);
 
-    if (props.finalMessage.success.length > 0) {
-      setDisplayData((prevData) => [
-        ...prevData,
-        {
-          message: props.finalMessage.success,
-          responseType: "success",
-          type: checkTypeofResponse(props.finalMessage.success),
-        },
-      ]);
-    }
-    if (Object.keys(props.finalMessage.immediate_functions_result).length > 0) {
-      setDisplayData((prev) => [
-        ...prev,
-        {
-          message: props.finalMessage.immediate_functions_result,
-          responseType: "function",
-          type: checkTypeofResponse(
-            props?.finalMessage?.immediate_functions_result
-          ),
-        },
-      ]);
-    }
-    if (Object.keys(props.finalMessage.confirmed_functions_result).length > 0) {
-      setDisplayData((prev) => [
-        ...prev,
-        {
-          message: props.finalMessage.confirmed_functions_result,
-          responseType: "function",
-          type: checkTypeofResponse(
-            props?.finalMessage?.confirmed_functions_result
-          ),
-        },
-      ]);
-    }
+    Object.keys(res).forEach((element, index) => {
 
-    if (props.finalMessage.fail.length > 0) {
-      setDisplayData((prev) => [
-        ...prev,
-        {
-          message: props.finalMessage.fail,
-          responseType: "fail",
-          type: checkTypeofResponse(props.finalMessage.fail),
-        },
-      ]);
-    }
-
-    if (
-      props.finalMessage.success.length <= 0 &&
-      Object.keys(props.finalMessage.immediate_functions_result).length <= 0 &&
-      Object.keys(props.finalMessage.confirmed_functions_result).length <= 0 &&
-      props.finalMessage.fail.length <= 0
-    ) {
-      setDisplayData((prev) => [
-        ...prev,
-        {
-          message: "Unknown error",
-          responseType: "unknown",
-          type: checkTypeofResponse(""),
-        },
-      ]);
-    }
-  };
-
-  const checkTypeofResponse = (res) => {
-    if (typeof res === "string") {
-      return "string";
-    } else if (Array.isArray(res)) {
-      return "array";
-    } else if (res !== null && typeof res === "object") {
-      for (const key in res) {
-        if (
-          res.hasOwnProperty(key) &&
-          Array.isArray(res[key]) &&
-          res[key].every((item) => typeof item === "object" && item !== null)
-        ) {
-          return "table_json";
-        }
+      if (
+        Array.isArray(res[element]?.result) &&
+        res[element]?.result?.length > 0
+      ) {
+        setDisplayData((prevData) => [
+          ...prevData,
+          {
+            heading: element,
+            content: res[element]?.result,
+            message: res[element]?.get_desc,
+            confirmationDesc: undefined,
+            responseType: "success",
+            viewType: "table",
+            type: "table_json",
+          },
+        ]);
+      }
+      if (res[element]?.result && !Array.isArray(res[element]?.result)) {
+        setDisplayData((prevData) => [
+          ...prevData,
+          {
+            heading: element,
+            content: [res[element]?.result],
+            message: res[element]?.get_desc,
+            confirmationDesc: undefined,
+            responseType: "success",
+            viewType: "table",
+            type: "table_json",
+          },
+        ]);
       }
 
-      return "json";
-    } else {
-      return "unknown";
-    }
+      if (element === "request_for_confirmation") {
+        let preKey = Object.keys(res)[index - 1];
+
+        setDisplayData((prevData) => [
+          ...prevData,
+          {
+            heading: undefined,
+            content: undefined,
+            confirmationDesc: res[preKey][0]["confirmation_desc"],
+            message: res[element],
+            responseType: "success",
+            viewType: undefined,
+            type: "confirmation",
+          },
+        ]);
+      } else if (element === "request_missing_args") {
+        let preKey = Object.keys(res)[index - 1];
+
+        setDisplayData((prevData) => [
+          ...prevData,
+          {
+            heading: undefined,
+            content: undefined,
+            confirmationDesc: res[preKey][0]["missing_args_desc"],
+            message: res[element],
+            responseType: "success",
+            viewType: undefined,
+            type: "string",
+          },
+        ]);
+      } else if (element === "default_message") {
+        setDisplayData((prevData) => [
+          ...prevData,
+          {
+            message: res.default_message,
+            content: undefined,
+            heading: undefined,
+            confirmationDesc: undefined,
+            responseType: "success",
+            viewType: undefined,
+            type: "string",
+          },
+        ]);
+      } else if (res[element].success) {
+        setDisplayData((prevData) => [
+          ...prevData,
+          {
+            message: res[element].success,
+            content: undefined,
+            heading: undefined,
+            confirmationDesc: undefined,
+            responseType: "success",
+            viewType: undefined,
+            type: "string",
+          },
+        ]);
+      } else if (res[element].fail) {
+        setDisplayData((prevData) => [
+          ...prevData,
+          {
+            message: res[element].fail,
+            content: undefined,
+            heading: undefined,
+            confirmationDesc: undefined,
+            responseType: "failure",
+            viewType: undefined,
+            type: "string",
+          },
+        ]);
+      } else {
+        // setDisplayData((prevData) => [
+        //   ...prevData,
+        //   {
+        //     message: "Something went wrong",
+        //     content: undefined,
+        //     heading: undefined,
+        //     responseType: "failure",
+        //     type: "string",
+        //   },
+        // ]);
+      }
+    });
   };
 
   const generateColumnDefs = (data) => {
@@ -140,8 +185,23 @@ const DynamicRender = (props) => {
 
   const [viewType, setViewType] = useState("table");
 
-  const handleOptionChange = (e) => {
-    setViewType(e.target.value);
+  const handleOptionChange = (e, index) => {
+    const value = e.target.value;
+
+    setDisplayData((prevData) => {
+      const updatedData = [...prevData];
+      updatedData[index] = {
+        ...updatedData[index],
+        viewType: value,
+      };
+      return updatedData;
+    });
+
+    // setViewType(e.target.value);
+  };
+
+  const handelConfirmation = () => {
+    confirmationToParent("Yes");
   };
 
   const gridStyle = useMemo(() => ({ height: "300px", width: "100%" }), []);
@@ -149,71 +209,75 @@ const DynamicRender = (props) => {
   return (
     <div>
       {displayData.map((item, index) => (
-        <>
-          {item.type === "array" ? (
-            <div className="mb-10">
-              <ul
+        <div>
+          {item.type === "table_json" ? (
+            <div className="content mb-10">
+              <div
                 style={{
-                  listStyleType: "none",
-                  padding: 0,
-                  margin: 0,
+                  paddingBottom: "10px",
                 }}
               >
-                {item.message?.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ) : item.type === "table_json" ? (
-            <div>
-              {Object.entries(item.message).map(([key, value]) => (
-                <div
-                  key={key}
-                  style={{
-                    marginBottom: "10px",
-                    paddingBottom: "10px",
-                  }}
-                >
-                  <div className="mt-5 mb-10 selectView">
-                    {key}
+                <div className="mt-5 mb-10 selectView">
+                  {item.heading}
 
-                    <select
-                      className="selectView"
-                      name="selectView"
-                      value={viewType}
-                      onChange={handleOptionChange}
-                    >
-                      <option value="table">Table</option>
-                      <option value="graph">Graph</option>
-                    </select>
-                  </div>
-                  {viewType === "table" ? (
-                    <div style={gridStyle} className="ag-theme-alpine">
+                  <select
+                    className="selectView"
+                    name="selectView"
+                    value={item.viewType}
+                    onChange={(e) => handleOptionChange(e, index)}
+                  >
+                    <option value="table">Table</option>
+                    <option value="graph">Graph</option>
+                  </select>
+                </div>
+                {item.viewType === "table" ? (
+                  <>
+                    <div style={gridStyle} className={theme}>
                       <AgGridReact
-                        rowData={getValue(value)}
-                        columnDefs={generateColumnDefs(value)}
+                        rowData={getValue(item.content)}
+                        columnDefs={generateColumnDefs(item.content)}
                         defaultColDef={defaultColDef}
                         enableCellTextSelection="true"
                       />
                     </div>
-                  ) : viewType === "graph" ? (
+                    <div className="mt-10"> {item.message} </div>
+                  </>
+                ) : item.viewType === "graph" ? (
+                  <>
                     <div className="graph" id="graph">
-                      <SigmaGraph message={getValue(value)} />
+                      <SigmaGraph message={getValue(item.content)} />
                     </div>
-                  ) : null}
-                </div>
-              ))}
+                    <div className="mt-10">{item.message}</div>
+                  </>
+                ) : null}
+              </div>
+            </div>
+          ) : item.type === "confirmation" ? (
+            <div
+              className="content mb-10"
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <div className="confirmation">
+                {item.heading && <p className="mb-10"> {item.heading} </p>}
+                {item.confirmationDesc && (
+                  <p className="mb-10"> {item.confirmationDesc} </p>
+                )}
+                {item.message && <p className="mb-10"> {item.message} </p>}
+              </div>
+              <div style={{ marginLeft: "auto" }}>
+                <button className="btnStyle" onClick={handelConfirmation} >Yes</button>
+              </div>
             </div>
           ) : (
-            <div>
-              {item.message.toString()}
-              <br />
-              {item.responseType}
-              <br />
-              {item.type}
+            <div className="content mb-10">
+              {item.heading && <p className="mb-10"> {item.heading} </p>}
+              {item.confirmationDesc && (
+                <p className="mb-10"> {item.confirmationDesc} </p>
+              )}
+              {item.message && <p className="mb-10"> {item.message} </p>}
             </div>
           )}
-        </>
+        </div>
       ))}
     </div>
   );
