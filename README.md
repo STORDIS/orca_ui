@@ -42,6 +42,9 @@ To verify that container has successfully started, try to access http://<server_
 
 Thats it, If thats enough, rest of the steps below can be skipped and now discover your first device by clicking "Discover Network" button on the top right corner of ORCA UI. Else, refer below for more details about build and installation of ORCA UI.
 
+> **_Note for release:_** While using a specific version of ORCA UI, it is recommended to use the same version of ORCA Backend.
+
+
 ## Running ORCA UI from source
 To run ORCA UI from source, follow these steps:
 
