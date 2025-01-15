@@ -5,7 +5,7 @@ import { defaultColDef } from "../../../components/tabbedpane/datatablesourse";
 import SigmaGraph from "../../graphsNcharts/sigmaGraph/sigmaGraph";
 import secureLocalStorage from "react-secure-storage";
 
-const DynamicRender = ({prompt_response, confirmationToParent}) => {
+const DynamicRender = ({ prompt_response, confirmationToParent }) => {
   const [displayData, setDisplayData] = useState([
     {
       heading: "",
@@ -33,7 +33,6 @@ const DynamicRender = ({prompt_response, confirmationToParent}) => {
     setDisplayData([]);
 
     Object.keys(res).forEach((element, index) => {
-
       if (
         Array.isArray(res[element]?.result) &&
         res[element]?.result?.length > 0
@@ -50,8 +49,7 @@ const DynamicRender = ({prompt_response, confirmationToParent}) => {
             type: "table_json",
           },
         ]);
-      }
-      if (res[element]?.result && !Array.isArray(res[element]?.result)) {
+      } else if (res[element]?.result && !Array.isArray(res[element]?.result)) {
         setDisplayData((prevData) => [
           ...prevData,
           {
@@ -64,10 +62,8 @@ const DynamicRender = ({prompt_response, confirmationToParent}) => {
             type: "table_json",
           },
         ]);
-      }
-
-      if (element === "request_for_confirmation") {
-        let preKey = Object.keys(res)[index - 1];
+      } else if (res[element]?.[0]?.["confirmation_desc"]) {
+        let preKey = Object.keys(res)[index];
 
         setDisplayData((prevData) => [
           ...prevData,
@@ -75,14 +71,14 @@ const DynamicRender = ({prompt_response, confirmationToParent}) => {
             heading: undefined,
             content: undefined,
             confirmationDesc: res[preKey][0]["confirmation_desc"],
-            message: res[element],
+            message: "I need your confirmation for the above operations.",
             responseType: "success",
             viewType: undefined,
             type: "confirmation",
           },
         ]);
-      } else if (element === "request_missing_args") {
-        let preKey = Object.keys(res)[index - 1];
+      } else if (res[element]?.[0]?.["missing_args_desc"]) {
+        let preKey = Object.keys(res)[index];
 
         setDisplayData((prevData) => [
           ...prevData,
@@ -90,10 +86,11 @@ const DynamicRender = ({prompt_response, confirmationToParent}) => {
             heading: undefined,
             content: undefined,
             confirmationDesc: res[preKey][0]["missing_args_desc"],
-            message: res[element],
-            responseType: "success",
+            message:
+              "Please provide the missing information to let me proceed.",
+            responseType: "failure",
             viewType: undefined,
-            type: "string",
+            type: "confirmation",
           },
         ]);
       } else if (element === "default_message") {
@@ -265,7 +262,9 @@ const DynamicRender = ({prompt_response, confirmationToParent}) => {
                 {item.message && <p className="mb-10"> {item.message} </p>}
               </div>
               <div style={{ marginLeft: "auto" }}>
-                <button className="btnStyle" onClick={handelConfirmation} >Yes</button>
+                <button className="btnStyle" onClick={handelConfirmation}>
+                  Yes
+                </button>
               </div>
             </div>
           ) : (
