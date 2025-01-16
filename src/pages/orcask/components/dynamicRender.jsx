@@ -90,7 +90,7 @@ const DynamicRender = ({ prompt_response, confirmationToParent }) => {
               "Please provide the missing information to let me proceed.",
             responseType: "failure",
             viewType: undefined,
-            type: "confirmation",
+            type: "failure",
           },
         ]);
       } else if (element === "default_message") {
