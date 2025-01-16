@@ -39,7 +39,7 @@
           border-bottom-left-radius: 0px;
           padding: 12px 15px 12px 15px;
           margin-left: 10px;
-          width: 80%;
+          // width: 80%;
           border: 1px solid var(--item_hover_border);
 
           .selectView {
@@ -55,6 +55,7 @@
 
           .graph {
             border: 1px solid var(--form_border);
+            background-color: var(--graph_bg);
             width: -webkit-fill-available;
             height: 300px !important;
             position: relative;
@@ -63,10 +64,16 @@
           .noData {
             text-align: center;
           }
+
           .error {
             text-align: center;
             color: orange;
           }
+
+          .confirmation{
+            width: 80%;
+          }
+
         }
       }
 
@@ -93,6 +100,7 @@
         cursor: pointer;
         display: flex;
         background-color: var(--bg_color);
+        color: var(--text_color);
         border-radius: 25px;
         padding: 5px;
         margin: 0px 10px 0px 10px;
@@ -120,6 +128,8 @@
 
         .icon {
           background-color: var(--bg_color);
+          border: 1px solid var(--item_hover_border);
+
           border-radius: 25px;
           padding: 10px;
           font-size: 20px;
@@ -128,6 +138,8 @@
 
         .text {
           background-color: var(--bg_color);
+          border: 1px solid var(--item_hover_border);
+
           border-radius: 25px;
           border-bottom-right-radius: 0px;
           padding: 12px;

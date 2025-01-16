@@ -2,13 +2,37 @@ import Graph from "graphology";
 import ForceSupervisor from "graphology-layout-force/worker";
 import Sigma from "sigma";
 import React, { useEffect, useState } from "react";
+import secureLocalStorage from "react-secure-storage";
 
 const SigmaGraph = (props) => {
   let container_id = "check" + Math.random();
 
   const [noItem, setNoItem] = useState(false);
 
+  const [theme, setTheme] = useState({
+    background: "rgba(255, 255, 255, 1)",
+    font: "white",
+  });
+
+  
   useEffect(() => {
+    const root = document.documentElement;
+    setTheme({
+      background: root.style.getPropertyValue("--graph_bg"),
+      font: root.style.getPropertyValue("--font"),
+    });
+  }, [theme]);
+
+  useEffect(() => {
+    const root = document.documentElement;
+
+    // setTheme({
+    //   background: root.style.getPropertyValue("--bg_color"),
+    //   font: root.style.getPropertyValue("--font"),
+    // });
+
+    console.log(theme);
+
     if (
       props?.message[0] !== undefined &&
       Object.keys(props?.message[0]).length > 0
@@ -218,7 +242,8 @@ const SigmaGraph = (props) => {
           style={{
             width: "-webkit-fill-available",
             height: "100%",
-            backgroundColor: "white",
+            backgroundColor: theme.background,
+            color: theme.font,
           }}
         ></div>
       ) : null}
@@ -227,7 +252,8 @@ const SigmaGraph = (props) => {
           style={{
             width: "-webkit-fill-available",
             height: "100%",
-            backgroundColor: "white",
+            backgroundColor: theme.background,
+            color: theme.font,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

@@ -66,6 +66,7 @@ const Layout = () => {
 
       root.style.setProperty("--scrollbar_color", "rgba(255, 255, 255, 0.25)");
       root.style.setProperty("--tab_active_bg", "rgba(30, 30, 30, 1)");
+      root.style.setProperty("--graph_bg", "rgba(255, 255, 255, 0.1)");
     } else {
     }
 
