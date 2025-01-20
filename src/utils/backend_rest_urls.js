@@ -184,8 +184,17 @@ export function getStateURL(selectedDeviceIp) {
 export function celeryURL() {
   return host_addr + "/celery";
 }
+
 export function celeryTaskURL(id) {
   return host_addr + "/celery?task_id=" + id;
+}
+
+export function ipRangeURL() {
+  return host_addr + "/ip/range";
+}
+
+export function ipAvailabilityURL() {
+  return host_addr + "/ip/availability";
 }
 
 // ----------------
