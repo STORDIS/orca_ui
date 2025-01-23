@@ -5,6 +5,7 @@ import { isValidIPv4WithMac } from "../../../utils/common";
 import { subInterfaceURL } from "../../../utils/backend_rest_urls";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
+import { getIpAvailableCommon } from "../../../pages/IPAM/IPAM";
 
 const PrimarySecondaryForm = ({
   onSubmit,
@@ -22,14 +23,18 @@ const PrimarySecondaryForm = ({
 
   const [formData, setFormData] = useState({
     ip_address: "",
+    prefix: "",
     secondary: false,
     mgt_ip: selectedDeviceIp,
     name: inputDataJson.name,
   });
 
+  const [ipAvailable, setIpAvailable] = useState([]);
+
   useEffect(() => {
-    if (inputDataJson?.ip_address?.length > 0) {
-    }
+    getIpAvailableCommon().then((res) => {
+      setIpAvailable(res);
+    });
   }, []);
 
   const handleChange = (e) => {
@@ -37,7 +42,7 @@ const PrimarySecondaryForm = ({
 
     setFormData((prevFormData) => ({
       ...prevFormData,
-      ip_address: value,
+      [name]: value,
     }));
   };
 
@@ -52,8 +57,18 @@ const PrimarySecondaryForm = ({
     if (!isValidIPv4WithMac(formData.ip_address)) {
       alert("ip_address is not valid");
       return;
+    } else if (formData.prefix === "") {
+      alert("prefix is not valid");
+      return;
     } else {
-      onSubmit([formData]);
+      let payload = {
+        mgt_ip: selectedDeviceIp,
+        name: inputDataJson.name,
+        ip_address: formData.ip_address + "/" + formData.prefix,
+        secondary: formData.secondary,
+      };
+
+      onSubmit([payload]);
     }
   };
 
@@ -100,14 +115,40 @@ const PrimarySecondaryForm = ({
       </div>
 
       <div className="form-wrapper" style={{ alignItems: "center" }}>
-        <div className="form-field w-50">
-          <input
+        <div className="form-field w-30">
+          {/* <input
             type="text"
             className="form-control"
             name="ip_address"
             value={formData.ip_address}
             onChange={(e) => handleChange(e)}
             disabled={updateConfig}
+          /> */}
+
+          <select
+            className="form-control"
+            name="ip_address"
+            onChange={(e) => handleChange(e)}
+            disabled={updateConfig}
+            defaultValue={"DEFAULT"}
+          >
+            <option value="DEFAULT" disabled>
+              Select Ip Address
+            </option>
+            {ipAvailable.map((item) => (
+              <option key={item} value={item}>
+                {item}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-field w-15">
+          <input
+            type="number"
+            name="prefix"
+            min={1}
+            max={32}
+            onChange={(e) => handleChange(e)}
           />
         </div>
 
@@ -117,10 +158,6 @@ const PrimarySecondaryForm = ({
               type="checkbox"
               className="mr-10"
               name="secondary"
-              // disabled={
-              //     updateConfig ||
-              //     inputDataJson.ip_address === undefined
-              // }
               onChange={(e) => handleChangeChekbox(e)}
             />
             <label htmlFor="">Secondary</label>

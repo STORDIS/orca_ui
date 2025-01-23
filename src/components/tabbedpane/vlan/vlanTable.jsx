@@ -8,6 +8,7 @@ import Modal from "../../modal/Modal";
 import VlanForm from "./VlanForm";
 import VlanMemberForm from "./vlanMemberForm";
 import VlanSagIpForm from "./vlanSagIpForm";
+import VlanIpForm from "./vlanIpForm";
 import interceptor from "../../../utils/interceptor";
 import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
@@ -240,6 +241,7 @@ const VlanTable = (props) => {
       reload();
       return;
     }
+    
     if (params.newValue !== params.oldValue) {
       setChanges((prev) => {
         let latestChanges;
@@ -279,6 +281,14 @@ const VlanTable = (props) => {
     ) {
       setIsModalOpen("vlanSagIpForm");
     }
+
+    // if (
+    //   params?.colDef?.field === "ip_address" &&
+    //   (params.data.sag_ip_address === "" || params.data.sag_ip_address === null)
+    // ) {
+    //   setIsModalOpen("vlanIpForm");
+    // }
+
     setSelectedRows(params.data);
   }, []);
 
@@ -363,6 +373,21 @@ const VlanTable = (props) => {
           ></AgGridReact>
         </div>
 
+        {/* model for editing sag ip */}
+        {isModalOpen === "vlanIpForm" && (
+          <Modal
+            show={true}
+            onClose={reload}
+            title={"Edit Ip"}
+            onSubmit={reload}
+          >
+            <VlanIpForm
+              selectedDeviceIp={selectedDeviceIp}
+              inputData={selectedRows}
+            />
+          </Modal>
+        )}
+        
         {/* model for editing sag ip */}
         {isModalOpen === "vlanSagIpForm" && (
           <Modal
