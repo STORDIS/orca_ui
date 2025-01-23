@@ -7,21 +7,15 @@ export const getIsStaff = () => {
     }
 };
 
-export const areAllIPAddressesInRangeValid = (input) => {
-    if (!input) return true;
-
-    const ranges = input.split(",").map((range) => range.trim());
-
-    return ranges.every((range) => {
-        if (range.includes("-")) {
-            const [startIp, endIp] = range.split("-").map((ip) => ip.trim());
-            return isValidIPv4(startIp) && isValidIPv4(endIp);
-        } else if (range.includes("/")) {
-            return isValidCIDR(range);
-        } else {
-            return isValidIPv4(range);
-        }
-    });
+export const isValidIPAddressOrRange = (input) => {
+    if (input.includes("-")) {
+        const [startIp, endIp] = input.split("-").map((ip) => ip.trim());
+        return isValidIPv4(startIp) && isValidIPv4(endIp);
+    } else if (input.includes("/")) {
+        return isValidIPv4WithCIDR(input);
+    } else {
+        return isValidIPv4(input);
+    }
 };
 
 export const isValidIPv4WithCIDR = (ipWithCidr) => {

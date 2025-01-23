@@ -43,9 +43,9 @@ const Sidebar = () => {
           <VscJson className="icon" />
           <span>ZTP & DHCP</span>
         </Link>
-        <Link className="navLink" to="/ipPool">
+        <Link className="navLink" to="/ipam">
           <FaGlobe className="icon" />
-          <span>IP Pool</span>
+          <span>IPAM</span>
         </Link>
         <Link className="navLink" onClick={handleLogout}>
           <FaSignOutAlt className="icon" />

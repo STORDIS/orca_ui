@@ -63,7 +63,7 @@ export const getIpRangeCommon = () => {
     });
 };
 
-const IpPool = () => {
+const IPAM = () => {
   const [ipFrom, setIpFrom] = useState({
     range: "",
   });
@@ -216,7 +216,11 @@ const IpPool = () => {
           </div>
         </div>
         <div>
-          <button className="btnStyle" onClick={handleSubmit}>
+          <button
+            className="btnStyle"
+            onClick={handleSubmit}
+            disabled={ipFrom.range === ""}
+          >
             Add
           </button>
         </div>
@@ -229,6 +233,7 @@ const IpPool = () => {
             className="btnStyle"
             style={{ float: "right" }}
             onClick={handleRemove}
+            disabled={selectedRange.length === 0}
           >
             Remove
           </button>
@@ -269,9 +274,7 @@ const IpPool = () => {
               columnDefs={ipPoolColumn}
               defaultColDef={defaultColDef}
               enableCellTextSelection="true"
-              // onCellClicked={onCellClicked}
               stopEditingWhenCellsLoseFocus={true}
-              // onCellValueChanged={handleCellValueChanged}
             ></AgGridReact>
           </div>
         </div>
@@ -280,4 +283,4 @@ const IpPool = () => {
   );
 };
 
-export default IpPool;
+export default IPAM;
