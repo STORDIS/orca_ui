@@ -228,7 +228,7 @@ const IPAM = () => {
 
       <div className="listTable">
         <div className="listTitle mt-15">
-          All IP Ranges
+          All IP Range
           <button
             className="btnStyle"
             style={{ float: "right" }}
