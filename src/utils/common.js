@@ -7,6 +7,23 @@ export const getIsStaff = () => {
     }
 };
 
+export const areAllIPAddressesInRangeValid = (input) => {
+    if (!input) return true;
+
+    const ranges = input.split(",").map((range) => range.trim());
+
+    return ranges.every((range) => {
+        if (range.includes("-")) {
+            const [startIp, endIp] = range.split("-").map((ip) => ip.trim());
+            return isValidIPv4(startIp) && isValidIPv4(endIp);
+        } else if (range.includes("/")) {
+            return isValidCIDR(range);
+        } else {
+            return isValidIPv4(range);
+        }
+    });
+};
+
 export const isValidIPv4WithCIDR = (ipWithCidr) => {
     if (ipWithCidr) {
         const ipv4Regex =
@@ -25,12 +42,6 @@ export const isValidIPv4WithCIDR = (ipWithCidr) => {
         return false;
     }
 };
-
-// export const isValidCIDR = (cidr) => {
-//     const cidrPattern =
-//         /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\/([0-9]|[1-2][0-9]|3[0-2])$/;
-//     return cidrPattern.test(cidr);
-// };
 
 export const isValidCIDR = (cidr) => {
     const cidrPattern =
