@@ -133,12 +133,12 @@ const IpPool = () => {
 
     const handleSubmit = (e) => {
         if (ipFrom.range === "") {
-            alert("Starting range and ending range are required");
+            alert("IP range is required");
             return;
         }
 
         if (!areAllIPAddressesInRangeValid(ipFrom.range)) {
-            alert("Invalid IP address");
+            alert("Invalid IP range");
             return;
         }
 
