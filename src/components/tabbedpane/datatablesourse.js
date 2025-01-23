@@ -575,9 +575,8 @@ export const portChannelColumns = [
     headerName: "IP Address",
     width: 130,
     sortable: true,
-    editable: getIsStaff(),
+    editable: false,
     showIcon: getIsStaff(),
-
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
