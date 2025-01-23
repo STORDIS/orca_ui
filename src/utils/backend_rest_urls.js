@@ -193,8 +193,12 @@ export function ipRangeURL() {
   return host_addr + "/ip/range";
 }
 
-export function ipAvailabilityURL() {
-  return host_addr + "/ip/availability";
+export function ipAllIpsURL() {
+  return host_addr + "/ip/all_ips";
+}
+
+export function ipAvailableURL() {
+  return host_addr + "/ip/available";
 }
 
 // ----------------
