@@ -199,6 +199,8 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       formData.mem_ifs = selectedInterfaces;
     }
 
+    console.log(formData);
+
     setUpdateConfig(true);
     onSubmit(formData);
   };

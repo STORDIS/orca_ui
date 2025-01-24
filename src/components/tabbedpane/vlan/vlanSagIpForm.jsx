@@ -9,7 +9,7 @@ import { getIpAvailableCommon } from "../../../pages/IPAM/IPAM";
 const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
   const instance = interceptor();
   const [newSagIp, setNewSagIp] = useState("");
-  const [newSagIpPrefix, setNewSagIpPrefix] = useState(1);
+  const [newSagIpPrefix, setNewSagIpPrefix] = useState(undefined);
   const [ipAvailable, setIpAvailable] = useState([]);
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
@@ -43,13 +43,17 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
   };
 
   const addSagIptoArray = () => {
-    if (!isValidIPv4WithMac(newSagIp)) {
+    if (newSagIp === "") {
       alert("ip_address is not valid");
       setNewSagIp("");
       return;
-    } else if (newSagIpPrefix === "" || newSagIpPrefix < 0) {
+    } else if (
+      newSagIpPrefix === "" ||
+      newSagIpPrefix < 0 ||
+      newSagIpPrefix > 33
+    ) {
       alert("prefix is not valid");
-      setNewSagIpPrefix(1);
+      setNewSagIpPrefix(undefined);
       return;
     } else {
       let payload = {

@@ -32,6 +32,16 @@ const VlanIpForm = ({ onClose, onSubmit, selectedDeviceIp, inputData }) => {
     setIpPrefix(e.target.value);
   };
   const handleSubmit = () => {
+
+    if(ipAddress === "" || ipPrefix === "") {
+      alert("ip_address or prefix is not valid");
+      return;
+    }
+    if(ipPrefix < 1 || ipPrefix > 32) {
+      alert("prefix is not valid");
+      return;
+    }
+
     onSubmit({
       ip_address: ipAddress + "/" + ipPrefix,
       vlanid: inputData.vlanid,
