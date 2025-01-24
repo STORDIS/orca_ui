@@ -51,6 +51,7 @@ const PortChannelIpForm = ({
         {
           ip_address: ipAddress + "/" + ipPrefix,
           lag_name: inputData.lag_name,
+          mgt_ip: selectedDeviceIp,
         },
       ]);
     }
