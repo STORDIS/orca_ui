@@ -198,16 +198,6 @@ const PortChDataTable = (props) => {
   }, []);
 
   const handleFormSubmit = (formData) => {
-    if (Array.isArray(formData)) {
-      formData.forEach((obj) => {
-        obj.mgt_ip = selectedDeviceIp;
-      });
-
-      putConfig(formData);
-    }
-  };
-
-  const putConfig = (formData) => {
     setUpdateConfig(true);
     setConfigStatus("Config In Progress....");
     const apiPUrl = getAllPortChnlsOfDeviceURL(selectedDeviceIp);

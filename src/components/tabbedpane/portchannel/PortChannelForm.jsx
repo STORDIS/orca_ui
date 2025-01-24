@@ -185,11 +185,10 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     }
 
     if (
-      !isValidIPv4WithCIDR(formData.ip_address) &&
-      formData.ip_address !== "" &&
-      formData.ip_address !== undefined
+      formData.prefix !== "" &&
+      (formData.prefix < 1 || formData.prefix > 33)
     ) {
-      alert("ip_address is not valid");
+      alert("prefix is not valid");
       return;
     }
 
@@ -204,6 +203,7 @@ const PortChannelForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       alert("min_links is not valid");
       return;
     }
+
 
     if (selectedVlans.vlan_ids.length > 0) {
       formData.vlan_members = selectedVlans;

@@ -43,12 +43,17 @@ const PortChannelIpForm = ({
   };
 
   const handleSubmit = (e) => {
-    onSubmit([
-      {
-        ip_address: ipAddress + "/" + ipPrefix,
-        lag_name: inputData.lag_name,
-      },
-    ]);
+    if (ipPrefix < 1 || ipPrefix > 32) {
+      alert("ip address is not valid");
+      return;
+    } else {
+      onSubmit([
+        {
+          ip_address: ipAddress + "/" + ipPrefix,
+          lag_name: inputData.lag_name,
+        },
+      ]);
+    }
   };
 
   const handleRemove = (e) => {

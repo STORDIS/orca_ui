@@ -34,14 +34,15 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     enabled: false,
     description: undefined,
     ip_address: undefined,
-    ip_prefix: undefined,
     sag_ip_address: undefined,
-    sag_prefix: undefined,
     autostate: undefined,
     mem_ifs: undefined,
   });
 
   const [ipAvailable, setIpAvailable] = useState([]);
+
+  const [ip_prefix, setIp_prefix] = useState(undefined);
+  const [sag_prefix, setSag_prefix] = useState(undefined);
 
   useEffect(() => {
     setInterfaceNames([]);
@@ -111,11 +112,11 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       alert("SAG IP is required");
       return;
     }
-    if (formData.sag_prefix === "" || formData.sag_prefix === undefined) {
+    if (sag_prefix === "" || sag_prefix === undefined) {
       alert("SAG Prefix is required");
       return;
     }
-    if (formData.sag_prefix < 1 || formData.sag_prefix > 33) {
+    if (sag_prefix < 1 || sag_prefix > 33) {
       alert("SAG Prefix is not valid");
       return;
     }
@@ -124,7 +125,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       ...prev,
       {
         sag_ip_address: formData.sag_ip_address,
-        sag_prefix: formData.sag_prefix,
+        sag_prefix: sag_prefix,
       },
     ]);
 
@@ -137,7 +138,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
     setTimeout(() => {
       formData.sag_ip_address = "";
-      formData.sag_prefix = "";
+      setSag_prefix(undefined);
     }, 500);
   };
 
@@ -169,14 +170,13 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
   };
 
   const handelSubmit = (e) => {
-    e.preventDefault();
-
     const vlanid = parseFloat(formData.vlanid);
     if (vlanid < 0) {
       alert("VLAN ID cannot be Negative.");
       return;
     }
-    if (formData.ip_prefix > 0 && formData.ip_prefix < 33) {
+
+    if (ip_prefix < 1 || ip_prefix > 33) {
       alert("ip_address is not valid");
       return;
     }
@@ -185,33 +185,19 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       let ip = selectedSagIp.map(
         (item) => item.sag_ip_address + "/" + item.sag_prefix
       );
-      // ip = ip.join(", ");
       formData.sag_ip_address = ip;
     }
 
-    // console.log(formData);
+    if (formData.ip_address) {
+      formData.ip_address = formData.ip_address + "/" + ip_prefix;
+    }
 
-    delete formData.sag_prefix;
-    delete formData.ip_prefix;
-
-    // let dataToSubmit = {
-    //   ...formData,
-    //   vlanid,
-    // };
-
-    // if (formData.sag_ip_address) {
-    //   let trimmedIpAddresses = formData.sag_ip_address
-    //     .split(",")
-    //     .map((ip) => ip.trim());
-
-    //   dataToSubmit.sag_ip_address = trimmedIpAddresses;
-    // }
+    setIp_prefix(undefined);
+    setSag_prefix(undefined);
 
     if (Object.keys(selectedInterfaces).length > 0) {
       formData.mem_ifs = selectedInterfaces;
     }
-
-    console.log(formData);
 
     setUpdateConfig(true);
     onSubmit(formData);
@@ -311,12 +297,12 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
           <label>Prefix</label>
           <input
             type="number"
-            name="ip_prefix"
             min={1}
             max={32}
             id=""
             disabled={selectedSagIp.length > 0}
-            ref={prefixRef}
+            onChange={(e) => setIp_prefix(e.target.value)}
+            value={ip_prefix}
           />
         </div>
         <div className="form-field w-15">
@@ -325,9 +311,8 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
             style={{ marginTop: "22px" }}
             onClick={() => {
               formData.ip_address = "DEFAULT";
-              formData.ip_prefix = "";
+              setIp_prefix(undefined);
               ipRef.current.value = "DEFAULT";
-              prefixRef.current.value = "";
               setDisabledSagIp(false);
             }}
           >
@@ -363,7 +348,7 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
           <input
             type="number"
             name="sag_prefix"
-            onChange={handleChange}
+            onChange={(e) => setSag_prefix(e.target.value)}
             min={1}
             max={32}
             id=""
