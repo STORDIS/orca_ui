@@ -13,7 +13,6 @@ import interceptor from "../../../utils/interceptor";
 import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
-import { isValidIPv4WithCIDR } from "../../../utils/common";
 
 import { syncFeatureCommon } from "../Deviceinfo";
 import secureLocalStorage from "react-secure-storage";

@@ -19,7 +19,6 @@ import useStoreLogs from "../../../utils/store";
 import { getIsStaff } from "../../../utils/common";
 import useStoreConfig from "../../../utils/configStore";
 
-import { isValidIPv4WithCIDR } from "../../../utils/common";
 
 import { syncFeatureCommon } from "../Deviceinfo";
 import secureLocalStorage from "react-secure-storage";
@@ -133,16 +132,6 @@ const PortChDataTable = (props) => {
   };
 
   const handleCellValueChanged = useCallback((params) => {
-    if (
-      !isValidIPv4WithCIDR(params.data.ip_address) &&
-      params.data.ip_address !== "" &&
-      params.data.ip_address !== null
-    ) {
-      alert("ip_address is not valid");
-      reload();
-      return;
-    }
-
     if (params.newValue !== params.oldValue) {
       if (params.colDef.field === "lag_name") {
         if (!/^PortChannel\d+$/.test(params.newValue)) {

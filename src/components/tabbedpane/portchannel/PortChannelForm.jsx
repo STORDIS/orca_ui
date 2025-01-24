@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
 import useStoreConfig from "../../../utils/configStore";
-import { isValidIPv4WithCIDR } from "../../../utils/common";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getVlanDataCommon } from "../vlan/vlanTable";
 import { getIpAvailableCommon } from "../../../pages/IPAM/IPAM";

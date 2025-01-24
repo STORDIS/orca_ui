@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 
 import interceptor from "../../../utils/interceptor";
-import { isValidIPv4WithMac } from "../../../utils/common";
 import { subInterfaceURL } from "../../../utils/backend_rest_urls";
 import useStoreConfig from "../../../utils/configStore";
 import useStoreLogs from "../../../utils/store";
@@ -54,7 +53,7 @@ const PrimarySecondaryForm = ({
   };
 
   const handleSubmit = () => {
-    if (!isValidIPv4WithMac(formData.ip_address)) {
+    if (formData.ip_address === "") {
       alert("ip_address is not valid");
       return;
     } else if (formData.prefix === "") {

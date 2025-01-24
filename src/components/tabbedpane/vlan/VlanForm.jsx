@@ -3,8 +3,6 @@ import interceptor from "../../../utils/interceptor";
 import useStoreConfig from "../../../utils/configStore";
 import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
-import { areAllIPAddressesValid } from "../../../utils/common";
-import { isValidIPv4WithMac } from "../../../utils/common";
 import { getIpAvailableCommon } from "../../../pages/IPAM/IPAM";
 
 const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {

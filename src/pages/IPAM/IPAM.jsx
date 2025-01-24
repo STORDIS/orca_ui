@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import { FaGlobe } from "react-icons/fa6";
 import {
-  isValidIPv4WithCIDR,
   isValidIPAddressOrRange,
 } from "../../utils/common.js";
 import {
@@ -17,6 +15,8 @@ import {
 } from "../../utils/backend_rest_urls.js";
 import interceptor from "../../utils/interceptor.js";
 import secureLocalStorage from "react-secure-storage";
+import useStoreConfig from "../../utils/configStore";
+import useStoreLogs from "../../utils/store";
 
 export const getIpAllIpsCommon = () => {
   const instance = interceptor();
@@ -36,6 +36,7 @@ export const getIpAllIpsCommon = () => {
 export const getIpAvailableCommon = () => {
   const instance = interceptor();
   const apiUrl = ipAvailableURL();
+
 
   return instance
     .get(apiUrl)
@@ -69,6 +70,9 @@ const IPAM = () => {
   });
   const [ipAllIps, setIpAllIps] = useState([]);
   const [ipRange, setIpRange] = useState([]);
+  const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
+  const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
+  const updateConfig = useStoreConfig((state) => state.updateConfig);
 
   const theme = useMemo(() => {
     if (secureLocalStorage.getItem("theme") === "dark") {
@@ -146,6 +150,7 @@ const IPAM = () => {
       alert("Invalid IP range");
       return;
     }
+    setUpdateConfig(true);
 
     const apiUrl = ipRangeURL();
     const instance = interceptor();
@@ -157,6 +162,9 @@ const IPAM = () => {
         setIpFrom({ range: "" });
         getRange();
         getIpAllIps();
+        setUpdateLog(true);
+        setUpdateConfig(false);
+
       });
   };
 
