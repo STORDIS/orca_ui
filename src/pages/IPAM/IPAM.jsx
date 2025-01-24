@@ -108,16 +108,11 @@ const IPAM = () => {
   );
 
   useEffect(() => {
-    getPool();
+    getRange();
+    getIpAllIps();
   }, []);
 
-  const getPool = () => {
-    setIpAllIps([]);
-    getIpAllIpsCommon().then((res) => {
-      setIpAllIps(res);
-    });
-
-    let ranges = [];
+  const getRange = () => {
     setIpRange([]);
 
     getIpRangeCommon()
@@ -128,6 +123,13 @@ const IPAM = () => {
         console.error(err);
       })
       .finally(() => {});
+  };
+
+  const getIpAllIps = () => {
+    setIpAllIps([]);
+    getIpAllIpsCommon().then((res) => {
+      setIpAllIps(res);
+    });
   };
 
   const handleChange = (e) => {
@@ -153,7 +155,8 @@ const IPAM = () => {
       .catch((err) => {})
       .finally(() => {
         setIpFrom({ range: "" });
-        getPool();
+        getRange();
+        getIpAllIps();
       });
   };
 
@@ -183,7 +186,8 @@ const IPAM = () => {
       .catch((err) => {})
       .finally(() => {
         setSelectedRange([]);
-        getPool();
+        getRange();
+        getIpAllIps();
       });
   };
   return (
@@ -229,14 +233,24 @@ const IPAM = () => {
       <div className="listTable">
         <div className="listTitle mt-15">
           All IP Range
-          <button
-            className="btnStyle"
-            style={{ float: "right" }}
-            onClick={handleRemove}
-            disabled={selectedRange.length === 0}
-          >
-            Remove
-          </button>
+          <div style={{ float: "right" }}>
+            <button
+              className="btnStyle"
+              onClick={handleRemove}
+              disabled={selectedRange.length === 0}
+            >
+              Remove
+            </button>
+            <button
+              className="btnStyle ml-15"
+              onClick={() => {
+                getRange();
+                getIpAllIps();
+              }}
+            >
+              Refresh
+            </button>
+          </div>
         </div>
 
         <div
@@ -260,7 +274,16 @@ const IPAM = () => {
           </div>
         </div>
 
-        <div className="listTitle mt-15">All IP's</div>
+        <div className="listTitle mt-15">
+          All IP's
+          <button
+            className="btnStyle"
+            style={{ float: "right" }}
+            onClick={getIpAllIps}
+          >
+            Refresh
+          </button>
+        </div>
 
         <div
           className="datatable resizable mt-15"
