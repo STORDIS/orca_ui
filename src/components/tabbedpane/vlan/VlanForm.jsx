@@ -5,18 +5,26 @@ import { getInterfaceDataCommon } from "../interfaces/interfaceDataTable";
 import { getPortChannelDataCommon } from "../portchannel/portChDataTable";
 import { areAllIPAddressesValid } from "../../../utils/common";
 import { isValidIPv4WithMac } from "../../../utils/common";
+import { getIpAvailableCommon } from "../../../pages/IPAM/IPAM";
 
 const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
   const instance = interceptor();
   const [selectedInterfaces, setSelectedInterfaces] = useState({});
+
+  const [selectedSagIp, setSelectedSagIp] = useState([]);
+
   const [interfaceNames, setInterfaceNames] = useState([]);
-  const [disabledIp, setDisabledIp] = useState(false);
+  // const [disabledIp, setDisabledIp] = useState(false);
   const [disabledSagIp, setDisabledSagIp] = useState(false);
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
   const updateConfig = useStoreConfig((state) => state.updateConfig);
 
   const selectRefVlanMembers = useRef(null);
+  const sagIpRef = useRef(null);
+  const sagPrefixRef = useRef(null);
+  const prefixRef = useRef(null);
+  const ipRef = useRef(null);
 
   const [formData, setFormData] = useState({
     mgt_ip: selectedDeviceIp || "",
@@ -26,10 +34,32 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
     enabled: false,
     description: undefined,
     ip_address: undefined,
+    ip_prefix: undefined,
     sag_ip_address: undefined,
+    sag_prefix: undefined,
     autostate: undefined,
     mem_ifs: undefined,
   });
+
+  const [ipAvailable, setIpAvailable] = useState([]);
+
+  useEffect(() => {
+    setInterfaceNames([]);
+
+    getIpAvailableCommon().then((res) => {
+      setIpAvailable(res);
+    });
+
+    getInterfaceDataCommon(selectedDeviceIp).then((eth_Data) => {
+      const ethernetInterfaces = eth_Data
+        .filter((element) => element.name.includes("Ethernet"))
+        .map((element) => element.name);
+      getPortChannelDataCommon(selectedDeviceIp).then((port_data) => {
+        const portchannel = port_data.map((element) => element.lag_name);
+        setInterfaceNames([...portchannel, ...ethernetInterfaces]);
+      });
+    });
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,81 +85,11 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
     if (name === "ip_address" && value) {
       setDisabledSagIp(true);
-    } else if (name === "sag_ip_address" && value) {
-      setDisabledIp(true);
     } else {
-      setDisabledIp(false);
+      // setDisabledIp(false);
       setDisabledSagIp(false);
     }
   };
-
-  const handelSubmit = (e) => {
-    e.preventDefault();
-
-    const vlanid = parseFloat(formData.vlanid);
-    if (vlanid < 0) {
-      alert("VLAN ID cannot be Negative.");
-      return;
-    }
-    if (
-      !isValidIPv4WithMac(formData.ip_address) &&
-      formData.ip_address !== ""
-    ) {
-      alert("ip_address is not valid");
-      return;
-    }
-    if (
-      !areAllIPAddressesValid(formData.sag_ip_address) &&
-      formData.sag_ip_address !== ""
-    ) {
-      alert("sag_ip_address is not valid");
-      return;
-    }
-    if (formData.sag_ip_address && formData.ip_address) {
-      alert("ip_address or sag_ip_address any one must be added");
-      return;
-    }
-    if (formData?.sag_ip_address) {
-      let trimmedIpAddresses = formData.sag_ip_address
-        .split(",")
-        .map((ip) => ip.trim());
-      formData.sag_ip_address = trimmedIpAddresses;
-    }
-
-    let dataToSubmit = {
-      ...formData,
-      vlanid,
-    };
-
-    if (formData.sag_ip_address) {
-      let trimmedIpAddresses = formData.sag_ip_address
-        .split(",")
-        .map((ip) => ip.trim());
-
-      dataToSubmit.sag_ip_address = trimmedIpAddresses;
-    }
-
-    if (Object.keys(selectedInterfaces).length > 0) {
-      dataToSubmit.mem_ifs = selectedInterfaces;
-    }
-
-    setUpdateConfig(true);
-    onSubmit(dataToSubmit);
-  };
-
-  useEffect(() => {
-    setInterfaceNames([]);
-
-    getInterfaceDataCommon(selectedDeviceIp).then((eth_Data) => {
-      const ethernetInterfaces = eth_Data
-        .filter((element) => element.name.includes("Ethernet"))
-        .map((element) => element.name);
-      getPortChannelDataCommon(selectedDeviceIp).then((port_data) => {
-        const portchannel = port_data.map((element) => element.lag_name);
-        setInterfaceNames([...portchannel, ...ethernetInterfaces]);
-      });
-    });
-  }, []);
 
   const handleDropdownChange = (event) => {
     let newValue = event.target.value;
@@ -141,6 +101,48 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
 
     setInterfaceNames((prev) => prev.filter((item) => item !== newValue));
     setTimeout(() => (selectRefVlanMembers.current.value = "DEFAULT"), 100);
+  };
+
+  const addSagIp = (event) => {
+    if (
+      formData.sag_ip_address === "" ||
+      formData.sag_ip_address === undefined
+    ) {
+      alert("SAG IP is required");
+      return;
+    }
+    if (formData.sag_prefix === "" || formData.sag_prefix === undefined) {
+      alert("SAG Prefix is required");
+      return;
+    }
+    if (formData.sag_prefix < 1 || formData.sag_prefix > 33) {
+      alert("SAG Prefix is not valid");
+      return;
+    }
+
+    setSelectedSagIp((prev) => [
+      ...prev,
+      {
+        sag_ip_address: formData.sag_ip_address,
+        sag_prefix: formData.sag_prefix,
+      },
+    ]);
+
+    setIpAvailable((prev) =>
+      prev.filter((item) => item !== formData.sag_ip_address)
+    );
+
+    sagIpRef.current.value = "DEFAULT";
+    sagPrefixRef.current.value = undefined;
+
+    setTimeout(() => {
+      formData.sag_ip_address = "";
+      formData.sag_prefix = "";
+    }, 500);
+  };
+
+  const handleRemoveSagIp = (index) => {
+    setSelectedSagIp((prev) => prev.filter((item, i) => i !== index));
   };
 
   const handleCheckbox = (key, value) => {
@@ -164,6 +166,55 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       }
       return prev;
     });
+  };
+
+  const handelSubmit = (e) => {
+    e.preventDefault();
+
+    const vlanid = parseFloat(formData.vlanid);
+    if (vlanid < 0) {
+      alert("VLAN ID cannot be Negative.");
+      return;
+    }
+    if (formData.ip_prefix > 0 && formData.ip_prefix < 33) {
+      alert("ip_address is not valid");
+      return;
+    }
+
+    if (selectedSagIp.length > 0) {
+      let ip = selectedSagIp.map(
+        (item) => item.sag_ip_address + "/" + item.sag_prefix
+      );
+
+      formData.sag_ip_address = ip.join(",");
+    }
+
+    // console.log(formData);
+
+    delete formData.sag_prefix;
+    delete formData.ip_prefix;
+
+    // let dataToSubmit = {
+    //   ...formData,
+    //   vlanid,
+    // };
+
+    // if (formData.sag_ip_address) {
+    //   let trimmedIpAddresses = formData.sag_ip_address
+    //     .split(",")
+    //     .map((ip) => ip.trim());
+
+    //   dataToSubmit.sag_ip_address = trimmedIpAddresses;
+    // }
+
+    if (Object.keys(selectedInterfaces).length > 0) {
+      formData.mem_ifs = selectedInterfaces;
+    }
+
+    console.log(formData);
+
+    setUpdateConfig(true);
+    onSubmit(formData);
   };
 
   return (
@@ -236,30 +287,117 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       </div>
 
       <div className="form-wrapper">
-        <div className="form-field w-50">
+        <div className="form-field w-40">
           <label> IP address</label>
-          <input
-            disabled={disabledIp}
-            type="text"
-            name="ip_address"
-            value={formData.ip_address}
+
+          <select
             onChange={handleChange}
+            defaultValue={"DEFAULT"}
+            name="ip_address"
+            disabled={selectedSagIp.length > 0}
+            ref={ipRef}
+          >
+            <option value="DEFAULT" disabled>
+              Select Ip Address
+            </option>
+            {ipAvailable.map((ip, index) => (
+              <option key={index} value={ip}>
+                {ip}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="form-field w-15">
+          <label>Prefix</label>
+          <input
+            type="number"
+            name="ip_prefix"
+            min={1}
+            max={32}
+            id=""
+            disabled={selectedSagIp.length > 0}
+            ref={prefixRef}
           />
+        </div>
+        <div className="form-field w-15">
+          <button
+            className="btnStyle"
+            style={{ marginTop: "22px" }}
+            onClick={() => {
+              formData.ip_address = "DEFAULT";
+              formData.ip_prefix = "";
+              ipRef.current.value = "DEFAULT";
+              prefixRef.current.value = "";
+              setDisabledSagIp(false);
+            }}
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <div className="form-wrapper">
+        <div className="form-field w-40">
+          <label>Anycast Address</label>
+
+          <select
+            onChange={handleChange}
+            defaultValue={"DEFAULT"}
+            name="sag_ip_address"
+            ref={sagIpRef}
+            disabled={disabledSagIp}
+          >
+            <option value="DEFAULT" disabled>
+              Select Ip Address
+            </option>
+            {ipAvailable.map((ip, index) => (
+              <option key={index} value={ip}>
+                {ip}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className="form-field w-50">
-          <label>Anycast Address</label>
+        <div className="form-field w-15">
+          <label>Prefix</label>
           <input
-            disabled={disabledSagIp}
-            type="text"
-            name="sag_ip_address"
-            value={formData.sag_ip_address}
+            type="number"
+            name="sag_prefix"
             onChange={handleChange}
+            min={1}
+            max={32}
+            id=""
+            ref={sagPrefixRef}
+            disabled={disabledSagIp}
           />
-          <small>
-            Note : Use (,) Comma to separate the multiple IP address
-          </small>
         </div>
+        <div className="form-field w-25" style={{ marginTop: "25px" }}>
+          {selectedSagIp.length} selected
+        </div>
+        <div className="form-field w-15" style={{ marginTop: "22px" }}>
+          <button className="btnStyle" onClick={addSagIp}>
+            Add
+          </button>
+        </div>
+      </div>
+      <div className="selected-interface-wrap mb-10 w-100">
+        {selectedSagIp.map((val, index) => (
+          <div key={index} className="selected-interface-list mb-10">
+            <div className="ml-10 w-10">{index + 1}</div>
+
+            <div className=" w-50">
+              {val.sag_ip_address}/{val.sag_prefix}
+            </div>
+            <div className=" w-auto">
+              <button
+                className="btnStyle"
+                onClick={() => handleRemoveSagIp(index)}
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
 
       <div className="form-wrapper">

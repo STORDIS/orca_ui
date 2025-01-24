@@ -24,7 +24,6 @@ const PortChannelIpForm = ({
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   useEffect(() => {
-    console.log(inputData?.ip_address);
 
     if (inputData?.ip_address) {
       let ip = inputData?.ip_address?.split("/");

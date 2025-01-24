@@ -1336,10 +1336,15 @@ export const ipPoolColumn = [
     width: 200,
     sortable: true,
   },
-
   {
     field: "used_in",
     headerName: "Used In",
+    width: 200,
+    sortable: true,
+  },
+  {
+    field: "device_ip",
+    headerName: "Device IP",
     width: 200,
     sortable: true,
   },
