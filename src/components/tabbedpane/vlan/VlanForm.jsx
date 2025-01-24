@@ -185,8 +185,8 @@ const VlanForm = ({ onSubmit, selectedDeviceIp, onClose }) => {
       let ip = selectedSagIp.map(
         (item) => item.sag_ip_address + "/" + item.sag_prefix
       );
-
-      formData.sag_ip_address = ip.join(",");
+      // ip = ip.join(", ");
+      formData.sag_ip_address = ip;
     }
 
     // console.log(formData);
