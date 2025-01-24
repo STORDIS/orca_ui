@@ -20,11 +20,9 @@ const PortChannelIpForm = ({
   const [ipPrefix, setIpPrefix] = useState(1);
 
   const setUpdateConfig = useStoreConfig((state) => state.setUpdateConfig);
-  const updateConfig = useStoreConfig((state) => state.updateConfig);
   const setUpdateLog = useStoreLogs((state) => state.setUpdateLog);
 
   useEffect(() => {
-
     if (inputData?.ip_address) {
       let ip = inputData?.ip_address?.split("/");
       setIpAddress(ip[0]);
@@ -45,7 +43,6 @@ const PortChannelIpForm = ({
   };
 
   const handleSubmit = (e) => {
-    console.log(ipAddress + "/" + ipPrefix);
     onSubmit([
       {
         ip_address: ipAddress + "/" + ipPrefix,

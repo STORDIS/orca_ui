@@ -112,57 +112,8 @@ const VlanTable = (props) => {
       });
   };
 
-  const hasOnlyAllowedKeys = (obj) => {
-    const allowedKeys = [
-      "mgt_ip",
-      "name",
-      "vlanid",
-      "sag_ip_address",
-      "ip_address",
-    ];
-    const objKeys = Object.keys(obj);
-
-    // Check if objKeys only contains allowed keys
-    const containsOnlyAllowedKeys = objKeys?.every((key) =>
-      allowedKeys?.includes(key)
-    );
-
-    // Check if obj contains either "sag_ip_address" or "ip_address" or both
-    const containsRequiredIpKey =
-      obj.hasOwnProperty("sag_ip_address") || obj.hasOwnProperty("ip_address");
-
-    return containsOnlyAllowedKeys && containsRequiredIpKey;
-  };
-
   const handleFormSubmit = (formData) => {
-    if (Array.isArray(formData)) {
-      formData?.forEach((element) => {
-        if (
-          !hasOnlyAllowedKeys(element) &&
-          (element?.sag_ip_address === null ||
-            element?.sag_ip_address === "" ||
-            element?.ip_address === null ||
-            element?.ip_address === "")
-        ) {
-          deleteIpAddress(element);
-
-          delete element.sag_ip_address;
-          delete element.ip_address;
-
-          putConfig(element);
-          return;
-        } else if (
-          hasOnlyAllowedKeys(element) &&
-          (element.ip_address === null || element.ip_address === "")
-        ) {
-          deleteIpAddress(element);
-        } else {
-          putConfig(element);
-        }
-      });
-    } else {
-      putConfig(formData);
-    }
+    putConfig(formData);
   };
 
   const putConfig = (formData) => {
@@ -174,21 +125,6 @@ const VlanTable = (props) => {
       .put(apiMUrl, formData)
       .then(() => {})
       .catch(() => {})
-      .finally(() => {
-        setUpdateLog(true);
-        setUpdateConfig(false);
-        reload();
-      });
-  };
-
-  const deleteIpAddress = (payload) => {
-    setUpdateConfig(true);
-    setConfigStatus("Config In Progress....");
-    const apiMUrl = removeVlanIp();
-    instance
-      .delete(apiMUrl, { data: payload })
-      .then((response) => {})
-      .catch((err) => {})
       .finally(() => {
         setUpdateLog(true);
         setUpdateConfig(false);
@@ -226,22 +162,6 @@ const VlanTable = (props) => {
   };
 
   const handleCellValueChanged = useCallback((params) => {
-    if (
-      !isValidIPv4WithCIDR(params.data.ip_address) &&
-      params.data.ip_address !== "" &&
-      params.data.ip_address !== null
-    ) {
-      alert("ip_address is not valid");
-      reload();
-      return;
-    }
-
-    if (params.data.sag_ip_address && params.data.ip_address) {
-      alert("ip_address or sag_ip_address any one must be added");
-      reload();
-      return;
-    }
-    
     if (params.newValue !== params.oldValue) {
       setChanges((prev) => {
         let latestChanges;
@@ -276,18 +196,17 @@ const VlanTable = (props) => {
     }
     if (
       params?.colDef?.field === "sag_ip_address" &&
-      (params.data.ip_address === "" || params.data.ip_address === null) &&
       (params.data.ip_address === "" || params.data.ip_address === null)
     ) {
       setIsModalOpen("vlanSagIpForm");
     }
 
-    // if (
-    //   params?.colDef?.field === "ip_address" &&
-    //   (params.data.sag_ip_address === "" || params.data.sag_ip_address === null)
-    // ) {
-    //   setIsModalOpen("vlanIpForm");
-    // }
+    if (
+      params?.colDef?.field === "ip_address" &&
+      (params.data.sag_ip_address === "" || params.data.sag_ip_address === null)
+    ) {
+      setIsModalOpen("vlanIpForm");
+    }
 
     setSelectedRows(params.data);
   }, []);
@@ -379,7 +298,7 @@ const VlanTable = (props) => {
             show={true}
             onClose={reload}
             title={"Edit Ip"}
-            onSubmit={reload}
+            onSubmit={(e) => handleFormSubmit(e)}
           >
             <VlanIpForm
               selectedDeviceIp={selectedDeviceIp}
@@ -387,14 +306,14 @@ const VlanTable = (props) => {
             />
           </Modal>
         )}
-        
+
         {/* model for editing sag ip */}
         {isModalOpen === "vlanSagIpForm" && (
           <Modal
             show={true}
             onClose={reload}
             title={"Edit Sag Ip"}
-            onSubmit={reload}
+            onSubmit={(e) => handleFormSubmit(e)}
           >
             <VlanSagIpForm
               selectedDeviceIp={selectedDeviceIp}

@@ -42,14 +42,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
       });
   };
 
-//   const handleChange = (e, type) => {
-//     if (type === "sag_ip_prefix") {
-//       setNewSagIpPrefix(e.target.value);
-//     } else {
-//       setNewSagIp(e.target.value);
-//     }
-//   };
-
   const addSagIptoArray = () => {
     if (!isValidIPv4WithMac(newSagIp)) {
       alert("ip_address is not valid");
@@ -87,8 +79,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
       <div className="form-wrapper">
         <div className="form-field w-50">
           <label>SAG IP Address</label>
-          
-
           <select
             className="form-control"
             name="ip_address"
@@ -105,7 +95,6 @@ const VlanSagIpForm = ({ onSubmit, selectedDeviceIp, inputData, onClose }) => {
               </option>
             ))}
           </select>
-
         </div>
         <div className="form-field w-25">
           <label>Prefix</label>
