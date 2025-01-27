@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from "react";
-import {
-  isValidIPAddressOrRange,
-} from "../../utils/common.js";
+import { isValidIPAddressOrRange } from "../../utils/common.js";
 import {
   ipPoolColumn,
   ipRangeColumn,
@@ -36,7 +34,6 @@ export const getIpAllIpsCommon = () => {
 export const getIpAvailableCommon = () => {
   const instance = interceptor();
   const apiUrl = ipAvailableURL();
-
 
   return instance
     .get(apiUrl)
@@ -146,10 +143,11 @@ const IPAM = () => {
       return;
     }
 
-    if (!isValidIPAddressOrRange(ipFrom.range)) {
-      alert("Invalid IP range");
+    if (isValidIPAddressOrRange(ipFrom.range) !== "valid") {
+      alert(isValidIPAddressOrRange(ipFrom.range));
       return;
     }
+
     setUpdateConfig(true);
 
     const apiUrl = ipRangeURL();
@@ -164,7 +162,6 @@ const IPAM = () => {
         getIpAllIps();
         setUpdateLog(true);
         setUpdateConfig(false);
-
       });
   };
 
