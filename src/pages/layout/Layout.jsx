@@ -15,6 +15,7 @@ import Sidebar from "../../components/sidebar/Sidebar.jsx";
 import OrcAsk from "../orcask/orcAsk.jsx";
 import ZTPnDHCP from "../ZTPnDHCP/ztpndhcp.jsx";
 import Setup from "../setup/setup.jsx";
+import IPAM from "../IPAM/IPAM.jsx"
 import { setNavigate } from "../../utils/NavigationService";
 
 import "./Layout.scss";
@@ -122,6 +123,14 @@ const Layout = () => {
             element={
               <RequireAuth>
                 <ZTPnDHCP />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/ipam"
+            element={
+              <RequireAuth>
+                <IPAM />
               </RequireAuth>
             }
           />

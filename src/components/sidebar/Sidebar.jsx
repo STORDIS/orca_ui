@@ -7,6 +7,7 @@ import { FaList } from "react-icons/fa";
 import { VscJson } from "react-icons/vsc";
 import { FaGear } from "react-icons/fa6";
 import { FaSignOutAlt } from "react-icons/fa";
+import { FaGlobe } from "react-icons/fa6";
 import { useAuth } from "../../utils/auth";
 
 const Sidebar = () => {
@@ -41,6 +42,10 @@ const Sidebar = () => {
         <Link className="navLink" to="/ztpndhcp">
           <VscJson className="icon" />
           <span>ZTP & DHCP</span>
+        </Link>
+        <Link className="navLink" to="/ipam">
+          <FaGlobe className="icon" />
+          <span>IPAM</span>
         </Link>
         <Link className="navLink" onClick={handleLogout}>
           <FaSignOutAlt className="icon" />

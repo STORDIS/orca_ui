@@ -575,9 +575,8 @@ export const portChannelColumns = [
     headerName: "IP Address",
     width: 130,
     sortable: true,
-    editable: getIsStaff(),
+    editable: false,
     showIcon: getIsStaff(),
-
     headerComponent: EditableHeaderComponent,
     headerTooltip: "", // add header tooltip here
   },
@@ -1231,17 +1230,16 @@ export const stpColumn = [
   },
   {
     field: "rootguard_timeout",
-    headerName: "rootguard_timeout",
+    headerName: "Rootguard Timeout",
     width: 130,
     sortable: true,
     editable: getIsStaff(),
     showIcon: getIsStaff(),
-
     headerComponent: EditableHeaderComponent,
   },
   {
     field: "loop_guard",
-    headerName: "loop_guard",
+    headerName: "Loop Guard",
     width: 130,
     sortable: true,
     editable: getIsStaff(),
@@ -1251,7 +1249,7 @@ export const stpColumn = [
   },
   {
     field: "portfast",
-    headerName: "portfast",
+    headerName: "Portfast",
     width: 130,
     sortable: true,
     editable: getIsStaff(),
@@ -1261,7 +1259,7 @@ export const stpColumn = [
   },
   {
     field: "disabled_vlans",
-    headerName: "disabled_vlans",
+    headerName: "Disabled Vlans",
     width: 130,
     sortable: true,
     editable: false,
@@ -1315,4 +1313,39 @@ export const dhcpColumn = [
     sortable: true,
   },
   { field: "type", headerName: "TYPE", width: 130, sortable: true },
+];
+
+export const ipRangeColumn = [
+  {
+    headerCheckboxSelection: getIsStaff(),
+    checkboxSelection: getIsStaff(),
+    width: 50,
+  },
+  {
+    field: "range",
+    headerName: "Range",
+    width: 300,
+    sortable: true,
+  },
+];
+
+export const ipPoolColumn = [
+  {
+    field: "ip",
+    headerName: "IP",
+    width: 200,
+    sortable: true,
+  },
+  {
+    field: "used_in",
+    headerName: "Used In",
+    width: 200,
+    sortable: true,
+  },
+  {
+    field: "device_ip",
+    headerName: "Device IP",
+    width: 200,
+    sortable: true,
+  },
 ];
