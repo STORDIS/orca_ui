@@ -52,20 +52,22 @@ const PrimarySecondaryForm = ({
         }));
     };
 
-  const handleSubmit = () => {
-    if (formData.ip_address === "") {
-      alert("ip_address is not valid");
-      return;
-    } else if (formData.prefix === "") {
-      alert("prefix is not valid");
-      return;
-    } else {
-      let payload = {
-        mgt_ip: selectedDeviceIp,
-        name: inputDataJson.name,
-        ip_address: formData.ip_address + "/" + formData.prefix,
-        secondary: formData.secondary,
-      };
+    const handleSubmit = () => {
+        if (formData.ip_address === "") {
+            alert("ip_address is not valid");
+            return;
+        } else if (formData.prefix < 1 || formData.prefix > 32) {
+            alert("prefix is not valid");
+            return;
+        }
+        
+        else {
+            let payload = {
+                mgt_ip: selectedDeviceIp,
+                name: inputDataJson.name,
+                ip_address: formData.ip_address + "/" + formData.prefix,
+                secondary: formData.secondary,
+            };
 
             onSubmit([payload]);
         }
